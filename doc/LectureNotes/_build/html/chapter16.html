@@ -1,0 +1,1305 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>16. Chapter 16: Diffusion Models and Normalizing Flows &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter16';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="17. Chapter 17: Generative Adversarial Networks" href="chapter17.html" />
+    <link rel="prev" title="15. Chapter 15: Variational Autoencoders" href="chapter15.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Machine Learning and the Physical Sciences
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mathematical and statistical basis with essential computational elements</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">1. Chapter 1: Linear Algebra for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">2. Chapter 2: Elements of Probability Theory and Statistics</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">3. Chapter 3: Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">4. Chapter 4: Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">5. Chapter 5: Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter6.html">6. Chapter 6: Support Vector Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">7. Chapter 7: Ensemble methods; from simple decision trees to Gradient Boosting</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">8. Chapter 8: Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">9. Chapter 9: Neural Networks for Differential Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">10. Chapter 10: Convolutional Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter11.html">11. Chapter 11: Recurrent Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter12.html">12. Chapter 12: Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter13.html">13. Chapter 13: Transformers</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Generative Methods</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter14.html">14. Chapter 14: Boltzmann Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15.html">15. Chapter 15: Variational Autoencoders</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">16. Chapter 16: Diffusion Models and Normalizing Flows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17.html">17. Chapter 17: Generative Adversarial Networks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Concluding remarks and perspectives</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="conclusions.html">18. Chapter 18: Concluding remarks and perspectives</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chapter16.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 16: Diffusion Models and Normalizing Flows</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-hierarchical-vaes-to-diffusion">16.1. From hierarchical VAEs to diffusion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-forward-process">16.1.1. The forward process</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-forward-posterior">16.1.2. The forward posterior</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-objective">16.2. The objective</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#predicting-the-noise">16.2.1. Predicting the noise</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-thing-as-score-matching">16.2.2. The same thing as score matching</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling">16.3. Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalizing-flows">16.4. Normalizing flows</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-exactness">16.4.1. Verifying exactness</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison">16.5. Comparison</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">16.6. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">16.7. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">16.7.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-diffusion-and-flows">16.7.2. Project-style exercise: diffusion and flows</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-16-diffusion-models-and-normalizing-flows">
+<h1><span class="section-number">16. </span>Chapter 16: Diffusion Models and Normalizing Flows<a class="headerlink" href="#chapter-16-diffusion-models-and-normalizing-flows" title="Link to this heading">#</a></h1>
+<!-- Macro definitions for MathJax, mirroring book.tex -->
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\bm}[1]{\boldsymbol{#1}}
+\newcommand{\Det}[1]{|\boldsymbol{#1}|}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\var}{\mathrm{Var}}
+\newcommand{\cov}{\mathrm{Cov}}
+\newcommand{\Prob}{\mathrm{Prob}}
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\]</div>
+<p>Section <em>Towards diffusion models</em> ended by describing three restrictions that
+turn a hierarchical variational autoencoder into something else entirely: latent
+variables of the same dimension as the data, a fixed rather than learned
+encoder, and a schedule ending in pure noise.  This chapter carries that
+programme out.  The result is the <em>diffusion model</em>, which produces the
+best samples of any generative model in this book and does so with an objective
+of startling simplicity: predict the noise that was added.</p>
+<p>The chapter has a second half.  Diffusion models buy sample quality by giving up
+an exact likelihood – like the VAE, they optimise a bound.  <em>Normalizing
+flows</em> take the opposite trade: they insist on an exact, computable likelihood
+and pay for it with an architectural constraint, that every layer be invertible
+with a tractable Jacobian.  Putting the two side by side is the clearest way to
+see what generative modelling actually costs, and the two turn out to be
+connected: in the continuous-time limit a diffusion model <em>is</em> a flow, one
+whose velocity field is the score.</p>
+<p>The material follows the lecture notes for week fifteen of FYS-STK3155/4155 and
+the accompanying notes on diffusion models, normalizing flows and their
+comparison.</p>
+<section id="from-hierarchical-vaes-to-diffusion">
+<h2><span class="section-number">16.1. </span>From hierarchical VAEs to diffusion<a class="headerlink" href="#from-hierarchical-vaes-to-diffusion" title="Link to this heading">#</a></h2>
+<p>A Markovian hierarchical VAE, Eq. (15.16), has a chain of latents
+<span class="math notranslate nohighlight">\(\bm{x}_1,\dots,\bm{x}_T\)</span> with <span class="math notranslate nohighlight">\(\bm{x}_0\equiv\bm{x}\)</span> the data.  Impose the
+three restrictions:</p>
+<ol class="arabic simple">
+<li><p><em>Same dimension.</em>  Every <span class="math notranslate nohighlight">\(\bm{x}_t\)</span> lives in <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span>.  There
+is no bottleneck, so nothing can collapse in the sense of
+Section <em>Two characteristic failures</em>.</p></li>
+<li><p><em>Fixed encoder.</em>  The forward process <span class="math notranslate nohighlight">\(q\)</span> is not learned.  It adds a
+prescribed amount of Gaussian noise at each step.  There is no
+<span class="math notranslate nohighlight">\(\bm{\phi}\)</span> to optimise, so the encoder cannot be blamed for a loose bound.</p></li>
+<li><p><em>Terminal noise.</em>  The schedule is chosen so that
+<span class="math notranslate nohighlight">\(q(\bm{x}_T\mid\bm{x}_0)\approx\mathcal{N}(\bm{0},\bm{I})\)</span> for every
+<span class="math notranslate nohighlight">\(\bm{x}_0\)</span>.  The prior then matches by construction and costs nothing.</p></li>
+</ol>
+<p>All three difficulties of Chapter 15 have been designed away, and
+the entire modelling burden falls on the reverse process: a single network that
+must learn to undo one step of noising.</p>
+<section id="the-forward-process">
+<h3><span class="section-number">16.1.1. </span>The forward process<a class="headerlink" href="#the-forward-process" title="Link to this heading">#</a></h3>
+<p>Each step scales the current state down slightly and adds noise:</p>
+<div class="math notranslate nohighlight">
+\[
+q(\bm{x}_t\mid\bm{x}_{t-1})
+   = \mathcal{N}\!\left(\bm{x}_t;\;\sqrt{\alpha_t}\,\bm{x}_{t-1},\;
+     (1-\alpha_t)\bm{I}\right),
+  \qquad \alpha_t = 1-\beta_t,\tag{16.1}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\beta_t\in(0,1)\)</span> the <em>noise schedule</em>.  The scaling by
+<span class="math notranslate nohighlight">\(\sqrt{\alpha_t}\)</span> is what keeps the variance bounded: without it the state would
+random-walk away to infinity.</p>
+<p>The first useful fact is that the whole chain collapses.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 16.1 (Closed-form forward marginal)</p>
+<p>With <span class="math notranslate nohighlight">\(\bar\alpha_t = \prod_{s=1}^{t}\alpha_s\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  q(\bm{x}_t\mid\bm{x}_0)
+   = \mathcal{N}\!\left(\bm{x}_t;\;\sqrt{\bar\alpha_t}\,\bm{x}_0,\;
+     (1-\bar\alpha_t)\bm{I}\right),
+  \quad\text{i.e.}\quad
+  \bm{x}_t = \sqrt{\bar\alpha_t}\,\bm{x}_0
+    + \sqrt{1-\bar\alpha_t}\,\bm{\epsilon}. \;}\tag{16.2}
+\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>By induction.  The case <span class="math notranslate nohighlight">\(t=1\)</span> is Eq. (16.1).  Assume the
+result at <span class="math notranslate nohighlight">\(t-1\)</span> and substitute:</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x}_t = \sqrt{\alpha_t}\!\left(\sqrt{\bar\alpha_{t-1}}\bm{x}_0
+    + \sqrt{1-\bar\alpha_{t-1}}\,\bm{\epsilon}'\right)
+    + \sqrt{1-\alpha_t}\,\bm{\epsilon}''
+  = \sqrt{\bar\alpha_t}\,\bm{x}_0 + \bm{\eta},
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\bm{\epsilon}',\bm{\epsilon}''\)</span> independent standard normals.  Since
+independent Gaussians add in variance, <span class="math notranslate nohighlight">\(\bm{\eta}\)</span> is Gaussian with variance</p>
+<div class="math notranslate nohighlight">
+\[
+\alpha_t(1-\bar\alpha_{t-1}) + (1-\alpha_t)
+  = \alpha_t - \bar\alpha_t + 1 - \alpha_t = 1-\bar\alpha_t,
+\]</div>
+<p>using <span class="math notranslate nohighlight">\(\bar\alpha_t=\alpha_t\bar\alpha_{t-1}\)</span>.</p>
+</div>
+<p>Equation (16.2) is arithmetic, not a network: any noise level can
+be reached in one step.  That is what makes training cheap, since a mini-batch
+can sample <span class="math notranslate nohighlight">\(t\)</span> uniformly and jump straight there.  We verify it against
+simulating the chain step by step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">1.</span> <span class="n">the</span> <span class="n">closed</span><span class="o">-</span><span class="n">form</span> <span class="n">marginal</span> <span class="n">vs</span> <span class="n">simulating</span> <span class="n">the</span> <span class="n">chain</span> <span class="o">===</span>
+   <span class="n">t</span>    <span class="n">simulated</span> <span class="n">mean</span><span class="o">/</span><span class="n">sd</span> <span class="n">of</span> <span class="n">x_t</span>      <span class="n">closed</span> <span class="n">form</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">abar</span><span class="p">),</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">abar</span><span class="p">)</span>
+   <span class="mi">10</span>      <span class="mf">1.9946</span> <span class="o">/</span>  <span class="mf">0.0744</span>            <span class="mf">1.9945</span> <span class="o">/</span>  <span class="mf">0.0741</span>
+   <span class="mi">50</span>      <span class="mf">1.8787</span> <span class="o">/</span>  <span class="mf">0.3446</span>            <span class="mf">1.8763</span> <span class="o">/</span>  <span class="mf">0.3463</span>
+  <span class="mi">100</span>      <span class="mf">1.5585</span> <span class="o">/</span>  <span class="mf">0.6279</span>            <span class="mf">1.5524</span> <span class="o">/</span>  <span class="mf">0.6305</span>
+  <span class="mi">200</span>      <span class="mf">0.7230</span> <span class="o">/</span>  <span class="mf">0.9323</span>            <span class="mf">0.7271</span> <span class="o">/</span>  <span class="mf">0.9316</span>
+</pre></div>
+</div>
+<p>The two coefficients have names.  The <em>signal-to-noise ratio</em></p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{SNR}(t) = \frac{\bar\alpha_t}{1-\bar\alpha_t}\tag{16.3}
+\]</div>
+<p>falls from <span class="math notranslate nohighlight">\(\gg1\)</span> at <span class="math notranslate nohighlight">\(t=0\)</span> to <span class="math notranslate nohighlight">\(\approx0\)</span> at <span class="math notranslate nohighlight">\(t=T\)</span>, and the whole objective can
+be rewritten in terms of it.  Two schedules are standard: the <em>linear</em> one
+of Ho <em>et al.</em> [ho2020], <span class="math notranslate nohighlight">\(\beta_t\)</span> from <span class="math notranslate nohighlight">\(10^{-4}\)</span> to <span class="math notranslate nohighlight">\(0.02\)</span> over
+<span class="math notranslate nohighlight">\(T=1000\)</span>, and the <em>cosine</em> one of Nichol and
+Dhariwal [nichol2021], <span class="math notranslate nohighlight">\(\bar\alpha_t\propto\cos^{2}
+\!\left(\frac{t/T+s}{1+s}\cdot\frac{\pi}{2}\right)\)</span> with <span class="math notranslate nohighlight">\(s=0.008\)</span>.
+Figure 16.1(c) shows both.  The linear schedule destroys the
+signal abruptly at the end and wastes early steps on nearly identical images;
+the cosine schedule spreads the destruction out.</p>
+</section>
+<section id="the-forward-posterior">
+<h3><span class="section-number">16.1.2. </span>The forward posterior<a class="headerlink" href="#the-forward-posterior" title="Link to this heading">#</a></h3>
+<p>To reverse the process we would like <span class="math notranslate nohighlight">\(q(\bm{x}_{t-1}\mid\bm{x}_t)\)</span>, which is
+intractable – it requires knowing the data distribution.  But conditioned
+additionally on <span class="math notranslate nohighlight">\(\bm{x}_0\)</span> it is available in closed form, and that is enough.</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 16.2 (Forward posterior)</p>
+<div class="math notranslate nohighlight">
+\[
+q(\bm{x}_{t-1}\mid\bm{x}_t,\bm{x}_0)
+   = \mathcal{N}\!\left(\bm{x}_{t-1};\;
+     \tilde{\bm{\mu}}_t(\bm{x}_t,\bm{x}_0),\;\tilde\beta_t\bm{I}\right),\tag{16.4}
+\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\bm{\mu}}_t
+   = \frac{\sqrt{\alpha_t}(1-\bar\alpha_{t-1})}{1-\bar\alpha_t}\,\bm{x}_t
+   + \frac{\sqrt{\bar\alpha_{t-1}}\,\beta_t}{1-\bar\alpha_t}\,\bm{x}_0,
+  \qquad
+  \tilde\beta_t = \frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}\,\beta_t .\tag{16.5}
+\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>By Bayes’ rule and the Markov property,</p>
+<div class="math notranslate nohighlight">
+\[
+q(\bm{x}_{t-1}\mid\bm{x}_t,\bm{x}_0)
+  = \frac{q(\bm{x}_t\mid\bm{x}_{t-1})\,q(\bm{x}_{t-1}\mid\bm{x}_0)}
+         {q(\bm{x}_t\mid\bm{x}_0)},
+\]</div>
+<p>all three factors being Gaussian by Eq. (16.1) and
+Proposition 16.1.  The denominator does not involve
+<span class="math notranslate nohighlight">\(\bm{x}_{t-1}\)</span>, so as a function of <span class="math notranslate nohighlight">\(\bm{x}_{t-1}\)</span> the log-numerator is</p>
+<div class="math notranslate nohighlight">
+\[
+-\frac{\|\bm{x}_t-\sqrt{\alpha_t}\bm{x}_{t-1}\|^{2}}{2(1-\alpha_t)}
+  -\frac{\|\bm{x}_{t-1}-\sqrt{\bar\alpha_{t-1}}\bm{x}_0\|^{2}}
+        {2(1-\bar\alpha_{t-1})} + \text{const},
+\]</div>
+<p>a quadratic in <span class="math notranslate nohighlight">\(\bm{x}_{t-1}\)</span> and therefore Gaussian.  Collecting the
+quadratic coefficient gives the precision</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{\tilde\beta_t}
+  = \frac{\alpha_t}{1-\alpha_t} + \frac{1}{1-\bar\alpha_{t-1}}
+  = \frac{\alpha_t(1-\bar\alpha_{t-1})+(1-\alpha_t)}
+         {(1-\alpha_t)(1-\bar\alpha_{t-1})}
+  = \frac{1-\bar\alpha_t}{(1-\alpha_t)(1-\bar\alpha_{t-1})},
+\]</div>
+<p>using the same identity as in Proposition 16.1, and inverting
+gives <span class="math notranslate nohighlight">\(\tilde\beta_t\)</span>.  Collecting the linear coefficient gives
+<span class="math notranslate nohighlight">\(\tilde{\bm{\mu}}_t/\tilde\beta_t
+=\sqrt{\alpha_t}\bm{x}_t/(1-\alpha_t)
++\sqrt{\bar\alpha_{t-1}}\bm{x}_0/(1-\bar\alpha_{t-1})\)</span>, and multiplying
+through by <span class="math notranslate nohighlight">\(\tilde\beta_t\)</span> gives Eq. (16.5).</p>
+</div>
+<p>This is a formula worth checking rather than trusting, and with one-dimensional
+data we can compute the posterior by quadrature and compare:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">2.</span> <span class="n">the</span> <span class="n">forward</span> <span class="n">posterior</span> <span class="n">vs</span> <span class="n">Bayes</span> <span class="n">by</span> <span class="n">quadrature</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">D</span><span class="p">)</span> <span class="o">===</span>
+    <span class="n">t</span>     <span class="n">quadrature</span> <span class="n">mean</span> <span class="o">/</span> <span class="n">var</span>        <span class="n">closed</span> <span class="n">form</span> <span class="n">mean</span> <span class="o">/</span> <span class="n">var</span>
+     <span class="mi">5</span>      <span class="mf">1.128590</span> <span class="o">/</span> <span class="mf">4.287e-04</span>        <span class="mf">1.128590</span> <span class="o">/</span> <span class="mf">4.287e-04</span>
+    <span class="mi">50</span>      <span class="mf">0.930699</span> <span class="o">/</span> <span class="mf">4.916e-03</span>        <span class="mf">0.930699</span> <span class="o">/</span> <span class="mf">4.916e-03</span>
+   <span class="mi">150</span>      <span class="mf">0.908095</span> <span class="o">/</span> <span class="mf">1.499e-02</span>        <span class="mf">0.908095</span> <span class="o">/</span> <span class="mf">1.499e-02</span>
+   <span class="mi">199</span>      <span class="mf">0.902574</span> <span class="o">/</span> <span class="mf">1.994e-02</span>        <span class="mf">0.902574</span> <span class="o">/</span> <span class="mf">1.994e-02</span>
+</pre></div>
+</div>
+<p>Agreement to six decimal places in both mean and variance, at every noise level.</p>
+</section>
+</section>
+<section id="the-objective">
+<h2><span class="section-number">16.2. </span>The objective<a class="headerlink" href="#the-objective" title="Link to this heading">#</a></h2>
+<p>The ELBO of Theorem 15.1 applies unchanged, and substituting the
+Markov structure decomposes it into <span class="math notranslate nohighlight">\(T\)</span> terms:</p>
+<div class="math notranslate nohighlight">
+\[
+\log p(\bm{x}_0) \;\ge\;
+  \underbrace{\mathbb{E}_{q}\!\left[\log p_{\bm{\theta}}(\bm{x}_0\mid\bm{x}_1)\right]}
+    _{\mathcal{L}_0}
+  - \sum_{t=2}^{T}\underbrace{\mathbb{E}_{q}\!\left[\mathrm{KL}\!\left(
+      q(\bm{x}_{t-1}\mid\bm{x}_t,\bm{x}_0)\,\|\,
+      p_{\bm{\theta}}(\bm{x}_{t-1}\mid\bm{x}_t)\right)\right]}_{\mathcal{L}_{t-1}}
+  - \underbrace{\mathrm{KL}\!\left(q(\bm{x}_T\mid\bm{x}_0)\,\|\,p(\bm{x}_T)\right)}
+    _{\mathcal{L}_T} .\tag{16.6}
+\]</div>
+<p>The last term contains no parameters – restriction (3) makes it approximately
+zero by construction – and each <span class="math notranslate nohighlight">\(\mathcal{L}_{t-1}\)</span> is a KL between two
+Gaussians, the first of which Theorem 16.2 gives exactly.
+Choosing the learned reverse to be Gaussian with the same variance,
+<span class="math notranslate nohighlight">\(p_{\bm{\theta}}(\bm{x}_{t-1}\mid\bm{x}_t)
+=\mathcal{N}(\bm{\mu}_{\bm{\theta}}(\bm{x}_t,t),\tilde\beta_t\bm{I})\)</span>, the KL
+collapses to a squared distance between the means,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}_{t-1}
+   = \frac{1}{2\tilde\beta_t}\,
+     \mathbb{E}\!\left[\left\|\tilde{\bm{\mu}}_t(\bm{x}_t,\bm{x}_0)
+       - \bm{\mu}_{\bm{\theta}}(\bm{x}_t,t)\right\|^{2}\right].\tag{16.7}
+\]</div>
+<section id="predicting-the-noise">
+<h3><span class="section-number">16.2.1. </span>Predicting the noise<a class="headerlink" href="#predicting-the-noise" title="Link to this heading">#</a></h3>
+<p>Now comes the step that makes diffusion models practical.  Inverting
+Eq. (16.2) for <span class="math notranslate nohighlight">\(\bm{x}_0\)</span> and substituting into
+Eq. (16.5) re-expresses the target mean in terms of the
+noise.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 16.3 (Noise parameterisation)</p>
+<p>With <span class="math notranslate nohighlight">\(\bm{x}_0 = (\bm{x}_t-\sqrt{1-\bar\alpha_t}\,\bm{\epsilon})/\sqrt{\bar\alpha_t}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\bm{\mu}}_t
+   = \frac{1}{\sqrt{\alpha_t}}\!\left(\bm{x}_t
+     - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,\bm{\epsilon}\right).\tag{16.8}
+\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Substituting and using <span class="math notranslate nohighlight">\(\sqrt{\bar\alpha_{t-1}/\bar\alpha_t}=1/\sqrt{\alpha_t}\)</span>,
+the coefficient of <span class="math notranslate nohighlight">\(\bm{x}_t\)</span> becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\sqrt{\alpha_t}(1-\bar\alpha_{t-1})}{1-\bar\alpha_t}
+  + \frac{\beta_t}{\sqrt{\alpha_t}(1-\bar\alpha_t)}
+  = \frac{\alpha_t(1-\bar\alpha_{t-1})+\beta_t}{\sqrt{\alpha_t}(1-\bar\alpha_t)}
+  = \frac{1-\bar\alpha_t}{\sqrt{\alpha_t}(1-\bar\alpha_t)}
+  = \frac{1}{\sqrt{\alpha_t}},
+\]</div>
+<p>using <span class="math notranslate nohighlight">\(\alpha_t+\beta_t=1\)</span> and <span class="math notranslate nohighlight">\(\alpha_t\bar\alpha_{t-1}=\bar\alpha_t\)</span>; the
+coefficient of <span class="math notranslate nohighlight">\(\bm{\epsilon}\)</span> is
+<span class="math notranslate nohighlight">\(-\beta_t\sqrt{1-\bar\alpha_t}/[\sqrt{\alpha_t}(1-\bar\alpha_t)]
+=-\beta_t/[\sqrt{\alpha_t}\sqrt{1-\bar\alpha_t}]\)</span>.</p>
+</div>
+<p>So if a network <span class="math notranslate nohighlight">\(\bm{\epsilon}_{\bm{\theta}}(\bm{x}_t,t)\)</span> predicts the noise,
+setting <span class="math notranslate nohighlight">\(\bm{\mu}_{\bm{\theta}}\)</span> to Eq. (16.8) with
+<span class="math notranslate nohighlight">\(\bm{\epsilon}_{\bm{\theta}}\)</span> in place of <span class="math notranslate nohighlight">\(\bm{\epsilon}\)</span> turns
+Eq. (16.7) into a weighted squared error in the noise.  Ho
+<em>et al.</em> observed that <em>dropping</em> the weight improves samples, giving
+the objective actually used:</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \mathcal{L}_{\mathrm{simple}}
+   = \mathbb{E}_{t\sim\mathrm{U}[1,T],\,\bm{x}_0,\,\bm{\epsilon}}
+     \left\|\bm{\epsilon} - \bm{\epsilon}_{\bm{\theta}}\!\left(
+       \sqrt{\bar\alpha_t}\bm{x}_0+\sqrt{1-\bar\alpha_t}\bm{\epsilon},\;t\right)
+     \right\|^{2}. \;}\tag{16.9}
+\]</div>
+<p>It is worth pausing on how ordinary this is.  After all the variational
+machinery, the training loop is: take a data point, pick a random noise level,
+add that much noise, and regress on the noise you added.  It is a squared-error
+regression of exactly the kind Chapter 3 began with.</p>
+<div class="tip admonition">
+<p class="admonition-title">Three equivalent targets</p>
+<p>Because <span class="math notranslate nohighlight">\(\bm{x}_t\)</span>, <span class="math notranslate nohighlight">\(\bm{x}_0\)</span> and
+<span class="math notranslate nohighlight">\(\bm{\epsilon}\)</span> are related by the single linear
+equation (16.2), predicting any one determines the others:</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\bm{x}}_0
+  = \frac{\bm{x}_t-\sqrt{1-\bar\alpha_t}\,\bm{\epsilon}_{\bm{\theta}}}
+         {\sqrt{\bar\alpha_t}},
+  \qquad
+  \bm{v} = \sqrt{\bar\alpha_t}\,\bm{\epsilon}-\sqrt{1-\bar\alpha_t}\,\bm{x}_0 .
+\]</div>
+<p>Predicting <span class="math notranslate nohighlight">\(\bm{\epsilon}\)</span> is the DDPM default; predicting <span class="math notranslate nohighlight">\(\bm{x}_0\)</span> allows an
+explicit prior on images but tends to over-smooth; predicting the “velocity”
+<span class="math notranslate nohighlight">\(\bm{v}\)</span> is numerically better near <span class="math notranslate nohighlight">\(t=0\)</span> where <span class="math notranslate nohighlight">\(\bar\alpha_t\to1\)</span> and the
+<span class="math notranslate nohighlight">\(\bm{\epsilon}\)</span> parameterisation divides by something small.  All three give the
+same KL when substituted back; they differ only in conditioning.</p>
+</div>
+</section>
+<section id="the-same-thing-as-score-matching">
+<h3><span class="section-number">16.2.2. </span>The same thing as score matching<a class="headerlink" href="#the-same-thing-as-score-matching" title="Link to this heading">#</a></h3>
+<p>There is a second reading of Eq. (16.9) that connects it to a
+literature developed independently.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 16.4 (Noise prediction is score estimation)</p>
+<p>For the forward marginal (16.2),</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_{\bm{x}_t}\log q(\bm{x}_t\mid\bm{x}_0)
+   = -\frac{\bm{x}_t-\sqrt{\bar\alpha_t}\bm{x}_0}{1-\bar\alpha_t}
+   = -\frac{\bm{\epsilon}}{\sqrt{1-\bar\alpha_t}} .\tag{16.10}
+\]</div>
+<p>Hence a network trained by Eq. (16.9) implicitly estimates the
+score of the noisy data distribution at every noise level, via
+<span class="math notranslate nohighlight">\(\bm{s}_{\bm{\theta}}(\bm{x}_t,t)
+=-\bm{\epsilon}_{\bm{\theta}}(\bm{x}_t,t)/\sqrt{1-\bar\alpha_t}\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>The log-density of Eq. (16.2) is
+<span class="math notranslate nohighlight">\(-\|\bm{x}_t-\sqrt{\bar\alpha_t}\bm{x}_0\|^{2}/[2(1-\bar\alpha_t)]\)</span> plus a
+constant; differentiating gives the first equality, and the second is
+Eq. (16.2) rearranged.  The denoising score matching identity of
+Vincent, <span class="math notranslate nohighlight">\(\nabla\log q(\bm{x}_t)
+=\mathbb{E}_{q(\bm{x}_0\mid\bm{x}_t)}[\nabla\log q(\bm{x}_t\mid\bm{x}_0)]\)</span>,
+then transfers the statement from the conditional to the marginal.</p>
+</div>
+<p>We check Eq. (16.10) by automatic differentiation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">3.</span> <span class="n">the</span> <span class="n">score</span> <span class="n">of</span> <span class="n">the</span> <span class="n">forward</span> <span class="n">marginal</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">negative</span> <span class="n">noise</span> <span class="o">===</span>
+     <span class="n">t</span>     <span class="o">-</span><span class="n">eps</span><span class="o">/</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">abar_t</span><span class="p">)</span>      <span class="n">d</span><span class="o">/</span><span class="n">dx_t</span> <span class="n">log</span> <span class="n">q</span><span class="p">(</span><span class="n">x_t</span><span class="o">|</span><span class="n">x_0</span><span class="p">)</span>   <span class="o">|</span><span class="n">diff</span><span class="o">|</span>
+    <span class="mi">10</span>        <span class="o">-</span><span class="mf">7.76607851</span>             <span class="o">-</span><span class="mf">7.76607851</span>   <span class="mf">1.24e-14</span>
+    <span class="mi">80</span>        <span class="o">-</span><span class="mf">1.18377136</span>             <span class="o">-</span><span class="mf">1.18377136</span>   <span class="mf">4.44e-16</span>
+   <span class="mi">199</span>        <span class="o">-</span><span class="mf">0.67627979</span>             <span class="o">-</span><span class="mf">0.67627979</span>   <span class="mf">1.11e-16</span>
+</pre></div>
+</div>
+<p>Recall Eq. (12.18): the denoising autoencoder of
+Chapter 12 was <em>already</em> estimating a score, and we noted then
+that it anticipated diffusion models.  This is where that remark is cashed in.
+A diffusion model is a denoising autoencoder trained at all noise levels at once,
+with a sampling procedure attached.</p>
+<p><strong>The continuous limit.</strong>
+Taking <span class="math notranslate nohighlight">\(T\to\infty\)</span> with <span class="math notranslate nohighlight">\(\beta_t\to\beta(t)\,\mathrm{d}t\)</span>, the forward chain
+becomes a stochastic differential equation,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{d}\bm{x} = -\tfrac{1}{2}\beta(t)\,\bm{x}\,\mathrm{d}t
+    + \sqrt{\beta(t)}\,\mathrm{d}\bm{W}_t,\tag{16.11}
+\]</div>
+<p>an Ornstein-Uhlenbeck process.  Anderson’s theorem gives the time reversal,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{d}\bm{x} = \left[-\tfrac{1}{2}\beta(t)\bm{x}
+    - \beta(t)\nabla_{\bm{x}}\log p_t(\bm{x})\right]\mathrm{d}t
+    + \sqrt{\beta(t)}\,\mathrm{d}\bar{\bm{W}}_t,\tag{16.12}
+\]</div>
+<p>which requires exactly the score that Proposition 16.4 says the
+network has learned.  The physics reading is immediate: Eq. (16.11)
+is the Langevin equation of Chapter 14 in a harmonic trap, and
+Eq. (16.12) is that process run backwards with the drift
+corrected by the force <span class="math notranslate nohighlight">\(-\nabla\log p_t\)</span>.</p>
+</section>
+</section>
+<section id="sampling">
+<h2><span class="section-number">16.3. </span>Sampling<a class="headerlink" href="#sampling" title="Link to this heading">#</a></h2>
+<p>Generation runs the reverse chain from noise.  Ancestral, or DDPM, sampling
+takes <span class="math notranslate nohighlight">\(\bm{x}_T\sim\mathcal{N}(\bm{0},\bm{I})\)</span> and iterates</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x}_{t-1} = \frac{1}{\sqrt{\alpha_t}}\!\left(\bm{x}_t
+    - \frac{\beta_t}{\sqrt{1-\bar\alpha_t}}\,
+      \bm{\epsilon}_{\bm{\theta}}(\bm{x}_t,t)\right)
+    + \sqrt{\tilde\beta_t}\,\bm{z},
+  \qquad \bm{z}\sim\mathcal{N}(\bm{0},\bm{I}),\tag{16.13}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\bm{z}=\bm{0}\)</span> at the last step.  This costs <span class="math notranslate nohighlight">\(T\)</span> network evaluations,
+which at <span class="math notranslate nohighlight">\(T=1000\)</span> is the reason diffusion models are slow.</p>
+<p><em>Denoising diffusion implicit models</em> reduce that.  The key observation is
+that the training objective (16.9) depends only on the marginals
+<span class="math notranslate nohighlight">\(q(\bm{x}_t\mid\bm{x}_0)\)</span>, not on the joint, so any process with the same
+marginals is compatible with the same trained network.  Choosing a
+non-Markovian one gives</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x}_{t-1} = \sqrt{\bar\alpha_{t-1}}\,\hat{\bm{x}}_0
+    + \sqrt{1-\bar\alpha_{t-1}-\sigma_t^{2}}\,
+      \bm{\epsilon}_{\bm{\theta}}(\bm{x}_t,t)
+    + \sigma_t\bm{z},\tag{16.14}
+\]</div>
+<p>which at <span class="math notranslate nohighlight">\(\sigma_t=0\)</span> is entirely deterministic and may be run on any
+<em>subsequence</em> of steps.  We measure what that is worth on a
+two-dimensional target, using the energy distance between samples and data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">sampler</span>          <span class="n">network</span> <span class="n">calls</span>   <span class="n">energy</span> <span class="n">distance</span> <span class="n">to</span> <span class="n">the</span> <span class="n">data</span>
+  <span class="n">DDPM</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">200</span>                <span class="mi">200</span>   <span class="mf">0.00715</span>
+  <span class="n">DDIM</span><span class="p">,</span>  <span class="mi">50</span> <span class="n">steps</span>             <span class="mi">50</span>   <span class="mf">0.01153</span>
+  <span class="n">DDIM</span><span class="p">,</span>  <span class="mi">20</span> <span class="n">steps</span>             <span class="mi">20</span>   <span class="mf">0.01096</span>
+  <span class="n">DDIM</span><span class="p">,</span>  <span class="mi">10</span> <span class="n">steps</span>             <span class="mi">10</span>   <span class="mf">0.01504</span>
+</pre></div>
+</div>
+<p>Twenty steps instead of two hundred – a tenfold saving – costs a factor of
+about <span class="math notranslate nohighlight">\(1.5\)</span> in this statistic, and even ten steps remain usable.
+Figure 16.1(a) shows that the DDIM samples at twenty steps are
+visually indistinguishable from the DDPM samples at two hundred.</p>
+<p><img alt="a Two-dimensional data with samples from the trained model DDPM with T" src="_images/diffusion.png" /></p>
+<p><em>Figure 16.1: (a) Two-dimensional data with samples from the trained model: DDPM with <span class="math notranslate nohighlight">\(T=200\)</span> ancestral steps and DDIM with <span class="math notranslate nohighlight">\(20\)</span>.  (b) Energy distance against the number of network evaluations; the tenfold reduction from <span class="math notranslate nohighlight">\(200\)</span> to <span class="math notranslate nohighlight">\(20\)</span> steps costs about <span class="math notranslate nohighlight">\(50\%\)</span> in this statistic.  (c) The signal-to-noise ratio (16.3) for the linear and cosine schedules.  The linear schedule destroys the remaining signal abruptly at the end, which is what the cosine schedule was introduced to avoid.</em></p>
+<p>The implementation is short, because the forward process needs no network:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">q_sample</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">abar</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;x_t = sqrt(abar_t) x_0 + sqrt(1-abar_t) eps,  Eq. (16.marginal).&quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">abar</span><span class="p">[</span><span class="n">t</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">eps</span>
+
+
+<span class="k">def</span> <span class="nf">loss</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">abar</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;L_simple, Eq. (16.simple): predict the noise from the noisy sample.&quot;&quot;&quot;</span>
+    <span class="n">xt</span> <span class="o">=</span> <span class="n">q_sample</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">abar</span><span class="p">,</span> <span class="n">eps</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">eps</span> <span class="o">-</span> <span class="n">eps_net</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">xt</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="normalizing-flows">
+<h2><span class="section-number">16.4. </span>Normalizing flows<a class="headerlink" href="#normalizing-flows" title="Link to this heading">#</a></h2>
+<p>Diffusion models, like VAEs, optimise a bound.  Normalizing flows refuse that
+compromise: they construct a model whose likelihood is <em>exact</em>.  The price
+is paid in architecture.</p>
+<p>The idea is one theorem from multivariable calculus.  Let <span class="math notranslate nohighlight">\(\bm{z}\sim p_0\)</span> be a
+simple base distribution – a standard normal – and let <span class="math notranslate nohighlight">\(\bm{x}=f(\bm{z})\)</span> with
+<span class="math notranslate nohighlight">\(f\)</span> invertible and differentiable.  Then the density transforms by the Jacobian:</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 16.5 (Change of variables)</p>
+<p>If <span class="math notranslate nohighlight">\(f:\mathbb{R}^{d}\to\mathbb{R}^{d}\)</span> is a diffeomorphism and
+<span class="math notranslate nohighlight">\(\bm{x}=f(\bm{z})\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \log p(\bm{x}) = \log p_0\!\left(f^{-1}(\bm{x})\right)
+    + \log\left|\det\frac{\partial f^{-1}}{\partial\bm{x}}\right|
+  = \log p_0(\bm{z})
+    - \log\left|\det\frac{\partial f}{\partial\bm{z}}\right| . \;}\tag{16.15}
+\]</div>
+</div>
+<p>Composing <span class="math notranslate nohighlight">\(K\)</span> such maps, <span class="math notranslate nohighlight">\(f=f_K\circ\cdots\circ f_1\)</span>, the log-determinants add:</p>
+<div class="math notranslate nohighlight">
+\[
+\log p(\bm{x}) = \log p_0(\bm{z})
+    - \sum_{k=1}^{K}\log\left|\det
+      \frac{\partial f_k}{\partial\bm{h}_{k-1}}\right| .\tag{16.16}
+\]</div>
+<p>Each layer transports probability mass; the total transformation is the
+composition, and the accounting is exact at every step.</p>
+<p>The difficulty is visible in Eq. (16.16).  A general <span class="math notranslate nohighlight">\(d\times d\)</span>
+Jacobian determinant costs <span class="math notranslate nohighlight">\(\bigO(d^{3})\)</span>, which is hopeless for images.  Every
+flow architecture is a way of making that determinant cheap.</p>
+<p><strong>Coupling layers.</strong>
+The construction of RealNVP splits the coordinates in two, passes one half
+through unchanged, and uses it to compute an affine transformation of the other:</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x}_1 = \bm{z}_1,
+  \qquad
+  \bm{x}_2 = \bm{z}_2\odot e^{\bm{s}(\bm{z}_1)} + \bm{t}(\bm{z}_1).\tag{16.17}
+\]</div>
+<p>The Jacobian is block triangular, so its determinant is the product of the
+diagonal, and</p>
+<div class="math notranslate nohighlight">
+\[
+\log\left|\det\bm{J}\right| = \sum_j s_j(\bm{z}_1),\tag{16.18}
+\]</div>
+<p>computable in <span class="math notranslate nohighlight">\(\bigO(d)\)</span> regardless of how complicated the networks <span class="math notranslate nohighlight">\(\bm{s}\)</span> and
+<span class="math notranslate nohighlight">\(\bm{t}\)</span> are.  Alternating which half is transformed lets every coordinate be
+affected.  Autoregressive flows use the same triangular trick with
+<span class="math notranslate nohighlight">\(x_i=f_i(z_i;x_1,\dots,x_{i-1})\)</span>, and <em>continuous</em> normalizing flows
+replace the discrete composition by an ordinary differential equation
+<span class="math notranslate nohighlight">\(\mathrm{d}\bm{x}/\mathrm{d}t=\bm{v}(\bm{x},t)\)</span>, for which the instantaneous
+change of variables gives</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\mathrm{d}\log p(\bm{x}(t))}{\mathrm{d}t}
+   = -\operatorname{Tr}\!\left(\frac{\partial\bm{v}}{\partial\bm{x}}\right),\tag{16.19}
+\]</div>
+<p>a trace rather than a determinant, and cheaper still.</p>
+<section id="verifying-exactness">
+<h3><span class="section-number">16.4.1. </span>Verifying exactness<a class="headerlink" href="#verifying-exactness" title="Link to this heading">#</a></h3>
+<p>The selling point of flows is that the likelihood is exact, so it is exactly
+what should be checked.  Three tests, each of which a VAE or a diffusion model
+would fail by construction:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">1.</span> <span class="n">the</span> <span class="n">analytic</span> <span class="n">log</span><span class="o">-</span><span class="n">det</span> <span class="n">vs</span> <span class="n">the</span> <span class="n">numerical</span> <span class="n">Jacobian</span> <span class="n">determinant</span> <span class="o">===</span>
+  <span class="n">sample</span> <span class="mi">0</span><span class="p">:</span> <span class="n">analytic</span> <span class="mf">0.0269231819</span>   <span class="n">numerical</span> <span class="mf">0.0269231819</span>   <span class="n">diff</span> <span class="mf">5.52e-16</span>
+  <span class="n">sample</span> <span class="mi">1</span><span class="p">:</span> <span class="n">analytic</span> <span class="o">-</span><span class="mf">0.0850673946</span>  <span class="n">numerical</span> <span class="o">-</span><span class="mf">0.0850673946</span>  <span class="n">diff</span> <span class="mf">8.33e-17</span>
+  <span class="n">sample</span> <span class="mi">2</span><span class="p">:</span> <span class="n">analytic</span> <span class="o">-</span><span class="mf">0.0407256759</span>  <span class="n">numerical</span> <span class="o">-</span><span class="mf">0.0407256759</span>  <span class="n">diff</span> <span class="mf">1.18e-16</span>
+
+<span class="o">===</span> <span class="mf">2.</span> <span class="n">the</span> <span class="n">flow</span> <span class="ow">is</span> <span class="n">exactly</span> <span class="n">invertible</span> <span class="o">===</span>
+  <span class="nb">max</span><span class="o">|</span><span class="n">f</span><span class="o">^-</span><span class="mi">1</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">z</span><span class="p">))</span> <span class="o">-</span> <span class="n">z</span><span class="o">|</span> <span class="o">=</span> <span class="mf">2.22e-16</span>
+
+<span class="o">===</span> <span class="mf">3.</span> <span class="n">the</span> <span class="n">density</span> <span class="n">integrates</span> <span class="n">to</span> <span class="n">one</span> <span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="n">D</span><span class="p">,</span> <span class="n">quadrature</span><span class="p">)</span> <span class="o">===</span>
+  <span class="n">integral</span> <span class="n">of</span> <span class="n">p</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">dx</span> <span class="o">=</span> <span class="mf">1.00000000</span>
+</pre></div>
+</div>
+<p>The third is the one to dwell on.  A flow is a <em>normalised</em> density: no
+partition function, no bound, no Monte Carlo.  Chapter 14
+could not compute <span class="math notranslate nohighlight">\(Z\)</span>; Chapter 15 could only bound the evidence; a
+flow evaluates <span class="math notranslate nohighlight">\(\log p(\bm{x})\)</span> exactly for any <span class="math notranslate nohighlight">\(\bm{x}\)</span>, and here that claim is
+confirmed by numerical integration to eight decimal places.</p>
+<div class="tip admonition">
+<p class="admonition-title">An exact likelihood is not automatically a good model</p>
+<p>Our
+from-scratch RealNVP maximised the likelihood on a two-moons target and reached
+<span class="math notranslate nohighlight">\(5.46\)</span> nats per point – and produced useless samples.  The diagnosis is in the
+decomposition (16.15): the latent codes <span class="math notranslate nohighlight">\(\bm{z}=f^{-1}(\bm{x})\)</span>
+came out with per-coordinate standard deviations of <span class="math notranslate nohighlight">\(0.118\)</span> and <span class="math notranslate nohighlight">\(0.120\)</span> rather
+than one, contributing <span class="math notranslate nohighlight">\(\log p_0(\bm{z})=-1.85\)</span>, while the Jacobian term
+contributed <span class="math notranslate nohighlight">\(+7.31\)</span>.  The model was contracting the data into a small ball near
+the origin, where the Gaussian prior is nearly flat and costs almost nothing,
+and collecting an unbounded reward from the log-determinant.  Sampling
+<span class="math notranslate nohighlight">\(\bm{z}\sim\mathcal{N}(\bm{0},\bm{I})\)</span> then lands far outside the region the
+data occupy.</p>
+<p>This is not a coding error – the three checks above pass to machine precision,
+and the two contributions sum to the reported likelihood.  It is the classical
+observation that the likelihood of a continuous density is unbounded above: the
+same degeneracy that lets a Gaussian mixture achieve infinite likelihood by
+collapsing one component onto a single data point.  Flows on data concentrated
+near a lower-dimensional manifold are especially prone to it.  The standard
+remedies – adding noise to the data, batch normalisation between coupling
+layers, a soft penalty on <span class="math notranslate nohighlight">\(\|\bm{z}\|\)</span>, or simply a smaller learning rate with
+many more steps – are the subject of an exercise.  We report the failure rather
+than tuning until it disappears, because knowing <em>which</em> term of
+Eq. (16.15) is being exploited is worth more than a working
+demonstration.</p>
+</div>
+</section>
+</section>
+<section id="comparison">
+<h2><span class="section-number">16.5. </span>Comparison<a class="headerlink" href="#comparison" title="Link to this heading">#</a></h2>
+<p>Five generative models have now appeared and they differ in one respect above
+all: what they are willing to give up in order to make the likelihood
+computable.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>\noalign{} Model</p></th>
+<th class="head"><p>Latent space</p></th>
+<th class="head"><p>Likelihood</p></th>
+<th class="head"><p>Sampling cost</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>\noalign{}\noalign{} RBM (Ch. 14)</p></td>
+<td><p>fixed <span class="math notranslate nohighlight">\(d_h\)</span>, discrete</p></td>
+<td><p>unnormalised, <span class="math notranslate nohighlight">\(Z\)</span> unknown</p></td>
+<td><p>Markov chain</p></td>
+</tr>
+<tr class="row-odd"><td><p>VAE (Ch. 15)</p></td>
+<td><p>fixed <span class="math notranslate nohighlight">\(d_h &lt; d\)</span></p></td>
+<td><p>lower bound (ELBO)</p></td>
+<td><p>one pass</p></td>
+</tr>
+<tr class="row-even"><td><p>Normalizing flow</p></td>
+<td><p>same dimension <span class="math notranslate nohighlight">\(d\)</span></p></td>
+<td><p><strong>exact</strong></p></td>
+<td><p>one pass</p></td>
+</tr>
+<tr class="row-odd"><td><p>Diffusion</p></td>
+<td><p>same dimension <span class="math notranslate nohighlight">\(d\)</span></p></td>
+<td><p>lower bound (ELBO)</p></td>
+<td><p><span class="math notranslate nohighlight">\(T\)</span> passes</p></td>
+</tr>
+<tr class="row-even"><td><p>\noalign{}</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 16.1: The generative models of Chapters 14 to
+16.  “Exact likelihood” means <span class="math notranslate nohighlight">\(\log p(\bm{x})\)</span> can be
+evaluated for a given <span class="math notranslate nohighlight">\(\bm{x}\)</span> without approximation.</em></p>
+<p>The trade is visible along the rows.  The RBM has the most flexible energy
+function and the worst inference: no normalised likelihood and a Markov chain
+for every sample.  The VAE gives up exactness for a bound and buys single-pass
+sampling and a compressed, interpretable latent space.  The flow gives up
+architectural freedom – invertibility, equal dimension, cheap Jacobians – and
+buys an exact likelihood.  Diffusion gives up sampling speed and buys the best
+sample quality of the four, because it never has to squeeze the data through a
+bottleneck and its objective is a sequence of easy regressions rather than one
+hard one.</p>
+<p><strong>The connection.</strong>
+Flows and diffusion are not as different as the table suggests.  A continuous
+normalizing flow, Eq. (16.19), transports <span class="math notranslate nohighlight">\(p_0\)</span> to <span class="math notranslate nohighlight">\(p_{\mathrm{data}}\)</span>
+along a deterministic velocity field.  The <em>probability flow ODE</em> of a
+diffusion model,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\mathrm{d}\bm{x}}{\mathrm{d}t}
+   = -\tfrac{1}{2}\beta(t)\!\left[\bm{x}
+     + \nabla_{\bm{x}}\log p_t(\bm{x})\right],\tag{16.20}
+\]</div>
+<p>has by construction the same time-marginals as the SDE (16.11) and is
+exactly such a field.  So a trained diffusion model <em>is</em> a continuous
+normalizing flow whose velocity is built from the score, and one may therefore
+compute exact likelihoods from a diffusion model by integrating
+Eq. (16.19) along Eq. (16.20).  The difference is how
+the field is obtained: a flow learns it by maximum likelihood through a
+constrained architecture, a diffusion model learns it by score matching with no
+architectural constraint at all.</p>
+<div class="tip admonition">
+<p class="admonition-title">The physics reading</p>
+<p>Equation (16.11) is an
+Ornstein-Uhlenbeck process, the Langevin dynamics of a particle in a harmonic
+trap; the forward process is relaxation to equilibrium and the reverse process
+is that relaxation run backwards, which is possible only because we have learned
+<span class="math notranslate nohighlight">\(\nabla\log p_t\)</span>, the thermodynamic force.  The forward process increases entropy
+monotonically until the distribution is the maximum-entropy Gaussian; generation
+is the controlled reversal of that increase, and the network stores exactly the
+information needed to pay for it.  Optimal transport gives a third reading:
+Eq. (16.20) moves mass along a particular path between <span class="math notranslate nohighlight">\(p_0\)</span> and
+<span class="math notranslate nohighlight">\(p_{\mathrm{data}}\)</span>, and asking for the <em>cheapest</em> such path is the
+Benamou-Brenier formulation of the Wasserstein distance, which is what
+flow-matching methods optimise directly.</p>
+</div>
+<p><strong>Latent diffusion.</strong>
+The two constructions combine.  Run a VAE first to compress images into a
+lower-dimensional latent space, then run diffusion <em>in that space</em> rather
+than in pixel space.  The autoencoder handles the high-frequency detail that
+makes pixel diffusion expensive; the diffusion model handles the structure the
+autoencoder would blur.  This is how large-scale image generators are built, and
+it is a good illustration of a theme running through this book: the
+architectures are components, and the interesting systems are compositions.</p>
+</section>
+<section id="summary-and-the-programs">
+<h2><span class="section-number">16.6. </span>Summary and the programs<a class="headerlink" href="#summary-and-the-programs" title="Link to this heading">#</a></h2>
+<p>A diffusion model is a hierarchical VAE with the encoder frozen, the bottleneck
+removed and the prior matched by construction.  What remains is a single
+network trained by Eq. (16.9) – add noise, predict the noise –
+which after all the variational derivation is a squared-error regression.</p>
+<p>Two closed forms make it work, and we verified both rather than quoting them.
+Proposition 16.1 collapses the chain so any noise level is one
+step away, confirmed against step-by-step simulation.
+Theorem 16.2 gives the reverse target exactly when conditioned
+on <span class="math notranslate nohighlight">\(\bm{x}_0\)</span>, confirmed against Bayes-by-quadrature to six decimals at every
+noise level.  Proposition 16.4 identifies the trained network as
+a score estimator, confirmed to <span class="math notranslate nohighlight">\(10^{-14}\)</span>, which connects diffusion to the
+denoising autoencoder of Chapter 12 and to the Langevin dynamics of
+Chapter 14.</p>
+<p>Sampling is the expensive part, and DDIM makes it cheap: twenty steps rather
+than two hundred cost about <span class="math notranslate nohighlight">\(50\%\)</span> in energy distance and are visually
+indistinguishable.</p>
+<p>Normalizing flows make the opposite trade.  Theorem 16.5 gives
+an exact likelihood, and our implementation confirmed all three consequences to
+machine precision – analytic log-determinant, exact invertibility, and a density
+integrating to <span class="math notranslate nohighlight">\(1.00000000\)</span>.  But exactness is not sufficiency: our flow reached
+<span class="math notranslate nohighlight">\(5.46\)</span> nats while producing useless samples, by contracting the data into a ball
+where the prior is flat (<span class="math notranslate nohighlight">\(\log p_0=-1.85\)</span>) and harvesting the Jacobian term
+(<span class="math notranslate nohighlight">\(+7.31\)</span>).  The likelihood of a continuous density is unbounded above, and a
+flow will find that out if allowed to.</p>
+<p>The programs are in the directory</p>
+<p><code class="docutils literal notranslate"><span class="pre">doc/BookML/BookPrograms/chapter16_diffusion</span></code>.</p>
+<p>Every listing above appears there as a numbered file, and four modules run start
+to finish and reproduce the numbers quoted in the text:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">diffusion.py</span></code> – the schedules, the closed-form
+marginal (16.2), the forward
+posterior (16.4), the noise-prediction network,
+<span class="math notranslate nohighlight">\(\mathcal{L}_{\mathrm{simple}}\)</span>, and DDPM and DDIM sampling.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">flows.py</span></code> – coupling layers, the exact log-determinant, the
+forward and inverse maps and the exact log-likelihood.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verify_diffusion.py</span></code> – the three diffusion checks and the
+three flow checks of Sections <em>The forward process</em>, <em>The forward posterior</em>,
+<em>The same thing as score matching</em> and <em>Verifying exactness</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_compare.py</span></code> – the sampler comparison of
+Section <em>Sampling</em> and the flow diagnosis of the notebox.</p></li>
+</ul>
+<p>The figure is generated by <code class="docutils literal notranslate"><span class="pre">ch16_figures.py</span></code> in
+<code class="docutils literal notranslate"><span class="pre">doc/BookML/BookFigures</span></code>; it is not drawn by hand.</p>
+</section>
+<section id="exercises">
+<h2><span class="section-number">16.7. </span>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<section id="warm-up-exercises">
+<h3><span class="section-number">16.7.1. </span>Warm-up exercises<a class="headerlink" href="#warm-up-exercises" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>The forward marginal.</strong>
+(a) Prove Proposition 16.1 by induction, stating where
+independence is used.
+(b) Show that <span class="math notranslate nohighlight">\(\bar\alpha_t\to0\)</span> requires <span class="math notranslate nohighlight">\(\sum_t\beta_t\to\infty\)</span>, and
+compute <span class="math notranslate nohighlight">\(\bar\alpha_T\)</span> for the linear schedule with <span class="math notranslate nohighlight">\(T=1000\)</span>.
+(c) What goes wrong if the <span class="math notranslate nohighlight">\(\sqrt{\alpha_t}\)</span> in
+Eq. (16.1) is omitted?</p></li>
+<li><p><strong>The posterior.</strong>
+Complete the square in Theorem 16.2 yourself.  Then check
+the two limits: what are <span class="math notranslate nohighlight">\(\tilde{\bm{\mu}}_t\)</span> and <span class="math notranslate nohighlight">\(\tilde\beta_t\)</span> when
+<span class="math notranslate nohighlight">\(\beta_t\to0\)</span>, and when <span class="math notranslate nohighlight">\(t=1\)</span>?</p></li>
+<li><p><strong>Noise parameterisation.</strong>
+Verify Proposition 16.3 algebraically.  Then derive the
+corresponding expression for the <span class="math notranslate nohighlight">\(\bm{x}_0\)</span> and <span class="math notranslate nohighlight">\(\bm{v}\)</span> parameterisations of
+the notebox, and show all three give the same <span class="math notranslate nohighlight">\(\tilde{\bm{\mu}}_t\)</span>.</p></li>
+<li><p><strong>Schedules.</strong>
+Plot <span class="math notranslate nohighlight">\(\bar\alpha_t\)</span>, <span class="math notranslate nohighlight">\(1-\bar\alpha_t\)</span> and <span class="math notranslate nohighlight">\(\mathrm{SNR}(t)\)</span> for the linear and
+cosine schedules.  At what <span class="math notranslate nohighlight">\(t\)</span> does each fall to <span class="math notranslate nohighlight">\(\mathrm{SNR}=1\)</span>, and what
+does the cosine schedule fix?</p></li>
+<li><p><strong>Change of variables.</strong>
+(a) Prove Theorem 16.5 in one dimension from the definition
+of a density.
+(b) For the coupling layer (16.17), write the Jacobian as a
+block matrix and confirm Eq. (16.18).
+(c) Why must <span class="math notranslate nohighlight">\(\bm{s}\)</span> and <span class="math notranslate nohighlight">\(\bm{t}\)</span> depend on <span class="math notranslate nohighlight">\(\bm{z}_1\)</span> only?</p></li>
+<li><p><strong>Counting.</strong>
+A diffusion model with <span class="math notranslate nohighlight">\(T=1000\)</span> and a flow with <span class="math notranslate nohighlight">\(K=32\)</span> coupling layers both
+generate one image.  How many network evaluations does each need, and how many
+does each need to evaluate <span class="math notranslate nohighlight">\(\log p(\bm{x})\)</span> for a given <span class="math notranslate nohighlight">\(\bm{x}\)</span>?</p></li>
+</ol>
+</section>
+<section id="project-style-exercise-diffusion-and-flows">
+<h3><span class="section-number">16.7.2. </span>Project-style exercise: diffusion and flows<a class="headerlink" href="#project-style-exercise-diffusion-and-flows" title="Link to this heading">#</a></h3>
+<p><strong>Part a: the forward process.</strong>
+Implement both schedules and verify Proposition 16.1 against
+step-by-step simulation and Theorem 16.2 against
+Bayes-by-quadrature, as in Section <em>The forward posterior</em>.  Verify
+Eq. (16.10) by automatic differentiation.</p>
+<p><strong>Part b: training.</strong>
+Train a noise-prediction network on a two-dimensional target.  Compare the
+weighted ELBO objective of Eq. (16.7) against
+<span class="math notranslate nohighlight">\(\mathcal{L}_{\mathrm{simple}}\)</span> and report which gives better samples.  Then
+compare the <span class="math notranslate nohighlight">\(\bm{\epsilon}\)</span>, <span class="math notranslate nohighlight">\(\bm{x}_0\)</span> and <span class="math notranslate nohighlight">\(\bm{v}\)</span> parameterisations.</p>
+<p><strong>Part c: sampling.</strong>
+Reproduce the DDPM-versus-DDIM comparison, extending it to <span class="math notranslate nohighlight">\(\eta&gt;0\)</span> so that DDIM
+interpolates towards DDPM.  Plot sample quality against network evaluations for
+several <span class="math notranslate nohighlight">\(\eta\)</span> and identify where the frontier lies.</p>
+<p><strong>Part d: flows.</strong>
+Implement coupling layers and verify all three exactness properties of
+Section <em>Verifying exactness</em>.  Then reproduce the failure described in the
+notebox, and fix it: try adding noise to the data, batch normalisation between
+layers, a penalty on <span class="math notranslate nohighlight">\(\|\bm{z}\|^{2}\)</span>, and a much smaller learning rate.
+Report which remedy works and, more importantly, explain <em>why</em> in terms of
+the two contributions to Eq. (16.15).</p>
+<p><strong>Part e: exact likelihoods from a diffusion model.</strong>
+Implement the probability flow ODE (16.20) with your trained
+score network and integrate Eq. (16.19) to obtain exact
+log-likelihoods.  Compare against the ELBO on the same data points.  How large
+is the gap, and does it behave like the VAE gaps of
+Section <em>Implementation and verification</em>?</p>
+<p><strong>Part f: a physics application.</strong>
+Train a diffusion model on configurations of the two-dimensional Ising model at
+several temperatures, as in part e of the Chapter 14 project.
+Compare the energy and magnetisation histograms of the generated configurations
+against the true ones, and compare the whole thing against the RBM you trained
+there.  Which model reproduces the critical region better, and at what
+computational cost?</p>
+<p><strong>Part g: the comparison.</strong>
+Take one data set and fit all four models of Table 16.1 at
+matched parameter counts.  Report, for each: training time, sampling time per
+example, sample quality by a two-sample statistic, and whether a likelihood is
+available and how it was obtained.  Then write a paragraph recommending one of
+them for a specific scientific task of your choosing, and defend the choice
+against the other three.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter15.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">15. </span>Chapter 15: Variational Autoencoders</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter17.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">17. </span>Chapter 17: Generative Adversarial Networks</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-hierarchical-vaes-to-diffusion">16.1. From hierarchical VAEs to diffusion</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-forward-process">16.1.1. The forward process</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-forward-posterior">16.1.2. The forward posterior</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-objective">16.2. The objective</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#predicting-the-noise">16.2.1. Predicting the noise</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-thing-as-score-matching">16.2.2. The same thing as score matching</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sampling">16.3. Sampling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalizing-flows">16.4. Normalizing flows</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-exactness">16.4.1. Verifying exactness</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison">16.5. Comparison</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">16.6. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">16.7. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">16.7.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-diffusion-and-flows">16.7.2. Project-style exercise: diffusion and flows</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

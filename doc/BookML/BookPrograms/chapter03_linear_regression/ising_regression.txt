@@ -1,0 +1,119 @@
+=== 1. the design matrix ===
+  L = 40 spins, n = 10000 configurations, J = 1.0
+  design matrix X with X[i, j*L+k] = s_j s_k : shape (10000, 1600)
+  energies: min -20, max 24, mean 0.0388, std 6.3094
+
+  Two exact facts about this design matrix, both structural:
+    (a) the L diagonal columns are s_j^2 = 1 identically, so they
+        are all equal to the constant column and to each other;
+    (b) column (j,k) and column (k,j) are identical, since
+        s_j s_k = s_k s_j.
+
+  max |X[:, diagonal] - 1|                    : 0.000e+00
+  max |X[:, (j,k)] - X[:, (k,j)]| over all j<k: 0.000e+00
+
+  distinct columns therefore number L(L-1)/2 + 1 = 781,
+  so rank(X) <= 781 however many configurations we draw.
+  measured rank(X) with n = 10000 rows          : 781
+  number of columns p = L^2                   : 1600
+  singular values: sigma_0 = 633.8002, sigma_780 = 1.0218e+02, sigma_781 = 4.7516e-13
+  ratio sigma_780 / sigma_781 : 2.150e+14
+  the spectrum falls off a cliff exactly where the counting says it
+  must: X^T X is singular by construction, not by rounding
+
+=== 2. the three estimators, 400 training and 9600 test configurations ===
+  p = 1600 features against n = 400 training rows, so p > n and
+  the least-squares problem is underdetermined twice over
+
+   estimator            R^2 train  R^2 test  ||theta||_2  ||theta||_1  non-zero
+   OLS (pseudoinverse)    1.000000  0.522863       3.2610      88.9391      1600
+   Ridge, lambda = 0.01   1.000000  0.522863       3.2609      88.9379      1600
+   Lasso, lambda = 0.01   0.999973  0.999963       6.1351      39.7766        78
+
+=== 3. the recovered coupling matrices ===
+  The true Hamiltonian has J_{j,j+1} = 1 and nothing else, but the
+  energy only ever sees the sum J_{j,j+1} + J_{j+1,j}, so what the
+  data determine is that sum and not the two terms separately.
+
+   estimator              J[0,1]    J[1,0]       sum    J[0,0]    J[0,5]
+   OLS (pseudoinverse)   -0.34863  -0.34863  -0.69726  -0.00490  -0.03488
+   Ridge, lambda = 0.01  -0.34863  -0.34863  -0.69725  -0.00490  -0.03488
+   Lasso, lambda = 0.01  -0.91691  -0.08149  -0.99840  -0.00000  -0.00000
+
+  averaged over all forty nearest-neighbour pairs:
+   estimator            mean J[j,j+1]  mean J[j+1,j]  mean sum  mean |J| off-band
+   OLS (pseudoinverse)       -0.26585       -0.26585  -0.53169            0.04559
+   Ridge, lambda = 0.01      -0.26584       -0.26584  -0.53168            0.04559
+   Lasso, lambda = 0.01      -0.96324       -0.03115  -0.99439            0.00000
+
+=== 4. Proposition 3.duplicate, checked on the (j,k)/(k,j) pairs ===
+  With two identical columns the 2-norm estimators must give the two
+  coefficients the same value, and the 1-norm need not.
+
+   estimator            max |J[j,k] - J[k,j]| over all j<k
+   OLS (pseudoinverse)                           9.437e-16
+   Ridge, lambda = 0.01                          0.000e+00
+   Lasso, lambda = 0.01                          9.990e-01
+  OLS and Ridge are symmetric to machine precision, as the
+  proposition requires; the Lasso is not, and puts the whole coupling
+  on one side of the pair.
+
+  and the objective is genuinely indifferent to the split: taking the
+  Lasso solution and symmetrising each (j,k)/(k,j) pair,
+    Lasso objective at the solver's answer : 0.3988830154
+    Lasso objective at the symmetrised one : 0.3988830154
+    max |fit difference| on the test set   : 7.105e-15
+  identical to ten decimals and identical in the fit, which is
+  Proposition 3.lassofit: the fit is unique, the coefficients are not
+
+=== 5. R^2 against the penalty ===
+  The Ridge penalty competes with the squared singular values of the
+  design matrix, Eq. (3.ridgesvdsol), and here those run from
+    sigma_max^2 = 1.747e+04  down to  sigma_min^2 = 128.8
+  on the training rows, so a penalty below about 10^3 changes nothing
+  at all and the table must be read over a very wide range.
+
+     lambda     Ridge train   Ridge test
+      0.0001      1.000000     0.522863
+   0.0003162      1.000000     0.522863
+       0.001      1.000000     0.522863
+    0.003162      1.000000     0.522863
+        0.01      1.000000     0.522863
+     0.03162      1.000000     0.522863
+         0.1      1.000000     0.522864
+      0.3162      1.000000     0.522867
+           1      0.999999     0.522876
+       3.162      0.999992     0.522893
+          10      0.999921     0.522848
+       31.62      0.999287     0.521915
+         100      0.994434     0.514548
+       316.2      0.966761     0.480945
+        1000      0.861276     0.391779
+        3162      0.619966     0.251055
+       1e+04      0.324439     0.120117
+   3.162e+04      0.128591     0.045720
+       1e+05      0.043272     0.015461
+   3.162e+05      0.012907     0.004963
+       1e+06      0.002912     0.001536
+   3.162e+06     -0.000290     0.000441
+       1e+07     -0.001307     0.000094
+   3.162e+07     -0.001629    -0.000016
+       1e+08     -0.001731    -0.000051
+
+  The Lasso is a different story and needs no such range:
+
+     lambda     Lasso train   Lasso test   Lasso non-zeros
+      0.0001      1.000000     0.455963               964
+   0.0003162      1.000000     1.000000                76
+       0.001      1.000000     1.000000                77
+    0.003162      0.999997     0.999996                76
+        0.01      0.999973     0.999963                78
+     0.03162      0.999728     0.999634                76
+         0.1      0.997276     0.996339                78
+      0.3162      0.972761     0.963390                77
+           1      0.727612     0.633896                55
+       3.162      0.034063     0.018081                 3
+          10     -0.001778    -0.000067                 0
+  ordinary least squares, for comparison: train 1.000000, test 0.522863
+  best Lasso: lambda = 0.0003162, test R^2 = 1.000000, 76 non-zero coefficients
+  best Ridge: lambda = 3.162, test R^2 = 0.522893

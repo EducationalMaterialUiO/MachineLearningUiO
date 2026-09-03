@@ -1,0 +1,116 @@
+=== 1. the push-through identity, Lemma 3.pushthrough ===
+  (X^T X + lambda I_p)^{-1} X^T = X^T (X X^T + lambda I_n)^{-1}
+  The left side inverts a p x p matrix, the right an n x n one, and
+  the two are equal for every lambda > 0.  Only the right side can
+  be written with inner products alone, which is what allows a
+  kernel to be substituted.
+
+     n     p   lambda   max |LHS - RHS|   ||theta_p - theta_n||
+    20     5     0.01         4.012e-14               8.120e-14
+    20     5     1.00         5.412e-16               1.041e-15
+    20    50     0.01         1.386e-13               4.110e-13
+    20    50     1.00         8.431e-16               3.708e-15
+   200     3     0.01         1.817e-13               3.997e-13
+   200     3     1.00         3.858e-15               1.855e-15
+    50    50     0.01         1.989e-13               2.683e-12
+    50    50     1.00         7.563e-16               1.006e-14
+  the identity holds to machine precision at every shape, including
+  p > n where the primal matrix is singular without the penalty
+
+=== 2. Theorem 3.hkexists: some lambda > 0 always beats OLS ===
+  In the singular basis the total mean squared error of the Ridge
+  estimator is  M(lambda) = sum_i (lambda^2 b_i^2 + s^2 d_i^2)
+  / (d_i^2 + lambda)^2,  with d_i the singular values, b = V^T theta
+  and s^2 the noise variance.  Its derivative at lambda = 0 is
+  -2 s^2 sum_i d_i^{-4} < 0, so M decreases at first.
+
+     n     p    sigma^2   M(0)=OLS    min_lambda M   best lambda   M'(0) predicted   M'(0) measured
+    40     6       1.00      0.1823          0.1636         3.256            -0.0129            -0.0129
+    40     6       0.10      0.0214          0.0213        0.1001          -0.001986          -0.001985
+    80    20       1.00      0.3461          0.3353         1.363           -0.01642           -0.01642
+    25    15       0.50      0.7361          0.6067        0.9295            -0.3386            -0.3386
+  the minimum is always strictly interior, and the measured slope at
+  the origin agrees with the predicted -2 s^2 sum d_i^{-4}
+
+=== 3. kernel ridge regression, Theorem 3.krr ===
+  (a) the quadratic kernel against its explicit feature map
+      max |k(x,x') - phi(x).phi(x')| : 1.421e-14
+      max |f_kernel(x) - f_primal(x)|: 1.915e-14
+      the kernel never builds phi and gets the same function
+
+  (b) the Gaussian kernel, ours against scikit-learn
+      gamma   lambda    our test MSE   sklearn test MSE   max |f_ours - f_sk|
+       0.25    0.001       0.008634           0.008634            1.847e-13
+       0.25    0.100       0.008103           0.008103            9.437e-16
+       1.00    0.001       0.056491           0.056491            8.349e-14
+       1.00    0.100       0.012237           0.012237            1.443e-15
+       4.00    0.001       0.037839           0.037839            1.257e-13
+       4.00    0.100       0.037478           0.037478            1.277e-15
+      scikit-learn's alpha is exactly our lambda; the two solve the
+      same linear system and agree to machine precision
+
+  (c) cost: the primal system is p x p, the dual n x n
+      n     p   primal solve   dual solve   which is cheaper
+     200    10           1000      8000000   primal          
+     200   400       64000000      8000000   dual            
+    2000    50         125000   8000000000   primal          
+      the crossover is at p = n, and for an infinite-dimensional
+      feature map the primal route does not exist at all
+
+=== 4. Proposition 3.nolassokernel: the 1-norm is not a property of f ===
+  A kernel determines the feature map only up to an isometry: if
+  phi is a feature map for k then so is R phi for any orthogonal R,
+  since (R phi(x)).(R phi(x')) = phi(x).phi(x').  The 2-norm of the
+  weight vector is invariant under that change and the 1-norm is
+  not, so ||theta||_1 is not a function of f and cannot appear in a
+  penalty on f.
+
+     quantity                                value (phi)    value (R phi)
+     ||theta||_2                              0.302326         0.302326
+     ||theta||_1                              0.414053         0.637376
+     max |f(x) - f_rotated(x)| on test       5.551e-16
+     the two weight vectors describe the same function to machine
+     precision, have the same 2-norm, and differ in 1-norm; a Lasso
+     penalty would therefore select a different function depending
+     on which square root of the kernel was chosen
+
+=== 5. repair one: min ||y - K alpha||^2 / n + mu ||alpha||_1 ===
+  This is an ordinary Lasso whose design matrix is the Gram matrix.
+  It is sparse in the *examples*, not in the features, and it is not
+  equivalent to any penalty on f.  Optimality, Eq. (3.klassokkt):
+    (2/n) k_j.(K alpha - y) = -mu sign(alpha_j)   if alpha_j != 0,
+    |(2/n) k_j.(K alpha - y)| <= mu               if alpha_j  = 0.
+
+      mu      non-zero alpha of 60   train MSE   max KKT violation
+    0.0001                     28    0.002055           1.266e-06
+    0.0010                     20    0.003362           1.416e-07
+    0.0100                      7    0.008227           2.227e-13
+    0.1000                      3    0.059848           1.688e-13
+      every solution satisfies its own optimality conditions to the
+      tolerance of the solver, and the number of retained examples
+      falls as mu grows -- the same selection behaviour as the
+      ordinary Lasso, but selecting data points rather than features
+
+      mu_max = (2/n) max_j |k_j . y| = 0.290436
+      non-zero coefficients just above mu_max: 0
+      above mu_max the zero vector satisfies the conditions and is
+      the solution, exactly as in Proposition 3.lassomax
+
+=== 6. repair two: Lasso in an approximate feature map ===
+  Build an explicit m-dimensional map whose inner products
+  approximate k, then run the ordinary Lasso of Section 3.lasso in
+  that basis.  The selection is then over features again, and the
+  features are interpretable: Nystrom columns are landmark points,
+  random Fourier features are frequencies.
+
+      method             m    max |Z Z^T - K|   Lasso non-zeros   test MSE
+      Nystrom          10         9.937e-01                 9    0.026111
+      Nystrom          30         2.947e-01                18    0.013798
+      Nystrom          60         6.439e-15                22    0.012815
+      Fourier          64         4.371e-01                18    0.013377
+      Fourier         256         1.668e-01                14    0.001599
+      Fourier        1024         1.105e-01                11    0.000907
+      the Nystrom map reproduces the Gram matrix exactly once m = n,
+      the random map only in expectation and slowly; both give a
+      genuine Lasso, at the cost of an approximation the exact
+      kernel method does not make

@@ -1,0 +1,2023 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>12. Chapter 12: Autoencoders &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter12';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="13. Chapter 13: Transformers" href="chapter13.html" />
+    <link rel="prev" title="11. Chapter 11: Recurrent Neural Networks" href="chapter11.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Machine Learning and the Physical Sciences
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mathematical and statistical basis with essential computational elements</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">1. Chapter 1: Linear Algebra for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">2. Chapter 2: Elements of Probability Theory and Statistics</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">3. Chapter 3: Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">4. Chapter 4: Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">5. Chapter 5: Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter6.html">6. Chapter 6: Support Vector Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">7. Chapter 7: Ensemble methods; from simple decision trees to Gradient Boosting</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">8. Chapter 8: Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">9. Chapter 9: Neural Networks for Differential Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">10. Chapter 10: Convolutional Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter11.html">11. Chapter 11: Recurrent Neural Networks</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">12. Chapter 12: Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter13.html">13. Chapter 13: Transformers</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Generative Methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter14.html">14. Chapter 14: Boltzmann Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15.html">15. Chapter 15: Variational Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter16.html">16. Chapter 16: Diffusion Models and Normalizing Flows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17.html">17. Chapter 17: Generative Adversarial Networks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Concluding remarks and perspectives</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="conclusions.html">18. Chapter 18: Concluding remarks and perspectives</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chapter12.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 12: Autoencoders</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#structure">12.1. Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reconstruction-projection-and-representation">12.2. Reconstruction, projection and representation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-linear-autoencoder">12.3. The linear autoencoder</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reduction-to-an-orthogonal-projector">12.3.1. Reduction to an orthogonal projector</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reduction-to-a-trace-maximisation">12.3.2. Reduction to a trace maximisation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-variational-characterisation">12.3.3. The variational characterisation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-theorem">12.3.4. The theorem</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-the-theorem">12.4. Verifying the theorem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beyond-pca">12.5. Beyond PCA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regularised-autoencoders">12.6. Regularised autoencoders</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-probabilistic-view-ppca">12.7. The probabilistic view: PPCA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementations">12.8. Implementations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#our-own">12.8.1. Our own</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-and-tensorflow">12.8.2. PyTorch and TensorFlow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#does-adam-find-the-principal-subspace">12.8.3. Does Adam find the principal subspace?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-bottleneck-costs-and-what-the-nonlinearity-buys">12.8.4. What the bottleneck costs, and what the nonlinearity buys</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-regularised-variants-measured">12.8.5. The regularised variants, measured</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">12.9. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">12.10. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">12.10.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-autoencoders-and-pca">12.10.2. Project-style exercise: autoencoders and PCA</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-12-autoencoders">
+<h1><span class="section-number">12. </span>Chapter 12: Autoencoders<a class="headerlink" href="#chapter-12-autoencoders" title="Link to this heading">#</a></h1>
+<!-- Macro definitions for MathJax, mirroring book.tex -->
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\bm}[1]{\boldsymbol{#1}}
+\newcommand{\Det}[1]{|\boldsymbol{#1}|}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\var}{\mathrm{Var}}
+\newcommand{\cov}{\mathrm{Cov}}
+\newcommand{\Prob}{\mathrm{Prob}}
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\]</div>
+<p>Every network so far has been trained against labels.  Regression needed
+targets <span class="math notranslate nohighlight">\(y_i\)</span>, classification needed classes, the differential-equation solvers
+of Chapter 9 needed an equation.  This chapter removes the labels
+and asks the network to reproduce its own input.</p>
+<p>That sounds vacuous – the identity map is available for free – and it would be,
+were it not for a constraint.  An <em>autoencoder</em> factors the map through a
+representation of restricted size or restricted form,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x} \;\longmapsto\; \bm{z}=f_\theta(\bm{x})
+        \;\longmapsto\; \hat{\bm{x}}=g_\phi(\bm{z}),\tag{12.1}
+\]</div>
+<p>and asks for the best approximation to the identity subject to that
+factorisation.  The whole subject is the study of what that constraint forces
+the network to discover.</p>
+<p>The chapter has two halves.  The first is exact: when <span class="math notranslate nohighlight">\(f\)</span> and <span class="math notranslate nohighlight">\(g\)</span> are linear the
+problem admits a complete analytic solution, and the answer is principal
+component analysis.  We prove this, carefully, because the proof is short,
+because it is the one place in deep learning where a global optimum is known,
+and because knowing exactly what the linear case does tells us what the
+nonlinear case is buying.  The second half is what happens when the linearity is
+given up: deep, denoising, sparse and contractive autoencoders, the convolutional
+and recurrent variants that reuse Chapters 10 and 11
+unchanged, and the probabilistic reading that connects the whole construction
+back to Chapter 2.</p>
+<p>The material follows the lecture notes for weeks eight to ten of
+FYS-STK3155/4155.</p>
+<section id="structure">
+<h2><span class="section-number">12.1. </span>Structure<a class="headerlink" href="#structure" title="Link to this heading">#</a></h2>
+<p>An autoencoder is a network in two halves.  The <em>encoder</em>
+<span class="math notranslate nohighlight">\(f_\theta:\mathbb{R}^d\to\mathbb{R}^p\)</span> maps an input to a <em>code</em> or
+<em>latent representation</em> <span class="math notranslate nohighlight">\(\bm{z}\)</span>, and the <em>decoder</em>
+<span class="math notranslate nohighlight">\(g_\phi:\mathbb{R}^p\to\mathbb{R}^d\)</span> maps the code back.  The two are trained
+together against the reconstruction error, so that for a data set
+<span class="math notranslate nohighlight">\(\{\bm{x}_n\}_{n=1}^{N}\)</span> we minimise</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \mathcal{L}(\theta,\phi) = \frac{1}{N}\sum_{n=1}^{N}
+    \left\|\bm{x}_n - g_\phi\!\left(f_\theta(\bm{x}_n)\right)\right\|_2^{2}.\;}\tag{12.2}
+\]</div>
+<p>No labels appear.  The target of example <span class="math notranslate nohighlight">\(n\)</span> is example <span class="math notranslate nohighlight">\(n\)</span>, which is why the
+method is called <em>self-supervised</em>: the supervision is manufactured from
+the data.  Figure 12.1 draws the network in the notation of
+Section <em>Notation and the feed-forward pass</em>: it is the feed-forward network of
+Figure 8.5 with two changes, a narrow layer in the middle and a
+target that is the input.</p>
+<p><img alt="An undercomplete autoencoder in the layer notation of Section Notation" src="../BookML/BookFigures/chapter12_autoencoders/12-ae.png" /></p>
+<p><em>Figure 12.1: An undercomplete autoencoder in the layer notation of Section <em>Notation and the feed-forward pass</em>, with <span class="math notranslate nohighlight">\(d=6\)</span> and <span class="math notranslate nohighlight">\(p=2\)</span>.  Read left to right it is an ordinary feed-forward network of Figure 8.5; what makes it an autoencoder is the dashed arrow at the bottom, which says that the target of example <span class="math notranslate nohighlight">\(n\)</span> is example <span class="math notranslate nohighlight">\(n\)</span> itself.  No labels enter anywhere, which is the content of the word <em>self-supervised</em>.  Everything the network knows about <span class="math notranslate nohighlight">\(\bm{x}\)</span> after the encoder must pass through the two orange units, and the reconstruction is built from those two numbers alone.</em></p>
+<p>The layer that produces <span class="math notranslate nohighlight">\(\bm{z}\)</span> is the <em>bottleneck</em>, and its width <span class="math notranslate nohighlight">\(p\)</span> is
+the single most important architectural choice.  Three regimes are worth naming.</p>
+<ul class="simple">
+<li><p><em>Undercomplete</em>, <span class="math notranslate nohighlight">\(p&lt;d\)</span>.  The code cannot hold the input, so the
+network must decide what to discard.  This is the case in which reconstruction
+forces compression, and it is the case the first half of this chapter analyses
+exactly.</p></li>
+<li><p><em>Complete</em>, <span class="math notranslate nohighlight">\(p=d\)</span>.  Nothing is forced.</p></li>
+<li><p><em>Overcomplete</em>, <span class="math notranslate nohighlight">\(p\ge d\)</span>.  The identity is available:
+<span class="math notranslate nohighlight">\(f=g=\mathrm{id}\)</span> gives zero error and learns nothing.  Something other than
+the bottleneck must supply the constraint, and Section <em>Regularised autoencoders</em>
+is about what.</p></li>
+</ul>
+<p><img alt="The three regimes of the bottleneck width, drawn as the width of the r" src="../BookML/BookFigures/chapter12_autoencoders/12-regimes.png" /></p>
+<p><em>Figure 12.2: The three regimes of the bottleneck width, drawn as the width of the representation against depth.  Only the first compresses.  In the second and third the map <span class="math notranslate nohighlight">\(g\circ f=\mathrm{id}\)</span> is available and achieves zero reconstruction error while learning nothing whatever about the data, so the constraint that makes the network useful has to come from somewhere other than the architecture – which is what Section <em>Regularised autoencoders</em> supplies.  The orange bar is the code layer in each case.</em></p>
+<p>Figure 12.2 contrasts the three.  In practice the two halves
+are usually <em>mirrored</em>: a decoder whose layer
+widths are those of the encoder in reverse.  This is a convention rather than a
+requirement, but it is a sensible one, and it makes the parameter counts of the
+two halves match.</p>
+<p><strong>Activations and the cost.</strong>
+The hidden layers use whatever Chapter 8 recommends.  The
+<em>output</em> layer is the one that needs thought, and it should be chosen to
+match the range of the data.</p>
+<p>If the inputs are unbounded real numbers, the output activation is the identity
+and the cost is Eq. (12.2).  If they have been scaled to <span class="math notranslate nohighlight">\([0,1]\)</span> –
+pixel intensities, most commonly – a logistic output is natural, and the
+binary cross-entropy</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}_{\mathrm{BCE}} = -\frac{1}{N}\sum_{n=1}^{N}\sum_{j=1}^{d}
+    \left[x_{nj}\log\hat{x}_{nj}
+        + (1-x_{nj})\log(1-\hat{x}_{nj})\right]\tag{12.3}
+\]</div>
+<p>is then often preferred to the squared error, because it is the negative
+log-likelihood of a Bernoulli model and it penalises confident mistakes near
+the ends of the range much more heavily.  A ReLU output is appropriate when the
+data are non-negative and unbounded, and a linear output is wrong for bounded
+data because it can predict outside the range.</p>
+</section>
+<section id="reconstruction-projection-and-representation">
+<h2><span class="section-number">12.2. </span>Reconstruction, projection and representation<a class="headerlink" href="#reconstruction-projection-and-representation" title="Link to this heading">#</a></h2>
+<p>Before the analysis it is worth being precise about what is being asked.  The
+optimisation is over function classes: let <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> be a class of encoders
+and <span class="math notranslate nohighlight">\(\mathcal{G}\)</span> a class of decoders, and solve</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{f\in\mathcal{F},\,g\in\mathcal{G}}
+    \sum_{n=1}^{N}\left\|\bm{x}_n-g(f(\bm{x}_n))\right\|_2^{2}.\tag{12.4}
+\]</div>
+<p>If <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{G}\)</span> are linear this is a constrained quadratic
+problem with a closed-form solution.  If they are neural networks it is
+non-convex and highly expressive, and we are back in the territory of
+Chapter 4.</p>
+<p>A theme that will recur is the decomposition</p>
+<div class="math notranslate nohighlight">
+\[
+\left\|\bm{X}-\hat{\bm{X}}\right\|_F^{2}
+  = \underbrace{\text{total variance}}_{\text{fixed by the data}}
+  - \underbrace{\text{explained variance}}_{\text{what the code captures}},\tag{12.5}
+\]</div>
+<p>which says that minimising reconstruction error and maximising captured
+variance are the same problem seen from two sides.  For linear autoencoders this
+is exact and we prove it below; Figure 12.3 is the proof in one
+picture, since the decomposition is Pythagoras’ theorem applied at each data
+point and summed.</p>
+<p><img alt="What a linear autoencoder does, in  with , on centred data -- which is" src="../BookML/BookFigures/chapter12_autoencoders/12-proj.png" /></p>
+<p><em>Figure 12.3: What a linear autoencoder does, in <span class="math notranslate nohighlight">\(d=2\)</span> with <span class="math notranslate nohighlight">\(p=1\)</span>, on centred data – which is why the subspace passes through the origin. Lemma 12.1 says that the best reconstruction of a given rank can always be taken to be an orthogonal projection, so <span class="math notranslate nohighlight">\(\hat{\bm{x}}\)</span> is the foot of the perpendicular from <span class="math notranslate nohighlight">\(\bm{x}\)</span> to the subspace, and Theorem 12.5 identifies the subspace that minimises the total squared residual as the principal one.  The right angle is the whole of Eq. (12.5): Pythagoras at every data point, summed, splits the total variance into an explained part and a reconstruction error, so making one small is exactly making the other large.  A nonlinear autoencoder replaces the straight line by a curve and changes nothing else in the picture.</em></p>
+<div class="tip admonition">
+<p class="admonition-title">Reconstruction is not representation</p>
+<p>Equation (12.2)
+scores the network on <span class="math notranslate nohighlight">\(\hat{\bm{x}}\)</span>, not on <span class="math notranslate nohighlight">\(\bm{z}\)</span>.  Nothing in it asks the
+code to be interpretable, smooth, disentangled or ordered, and
+Section <em>Beyond PCA</em> shows an example in which the reconstruction is
+excellent and the code is nevertheless a poor coordinate for the data.  A low
+reconstruction error is evidence that the information survived the bottleneck.
+It is not evidence that it survived in a useful form.</p>
+</div>
+</section>
+<section id="the-linear-autoencoder">
+<h2><span class="section-number">12.3. </span>The linear autoencoder<a class="headerlink" href="#the-linear-autoencoder" title="Link to this heading">#</a></h2>
+<p>Take the encoder and decoder to be linear and without biases,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{z} = \bm{W}_e^{\mathsf{T}}\bm{x},
+  \qquad
+  \hat{\bm{x}} = \bm{W}_d^{\mathsf{T}}\bm{z},
+  \qquad
+  \bm{W}_e\in\mathbb{R}^{d\times p},\;
+  \bm{W}_d\in\mathbb{R}^{p\times d},\tag{12.6}
+\]</div>
+<p>so that the reconstruction map is <span class="math notranslate nohighlight">\(\hat{\bm{x}}=\bm{A}\bm{x}\)</span> with
+<span class="math notranslate nohighlight">\(\bm{A}=\bm{W}_d^{\mathsf{T}}\bm{W}_e^{\mathsf{T}}\)</span>.  Since <span class="math notranslate nohighlight">\(\bm{A}\)</span> factors
+through <span class="math notranslate nohighlight">\(\mathbb{R}^{p}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{rank}(\bm{A}) \le p .\tag{12.7}
+\]</div>
+<p>Dropping the biases costs nothing provided the data are centred, which we assume
+throughout: replace <span class="math notranslate nohighlight">\(\bm{x}_n\)</span> by <span class="math notranslate nohighlight">\(\bm{x}_n-\bar{\bm{x}}\)</span>.  With the data
+arranged as the rows of <span class="math notranslate nohighlight">\(\bm{X}\in\mathbb{R}^{N\times d}\)</span>, the training problem
+is</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{\bm{W}_e,\bm{W}_d}
+    \left\|\bm{X}-\bm{X}\bm{A}\right\|_F^{2}
+  \;=\;
+  \min_{\operatorname{rank}(\bm{A})\le p}
+    \left\|\bm{X}-\bm{X}\bm{A}\right\|_F^{2}.\tag{12.8}
+\]</div>
+<p>The equality is the first substantive step: <em>any</em> matrix of rank at most
+<span class="math notranslate nohighlight">\(p\)</span> can be written as <span class="math notranslate nohighlight">\(\bm{W}_d^{\mathsf{T}}\bm{W}_e^{\mathsf{T}}\)</span> by taking a
+rank factorisation, so optimising over the two factors is the same as optimising
+over their product subject to the rank bound.  Linear autoencoder training is a
+rank-constrained approximation problem.</p>
+<p>Write <span class="math notranslate nohighlight">\(\bm{S}=\bm{X}^{\mathsf{T}}\bm{X}/N\)</span> for the empirical covariance, and let
+its eigendecomposition be</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{S} = \bm{U}\bm{\Lambda}\bm{U}^{\mathsf{T}},
+  \qquad
+  \lambda_1\ge\lambda_2\ge\dots\ge\lambda_d\ge0,\tag{12.9}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\bm{U}\)</span> orthogonal and <span class="math notranslate nohighlight">\(\bm{U}_p=[\bm{u}_1,\dots,\bm{u}_p]\)</span> its first <span class="math notranslate nohighlight">\(p\)</span>
+columns.  Recall from Chapter 1 that <span class="math notranslate nohighlight">\(\bm{S}\)</span> is symmetric
+positive semi-definite, so such a decomposition exists with real non-negative
+eigenvalues.</p>
+<section id="reduction-to-an-orthogonal-projector">
+<h3><span class="section-number">12.3.1. </span>Reduction to an orthogonal projector<a class="headerlink" href="#reduction-to-an-orthogonal-projector" title="Link to this heading">#</a></h3>
+<div class="important admonition">
+<p class="admonition-title">Lemma 12.1 (The optimum may be taken to be an orthogonal projector)</p>
+<p>Let <span class="math notranslate nohighlight">\(\bm{A}\)</span> have rank at most <span class="math notranslate nohighlight">\(p\)</span> and let <span class="math notranslate nohighlight">\(\bm{P}\)</span> be the orthogonal projector
+onto the row space of <span class="math notranslate nohighlight">\(\bm{A}\)</span> (equivalently, onto the image of
+<span class="math notranslate nohighlight">\(\bm{A}^{\mathsf{T}}\)</span>).  Then <span class="math notranslate nohighlight">\(\operatorname{rank}(\bm{P})\le p\)</span> and</p>
+<div class="math notranslate nohighlight">
+\[
+\left\|\bm{X}-\bm{X}\bm{P}\right\|_F^{2}
+  \;\le\;
+  \left\|\bm{X}-\bm{X}\bm{A}\right\|_F^{2}.\tag{12.10}
+\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Let <span class="math notranslate nohighlight">\(\mathcal{M}\)</span> be the row space of <span class="math notranslate nohighlight">\(\bm{A}\)</span>, of dimension at most <span class="math notranslate nohighlight">\(p\)</span>.  For
+each <span class="math notranslate nohighlight">\(n\)</span>, the row <span class="math notranslate nohighlight">\(\bm{x}_n^{\mathsf{T}}\bm{A}\)</span> lies in <span class="math notranslate nohighlight">\(\mathcal{M}\)</span>, and
+<span class="math notranslate nohighlight">\(\bm{x}_n^{\mathsf{T}}\bm{P}\)</span> is by definition the point of <span class="math notranslate nohighlight">\(\mathcal{M}\)</span>
+closest to <span class="math notranslate nohighlight">\(\bm{x}_n\)</span> in the Euclidean norm.  Hence</p>
+<div class="math notranslate nohighlight">
+\[
+\left\|\bm{x}_n-\bm{P}\bm{x}_n\right\|_2^{2}
+  \le \left\|\bm{x}_n-\bm{A}^{\mathsf{T}}\bm{x}_n\right\|_2^{2}
+  \qquad\text{for every }n,
+\]</div>
+<p>and summing over <span class="math notranslate nohighlight">\(n\)</span> gives Eq. (12.10), the Frobenius norm being
+the sum over rows of the squared Euclidean norms.</p>
+</div>
+<p>Lemma 12.1 is what makes the whole analysis possible.  It
+replaces an optimisation over all rank-<span class="math notranslate nohighlight">\(p\)</span> matrices, a set with <span class="math notranslate nohighlight">\(p(2d-p)\)</span>
+parameters and no useful structure, by an optimisation over rank-<span class="math notranslate nohighlight">\(p\)</span> orthogonal
+projectors, which are parameterised by a Grassmannian – that is, by a choice of
+subspace and nothing else.  Every orthogonal projector of rank <span class="math notranslate nohighlight">\(p\)</span> has the form</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{P}=\bm{B}\bm{B}^{\mathsf{T}},
+  \qquad
+  \bm{B}\in\mathbb{R}^{d\times p},
+  \quad \bm{B}^{\mathsf{T}}\bm{B}=\bm{I}_p,\tag{12.11}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\bm{B}\)</span> an orthonormal basis of the subspace.</p>
+</section>
+<section id="reduction-to-a-trace-maximisation">
+<h3><span class="section-number">12.3.2. </span>Reduction to a trace maximisation<a class="headerlink" href="#reduction-to-a-trace-maximisation" title="Link to this heading">#</a></h3>
+<div class="important admonition">
+<p class="admonition-title">Lemma 12.2 (Error equals variance not captured)</p>
+<p>With <span class="math notranslate nohighlight">\(\bm{P}=\bm{B}\bm{B}^{\mathsf{T}}\)</span> as in Eq. (12.11),</p>
+<div class="math notranslate nohighlight">
+\[
+\left\|\bm{X}-\bm{X}\bm{P}\right\|_F^{2}
+  = N\left[\operatorname{Tr}(\bm{S})
+    - \operatorname{Tr}\!\left(\bm{B}^{\mathsf{T}}\bm{S}\bm{B}\right)\right].\tag{12.12}
+\]</div>
+<p>Minimising the reconstruction error is therefore equivalent to maximising
+<span class="math notranslate nohighlight">\(\operatorname{Tr}(\bm{B}^{\mathsf{T}}\bm{S}\bm{B})\)</span> subject to
+<span class="math notranslate nohighlight">\(\bm{B}^{\mathsf{T}}\bm{B}=\bm{I}_p\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Expand the norm as a trace and use <span class="math notranslate nohighlight">\(\bm{P}^{\mathsf{T}}=\bm{P}\)</span> and
+<span class="math notranslate nohighlight">\(\bm{P}^{2}=\bm{P}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\left\|\bm{X}-\bm{X}\bm{P}\right\|_F^{2}
+  = \operatorname{Tr}\!\left[(\bm{I}-\bm{P})\bm{X}^{\mathsf{T}}
+      \bm{X}(\bm{I}-\bm{P})\right]
+  = N\operatorname{Tr}\!\left[(\bm{I}-\bm{P})\bm{S}(\bm{I}-\bm{P})\right],
+\]</div>
+<p>using <span class="math notranslate nohighlight">\(\bm{X}^{\mathsf{T}}\bm{X}=N\bm{S}\)</span>.  Idempotence and cyclicity of the
+trace give
+<span class="math notranslate nohighlight">\(\operatorname{Tr}[(\bm{I}-\bm{P})\bm{S}(\bm{I}-\bm{P})]
+=\operatorname{Tr}[\bm{S}(\bm{I}-\bm{P})]
+=\operatorname{Tr}(\bm{S})-\operatorname{Tr}(\bm{S}\bm{P})\)</span>,
+and finally
+<span class="math notranslate nohighlight">\(\operatorname{Tr}(\bm{S}\bm{B}\bm{B}^{\mathsf{T}})
+=\operatorname{Tr}(\bm{B}^{\mathsf{T}}\bm{S}\bm{B})\)</span>.</p>
+</div>
+<p>Equation (12.12) is Eq. (12.5) made
+precise: <span class="math notranslate nohighlight">\(\operatorname{Tr}(\bm{S})\)</span> is the total variance, fixed by the data,
+and <span class="math notranslate nohighlight">\(\operatorname{Tr}(\bm{B}^{\mathsf{T}}\bm{S}\bm{B})\)</span> is the variance
+captured by the subspace.</p>
+</section>
+<section id="the-variational-characterisation">
+<h3><span class="section-number">12.3.3. </span>The variational characterisation<a class="headerlink" href="#the-variational-characterisation" title="Link to this heading">#</a></h3>
+<p>It remains to maximise <span class="math notranslate nohighlight">\(\operatorname{Tr}(\bm{B}^{\mathsf{T}}\bm{S}\bm{B})\)</span>.
+We do the case <span class="math notranslate nohighlight">\(p=1\)</span> by a Lagrange multiplier, which is where the eigenvalue
+problem appears, and then state the general case.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 12.3 (The first direction)</p>
+<p>The maximiser of <span class="math notranslate nohighlight">\(\bm{w}^{\mathsf{T}}\bm{S}\bm{w}\)</span> subject to
+<span class="math notranslate nohighlight">\(\|\bm{w}\|_2=1\)</span> is the eigenvector <span class="math notranslate nohighlight">\(\bm{u}_1\)</span> of <span class="math notranslate nohighlight">\(\bm{S}\)</span> belonging to the
+largest eigenvalue <span class="math notranslate nohighlight">\(\lambda_1\)</span>, and the maximum equals <span class="math notranslate nohighlight">\(\lambda_1\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Without the constraint the objective is unbounded, since scaling <span class="math notranslate nohighlight">\(\bm{w}\)</span> scales
+it quadratically; the constraint is therefore essential.  Impose it with a
+multiplier and maximise</p>
+<div class="math notranslate nohighlight">
+\[
+J(\bm{w}) = \bm{w}^{\mathsf{T}}\bm{S}\bm{w}
+            + \lambda\left(1-\bm{w}^{\mathsf{T}}\bm{w}\right).
+\]</div>
+<p>By the matrix-calculus identities of Section <em>Derivatives with respect to vectors and matrices</em>,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial J}{\partial\bm{w}} = 2\bm{S}\bm{w}-2\lambda\bm{w} = \bm{0}
+  \quad\Longleftrightarrow\quad
+  \bm{S}\bm{w}=\lambda\bm{w},
+\]</div>
+<p>so every stationary point is an eigenvector of <span class="math notranslate nohighlight">\(\bm{S}\)</span>.  Left-multiplying by
+<span class="math notranslate nohighlight">\(\bm{w}^{\mathsf{T}}\)</span> and using <span class="math notranslate nohighlight">\(\|\bm{w}\|=1\)</span> gives
+<span class="math notranslate nohighlight">\(\bm{w}^{\mathsf{T}}\bm{S}\bm{w}=\lambda\)</span>: the value of the objective at a
+stationary point <em>is</em> the corresponding eigenvalue.  The maximum is
+therefore attained at the largest one.</p>
+</div>
+<p>The direction that maximises the variance of the projected data is an
+eigenvector of the covariance matrix, and the variance it captures is the
+eigenvalue.  That single sentence is the content of principal component
+analysis.</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 12.4 (Ky Fan)</p>
+<p>Let <span class="math notranslate nohighlight">\(\bm{S}\)</span> be symmetric with eigenvalues
+<span class="math notranslate nohighlight">\(\lambda_1\ge\dots\ge\lambda_d\)</span> and eigenvectors <span class="math notranslate nohighlight">\(\bm{u}_1,\dots,\bm{u}_d\)</span>.
+Then</p>
+<div class="math notranslate nohighlight">
+\[
+\max_{\bm{B}^{\mathsf{T}}\bm{B}=\bm{I}_p}
+    \operatorname{Tr}\!\left(\bm{B}^{\mathsf{T}}\bm{S}\bm{B}\right)
+  = \sum_{i=1}^{p}\lambda_i,\tag{12.13}
+\]</div>
+<p>attained at <span class="math notranslate nohighlight">\(\bm{B}=\bm{U}_p\)</span>, and at <span class="math notranslate nohighlight">\(\bm{B}=\bm{U}_p\bm{Q}\)</span> for any orthogonal
+<span class="math notranslate nohighlight">\(\bm{Q}\in\mathbb{R}^{p\times p}\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Write <span class="math notranslate nohighlight">\(\bm{C}=\bm{U}^{\mathsf{T}}\bm{B}\)</span>, which also satisfies
+<span class="math notranslate nohighlight">\(\bm{C}^{\mathsf{T}}\bm{C}=\bm{I}_p\)</span> since <span class="math notranslate nohighlight">\(\bm{U}\)</span> is orthogonal.  Then</p>
+<div class="math notranslate nohighlight">
+\[
+\operatorname{Tr}\!\left(\bm{B}^{\mathsf{T}}\bm{S}\bm{B}\right)
+  = \operatorname{Tr}\!\left(\bm{C}^{\mathsf{T}}\bm{\Lambda}\bm{C}\right)
+  = \sum_{i=1}^{d}\lambda_i\,m_i,
+  \qquad
+  m_i := \sum_{j=1}^{p}C_{ij}^{2}.
+\]</div>
+<p>The coefficients <span class="math notranslate nohighlight">\(m_i\)</span> satisfy two constraints.  Each row of <span class="math notranslate nohighlight">\(\bm{C}\)</span> has norm
+at most one, because <span class="math notranslate nohighlight">\(\bm{C}\)</span> has orthonormal columns and may be completed to an
+orthogonal matrix, so <span class="math notranslate nohighlight">\(0\le m_i\le1\)</span>; and
+<span class="math notranslate nohighlight">\(\sum_i m_i=\|\bm{C}\|_F^{2}=\operatorname{Tr}(\bm{C}^{\mathsf{T}}\bm{C})=p\)</span>.
+Maximising the linear functional <span class="math notranslate nohighlight">\(\sum_i\lambda_i m_i\)</span> over the polytope
+<span class="math notranslate nohighlight">\(\{0\le m_i\le1,\ \sum_i m_i=p\}\)</span> puts all the available mass on the largest
+<span class="math notranslate nohighlight">\(\lambda_i\)</span>, giving <span class="math notranslate nohighlight">\(m_1=\dots=m_p=1\)</span> and the rest zero, hence the value
+<span class="math notranslate nohighlight">\(\sum_{i\le p}\lambda_i\)</span>.  This is attained by <span class="math notranslate nohighlight">\(\bm{C}=[\bm{I}_p;\bm{0}]\)</span>, that
+is <span class="math notranslate nohighlight">\(\bm{B}=\bm{U}_p\)</span>, and the value is unchanged by <span class="math notranslate nohighlight">\(\bm{B}\to\bm{B}\bm{Q}\)</span> with
+<span class="math notranslate nohighlight">\(\bm{Q}\)</span> orthogonal since <span class="math notranslate nohighlight">\(\operatorname{Tr}(\bm{Q}^{\mathsf{T}}
+\bm{B}^{\mathsf{T}}\bm{S}\bm{B}\bm{Q})
+=\operatorname{Tr}(\bm{B}^{\mathsf{T}}\bm{S}\bm{B})\)</span>.</p>
+</div>
+</section>
+<section id="the-theorem">
+<h3><span class="section-number">12.3.4. </span>The theorem<a class="headerlink" href="#the-theorem" title="Link to this heading">#</a></h3>
+<p>Assembling Lemmas 12.1 and 12.2 with
+Theorem 12.4 gives the result.</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 12.5 (Linear autoencoders perform PCA)</p>
+<p>Let <span class="math notranslate nohighlight">\(\bm{X}\in\mathbb{R}^{N\times d}\)</span> be centred with empirical covariance
+<span class="math notranslate nohighlight">\(\bm{S}=\bm{X}^{\mathsf{T}}\bm{X}/N\)</span>, eigenvalues
+<span class="math notranslate nohighlight">\(\lambda_1\ge\dots\ge\lambda_d\ge0\)</span> and eigenvectors <span class="math notranslate nohighlight">\(\bm{U}\)</span>.  Consider the
+linear autoencoder (12.6) with bottleneck width <span class="math notranslate nohighlight">\(p\le d\)</span> trained on
+the reconstruction error (12.2).  Then:</p>
+<ol class="arabic">
+<li><p>the minimum of the reconstruction error is</p>
+<div class="math notranslate nohighlight">
+\[
+   \min_{\bm{W}_e,\bm{W}_d}\frac{1}{N}
+   \left\|\bm{X}-\bm{X}\bm{W}_e\bm{W}_d\right\|_F^{2}
+   = \sum_{i=p+1}^{d}\lambda_i,\tag{12.14}
+   \]</div>
+<p>the sum of the discarded eigenvalues;</p>
+</li>
+<li><p>at any global minimiser the product satisfies
+<span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d=\bm{U}_p\bm{U}_p^{\mathsf{T}}\)</span>, the orthogonal projector
+onto the leading eigenspace, and the reconstruction is therefore identical to
+the rank-<span class="math notranslate nohighlight">\(p\)</span> PCA reconstruction <span class="math notranslate nohighlight">\(\hat{\bm{x}}
+=\bm{U}_p\bm{U}_p^{\mathsf{T}}\bm{x}\)</span>;</p></li>
+<li><p>the column space of <span class="math notranslate nohighlight">\(\bm{W}_e\)</span> equals
+<span class="math notranslate nohighlight">\(\operatorname{span}\{\bm{u}_1,\dots,\bm{u}_p\}\)</span>, assuming
+<span class="math notranslate nohighlight">\(\lambda_p&gt;\lambda_{p+1}\)</span>.</p></li>
+</ol>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>By Eq. (12.8) the problem is over matrices of rank at most
+<span class="math notranslate nohighlight">\(p\)</span>; by Lemma 12.1 the infimum is attained on orthogonal
+projectors, which by Eq. (12.11) are parameterised by
+<span class="math notranslate nohighlight">\(\bm{B}\)</span> with orthonormal columns; by Lemma 12.2 the objective
+becomes <span class="math notranslate nohighlight">\(N[\operatorname{Tr}(\bm{S})
+-\operatorname{Tr}(\bm{B}^{\mathsf{T}}\bm{S}\bm{B})]\)</span>; and by
+Theorem 12.4 the second trace is maximised at <span class="math notranslate nohighlight">\(\sum_{i\le
+p}\lambda_i\)</span> with <span class="math notranslate nohighlight">\(\bm{B}=\bm{U}_p\bm{Q}\)</span>.  Since
+<span class="math notranslate nohighlight">\(\operatorname{Tr}(\bm{S})=\sum_i\lambda_i\)</span>, the minimum value is
+<span class="math notranslate nohighlight">\(N\sum_{i&gt;p}\lambda_i\)</span>, which after division by <span class="math notranslate nohighlight">\(N\)</span> is
+Eq. (12.14).  The optimal projector is
+<span class="math notranslate nohighlight">\(\bm{B}\bm{B}^{\mathsf{T}}=\bm{U}_p\bm{Q}\bm{Q}^{\mathsf{T}}\bm{U}_p^{\mathsf{T}}
+=\bm{U}_p\bm{U}_p^{\mathsf{T}}\)</span>, independent of <span class="math notranslate nohighlight">\(\bm{Q}\)</span>, which gives (ii);
+the gap condition <span class="math notranslate nohighlight">\(\lambda_p&gt;\lambda_{p+1}\)</span> makes the maximising subspace unique
+and gives (iii).</p>
+</div>
+<p>The result deserves a moment’s reflection, and one qualification.
+Theorem 12.5 characterises the <em>global minimum</em>; it says
+nothing about what gradient descent finds, and for a non-convex objective those
+are different questions.  What closes the gap is that this particular objective
+has no bad places to get stuck.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 12.6 (The landscape has no spurious minima)</p>
+<p>Assume <span class="math notranslate nohighlight">\(\lambda_1&gt;\dots&gt;\lambda_d&gt;0\)</span>.  Every critical point of the linear
+autoencoder objective (12.2) with <span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span> of rank exactly
+<span class="math notranslate nohighlight">\(p\)</span> has <span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d=\bm{U}_{\mathcal{I}}\bm{U}_{\mathcal{I}}^{\mathsf{T}}\)</span>
+for some index set <span class="math notranslate nohighlight">\(\mathcal{I}\subset\{1,\dots,d\}\)</span> with <span class="math notranslate nohighlight">\(|\mathcal{I}|=p\)</span>.
+Such a point is a global minimum if and only if <span class="math notranslate nohighlight">\(\mathcal{I}=\{1,\dots,p\}\)</span>;
+every other choice is a saddle.  There are no local minima that are not global.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Stationarity of Eq. (12.2) in <span class="math notranslate nohighlight">\(\bm{W}_d\)</span> gives
+<span class="math notranslate nohighlight">\(\bm{W}_e^{\mathsf{T}}\bm{S}(\bm{I}-\bm{W}_e\bm{W}_d)=\bm{0}\)</span> and in
+<span class="math notranslate nohighlight">\(\bm{W}_e\)</span> gives <span class="math notranslate nohighlight">\(\bm{S}(\bm{I}-\bm{W}_e\bm{W}_d)\bm{W}_d^{\mathsf{T}}=\bm{0}\)</span>;
+together these force <span class="math notranslate nohighlight">\(\bm{\Pi}=\bm{W}_e\bm{W}_d\)</span> to satisfy
+<span class="math notranslate nohighlight">\(\bm{\Pi}\bm{S}=\bm{S}\bm{\Pi}=\bm{\Pi}\bm{S}\bm{\Pi}\)</span>, so <span class="math notranslate nohighlight">\(\bm{\Pi}\)</span> is a
+projector commuting with <span class="math notranslate nohighlight">\(\bm{S}\)</span> and therefore projects onto a span of
+eigenvectors, indexed by some <span class="math notranslate nohighlight">\(\mathcal{I}\)</span>.  The objective value there is
+<span class="math notranslate nohighlight">\(\sum_{i\notin\mathcal{I}}\lambda_i\)</span> by the argument of
+Theorem 12.5.</p>
+<p>Now suppose <span class="math notranslate nohighlight">\(\mathcal{I}\neq\{1,\dots,p\}\)</span>, so there are indices
+<span class="math notranslate nohighlight">\(j\notin\mathcal{I}\)</span> and <span class="math notranslate nohighlight">\(k\in\mathcal{I}\)</span> with <span class="math notranslate nohighlight">\(\lambda_j&gt;\lambda_k\)</span>.
+Consider the curve of projectors obtained by rotating <span class="math notranslate nohighlight">\(\bm{u}_k\)</span> towards
+<span class="math notranslate nohighlight">\(\bm{u}_j\)</span> by an angle <span class="math notranslate nohighlight">\(\vartheta\)</span> inside their two-dimensional span; the
+objective along it is</p>
+<div class="math notranslate nohighlight">
+\[
+E(\vartheta) = \sum_{i\notin\mathcal{I}}\lambda_i
+    - \sin^{2}\!\vartheta\,\left(\lambda_j-\lambda_k\right),
+\]</div>
+<p>since the rotation exchanges a fraction <span class="math notranslate nohighlight">\(\sin^{2}\vartheta\)</span> of the weight on
+<span class="math notranslate nohighlight">\(\lambda_k\)</span> for the same fraction on <span class="math notranslate nohighlight">\(\lambda_j\)</span>.  Thus <span class="math notranslate nohighlight">\(E'(0)=0\)</span> – confirming
+criticality – and <span class="math notranslate nohighlight">\(E''(0)=-2(\lambda_j-\lambda_k)&lt;0\)</span>: the point is a strict
+maximum along this direction while being a minimum along the <span class="math notranslate nohighlight">\(GL(p)\)</span> orbit of
+Proposition 12.7, hence a saddle.  Only
+<span class="math notranslate nohighlight">\(\mathcal{I}=\{1,\dots,p\}\)</span> admits no such pair, and by
+Theorem 12.5 it is the global minimum.</p>
+</div>
+<p>This is what licenses the informal statement that a linear autoencoder
+“does PCA”.  A neural network trained by gradient descent on a non-convex
+objective is guaranteed to land on a classical, spectrally characterised answer
+– not because the objective is convex, which it is not, but because its only
+non-global critical points are saddles, which first-order methods with noise
+leave.  It is essentially the only architecture in this book for which we can
+say that, and Section <em>PyTorch and TensorFlow</em> measures how well the promise is
+kept in practice.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 12.7 (What the autoencoder does <em>not</em> recover)</p>
+<p>If <span class="math notranslate nohighlight">\((\bm{W}_e,\bm{W}_d)\)</span> is a global minimiser then so is
+<span class="math notranslate nohighlight">\((\bm{W}_e\bm{M},\bm{M}^{-1}\bm{W}_d)\)</span> for every invertible
+<span class="math notranslate nohighlight">\(\bm{M}\in\mathbb{R}^{p\times p}\)</span>.  Consequently the individual weights are
+determined only up to <span class="math notranslate nohighlight">\(GL(p)\)</span>: the autoencoder recovers the principal
+<em>subspace</em>, not the principal <em>directions</em>, and its codes are not in
+general uncorrelated, ordered by variance, or of unit norm.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p><span class="math notranslate nohighlight">\((\bm{W}_e\bm{M})(\bm{M}^{-1}\bm{W}_d)=\bm{W}_e\bm{W}_d\)</span>, so the reconstruction
+and hence the cost are unchanged.</p>
+</div>
+<p>This is the practical difference between running PCA and training a linear
+autoencoder, and it is easy to overlook.  PCA delivers an orthonormal basis
+ordered by variance, so that truncating to <span class="math notranslate nohighlight">\(q&lt;p\)</span> components is meaningful and
+the components are uncorrelated by construction.  A linear autoencoder delivers
+some basis of the same subspace, in no particular order, generally not
+orthogonal.  If the directions matter, use PCA; if only the subspace matters,
+either will do, and PCA is faster.</p>
+<div class="tip admonition">
+<p class="admonition-title">Relation to Eckart-Young and the SVD</p>
+<p>Theorem 12.5 is a close relative of the Eckart-Young theorem of
+Section <em>The singular value decomposition</em>, which states that the best rank-<span class="math notranslate nohighlight">\(p\)</span> approximation to
+<span class="math notranslate nohighlight">\(\bm{X}\)</span> in the Frobenius norm is obtained by truncating its singular value
+decomposition, with error <span class="math notranslate nohighlight">\(\sum_{i&gt;p}\sigma_i^{2}\)</span>.  The two are connected by
+<span class="math notranslate nohighlight">\(\sigma_i^{2}=N\lambda_i\)</span>: the singular values of the centred data matrix are
+the square roots of <span class="math notranslate nohighlight">\(N\)</span> times the eigenvalues of the covariance.  The difference
+is that Eckart-Young approximates <span class="math notranslate nohighlight">\(\bm{X}\)</span> by <em>any</em> low-rank matrix, while
+the autoencoder is constrained to approximate each <span class="math notranslate nohighlight">\(\bm{x}_n\)</span> by a fixed linear
+map applied to <span class="math notranslate nohighlight">\(\bm{x}_n\)</span> itself.  That the two give the same answer is a
+consequence of Lemma 12.1.  In practice one computes PCA by
+the SVD of <span class="math notranslate nohighlight">\(\bm{X}\)</span> rather than by eigendecomposing <span class="math notranslate nohighlight">\(\bm{S}\)</span>, for the
+conditioning reason given in Section <em>The singular value decomposition</em>: forming
+<span class="math notranslate nohighlight">\(\bm{X}^{\mathsf{T}}\bm{X}\)</span> squares the condition number.</p>
+</div>
+</section>
+</section>
+<section id="verifying-the-theorem">
+<h2><span class="section-number">12.4. </span>Verifying the theorem<a class="headerlink" href="#verifying-the-theorem" title="Link to this heading">#</a></h2>
+<p>The chapter’s code is the network of Chapter 8 with the target set
+equal to the input.  Nothing else changes, which is the point.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ae_forward</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">acts</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the reconstruction and the cache; X has shape (N, d).&quot;&quot;&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">X</span><span class="p">];</span> <span class="n">Z</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">X</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">a</span> <span class="o">@</span> <span class="n">W</span> <span class="o">+</span> <span class="n">b</span>
+        <span class="n">Z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">ACT</span><span class="p">[</span><span class="n">acts</span><span class="p">[</span><span class="n">l</span><span class="p">]][</span><span class="mi">0</span><span class="p">](</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">ae_backward</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">Xhat</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">acts</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Backpropagation with the target equal to the input, Eq. (12.cost).&quot;&quot;&quot;</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">cache</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">W</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">b</span><span class="p">)]</span> <span class="k">for</span> <span class="n">W</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">P</span><span class="p">]</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">Xhat</span> <span class="o">-</span> <span class="n">X</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span> <span class="o">*</span> <span class="n">ACT</span><span class="p">[</span><span class="n">acts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">](</span><span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">))):</span>
+        <span class="n">g</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">delta</span>
+        <span class="n">g</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">delta</span> <span class="o">@</span> <span class="n">P</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="n">ACT</span><span class="p">[</span><span class="n">acts</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">](</span><span class="n">Z</span><span class="p">[</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">g</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checking every parameter against central differences, for three architectures:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>          <span class="p">[</span><span class="s1">&#39;identity&#39;</span><span class="p">,</span> <span class="s1">&#39;identity&#39;</span><span class="p">]</span>
+      <span class="nb">max</span> <span class="n">relative</span> <span class="n">error</span> <span class="mf">8.71e-09</span>   <span class="nb">max</span> <span class="n">absolute</span> <span class="n">error</span> <span class="mf">6.93e-10</span>
+      <span class="p">(</span><span class="mi">9</span> <span class="n">entries</span> <span class="n">had</span> <span class="n">gradient</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">were</span> <span class="n">checked</span> <span class="n">absolutely</span><span class="p">)</span>
+  <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>    <span class="p">[</span><span class="s1">&#39;tanh&#39;</span><span class="p">,</span> <span class="s1">&#39;tanh&#39;</span><span class="p">,</span> <span class="s1">&#39;tanh&#39;</span><span class="p">,</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">]</span>
+      <span class="nb">max</span> <span class="n">relative</span> <span class="n">error</span> <span class="mf">1.91e-06</span>   <span class="nb">max</span> <span class="n">absolute</span> <span class="n">error</span> <span class="mf">6.19e-10</span>
+  <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>          <span class="p">[</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span> <span class="s1">&#39;identity&#39;</span><span class="p">]</span>
+      <span class="nb">max</span> <span class="n">relative</span> <span class="n">error</span> <span class="mf">2.12e-08</span>   <span class="nb">max</span> <span class="n">absolute</span> <span class="n">error</span> <span class="mf">7.35e-10</span>
+</pre></div>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">A relative check is meaningless on a gradient that is zero</p>
+<p>The first line above reports nine parameters excluded from the relative
+comparison.  They are the biases of a linear autoencoder on centred data, whose
+gradients are <em>exactly</em> zero – the analytic value came out as
+<span class="math notranslate nohighlight">\(4.9\times10^{-17}\)</span> and the central difference as <span class="math notranslate nohighlight">\(-4.4\times10^{-10}\)</span>, pure
+subtraction noise.  Their ratio is <span class="math notranslate nohighlight">\(\bigO(1)\)</span> and means nothing.  This is the
+same lesson as the ReLU kink of Section <em>Verifying the implementation</em>, in a different
+disguise: a gradient checker needs an absolute test as well as a relative one,
+and needs to know which to apply where.</p>
+</div>
+<p>Now the theorem.  We generate <span class="math notranslate nohighlight">\(600\)</span> points in <span class="math notranslate nohighlight">\(\mathbb{R}^{8}\)</span> lying near a
+three-dimensional subspace, plus isotropic noise, and train a
+<span class="math notranslate nohighlight">\([8,3,8]\)</span> linear autoencoder by Adam.  Against the predictions of
+Theorem 12.5 and Proposition 12.7:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AE</span>  <span class="n">reconstruction</span> <span class="n">error</span> <span class="p">:</span> <span class="mf">0.308313</span>
+<span class="n">PCA</span> <span class="n">reconstruction</span> <span class="n">error</span> <span class="p">:</span> <span class="mf">0.306324</span>
+<span class="n">eigenvalue</span> <span class="n">tail</span>          <span class="p">:</span> <span class="mf">0.306324</span>
+<span class="n">AE</span><span class="o">/</span><span class="n">PCA</span> <span class="n">error</span> <span class="n">ratio</span>       <span class="p">:</span> <span class="mf">1.006493</span>
+<span class="n">principal</span> <span class="n">angles</span> <span class="p">(</span><span class="n">deg</span><span class="p">)</span>   <span class="p">:</span> <span class="p">[</span><span class="mf">0.0684</span> <span class="mf">0.1851</span> <span class="mf">0.318</span> <span class="p">]</span>
+<span class="o">||</span><span class="n">W_e</span> <span class="n">W_d</span> <span class="o">-</span> <span class="n">Pi</span><span class="o">||</span><span class="n">_F</span>       <span class="p">:</span> <span class="mf">9.895e-03</span>
+<span class="n">singular</span> <span class="n">values</span> <span class="n">of</span> <span class="n">W_e</span> <span class="n">W_d</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0033</span> <span class="mf">1.0007</span> <span class="mf">0.9989</span> <span class="mf">1.166e-16</span> <span class="mf">6.462e-17</span>
+                             <span class="mf">5.420e-17</span> <span class="mf">3.645e-17</span> <span class="mf">1.840e-18</span><span class="p">]</span>
+<span class="o">||</span><span class="n">W_e</span> <span class="o">-</span> <span class="n">U_p</span><span class="o">||</span><span class="n">_F</span>          <span class="p">:</span> <span class="mf">1.8737</span>  <span class="p">(</span><span class="n">NOT</span> <span class="n">small</span><span class="p">)</span>
+<span class="n">dist</span><span class="p">(</span><span class="n">W_e</span><span class="p">,</span> <span class="n">span</span> <span class="n">U_p</span><span class="p">)</span>      <span class="p">:</span> <span class="mf">2.466e-03</span>  <span class="p">(</span><span class="n">small</span><span class="p">:</span> <span class="n">same</span> <span class="n">subspace</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Every line is a prediction confirmed.  The PCA reconstruction error and the
+eigenvalue tail agree to all six digits printed, which is
+Eq. (12.14).  The autoencoder gets to within <span class="math notranslate nohighlight">\(0.65\%\)</span> of that floor
+and does not cross it.  The singular values of <span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span> are three ones
+and five zeros <em>to machine precision</em>, so the trained product really is an
+orthogonal projector of rank three, as Lemma 12.1 said it
+would be.  The principal angles between the learned subspace and the leading
+eigenspace are a fifth of a degree.</p>
+<p>And the last two lines are Proposition 12.7 in numbers.  The
+distance from <span class="math notranslate nohighlight">\(\bm{W}_e\)</span> to <span class="math notranslate nohighlight">\(\bm{U}_p\)</span> is <span class="math notranslate nohighlight">\(1.87\)</span>, which is not small – the
+weights are nowhere near the eigenvectors – while the distance from <span class="math notranslate nohighlight">\(\bm{W}_e\)</span>
+to the <em>span</em> of <span class="math notranslate nohighlight">\(\bm{U}_p\)</span> is <span class="math notranslate nohighlight">\(2.5\times10^{-3}\)</span>.  Same subspace,
+different basis.  A reader who trained a linear autoencoder expecting to read
+principal directions off the encoder weights would get nonsense, and the
+reconstruction error would give no hint of it.</p>
+<p><img alt="a The eigenvalue spectrum of bmS on a logarithmic scale the red bars a" src="_images/ae_pca.png" /></p>
+<p><em>Figure 12.4: (a) The eigenvalue spectrum of <span class="math notranslate nohighlight">\(\bm{S}\)</span> on a logarithmic scale; the red bars are the discarded eigenvalues whose sum is the error floor of Eq. (12.14).  (b) The autoencoder’s reconstruction error minus that floor during training: it approaches zero from above and never crosses, as Theorem 12.5 guarantees.  (c) Singular values of the trained product <span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span>: exactly <span class="math notranslate nohighlight">\(p=3\)</span> of them equal one and the remaining <span class="math notranslate nohighlight">\(d-p=5\)</span> are at the level of rounding, confirming that the learned map is an orthogonal projector of rank <span class="math notranslate nohighlight">\(p\)</span>.</em></p>
+</section>
+<section id="beyond-pca">
+<h2><span class="section-number">12.5. </span>Beyond PCA<a class="headerlink" href="#beyond-pca" title="Link to this heading">#</a></h2>
+<p>PCA finds the best linear subspace.  Many data sets do not lie near one: images
+of a rotating object, molecular conformations, solutions of a nonlinear partial
+differential equation parameterised by a boundary condition, speech.  These lie
+near a curved manifold, and no linear subspace of the manifold’s dimension will
+follow it.</p>
+<p>Replacing the linear maps of Eq. (12.6) by the deep networks of
+Chapter 8,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{z}=f_\theta(\bm{x})
+   = \sigma_L\!\left(\bm{W}_L\sigma_{L-1}\!\left(\cdots
+      \sigma_1(\bm{W}_1\bm{x}+\bm{b}_1)\cdots\right)+\bm{b}_L\right),
+  \qquad
+  \hat{\bm{x}}=g_\phi(\bm{z}),\tag{12.15}
+\]</div>
+<p>buys the ability to bend.  It also costs the entire analysis of
+Section <em>The linear autoencoder</em>: the problem becomes non-convex, no closed form is
+available, and we are back to gradient descent with no guarantee of a global
+optimum.</p>
+<p><strong>What replaces the projector.</strong>
+If <span class="math notranslate nohighlight">\(f\)</span> and <span class="math notranslate nohighlight">\(g\)</span> are differentiable then near a point <span class="math notranslate nohighlight">\(\bm{x}_0\)</span>, with
+<span class="math notranslate nohighlight">\(\bm{z}_0=f(\bm{x}_0)\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+g(f(\bm{x})) \approx g(f(\bm{x}_0))
+    + \bm{J}_g(\bm{z}_0)\bm{J}_f(\bm{x}_0)\left(\bm{x}-\bm{x}_0\right),\tag{12.16}
+\]</div>
+<p>so the product of Jacobians <span class="math notranslate nohighlight">\(\bm{J}_g\bm{J}_f\)</span> is the local reconstruction
+operator.  It plays the role that <span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span> played in the linear case,
+with the crucial difference that it now <em>varies from point to point</em>.  A
+nonlinear autoencoder is, to first order, a projector onto the tangent space of
+the data manifold, chosen afresh at every location.</p>
+<p><strong>Measuring the difference.</strong>
+We put <span class="math notranslate nohighlight">\(800\)</span> training and <span class="math notranslate nohighlight">\(400\)</span> test points on a one-dimensional curve — a
+helix — embedded in <span class="math notranslate nohighlight">\(\mathbb{R}^{3}\)</span> with small isotropic noise, and compare
+PCA against a <span class="math notranslate nohighlight">\([3,16,p,16,3]\)</span> autoencoder with <span class="math notranslate nohighlight">\(\tanh\)</span> hidden layers.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>\noalign{} <span class="math notranslate nohighlight">\(p\)</span></p></th>
+<th class="head"><p>Method</p></th>
+<th class="head"><p>train error</p></th>
+<th class="head"><p>test error</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>\noalign{}\noalign{} <span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td><p>PCA</p></td>
+<td><p><span class="math notranslate nohighlight">\(0.7855\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.7914\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(1\)</span></p></td>
+<td><p>nonlinear autoencoder</p></td>
+<td><p><span class="math notranslate nohighlight">\(0.1511\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{0.2012}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>\noalign{}\noalign{} <span class="math notranslate nohighlight">\(2\)</span></p></td>
+<td><p>PCA</p></td>
+<td><p><span class="math notranslate nohighlight">\(0.3208\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.3316\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(2\)</span></p></td>
+<td><p>nonlinear autoencoder</p></td>
+<td><p><span class="math notranslate nohighlight">\(0.0020\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{0.0062}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>\noalign{}</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 12.1: A one-dimensional curved manifold in <span class="math notranslate nohighlight">\(\mathbb{R}^{3}\)</span>.  Errors are
+<span class="math notranslate nohighlight">\(\|\bm{x}-\hat{\bm{x}}\|^{2}\)</span> averaged over points, and the autoencoder figures
+are means over three seeds.  The total variance per point is <span class="math notranslate nohighlight">\(1.287\)</span>.</em></p>
+<p>At <span class="math notranslate nohighlight">\(p=1\)</span> the autoencoder is four times more accurate than PCA; at <span class="math notranslate nohighlight">\(p=2\)</span> it is
+fifty times more accurate.  The sharpest way to put it is to compare across
+rows: the <em>one</em>-dimensional nonlinear code, at <span class="math notranslate nohighlight">\(0.2012\)</span>, beats the
+<em>two</em>-dimensional linear one, at <span class="math notranslate nohighlight">\(0.3316\)</span>.  Curvature is worth more than a
+dimension here, and Theorem 12.5 tells us exactly why PCA cannot
+do better – its error is fixed by the eigenvalue tail, and no amount of
+training changes it.</p>
+<p><img alt="a The data, coloured by position along the curve, with the one-dimensi" src="_images/ae_nonlinear.png" /></p>
+<p><em>Figure 12.5: (a) The data, coloured by position along the curve, with the one-dimensional PCA reconstruction in red: a straight line through a helix. (b) The same data with the one-dimensional nonlinear autoencoder reconstruction, which follows the curve.  (c) The learned code <span class="math notranslate nohighlight">\(z\)</span> against the true parameter <span class="math notranslate nohighlight">\(t\)</span>.  The relation is monotone in stretches but saturates at <span class="math notranslate nohighlight">\(\pm1\)</span> and jumps: the reconstruction is good and the coordinate is not.</em></p>
+<p>Panel (c) of Figure 12.5 is the honest part, and it is the
+notebox of Section <em>Reconstruction, projection and representation</em> made visible.  The autoencoder
+reconstructs the helix well, but the code it uses to do so is not a faithful
+coordinate along the curve: it saturates against the limits of the <span class="math notranslate nohighlight">\(\tanh\)</span> and
+jumps between branches.  Nothing in Eq. (12.2) asked for a good
+coordinate, so nothing delivered one.  If the latent variable is to be
+interpreted – as a reaction coordinate, an order parameter, a physical
+parameter of the system – then reconstruction error alone is the wrong
+objective, and one of the regularisers of the next section, or the probabilistic
+treatment of Section <em>The probabilistic view: PPCA</em>, must be brought in.</p>
+</section>
+<section id="regularised-autoencoders">
+<h2><span class="section-number">12.6. </span>Regularised autoencoders<a class="headerlink" href="#regularised-autoencoders" title="Link to this heading">#</a></h2>
+<p>The bottleneck is one way to prevent an autoencoder from learning the identity.
+It is not the only way, and an <em>overcomplete</em> autoencoder with <span class="math notranslate nohighlight">\(p\ge d\)</span>
+needs another, since <span class="math notranslate nohighlight">\(g\circ f=\mathrm{id}\)</span> is available and costs nothing.  All
+three constructions below add a penalty to Eq. (12.2) and can
+replace the bottleneck entirely.</p>
+<p><strong>Denoising autoencoders.</strong></p>
+<p>Corrupt the input and ask for the clean version back.  With
+<span class="math notranslate nohighlight">\(\tilde{\bm{x}}=\bm{x}+\bm{\varepsilon}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{\theta,\phi}\frac{1}{N}\sum_{n=1}^{N}
+    \left\|\bm{x}_n-g_\phi\!\left(f_\theta(\tilde{\bm{x}}_n)\right)\right\|_2^{2}.\tag{12.17}
+\]</div>
+<p>Copying the input is now actively harmful, because the input is wrong.  The
+network must instead learn where the data <em>are</em>, so as to move a corrupted
+point back onto them.  There is a striking statistical reading of this: for
+small Gaussian corruption the optimal reconstruction satisfies</p>
+<div class="math notranslate nohighlight">
+\[
+r(\bm{x}) - \bm{x} \;\approx\; \sigma^{2}\nabla_{\bm{x}}\log p(\bm{x}),\tag{12.18}
+\]</div>
+<p>so the displacement the network applies is proportional to the <em>score</em> of
+the data density.  A denoising autoencoder is, without being told so, an
+estimator of <span class="math notranslate nohighlight">\(\nabla\log p\)</span> – which is exactly the object that score-based and
+diffusion generative models are built on.</p>
+<p><strong>Sparse autoencoders.</strong></p>
+<p>Penalise the code rather than the reconstruction:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L} = \frac{1}{N}\sum_{n}\left\|\bm{x}_n-\hat{\bm{x}}_n\right\|_2^{2}
+    + \lambda\sum_{n}\left\|\bm{z}_n\right\|_1 .\tag{12.19}
+\]</div>
+<p>The <span class="math notranslate nohighlight">\(\ell_1\)</span> penalty is the one that produced exact zeros in
+Section <em>The Lasso</em>, and it does the same here: each input activates only a
+few latent units, and those units tend to become recognisable feature detectors.
+The construction is close kin to dictionary learning and sparse coding.</p>
+<p><strong>Contractive autoencoders.</strong></p>
+<p>Penalise the sensitivity of the encoder:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L} = \frac{1}{N}\sum_{n}\left\|\bm{x}_n-\hat{\bm{x}}_n\right\|_2^{2}
+    + \lambda\sum_{n}\left\|\bm{J}_f(\bm{x}_n)\right\|_F^{2}.\tag{12.20}
+\]</div>
+<p>The two terms pull in opposite directions and the geometry of the compromise is
+the point.  Reconstruction requires the encoder to be sensitive to displacements
+<em>along</em> the data manifold, since those change which point is being
+encoded.  The penalty asks it to be insensitive in <em>all</em> directions.  The
+optimum keeps sensitivity where it is needed and suppresses it elsewhere, so
+that <span class="math notranslate nohighlight">\(\bm{J}_f\)</span> ends up large on the tangent space of the manifold and small on
+the normal directions.  The encoder learns the manifold’s tangent structure.
+Figure 12.6 draws the denoising and the contractive geometry
+next to one another, which is the quickest way to see why the two are so nearly
+the same construction.</p>
+<p><img alt="The geometry behind the two regularisers of Section Regularised autoen" src="../BookML/BookFigures/chapter12_autoencoders/12-manifold.png" /></p>
+<p><em>Figure 12.6: The geometry behind the two regularisers of Section <em>Regularised autoencoders</em>, drawn for data concentrated near a curve in the plane.  (a) Denoising, Eq. (12.17): the corrupted input <span class="math notranslate nohighlight">\(\tilde{\bm{x}}\)</span> is displaced off the data by an amount of order <span class="math notranslate nohighlight">\(\sigma\)</span>, and the network is scored on how well it recovers the clean <span class="math notranslate nohighlight">\(\bm{x}\)</span>, so it must learn the map that points back towards where the data are. Equation (12.18) identifies that map, to leading order, with the score <span class="math notranslate nohighlight">\(\nabla_{\bm{x}}\log p\)</span>.  (b) Contraction, Eq. (12.20): reconstruction needs the encoder to respond to displacements <em>along</em> the data, while the penalty asks it to respond to nothing at all; the compromise keeps <span class="math notranslate nohighlight">\(\bm{J}_f\)</span> large on the tangent and small on the normal, so the ellipse of responses is flattened onto the manifold. Proposition 12.8 makes the resemblance precise to order <span class="math notranslate nohighlight">\(\sigma^{2}\)</span>, with the one caveat recorded there: the denoising penalty falls on <span class="math notranslate nohighlight">\(\bm{J}_r\)</span>, the sensitivity of the round trip, and not on <span class="math notranslate nohighlight">\(\bm{J}_f\)</span>.</em></p>
+<p>The last sentence of the notebox below says these regularisers are “the same
+idea”.  For two of them that is a theorem rather than an impression.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 12.8 (Denoising is contraction, to second order)</p>
+<p>Let <span class="math notranslate nohighlight">\(r=g\circ f\)</span> be the reconstruction map and let the denoising
+objective (12.17) use additive noise
+<span class="math notranslate nohighlight">\(\tilde{\bm{x}}=\bm{x}+\sigma\bm{\xi}\)</span> with <span class="math notranslate nohighlight">\(\mathbb{E}[\bm{\xi}]=\bm{0}\)</span>
+and <span class="math notranslate nohighlight">\(\mathbb{E}[\bm{\xi}\bm{\xi}^{\mathsf{T}}]=\bm{I}\)</span>.  If <span class="math notranslate nohighlight">\(r\)</span> is twice
+continuously differentiable then</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}_{\bm{\xi}}\left\|\bm{x}-r(\bm{x}+\sigma\bm{\xi})\right\|^{2}
+  = \left\|\bm{x}-r(\bm{x})\right\|^{2}
+  + \sigma^{2}\left\|\bm{J}_r(\bm{x})\right\|_F^{2}
+  + \bigO(\sigma^{3}),\tag{12.21}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\bm{J}_r=\partial r/\partial\bm{x}\)</span>.  Training a denoising autoencoder
+at noise level <span class="math notranslate nohighlight">\(\sigma\)</span> is therefore, to leading order, training a plain
+autoencoder with the contractive penalty (12.20) at
+<span class="math notranslate nohighlight">\(\lambda=\sigma^{2}\)</span> – applied to the whole reconstruction rather than to the
+encoder alone.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Taylor-expand <span class="math notranslate nohighlight">\(r(\bm{x}+\sigma\bm{\xi})
+=r(\bm{x})+\sigma\bm{J}_r\bm{\xi}+\bigO(\sigma^{2})\)</span> and substitute:</p>
+<div class="math notranslate nohighlight">
+\[
+\left\|\bm{x}-r(\bm{x})-\sigma\bm{J}_r\bm{\xi}\right\|^{2}
+  = \left\|\bm{x}-r(\bm{x})\right\|^{2}
+    - 2\sigma\left(\bm{x}-r(\bm{x})\right)^{\mathsf{T}}\bm{J}_r\bm{\xi}
+    + \sigma^{2}\bm{\xi}^{\mathsf{T}}\bm{J}_r^{\mathsf{T}}\bm{J}_r\bm{\xi}.
+\]</div>
+<p>Taking the expectation, the middle term vanishes
+because <span class="math notranslate nohighlight">\(\mathbb{E}[\bm{\xi}]=\bm{0}\)</span>, and the last one is
+<span class="math notranslate nohighlight">\(\sigma^{2}\operatorname{Tr}(\bm{J}_r^{\mathsf{T}}\bm{J}_r)
+=\sigma^{2}\|\bm{J}_r\|_F^{2}\)</span>, because
+<span class="math notranslate nohighlight">\(\mathbb{E}[\bm{\xi}\bm{\xi}^{\mathsf{T}}]=\bm{I}\)</span>.  The neglected terms are
+<span class="math notranslate nohighlight">\(\bigO(\sigma^{3})\)</span> since the <span class="math notranslate nohighlight">\(\bigO(\sigma^{2})\)</span> term of the expansion enters
+the square multiplied by the first-order one.</p>
+</div>
+<p>Equation (12.21) explains why the two constructions behave
+so similarly in practice, and it also explains why they are not identical: the
+denoising penalty falls on <span class="math notranslate nohighlight">\(\bm{J}_r\)</span>, the sensitivity of the round trip, while
+Eq. (12.20) penalises <span class="math notranslate nohighlight">\(\bm{J}_f\)</span>, the sensitivity of the
+encoder alone.  A decoder that amplifies can hide from the second and not from
+the first.  It also predicts what the noise level buys: doubling <span class="math notranslate nohighlight">\(\sigma\)</span>
+quadruples the effective <span class="math notranslate nohighlight">\(\lambda\)</span>, so the reconstruction error should degrade
+smoothly rather than sharply, which is what
+Section <em>The regularised variants, measured</em> finds.</p>
+<div class="tip admonition">
+<p class="admonition-title">These are all the same idea</p>
+<p>A bottleneck restricts the code by
+dimension; sparsity restricts it by how many coordinates may be non-zero;
+contraction restricts it by how fast it may vary; denoising restricts it by
+requiring robustness.  In each case the network is prevented from being the
+identity and must spend its capacity on structure instead.  This is the
+bias-variance trade-off of Section <em>The bias-variance tradeoff</em> appearing once more,
+with the regulariser choosing which functions are cheap.</p>
+</div>
+</section>
+<section id="the-probabilistic-view-ppca">
+<h2><span class="section-number">12.7. </span>The probabilistic view: PPCA<a class="headerlink" href="#the-probabilistic-view-ppca" title="Link to this heading">#</a></h2>
+<p>Everything so far has been deterministic: a code <span class="math notranslate nohighlight">\(\bm{z}=f(\bm{x})\)</span> and a
+reconstruction <span class="math notranslate nohighlight">\(\hat{\bm{x}}=g(\bm{z})\)</span>.  A probabilistic autoencoder replaces
+these by a latent-variable model
+<span class="math notranslate nohighlight">\(p_\theta(\bm{x},\bm{z})=p_\theta(\bm{x}\mid\bm{z})p(\bm{z})\)</span>, turning
+representation learning into statistical inference of the kind
+Chapter 2 set up.</p>
+<p>The linear case again has a complete answer.  <em>Probabilistic PCA</em> assumes</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{z}\sim\mathcal{N}(\bm{0},\bm{I}_p),
+  \qquad
+  \bm{x} = \bm{W}\bm{z}+\bm{\mu}+\bm{\epsilon},
+  \qquad
+  \bm{\epsilon}\sim\mathcal{N}(\bm{0},\sigma^{2}\bm{I}_d),\tag{12.22}
+\]</div>
+<p>so that <span class="math notranslate nohighlight">\(p(\bm{x}\mid\bm{z})=\mathcal{N}(\bm{W}\bm{z}+\bm{\mu},
+\sigma^{2}\bm{I}_d)\)</span>.  Integrating out the latent variable, which is a Gaussian
+marginalisation and therefore exact,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x}\sim\mathcal{N}\!\left(\bm{\mu},\;
+    \bm{W}\bm{W}^{\mathsf{T}}+\sigma^{2}\bm{I}_d\right).\tag{12.23}
+\]</div>
+<p>The model therefore describes the covariance as a low-rank term plus isotropic
+noise, <span class="math notranslate nohighlight">\(\bm{\Sigma}=\bm{W}\bm{W}^{\mathsf{T}}+\sigma^{2}\bm{I}\)</span>, which is the
+probabilistic statement of “low-dimensional structure plus measurement error”.</p>
+<p>Maximum-likelihood estimation in this model, worked out by Tipping and
+Bishop [tipping1999], gives a loading matrix whose column space is exactly
+the principal subspace, and <span class="math notranslate nohighlight">\(\hat{\sigma}^{2}\)</span> equal to the average of the
+discarded eigenvalues,</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{\sigma}^{2} = \frac{1}{d-p}\sum_{i=p+1}^{d}\lambda_i .\tag{12.24}
+\]</div>
+<p>Compare Eq. (12.14): the same eigenvalue tail that bounded the
+autoencoder’s reconstruction error reappears as the estimated noise variance.
+As <span class="math notranslate nohighlight">\(\sigma^{2}\to0\)</span> the model degenerates to the deterministic projection, and
+PPCA becomes ordinary PCA.  Once again <span class="math notranslate nohighlight">\(\bm{W}\)</span> is determined only up to an
+orthogonal factor, for the reason given in
+Proposition 12.7.</p>
+<p>The gain is what a probabilistic model always gives: a likelihood, hence a
+principled way to choose <span class="math notranslate nohighlight">\(p\)</span>; a generative model one can sample from; and a
+proper treatment of missing data.  Replacing the linear map in
+Eq. (12.22) by a neural network, and the exact marginalisation by a
+variational bound, gives the variational autoencoder, which belongs to a later
+discussion of generative models.</p>
+</section>
+<section id="implementations">
+<h2><span class="section-number">12.8. </span>Implementations<a class="headerlink" href="#implementations" title="Link to this heading">#</a></h2>
+<section id="our-own">
+<h3><span class="section-number">12.8.1. </span>Our own<a class="headerlink" href="#our-own" title="Link to this heading">#</a></h3>
+<p>The complete autoencoder is the code of Section <em>Verifying the theorem</em> with a list
+of layer widths and activations.  A deep autoencoder on the helix of
+Table 12.1 is four lines:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">acts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="s2">&quot;identity&quot;</span><span class="p">]</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">init_ae</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">acts</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">P</span><span class="p">,</span> <span class="n">hist</span> <span class="o">=</span> <span class="n">train_ae</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">acts</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span> <span class="n">Xval</span><span class="o">=</span><span class="n">Xte</span><span class="p">)</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">encode</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">acts</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>          <span class="c1"># the code: run the first two layers</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Setting \verb!acts = [“identity”, “identity”]! and
+\verb!sizes = [d, p, d]! recovers the linear autoencoder of
+Theorem 12.5, and \verb!pca(X, p)! in the same module returns the
+projector, the loadings and the eigenvalues for comparison.  The two are worth
+running side by side once.</p>
+<div class="tip admonition">
+<p class="admonition-title">Centre the data</p>
+<p>Theorem 12.5 assumes it, and PCA
+without it finds the direction of the mean rather than the direction of greatest
+variance.  Scikit-learn’s \verb!PCA! centres internally; our
+\verb!pca! does so too; a hand-written implementation or a neural network
+without biases does not.  If the features have incomparable units, standardise
+as well as centre, or the covariance will be dominated by whichever feature
+happens to be measured in small units.</p>
+</div>
+</section>
+<section id="pytorch-and-tensorflow">
+<h3><span class="section-number">12.8.2. </span>PyTorch and TensorFlow<a class="headerlink" href="#pytorch-and-tensorflow" title="Link to this heading">#</a></h3>
+<p>Two things are worth doing in a library.  The first is to check that it computes
+what we derived: one set of weights pushed into our code, into PyTorch and into
+Keras should give the same reconstruction and the same gradients.  The second,
+and the more interesting, is to put Theorem 12.5 and
+Proposition 12.6 to the test – to train a linear
+autoencoder by Adam and ask whether it really lands on the principal subspace,
+and whether it really fails to land on the principal basis.</p>
+<p>The conversion is trivial here, which is worth saying because it was not in
+Chapters 10 and 11: Keras stores a dense weight as
+<span class="math notranslate nohighlight">\((n_{\mathrm{in}},n_{\mathrm{out}})\)</span>, exactly as our code does, and only PyTorch
+transposes.  With that one transposition:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">1.</span> <span class="n">one</span> <span class="n">autoencoder</span><span class="p">,</span> <span class="n">identical</span> <span class="n">weights</span> <span class="o">===</span>
+  <span class="n">reconstruction</span> <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span> <span class="p">:</span> <span class="mf">3.886e-16</span>
+  <span class="n">reconstruction</span> <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">keras</span><span class="o">|</span> <span class="p">:</span> <span class="mf">3.608e-16</span>
+  <span class="n">our</span> <span class="n">cost</span><span class="p">,</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">12.</span><span class="n">cost</span><span class="p">)</span>           <span class="p">:</span> <span class="mf">5.781582466015</span>
+  <span class="n">torch</span> <span class="n">cost</span>                        <span class="p">:</span> <span class="mf">5.781582466015</span>
+   <span class="n">layer</span>      <span class="n">shape</span>          <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span> <span class="n">W</span>    <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span> <span class="n">b</span>
+   <span class="mi">0</span>   <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>                  <span class="mf">2.220e-16</span>           <span class="mf">6.765e-17</span>
+   <span class="mi">1</span>   <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>                   <span class="mf">2.220e-16</span>           <span class="mf">5.551e-17</span>
+   <span class="mi">2</span>   <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>                   <span class="mf">1.110e-16</span>           <span class="mf">1.388e-16</span>
+   <span class="mi">3</span>   <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>                  <span class="mf">8.327e-17</span>           <span class="mf">5.898e-17</span>
+  <span class="n">worst</span> <span class="n">disagreement</span><span class="p">:</span> <span class="mf">2.220e-16</span>
+</pre></div>
+</div>
+<p>so the network of Section <em>Our own</em> and the two libraries are the same
+function, and its gradients are the same gradients.</p>
+<p>The listings below are the standard constructions.  The first is a linear
+autoencoder, which should reproduce PCA.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
+
+<span class="c1"># three-dimensional data lying near a plane</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">generate_3d_data</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">w1</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">w2</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.5</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">noise</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.7</span> <span class="o">+</span> <span class="n">noise</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">w1</span> <span class="o">+</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">w2</span> <span class="o">+</span> <span class="n">noise</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">generate_3d_data</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span> <span class="o">-</span> <span class="n">X_train</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># centre: see the notebox</span>
+
+<span class="c1"># no activations anywhere: this is Eq. (12.linae)</span>
+<span class="n">encoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">])])</span>
+<span class="n">decoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">])])</span>
+<span class="n">autoencoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="n">encoder</span><span class="p">,</span> <span class="n">decoder</span><span class="p">])</span>
+<span class="n">autoencoder</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s2">&quot;mse&quot;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">1.5</span><span class="p">))</span>
+<span class="n">autoencoder</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># target == input</span>
+
+<span class="n">codings</span> <span class="o">=</span> <span class="n">encoder</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="c1"># compare with PCA: the subspaces should agree, the bases need not</span>
+<span class="n">U</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">Vt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PCA loadings:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">Vt</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;encoder weights:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">encoder</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The final two prints are Proposition 12.7 in action: the two
+matrices will differ, and their column spaces will not.</p>
+<p>A stacked, nonlinear autoencoder on MNIST, with a mirrored decoder and a
+logistic output to match the <span class="math notranslate nohighlight">\([0,1]\)</span> data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">X_train_full</span><span class="p">,</span> <span class="n">_</span><span class="p">),</span> <span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">mnist</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+<span class="n">X_train_full</span> <span class="o">=</span> <span class="n">X_train_full</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mi">255</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_valid</span> <span class="o">=</span> <span class="n">X_train_full</span><span class="p">[:</span><span class="o">-</span><span class="mi">5000</span><span class="p">],</span> <span class="n">X_train_full</span><span class="p">[</span><span class="o">-</span><span class="mi">5000</span><span class="p">:]</span>
+
+<span class="n">stacked_encoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">]),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">),</span>          <span class="c1"># the bottleneck, p = 30</span>
+<span class="p">])</span>
+<span class="n">stacked_decoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>             <span class="c1"># the exact mirror</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">]),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">28</span> <span class="o">*</span> <span class="mi">28</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">),</span>  <span class="c1"># data live in [0,1]</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Reshape</span><span class="p">([</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">]),</span>
+<span class="p">])</span>
+<span class="n">stacked_ae</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="n">stacked_encoder</span><span class="p">,</span> <span class="n">stacked_decoder</span><span class="p">])</span>
+<span class="n">stacked_ae</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s2">&quot;binary_crossentropy&quot;</span><span class="p">,</span>          <span class="c1"># Eq. (12.bce)</span>
+                   <span class="n">optimizer</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">))</span>
+<span class="n">stacked_ae</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+               <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">X_valid</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The convolutional version reuses Chapter 10 without modification.
+The encoder is a stack of strided convolutions, which by
+Proposition 10.4 halve the spatial size each time; the decoder
+mirrors it with transposed convolutions, which are the adjoint operation
+discussed in the notebox of Section <em>Backpropagation through a convolutional layer</em>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Encoder: (28,28,1) -&gt; (14,14,16) -&gt; (7,7,32) -&gt; (4,4,64), Eq. (10.outsize)</span>
+<span class="n">conv_encoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Reshape</span><span class="p">([</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">]),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;SAME&quot;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;SAME&quot;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;SAME&quot;</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="c1"># Decoder: the exact mirror, transposed convolutions doubling the size</span>
+<span class="n">conv_decoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;SAME&quot;</span><span class="p">,</span>
+                                 <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">]),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;SAME&quot;</span><span class="p">,</span>
+                                 <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;selu&quot;</span><span class="p">),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Conv2DTranspose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;SAME&quot;</span><span class="p">,</span>
+                                 <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Lambda</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">28</span><span class="p">,</span> <span class="p">:</span><span class="mi">28</span><span class="p">,</span> <span class="p">:]),</span>   <span class="c1"># crop 32 -&gt; 28</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Reshape</span><span class="p">([</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">]),</span>
+<span class="p">])</span>
+<span class="n">conv_ae</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="n">conv_encoder</span><span class="p">,</span> <span class="n">conv_decoder</span><span class="p">])</span>
+<span class="n">conv_ae</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s2">&quot;binary_crossentropy&quot;</span><span class="p">,</span>
+                <span class="n">optimizer</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>A recurrent autoencoder reuses Chapter 11 in the same way, reading
+each image as a sequence of <span class="math notranslate nohighlight">\(28\)</span> rows.  The encoder’s final state is the code;
+\verb!RepeatVector! hands it to the decoder once per output step.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">recurrent_encoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">return_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">]),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>                       <span class="c1"># final state = the code</span>
+<span class="p">])</span>
+<span class="n">recurrent_decoder</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">RepeatVector</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">]),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="n">return_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">TimeDistributed</span><span class="p">(</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">)),</span>
+<span class="p">])</span>
+<span class="n">recurrent_ae</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="n">recurrent_encoder</span><span class="p">,</span> <span class="n">recurrent_decoder</span><span class="p">])</span>
+<span class="n">recurrent_ae</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s2">&quot;binary_crossentropy&quot;</span><span class="p">,</span>
+                     <span class="n">optimizer</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The same dense autoencoder in PyTorch, where the mirror symmetry is explicit:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">transforms</span>
+
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="s2">&quot;./data&quot;</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">transform</span><span class="o">=</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">()),</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Autoencoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;784 -&gt; 256 -&gt; 128 -&gt; 256 -&gt; 784, an exact mirror; Eq. (12.factor).&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_dim</span><span class="o">=</span><span class="mi">784</span><span class="p">,</span> <span class="n">h_dim</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">z_dim</span><span class="o">=</span><span class="mi">128</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">x_dim</span><span class="p">,</span> <span class="n">h_dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">h_dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h_dim</span><span class="p">,</span> <span class="n">z_dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">z_dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">z_dim</span><span class="p">,</span> <span class="n">h_dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">h_dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">h_dim</span><span class="p">,</span> <span class="n">x_dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">(),</span>       <span class="c1"># data in [0,1]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Autoencoder</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">),</span> <span class="n">inputs</span><span class="p">)</span>            <span class="c1"># target == input</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2">  train </span><span class="si">{</span><span class="n">total</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">train_loader</span><span class="p">)</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Turning this into a denoising autoencoder, Eq. (12.17), is one
+line: replace the forward call by
+\verb!model(inputs + 0.3*torch.randn_like(inputs))! while leaving the target as
+\verb!inputs!.  A sparse autoencoder, Eq. (12.19), adds
+\verb!lam * model.encoder(inputs).abs().sum()! to the loss.  Neither requires a
+new architecture, which is the point of Section <em>Regularised autoencoders</em>.</p>
+</section>
+<section id="does-adam-find-the-principal-subspace">
+<h3><span class="section-number">12.8.3. </span>Does Adam find the principal subspace?<a class="headerlink" href="#does-adam-find-the-principal-subspace" title="Link to this heading">#</a></h3>
+<p>Theorem 12.5 is about the global minimum and
+Proposition 12.6 says there is nowhere else to get stuck.
+Together they predict that a linear autoencoder trained by any reasonable
+optimiser will land on the principal subspace.  We put eight-dimensional data
+with a three-dimensional signal through a <span class="math notranslate nohighlight">\(8\to3\to8\)</span> linear autoencoder,
+train with Adam, and then compare the encoder’s column space with the span of
+the top three eigenvectors.  The right measure is the <em>principal angles</em>
+between two subspaces: the arccosines of the singular values of
+<span class="math notranslate nohighlight">\(\bm{Q}_1^{\mathsf{T}}\bm{Q}_2\)</span> for orthonormal bases <span class="math notranslate nohighlight">\(\bm{Q}_i\)</span>, of which the
+largest is a complete summary.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>=== 1. Theorem 12.aepca: does Adam find the principal subspace? ===
+  largest principal angle to the PCA subspace : 0.0154 degrees
+  max |W_enc - V_pca| entrywise               : 1.3393
+  reconstruction cost per sample              : 0.155593
+  Eckart-Young floor, Eq. (12.floor)          : 0.155593
+  excess over the floor                       : 5.108e-08
+  ||Pi_enc - Pi_pca||_F                       : 4.592e-04
+  ||Pi^2 - Pi||_F, trace Pi                   : 1.30e-07, 3.000000
+</pre></div>
+</div>
+<p>Read the second line against the first.  The subspace is recovered to a
+hundredth of a degree and the reconstruction cost sits on the Eckart-Young
+floor of Eq. (12.14) to eight decimal places – and the weight
+matrix is nowhere near the PCA loadings, differing entrywise by <span class="math notranslate nohighlight">\(1.34\)</span> on
+entries of order one.  That is Proposition 12.7 in a single
+pair of numbers: the minimiser is fixed only up to an invertible <span class="math notranslate nohighlight">\(p\times p\)</span>
+factor, and gradient descent has no reason at all to prefer the orthonormal
+representative.</p>
+<p>What <em>is</em> determined is the projector.  The last two lines confirm that
+<span class="math notranslate nohighlight">\(\bm{\Pi}=\bm{W}_e\bm{W}_e^{+}\)</span> is idempotent to <span class="math notranslate nohighlight">\(10^{-7}\)</span>, has trace exactly
+<span class="math notranslate nohighlight">\(p=3\)</span> as Eq. (12.11) requires, and agrees with
+<span class="math notranslate nohighlight">\(\bm{U}_p\bm{U}_p^{\mathsf{T}}\)</span> to <span class="math notranslate nohighlight">\(5\times10^{-4}\)</span> in Frobenius norm.  So the
+useful thing to compare between two runs of a linear autoencoder, or between a
+linear autoencoder and PCA, is never the weights: it is the projector, or
+equivalently the subspace.</p>
+</section>
+<section id="what-the-bottleneck-costs-and-what-the-nonlinearity-buys">
+<h3><span class="section-number">12.8.4. </span>What the bottleneck costs, and what the nonlinearity buys<a class="headerlink" href="#what-the-bottleneck-costs-and-what-the-nonlinearity-buys" title="Link to this heading">#</a></h3>
+<p>The theorem gives the exact floor for a <em>linear</em> autoencoder at every
+width, Eq. (12.14).  That makes it the natural baseline for the
+nonlinear case: PCA is not one method among several here, it is the best any
+linear map of that rank can do, so whatever a nonlinear autoencoder gains over
+it is precisely what the nonlinearity is worth.  On MNIST, with a
+<span class="math notranslate nohighlight">\(784\to256\to p\to256\to784\)</span> network against a <span class="math notranslate nohighlight">\(784\to p\to784\)</span> linear one,
+eight epochs of Adam each:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>\noalign{}</p></th>
+<th class="head"><p></p></th>
+<th class="head"><p>\multicolumn{2}{c}{linear autoencoder}</p></th>
+<th class="head"><p>\multicolumn{2}{c}{nonlinear autoencoder}</p></th>
+<th class="head"><p></p></th>
+<th class="head"><p></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(p\)</span></p></td>
+<td><p>PCA (linear optimum)</p></td>
+<td><p>PyTorch</p></td>
+<td><p>TensorFlow</p></td>
+<td><p>PyTorch</p></td>
+<td><p>TensorFlow</p></td>
+</tr>
+<tr class="row-odd"><td><p>\noalign{}\noalign{} <span class="math notranslate nohighlight">\(2\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.05595\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.05778\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.05780\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.04522\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.04609\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(8\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.03787\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.03775\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.03772\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.03177\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.02070\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(16\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.02729\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.02706\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.02703\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.02043\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.01384\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(32\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.01724\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.01692\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.01697\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.01041\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00860\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(64\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00928\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00917\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00916\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00656\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.00534\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>\noalign{}</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 12.2: Mean squared reconstruction error per pixel on the <span class="math notranslate nohighlight">\(10\,000\)</span> MNIST test
+images, against the code dimension <span class="math notranslate nohighlight">\(p\)</span>.  The PCA column is
+Eq. (12.14) evaluated on the training set and is a floor for the
+linear autoencoder, not a competitor to it.  The last column is the ratio of the
+first to the third.</em></p>
+<p>Three readings.  The linear autoencoder tracks the PCA floor closely and it does
+so in <em>both</em> frameworks – the two linear columns agree with each other to
+the fourth decimal at every width, which is Theorem 12.5 again on
+a real data set.  At <span class="math notranslate nohighlight">\(p=2\)</span> both sit <em>above</em> the floor, at <span class="math notranslate nohighlight">\(0.0578\)</span> against
+<span class="math notranslate nohighlight">\(0.05595\)</span>, because eight epochs of Adam on <span class="math notranslate nohighlight">\(784\times2\)</span> weights have not quite
+converged.  The theorem is about the optimum; reaching it is still an
+optimisation problem.</p>
+<p>The two nonlinear columns, by contrast, differ by up to a third.  They are the
+same architecture and the same optimiser, so the difference is initialisation
+and the order in which batches arrive: a non-convex objective with no
+Proposition 12.6 to protect it.  That contrast between the
+two halves of the table is worth more than either half alone – the linear model
+has a theorem and reproduces across frameworks, the nonlinear one has neither.</p>
+<p>The nonlinear autoencoder beats the floor at every width, in both frameworks.
+It has to be at least as good: no linear map can do better than PCA at that
+rank, so any improvement is evidence that the data lie near a curved manifold
+rather than a subspace, and the size of the improvement is a crude measure of
+how curved.</p>
+<p>The ratio of the PCA column to the nonlinear one is not monotonic, and both
+frameworks agree on the shape.  In PyTorch it runs <span class="math notranslate nohighlight">\(1.24\)</span>, <span class="math notranslate nohighlight">\(1.19\)</span>, <span class="math notranslate nohighlight">\(1.34\)</span>,
+<span class="math notranslate nohighlight">\(1.66\)</span>, <span class="math notranslate nohighlight">\(1.42\)</span>; in TensorFlow <span class="math notranslate nohighlight">\(1.21\)</span>, <span class="math notranslate nohighlight">\(1.83\)</span>, <span class="math notranslate nohighlight">\(1.97\)</span>, <span class="math notranslate nohighlight">\(2.01\)</span>, <span class="math notranslate nohighlight">\(1.74\)</span>.  Both rise
+into the middle of the range and fall off at <span class="math notranslate nohighlight">\(p=64\)</span>.  At small <span class="math notranslate nohighlight">\(p\)</span> both models
+are starved and the error is dominated by what neither can represent; in the
+middle the nonlinearity is doing its most useful work; and by <span class="math notranslate nohighlight">\(p=64\)</span> the linear
+model has enough directions that the remaining error is fine detail which the
+nonlinear network, at this width and after eight epochs, does not capture much
+better.  The nonlinearity buys most where the bottleneck is tight enough to
+force a choice and loose enough to permit a good one.</p>
+</section>
+<section id="the-regularised-variants-measured">
+<h3><span class="section-number">12.8.5. </span>The regularised variants, measured<a class="headerlink" href="#the-regularised-variants-measured" title="Link to this heading">#</a></h3>
+<p>Section <em>Regularised autoencoders</em> introduced three regularisers and argued they were
+variations on one idea; Proposition 12.8 made part of
+that precise.  Running them on the same <span class="math notranslate nohighlight">\(p=32\)</span> architecture:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">3.</span> <span class="n">denoising</span> <span class="ow">and</span> <span class="n">sparse</span> <span class="n">autoencoders</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">32</span> <span class="o">===</span>
+   <span class="n">variant</span>                     <span class="n">test</span> <span class="n">mse</span>   <span class="n">mean</span> <span class="o">|</span><span class="n">code</span><span class="o">|</span>   <span class="n">active</span> <span class="n">units</span>
+   <span class="n">plain</span>                         <span class="mf">0.01041</span>        <span class="mf">6.7410</span>           <span class="mf">20.9</span>
+   <span class="n">denoising</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.3</span>        <span class="mf">0.01052</span>        <span class="mf">6.0570</span>           <span class="mf">22.9</span>
+   <span class="n">denoising</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.6</span>        <span class="mf">0.01299</span>        <span class="mf">4.4208</span>           <span class="mf">23.6</span>
+   <span class="n">sparse</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">=</span> <span class="mf">0.01</span>         <span class="mf">0.01757</span>        <span class="mf">0.2375</span>           <span class="mf">11.3</span>
+   <span class="n">sparse</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">=</span> <span class="mf">0.1</span>          <span class="mf">0.06750</span>        <span class="mf">0.0000</span>            <span class="mf">0.0</span>
+</pre></div>
+</div>
+<p>Denoising at <span class="math notranslate nohighlight">\(\sigma=0.3\)</span> costs almost nothing in reconstruction, <span class="math notranslate nohighlight">\(0.01052\)</span>
+against <span class="math notranslate nohighlight">\(0.01041\)</span>, and at <span class="math notranslate nohighlight">\(\sigma=0.6\)</span> costs a quarter of it.  That is the
+smooth degradation Eq. (12.21) predicts: the effective
+contractive weight is <span class="math notranslate nohighlight">\(\sigma^{2}\)</span>, so doubling the noise quadruples the penalty
+and the error rises gently rather than falling off a cliff.</p>
+<p>The sparse rows are more interesting, and the last one is a failure we report
+rather than tune away.  At <span class="math notranslate nohighlight">\(\lambda=0.01\)</span> the penalty does what it is supposed
+to: the mean code magnitude falls from <span class="math notranslate nohighlight">\(6.74\)</span> to <span class="math notranslate nohighlight">\(0.24\)</span>, the number of active
+units from <span class="math notranslate nohighlight">\(21\)</span> to <span class="math notranslate nohighlight">\(11\)</span>, and the reconstruction error rises by two thirds.  At
+<span class="math notranslate nohighlight">\(\lambda=0.1\)</span> the code collapses completely – <em>zero</em> active units, mean
+magnitude <span class="math notranslate nohighlight">\(0.0000\)</span> – and the reconstruction error of <span class="math notranslate nohighlight">\(0.0675\)</span> is what a network
+that ignores its input and predicts the mean image achieves.  The penalty has
+won outright.  With a ReLU code this is an absorbing state: once every
+pre-activation is negative the code is exactly zero, the <span class="math notranslate nohighlight">\(\ell_1\)</span> gradient is
+zero, and nothing pushes the units back.  A regulariser strong enough to be
+worth having is close to one strong enough to destroy the model, and the
+distance between them here is one order of magnitude in <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+<p><img alt="a Reconstruction error against code dimension on MNIST, Table 12.2 PCA" src="_images/ae_frameworks.png" /></p>
+<p><em>Figure 12.7: (a) Reconstruction error against code dimension on MNIST, Table 12.2: PCA is the floor for any linear map of that rank, the linear autoencoder tracks it, and the nonlinear one beats it by a margin that grows with <span class="math notranslate nohighlight">\(p\)</span>.  (b) The largest principal angle between the encoder subspace and the span of the top <span class="math notranslate nohighlight">\(p\)</span> eigenvectors, against training iteration, in both frameworks: Theorem 12.5 being reached, not assumed.  (c) Test images and their reconstructions at <span class="math notranslate nohighlight">\(p=16\)</span>.  (d) The largest disagreement between our gradients and each framework’s, against the double-precision unit roundoff.</em></p>
+</section>
+</section>
+<section id="summary-and-the-programs">
+<h2><span class="section-number">12.9. </span>Summary and the programs<a class="headerlink" href="#summary-and-the-programs" title="Link to this heading">#</a></h2>
+<p>An autoencoder approximates the identity through a constrained factorisation,
+and everything interesting follows from the constraint rather than from the
+objective.</p>
+<p>The linear case is solved completely.  Lemma 12.1 reduces the
+rank-constrained problem to orthogonal projectors, Lemma 12.2
+turns reconstruction error into variance not captured, and
+Theorem 12.4 maximises that variance at the leading eigenvectors.
+Theorem 12.5 assembles these: the minimum error is the eigenvalue
+tail <span class="math notranslate nohighlight">\(\sum_{i&gt;p}\lambda_i\)</span> and the learned map is the PCA projector.  We
+measured all of it – the error floor reproduced to six digits, the singular
+values of <span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span> equal to three ones and five zeros to machine
+precision, the subspaces agreeing to a fifth of a degree.</p>
+<p>Proposition 12.7 is the caveat to carry away.  The
+factorisation is invariant under <span class="math notranslate nohighlight">\(\bm{W}_e\to\bm{W}_e\bm{M}\)</span>,
+<span class="math notranslate nohighlight">\(\bm{W}_d\to\bm{M}^{-1}\bm{W}_d\)</span>, so the autoencoder identifies the principal
+<em>subspace</em> and not the principal <em>directions</em>.  Measured:
+<span class="math notranslate nohighlight">\(\|\bm{W}_e-\bm{U}_p\|_F=1.87\)</span>, while the distance from <span class="math notranslate nohighlight">\(\bm{W}_e\)</span> to the span
+of <span class="math notranslate nohighlight">\(\bm{U}_p\)</span> is <span class="math notranslate nohighlight">\(2.5\times10^{-3}\)</span>.  If the directions matter, use PCA.</p>
+<p>Proposition 12.6 is what turns the theorem into a statement
+about training.  The objective is not convex, but its only non-global critical
+points are saddles – projections onto the wrong set of eigenvectors, each with
+an explicit direction of descent – so a first-order method has nowhere bad to
+stop.  Section <em>Does Adam find the principal subspace?</em> confirms the whole chain in one run:
+Adam reaches the principal subspace to <span class="math notranslate nohighlight">\(0.015\)</span> degrees and the Eckart-Young
+floor to eight decimals, while missing the principal basis by <span class="math notranslate nohighlight">\(1.34\)</span> per entry.</p>
+<p>Nonlinearity buys curvature, at the cost of every guarantee.  On a helix in
+<span class="math notranslate nohighlight">\(\mathbb{R}^{3}\)</span> a one-dimensional nonlinear code beat a two-dimensional linear
+one, <span class="math notranslate nohighlight">\(0.201\)</span> against <span class="math notranslate nohighlight">\(0.332\)</span>, and at equal <span class="math notranslate nohighlight">\(p\)</span> the margin was a factor of four
+to fifty.  On MNIST, Table 12.2, the nonlinear autoencoder
+beat the exact linear floor at every code dimension and in both frameworks,
+with the gain largest in the middle of the range rather than at either end.  But Figure 12.5(c) showed the reconstruction to be
+excellent while the code was a poor coordinate, saturating and jumping.
+Equation (12.2) scores <span class="math notranslate nohighlight">\(\hat{\bm{x}}\)</span> and never mentions <span class="math notranslate nohighlight">\(\bm{z}\)</span>,
+so a good representation is something one must ask for explicitly – by
+denoising, sparsity, contraction, or by moving to a probabilistic model.</p>
+<p>The regularisers were measured too, and one of them broke.
+Proposition 12.8 shows that denoising at noise level
+<span class="math notranslate nohighlight">\(\sigma\)</span> is contraction at strength <span class="math notranslate nohighlight">\(\sigma^{2}\)</span> to second order, and the
+measurements degrade accordingly and gently.  The <span class="math notranslate nohighlight">\(\ell_1\)</span> penalty does not: at
+<span class="math notranslate nohighlight">\(\lambda=0.01\)</span> it halves the number of active code units for a two-thirds rise
+in error, and at <span class="math notranslate nohighlight">\(\lambda=0.1\)</span> it drives every unit to exactly zero and the
+model to predicting the mean image.  With a ReLU code that collapse is
+absorbing, and one order of magnitude in <span class="math notranslate nohighlight">\(\lambda\)</span> separates useful from
+fatal.</p>
+<p>The programs are in the directory</p>
+<p><code class="docutils literal notranslate"><span class="pre">doc/BookML/BookPrograms/chapter12_autoencoders</span></code>.</p>
+<p>Every listing above appears there as a numbered file, and three modules run
+start to finish and reproduce the numbers quoted in the text:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ae.py</span></code> – the forward and backward passes, Adam, the encode
+helper, and <code class="docutils literal notranslate"><span class="pre">pca</span></code> for comparison.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verify_ae.py</span></code> – the gradient checks of
+Section <em>Verifying the theorem</em> and the linear-autoencoder-versus-PCA
+comparison, including the principal angles and the singular values of
+<span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cross_check_ae.py</span></code> – the three-way comparison of
+Section <em>PyTorch and TensorFlow</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ae_torch.py</span></code> and <code class="docutils literal notranslate"><span class="pre">ae_tf.py</span></code> – the principal-subspace
+test of Section <em>Does Adam find the principal subspace?</em>, the MNIST bottleneck sweep of
+Table 12.2, and the regularised variants of
+Section <em>The regularised variants, measured</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mnist_data.py</span></code> – a loader that reads MNIST from a local
+<code class="docutils literal notranslate"><span class="pre">.npz</span></code>, so that the programs run without network access.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_nonlinear.py</span></code> – the helix experiment of
+Table 12.1.</p></li>
+</ul>
+<p>The figures are generated by <code class="docutils literal notranslate"><span class="pre">ch12_figures.py</span></code> in
+<code class="docutils literal notranslate"><span class="pre">doc/BookML/BookFigures</span></code>; neither is drawn by hand.</p>
+</section>
+<section id="exercises">
+<h2><span class="section-number">12.10. </span>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<section id="warm-up-exercises">
+<h3><span class="section-number">12.10.1. </span>Warm-up exercises<a class="headerlink" href="#warm-up-exercises" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>The rank factorisation.</strong>
+Show that every <span class="math notranslate nohighlight">\(\bm{A}\in\mathbb{R}^{d\times d}\)</span> with
+<span class="math notranslate nohighlight">\(\operatorname{rank}(\bm{A})\le p\)</span> can be written as <span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span> with
+<span class="math notranslate nohighlight">\(\bm{W}_e\in\mathbb{R}^{d\times p}\)</span> and <span class="math notranslate nohighlight">\(\bm{W}_d\in\mathbb{R}^{p\times d}\)</span>.
+This is the step that turns Eq. (12.8) into a statement
+about ranks rather than about networks.</p></li>
+<li><p><strong>Projection is optimal.</strong>
+Prove directly that for a subspace <span class="math notranslate nohighlight">\(\mathcal{M}\)</span> and a point <span class="math notranslate nohighlight">\(\bm{x}\)</span>, the
+minimiser of <span class="math notranslate nohighlight">\(\|\bm{x}-\bm{m}\|_2\)</span> over <span class="math notranslate nohighlight">\(\bm{m}\in\mathcal{M}\)</span> is the
+orthogonal projection, and that the residual is orthogonal to <span class="math notranslate nohighlight">\(\mathcal{M}\)</span>.
+Where exactly is this used in Lemma 12.1?</p></li>
+<li><p><strong>Trace identities.</strong>
+Verify each step of Lemma 12.2, stating which property of the
+trace or of <span class="math notranslate nohighlight">\(\bm{P}\)</span> you use at each equality.  Then show that
+<span class="math notranslate nohighlight">\(\operatorname{Tr}(\bm{S})=\sum_i\lambda_i\)</span> for symmetric <span class="math notranslate nohighlight">\(\bm{S}\)</span>.</p></li>
+<li><p><strong>Ky Fan by hand.</strong>
+For <span class="math notranslate nohighlight">\(d=3\)</span>, <span class="math notranslate nohighlight">\(p=2\)</span> and
+<span class="math notranslate nohighlight">\(\bm{\Lambda}=\operatorname{diag}(5,3,1)\)</span>, verify Theorem 12.4
+by direct computation, and exhibit two different <span class="math notranslate nohighlight">\(\bm{B}\)</span> attaining the
+maximum.  What is the set of all maximisers?</p></li>
+<li><p><strong>The non-uniqueness.</strong>
+Train a linear autoencoder twice from different seeds and compare (a) the
+reconstruction errors, (b) the products <span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span>, (c) the individual
+matrices <span class="math notranslate nohighlight">\(\bm{W}_e\)</span>.  Which two agree and which does not, and why?  Then find
+the matrix <span class="math notranslate nohighlight">\(\bm{M}\)</span> of Proposition 12.7 relating the two
+runs and check that <span class="math notranslate nohighlight">\(\bm{W}_e^{(1)}\bm{M}\approx\bm{W}_e^{(2)}\)</span>.</p></li>
+<li><p><strong>Overcomplete.</strong>
+Build an autoencoder with <span class="math notranslate nohighlight">\(p&gt;d\)</span> and no regularisation, and confirm that it
+drives the reconstruction error to zero while learning nothing.  Exhibit the
+weights that achieve this exactly.  Then add each of the three regularisers of
+Section <em>Regularised autoencoders</em> and report what changes.</p></li>
+<li><p><strong>The landscape.</strong>
+(a) Derive the two stationarity conditions used in the proof of
+Proposition 12.6 and show they force <span class="math notranslate nohighlight">\(\bm{\Pi}\)</span> to commute
+with <span class="math notranslate nohighlight">\(\bm{S}\)</span>.
+(b) For <span class="math notranslate nohighlight">\(d=3\)</span>, <span class="math notranslate nohighlight">\(p=1\)</span> and <span class="math notranslate nohighlight">\(\lambda=(3,2,1)\)</span>, list all three critical
+projectors, give their objective values, and exhibit the descent direction at
+each of the two that are not optimal.
+(c) What goes wrong with the proposition if <span class="math notranslate nohighlight">\(\lambda_p=\lambda_{p+1}\)</span>?</p></li>
+<li><p><strong>Principal angles.</strong>
+(a) Show that the largest principal angle between two <span class="math notranslate nohighlight">\(p\)</span>-dimensional
+subspaces is zero if and only if they coincide, and that it equals
+<span class="math notranslate nohighlight">\(\arccos\sigma_{\min}(\bm{Q}_1^{\mathsf{T}}\bm{Q}_2)\)</span>.
+(b) Show <span class="math notranslate nohighlight">\(\|\bm{\Pi}_1-\bm{\Pi}_2\|_F=\sqrt{2}\,\|\sin\bm{\Theta}\|_F\)</span> for
+the vector of principal angles <span class="math notranslate nohighlight">\(\bm{\Theta}\)</span>, and check the identity against
+the numbers quoted in Section <em>Does Adam find the principal subspace?</em>.
+(c) Why is the principal angle, rather than <span class="math notranslate nohighlight">\(\|\bm{W}_e-\bm{U}_p\|\)</span>, the
+right way to compare two runs?</p></li>
+<li><p><strong>Denoising and contraction.</strong>
+(a) Derive Eq. (12.21), being explicit about where
+<span class="math notranslate nohighlight">\(\mathbb{E}[\bm{\xi}]=\bm{0}\)</span> and
+<span class="math notranslate nohighlight">\(\mathbb{E}[\bm{\xi}\bm{\xi}^{\mathsf{T}}]=\bm{I}\)</span> are used.
+(b) Repeat for masking noise, where each coordinate is zeroed independently
+with probability <span class="math notranslate nohighlight">\(q\)</span>, and identify the penalty that appears.
+(c) Verify Eq. (12.21) numerically on a trained
+autoencoder by computing both sides at several <span class="math notranslate nohighlight">\(\sigma\)</span> and confirming the
+<span class="math notranslate nohighlight">\(\sigma^{2}\)</span> slope.</p></li>
+<li><p><strong>The sparse collapse.</strong>
+Reproduce the last row of Section <em>The regularised variants, measured</em>.
+(a) Show that with a ReLU code the all-zero state is a fixed point of the
+<span class="math notranslate nohighlight">\(\ell_1\)</span>-penalised gradient, so the collapse cannot undo itself.
+(b) Find the largest <span class="math notranslate nohighlight">\(\lambda\)</span> that still leaves the code alive, to within a
+factor of two.
+(c) Replace ReLU by <span class="math notranslate nohighlight">\(\tanh\)</span> or by a soft-thresholding activation and report
+whether the collapse survives.</p></li>
+<li><p><strong>Beating PCA.</strong>
+Reproduce Table 12.2 and extend it.
+(a) At <span class="math notranslate nohighlight">\(p=2\)</span> the linear autoencoder is above the exact floor.  Train it longer
+and report how many epochs are needed to reach the floor to three digits.
+(b) The gain column is not monotonic.  Test the explanation offered in
+Section <em>What the bottleneck costs, and what the nonlinearity buys</em> by widening the hidden layers and repeating.
+(c) Add a convolutional autoencoder using Chapter 10 and put it in
+the same table.  Does the convolutional prior help at fixed <span class="math notranslate nohighlight">\(p\)</span>?</p></li>
+</ol>
+</section>
+<section id="project-style-exercise-autoencoders-and-pca">
+<h3><span class="section-number">12.10.2. </span>Project-style exercise: autoencoders and PCA<a class="headerlink" href="#project-style-exercise-autoencoders-and-pca" title="Link to this heading">#</a></h3>
+<p><strong>Part a: the machinery.</strong>
+Implement the autoencoder forward and backward passes and verify every gradient
+against central differences for at least three architectures, including a purely
+linear one.  You will find parameters whose gradient is exactly zero; explain
+which and why, and make your checker handle them correctly.</p>
+<p><strong>Part b: the theorem.</strong>
+Reproduce Section <em>Verifying the theorem</em> on data of your own construction.  Confirm
+Eq. (12.14) to as many digits as your optimiser will give; measure
+the principal angles; and confirm that the singular values of
+<span class="math notranslate nohighlight">\(\bm{W}_e\bm{W}_d\)</span> are <span class="math notranslate nohighlight">\(p\)</span> ones and <span class="math notranslate nohighlight">\(d-p\)</span> zeros.  Then break the assumption:
+make <span class="math notranslate nohighlight">\(\lambda_p=\lambda_{p+1}\)</span> exactly and report what happens to part (iii) of
+the theorem.</p>
+<p><strong>Part c: how the floor is approached.</strong>
+Study the convergence of the linear autoencoder to <span class="math notranslate nohighlight">\(\sum_{i&gt;p}\lambda_i\)</span> as a
+function of the learning rate, the initialisation scale, and the eigenvalue gap
+<span class="math notranslate nohighlight">\(\lambda_p-\lambda_{p+1}\)</span>.  Saddle points are known to exist in this landscape
+corresponding to subsets of eigenvectors other than the leading ones; can you
+find one, and how long does the optimiser linger there?</p>
+<p><strong>Part d: curvature.</strong>
+Reproduce Table 12.1, then vary the curvature of the manifold
+continuously – for instance by interpolating between a straight line and a
+helix – and plot the PCA and autoencoder errors against the curvature.  At what
+point does the nonlinear model start to pay for itself?</p>
+<p><strong>Part e: representation, not reconstruction.</strong>
+Reproduce Figure 12.5(c) and quantify how badly the code
+parameterises the curve, for instance by the Spearman correlation between <span class="math notranslate nohighlight">\(z\)</span>
+and <span class="math notranslate nohighlight">\(t\)</span>.  Then try to fix it: a wider bottleneck, a different activation, a
+contractive penalty, more training.  Report which of these help and which merely
+lower the reconstruction error while leaving the code as bad as before.  This is
+the central lesson of the chapter and it deserves evidence.</p>
+<p><strong>Part f: the regularisers.</strong>
+Implement the denoising, sparse and contractive objectives of
+Eqs. (12.17)–(12.20).  For the contractive
+case you will need <span class="math notranslate nohighlight">\(\|\bm{J}_f\|_F^{2}\)</span>; obtain it by automatic differentiation
+and verify it against finite differences.  Compare the three on an overcomplete
+architecture where the bottleneck cannot help.</p>
+<p><strong>Part g: convolutional and recurrent.</strong>
+Build a convolutional autoencoder from your Chapter 10 code and a
+recurrent one from your Chapter 11 code, on the same data.  Check
+the decoder’s output sizes against Proposition 10.4 before
+training.  Compare all three architectures at matched parameter counts and say
+which inductive bias the data actually reward.</p>
+<p><strong>Part h: probabilistic.</strong>
+Implement PPCA, Eq. (12.22), by maximum likelihood, and verify
+Eq. (12.24) numerically.  Use the likelihood to select <span class="math notranslate nohighlight">\(p\)</span> on
+data where you know the true latent dimension, and compare against choosing <span class="math notranslate nohighlight">\(p\)</span>
+by the reconstruction-error elbow.  Which is more reliable, and does either
+recover the truth?</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter11.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">11. </span>Chapter 11: Recurrent Neural Networks</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter13.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">13. </span>Chapter 13: Transformers</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#structure">12.1. Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reconstruction-projection-and-representation">12.2. Reconstruction, projection and representation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-linear-autoencoder">12.3. The linear autoencoder</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reduction-to-an-orthogonal-projector">12.3.1. Reduction to an orthogonal projector</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reduction-to-a-trace-maximisation">12.3.2. Reduction to a trace maximisation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-variational-characterisation">12.3.3. The variational characterisation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-theorem">12.3.4. The theorem</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-the-theorem">12.4. Verifying the theorem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#beyond-pca">12.5. Beyond PCA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regularised-autoencoders">12.6. Regularised autoencoders</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-probabilistic-view-ppca">12.7. The probabilistic view: PPCA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementations">12.8. Implementations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#our-own">12.8.1. Our own</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-and-tensorflow">12.8.2. PyTorch and TensorFlow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#does-adam-find-the-principal-subspace">12.8.3. Does Adam find the principal subspace?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-bottleneck-costs-and-what-the-nonlinearity-buys">12.8.4. What the bottleneck costs, and what the nonlinearity buys</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-regularised-variants-measured">12.8.5. The regularised variants, measured</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">12.9. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">12.10. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">12.10.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-autoencoders-and-pca">12.10.2. Project-style exercise: autoencoders and PCA</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

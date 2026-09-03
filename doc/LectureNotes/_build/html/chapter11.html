@@ -1,0 +1,2063 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>11. Chapter 11: Recurrent Neural Networks &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter11';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="12. Chapter 12: Autoencoders" href="chapter12.html" />
+    <link rel="prev" title="10. Chapter 10: Convolutional Neural Networks" href="chapter10.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Machine Learning and the Physical Sciences
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mathematical and statistical basis with essential computational elements</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">1. Chapter 1: Linear Algebra for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">2. Chapter 2: Elements of Probability Theory and Statistics</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">3. Chapter 3: Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">4. Chapter 4: Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">5. Chapter 5: Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter6.html">6. Chapter 6: Support Vector Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">7. Chapter 7: Ensemble methods; from simple decision trees to Gradient Boosting</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">8. Chapter 8: Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">9. Chapter 9: Neural Networks for Differential Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">10. Chapter 10: Convolutional Neural Networks</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">11. Chapter 11: Recurrent Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter12.html">12. Chapter 12: Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter13.html">13. Chapter 13: Transformers</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Generative Methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter14.html">14. Chapter 14: Boltzmann Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15.html">15. Chapter 15: Variational Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter16.html">16. Chapter 16: Diffusion Models and Normalizing Flows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17.html">17. Chapter 17: Generative Adversarial Networks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Concluding remarks and perspectives</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="conclusions.html">18. Chapter 18: Concluding remarks and perspectives</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chapter11.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 11: Recurrent Neural Networks</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sequences-and-what-we-want-from-them">11.1. Sequences, and what we want from them</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-architecture">11.2. The architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-rnn-as-a-discrete-time-dynamical-system">11.2.1. The RNN as a discrete-time dynamical system</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-recurrence-comes-from-a-differential-equation">11.3. Where the recurrence comes from: a differential equation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backpropagation-through-time">11.4. Backpropagation through time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-long-sequences-are-hard">11.5. Why long sequences are hard</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#measuring-it">11.5.1. Measuring it</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-clipping">11.5.2. Gradient clipping</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-and-verification">11.6. Implementation and verification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-damped-oscillator">11.6.1. The damped oscillator</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#long-short-term-memory">11.7. Long short-term memory</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-it-works-and-by-how-much">11.7.1. Why it works, and by how much</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gated-recurrent-unit">11.7.2. The gated recurrent unit</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-networks-in-pytorch-and-tensorflow">11.8. The same networks in PyTorch and TensorFlow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#forecasting-a-sine-wave">11.8.1. Forecasting a sine wave</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#an-lstm-on-mnist-read-row-by-row">11.8.2. An LSTM on MNIST, read row by row</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-the-three-implementations-agree">11.8.3. Do the three implementations agree?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#row-by-row-the-two-libraries-on-mnist">11.8.4. Row by row: the two libraries on MNIST</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-experiment-the-theory-demands">11.8.5. The experiment the theory demands</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">11.9. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">11.10. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">11.10.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-recurrent-networks-from-scratch">11.10.2. Project-style exercise: recurrent networks from scratch</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-11-recurrent-neural-networks">
+<h1><span class="section-number">11. </span>Chapter 11: Recurrent Neural Networks<a class="headerlink" href="#chapter-11-recurrent-neural-networks" title="Link to this heading">#</a></h1>
+<!-- Macro definitions for MathJax, mirroring book.tex -->
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\bm}[1]{\boldsymbol{#1}}
+\newcommand{\Det}[1]{|\boldsymbol{#1}|}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\var}{\mathrm{Var}}
+\newcommand{\cov}{\mathrm{Cov}}
+\newcommand{\Prob}{\mathrm{Prob}}
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\]</div>
+<p>Chapter 10 restricted the dense layer of Chapter 8 by
+insisting that it respect the spatial structure of an image, and obtained
+convolution.  This chapter makes the corresponding restriction for data with a
+<em>temporal</em> structure, and obtains recurrence.</p>
+<p>The assumption being given up is a familiar one.  Almost everything so far has
+supposed that the training examples are independent and identically
+distributed, and the bias-variance and resampling arguments of
+Chapter 2 lean on it heavily.  For a sequence this is simply
+false: the value of a detector trace at one sample is strongly informative about
+the next, that is the entire content of the data, and a model that treats the
+samples as independent has thrown the signal away before it starts.</p>
+<p>Sequences also break a structural assumption.  A feed-forward network has a
+fixed input dimension; a convolutional network has a fixed input size too, up to
+the pooling that precedes its dense layers.  Sequences come in different
+lengths, and we would like one model to handle all of them.  A recurrent network
+does this by processing one element at a time and carrying a state forward, so
+that the same parameters serve a sequence of any length.</p>
+<p>The material follows the lecture notes for weeks five to seven of
+FYS-STK3155/4155.  We derive the architecture, derive backpropagation through
+time, prove the theorem that explains why long sequences are hard, measure the
+effect, and then examine the gated architectures that were invented to defeat
+it.  As in Chapter 10, the from-scratch implementation is checked
+against PyTorch and TensorFlow with identical weights, so that the recursion of
+Eqs. (11.16)–(11.18) can be compared with what
+automatic differentiation actually produces; and the chapter closes with the
+experiment that the theory demands but the usual account omits – a task that a
+simple recurrent network provably cannot learn and a gated one can.</p>
+<section id="sequences-and-what-we-want-from-them">
+<h2><span class="section-number">11.1. </span>Sequences, and what we want from them<a class="headerlink" href="#sequences-and-what-we-want-from-them" title="Link to this heading">#</a></h2>
+<p>Write <span class="math notranslate nohighlight">\(x_{1:T}=(\bm{x}_1,\dots,\bm{x}_T)\)</span> for a sequence of inputs.  Three tasks
+cover most of what is asked of a sequence model:</p>
+<div class="math notranslate nohighlight">
+\[
+p(x_{1:T}),
+  \qquad
+  p(y_{1:T}\mid x_{1:T}),
+  \qquad
+  p(y\mid x_{1:T}),\tag{11.1}
+\]</div>
+<p>that is, modelling the sequence itself, mapping a sequence to a sequence
+(filtering, forecasting), and mapping a sequence to a single label
+(classification, regime detection).</p>
+<p>The first of these can always be factorised exactly, by the chain rule of
+probability,</p>
+<div class="math notranslate nohighlight">
+\[
+p(x_{1:T}) = \prod_{t=1}^{T} p\!\left(\bm{x}_t \mid x_{1:t-1}\right).\tag{11.2}
+\]</div>
+<p>Equation (11.2) is exact and useless as it stands, because the
+conditioning set grows without bound.  What makes it tractable is the assumption
+that everything relevant in <span class="math notranslate nohighlight">\(x_{1:t-1}\)</span> can be summarised in a
+finite-dimensional <em>state</em> <span class="math notranslate nohighlight">\(\bm{h}_t\)</span>, updated recursively:</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \bm{h}_t = f_\theta\!\left(\bm{h}_{t-1},\bm{x}_t\right),
+  \qquad
+  \hat{\bm{y}}_t = g_\theta\!\left(\bm{h}_t\right).\;}\tag{11.3}
+\]</div>
+<p>This is a latent state-space model, and it should look familiar from physics:
+Eq. (11.3) is exactly the structure of a Markovian dynamical
+system, with <span class="math notranslate nohighlight">\(f_\theta\)</span> the update map and <span class="math notranslate nohighlight">\(\bm{h}_t\)</span> the state.  The Kalman
+filter is the case in which <span class="math notranslate nohighlight">\(f_\theta\)</span> is linear and the noise Gaussian.  A
+recurrent neural network is the case in which <span class="math notranslate nohighlight">\(f_\theta\)</span> and <span class="math notranslate nohighlight">\(g_\theta\)</span> are
+neural networks, so that the update map is learned rather than derived.</p>
+<p>Ordered, correlated data of this kind is the norm rather than the exception in
+the physical sciences: detector readout streams and waveform traces, climate and
+seismic records, turbulence probes, molecular dynamics trajectories,
+spectroscopic scans, and state estimation in control and feedback.  Sequential
+does not have to mean temporal – text and genomic sequences are ordered without
+carrying a time stamp – but our examples will be time series.</p>
+</section>
+<section id="the-architecture">
+<h2><span class="section-number">11.2. </span>The architecture<a class="headerlink" href="#the-architecture" title="Link to this heading">#</a></h2>
+<p>The simplest recurrent network, usually called the <em>vanilla</em> or
+<em>simple</em> RNN, realises Eq. (11.3) with one affine map
+and one activation.  At each step <span class="math notranslate nohighlight">\(t\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{split}
+    \bm{a}^{(t)} &amp;= \bm{U}\bm{x}^{(t)} + \bm{W}\bm{h}^{(t-1)} + \bm{b},\\
+    \bm{h}^{(t)} &amp;= \sigma_h\!\left(\bm{a}^{(t)}\right),\\
+    \bm{o}^{(t)} &amp;= \bm{V}\bm{h}^{(t)} + \bm{c},\\
+    \hat{\bm{y}}^{(t)} &amp;= \sigma_y\!\left(\bm{o}^{(t)}\right),
+  \end{split}\tag{11.4}
+\end{split}\]</div>
+<p>with <span class="math notranslate nohighlight">\(\bm{U}\in\mathbb{R}^{n_h\times n_x}\)</span> mapping the input into the state,
+<span class="math notranslate nohighlight">\(\bm{W}\in\mathbb{R}^{n_h\times n_h}\)</span> mapping the state to itself,
+<span class="math notranslate nohighlight">\(\bm{V}\in\mathbb{R}^{n_y\times n_h}\)</span> reading the state out, and <span class="math notranslate nohighlight">\(\bm{b}\)</span>,
+<span class="math notranslate nohighlight">\(\bm{c}\)</span> the biases.  The hidden activation <span class="math notranslate nohighlight">\(\sigma_h\)</span> is almost always
+<span class="math notranslate nohighlight">\(\tanh\)</span>, for reasons that Section <em>Why long sequences are hard</em> will make precise, and
+<span class="math notranslate nohighlight">\(\sigma_y\)</span> is the identity for regression or a softmax for classification.  The
+recursion is started from <span class="math notranslate nohighlight">\(\bm{h}^{(0)}=\bm{0}\)</span> unless there is reason to do
+otherwise.</p>
+<p>There are two equivalent ways of drawing Eq. (11.4), and
+Figure 11.1 shows both.  On the left is the <em>folded</em> form: a
+single layer with an arrow leaving it and returning to itself, which is the
+literal content of the recursion and the reason for the name.  On the right is
+the <em>unrolled</em> form, in which the same layer is drawn once per time step
+and the self-arrow becomes an arrow from one copy to the next.  The two pictures
+describe the same computation.  The folded one is how the network is
+<em>stored</em> – one copy of <span class="math notranslate nohighlight">\(\bm{U},\bm{W},\bm{V}\)</span> – and the unrolled one is
+how it is <em>executed</em>, and Section <em>Backpropagation through time</em> will show that the
+unrolled picture is also how it is differentiated.</p>
+<p><img alt="The recurrent network of Eq. 11.4, folded on the left and unrolled on " src="_images/rnnunroll.png" /></p>
+<p><em>Figure 11.1: The recurrent network of Eq. (11.4), folded on the left and unrolled on the right.  The input matrix <span class="math notranslate nohighlight">\(\bm{U}\)</span>, the recurrent matrix <span class="math notranslate nohighlight">\(\bm{W}\)</span> and the output matrix <span class="math notranslate nohighlight">\(\bm{V}\)</span> are the <em>same</em> arrays at every step; the unrolled diagram repeats them but does not duplicate them.  Unrolling turns the network into a feed-forward graph of depth <span class="math notranslate nohighlight">\(T\)</span> with tied weights, which is what makes backpropagation applicable and what makes Theorem 11.1 unavoidable.</em></p>
+<p>Three properties of Eq. (11.4) are worth stating explicitly, because
+each is a deliberate design decision and each has a consequence.</p>
+<p><em>The parameters do not depend on <span class="math notranslate nohighlight">\(t\)</span>.</em>  The same <span class="math notranslate nohighlight">\(\bm{U},\bm{W},\bm{V}\)</span>
+act at every step.  This is parameter sharing along the time axis, exactly
+analogous to the parameter sharing along the spatial axes that made a
+convolutional layer in Chapter 10, and it has the same two
+consequences: the parameter count is independent of the sequence length, and
+the model is equivariant to translation in time.</p>
+<p><em>The state is a bottleneck.</em>  Everything the network will ever know about
+<span class="math notranslate nohighlight">\(x_{1:t}\)</span> when it computes <span class="math notranslate nohighlight">\(\hat{\bm{y}}^{(t+1)}\)</span> must fit in the <span class="math notranslate nohighlight">\(n_h\)</span> numbers
+of <span class="math notranslate nohighlight">\(\bm{h}^{(t)}\)</span>.  This is what makes the model tractable and also what limits
+it.</p>
+<p><em>The cost accumulates over the sequence.</em>  For a regression task the cost
+is</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L} = \frac{1}{T}\sum_{t=1}^{T} L^{(t)},
+  \qquad
+  L^{(t)} = \frac{1}{2}\left\|\hat{\bm{y}}^{(t)}-\bm{y}^{(t)}\right\|^{2},\tag{11.5}
+\]</div>
+<p>and for classification <span class="math notranslate nohighlight">\(L^{(t)}\)</span> is the cross-entropy of
+Chapter 5.  In the sequence-to-label case only <span class="math notranslate nohighlight">\(L^{(T)}\)</span> is
+non-zero, and Section <em>Why long sequences are hard</em> will show that this is the hardest
+case of all.</p>
+<div class="tip admonition">
+<p class="admonition-title">Parameter count</p>
+<p>A simple RNN has
+<span class="math notranslate nohighlight">\(n_h(n_x+n_h+1)+n_y(n_h+1)\)</span> parameters, and the sequence length <span class="math notranslate nohighlight">\(T\)</span> appears
+nowhere.  A feed-forward network given the same sequence flattened into a vector
+of length <span class="math notranslate nohighlight">\(Tn_x\)</span> would need <span class="math notranslate nohighlight">\(\bigO(Tn_xn_h)\)</span> weights in its first layer alone,
+and would have to be retrained for every new <span class="math notranslate nohighlight">\(T\)</span>.  This is the same argument as
+Eq. (10.1), transposed from space to time.</p>
+</div>
+<section id="the-rnn-as-a-discrete-time-dynamical-system">
+<h3><span class="section-number">11.2.1. </span>The RNN as a discrete-time dynamical system<a class="headerlink" href="#the-rnn-as-a-discrete-time-dynamical-system" title="Link to this heading">#</a></h3>
+<p>Set the input to zero, or hold it constant.  Equation (11.4) becomes
+an autonomous map</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{h}^{(t)} = F\!\left(\bm{h}^{(t-1)}\right)
+    := \sigma_h\!\left(\bm{W}\bm{h}^{(t-1)}+\bm{b}\right),\tag{11.6}
+\]</div>
+<p>and the entire vocabulary of dynamical systems applies.  Fixed points satisfy
+<span class="math notranslate nohighlight">\(\bm{h}^\star=F(\bm{h}^\star)\)</span>; their stability is decided by the eigenvalues of
+the Jacobian</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{J} = \left.\frac{\partial F}{\partial \bm{h}}\right|_{\bm{h}^\star}
+    = \operatorname{diag}\!\left(\sigma_h'\!\left(\bm{a}^\star\right)\right)\bm{W},\tag{11.7}
+\]</div>
+<p>with the fixed point attracting if the spectral radius <span class="math notranslate nohighlight">\(\rho(\bm{J})&lt;1\)</span> and
+repelling if <span class="math notranslate nohighlight">\(\rho(\bm{J})&gt;1\)</span>.  In more than one dimension the map can also
+possess limit cycles, and in three or more it can be chaotic.</p>
+<p>This is not an idle observation.  It tells us what a recurrent network is
+capable of representing – oscillations, decay to a point attractor, chaotic
+wandering – and it tells us what the network will do with information.  If the
+dynamics are strongly contracting the network forgets its initial condition
+quickly and cannot carry information far; if they are expanding it is unstable.
+Equation (11.7) is also, as Section <em>Why long sequences are hard</em> will
+show, exactly the quantity that controls the gradient.  The stability of the
+forward dynamics and the survival of the backward gradient are the same
+question.</p>
+</section>
+</section>
+<section id="where-the-recurrence-comes-from-a-differential-equation">
+<h2><span class="section-number">11.3. </span>Where the recurrence comes from: a differential equation<a class="headerlink" href="#where-the-recurrence-comes-from-a-differential-equation" title="Link to this heading">#</a></h2>
+<p>The recurrence of Eq. (11.4) can look arbitrary.  It is not, and the
+quickest way to see why is to derive it from a differential equation, which also
+connects this chapter to Chapter 9.</p>
+<p>Take Newton’s equation for a damped harmonic oscillator, scaled so that time is
+dimensionless,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\mathrm{d}^{2}x}{\mathrm{d}t^{2}}
+  + \eta\frac{\mathrm{d}x}{\mathrm{d}t} + x(t) = F(t),\tag{11.8}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\eta\)</span> the damping and <span class="math notranslate nohighlight">\(F\)</span> an external force.  As always we reduce it to
+two first-order equations by introducing the velocity,</p>
+<div class="math notranslate nohighlight">
+\[
+v = \frac{\mathrm{d}x}{\mathrm{d}t},
+  \qquad
+  \frac{\mathrm{d}v}{\mathrm{d}t} = F(t)-\eta v(t) - x(t).\tag{11.9}
+\]</div>
+<p>Now discretise the velocity equation by the forward Euler method of
+Section <em>Logistic population growth</em>:</p>
+<div class="math notranslate nohighlight">
+\[
+v_{i+1} = v_i + \Delta t\left(F_i - \eta v_i - x_i\right)
+          =: h_i\!\left(x_i,v_i,F_i\right).\tag{11.10}
+\]</div>
+<p>The right-hand side is a function of the current state and the current input.
+But <span class="math notranslate nohighlight">\(v_i\)</span> was itself produced by the same rule one step earlier,</p>
+<div class="math notranslate nohighlight">
+\[
+v_i = v_{i-1} + \Delta t\left(F_{i-1}-\eta v_{i-1}-x_{i-1}\right) = h_{i-1},\tag{11.11}
+\]</div>
+<p>so substituting gives</p>
+<div class="math notranslate nohighlight">
+\[
+v_{i+1} = h_i\!\left(x_i,\,h_{i-1},\,F_i\right).\tag{11.12}
+\]</div>
+<p>Absorbing the forcing into the input and renaming the output, this is</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{h}_i = h\!\left(\bm{x}_i,\bm{h}_{i-1}\right),\tag{11.13}
+\]</div>
+<p>which is Eq. (11.3) exactly.  A recurrent network is a
+learned, non-linear time-stepper.  The hidden state plays the role of the
+integrator’s internal state, <span class="math notranslate nohighlight">\(\bm{W}\)</span> plays the role of <span class="math notranslate nohighlight">\(1-\eta\Delta t\)</span>, and
+the training data supply what the differential equation would otherwise have to
+tell us.</p>
+<div class="tip admonition">
+<p class="admonition-title">The comparison with Chapter 9</p>
+<p>Two chapters have now
+solved differential equations with networks, and they do it in opposite ways.
+In Chapter 9 the equation was known and supplied the cost through
+its residual; no data were needed and the network learned a function of
+continuous time.  Here the equation is <em>unknown</em> and the data supply the
+cost; the network learns a discrete update rule.  The first is appropriate when
+the physics is known and the data are absent, the second when the data are
+present and the physics is not.</p>
+</div>
+</section>
+<section id="backpropagation-through-time">
+<h2><span class="section-number">11.4. </span>Backpropagation through time<a class="headerlink" href="#backpropagation-through-time" title="Link to this heading">#</a></h2>
+<p>Training uses gradient descent, so we need <span class="math notranslate nohighlight">\(\nabla\mathcal{L}\)</span>.  The standard
+way to see how is to <em>unroll</em> the recursion: a recurrent network run for
+<span class="math notranslate nohighlight">\(T\)</span> steps is a feed-forward network of depth <span class="math notranslate nohighlight">\(T\)</span> in which every layer shares the
+same weights.  Backpropagation applies unchanged; the only novelty is that
+gradients from every step must be summed into the same parameter arrays.</p>
+<p>The algorithm has a pleasing description in the time domain.  The forward pass
+builds a stack of the activities at each step; the backward pass peels the
+activities off the stack, computing error derivatives at each step; and
+afterwards the derivatives at all steps are added together for each weight.</p>
+<p><strong>The output layer.</strong>
+Differentiating Eq. (11.5) gives, for each <span class="math notranslate nohighlight">\(t\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\left(\nabla_{\bm{o}^{(t)}}\mathcal{L}\right)_i
+  = \frac{\partial\mathcal{L}}{\partial L^{(t)}}
+    \frac{\partial L^{(t)}}{\partial o_i^{(t)}},\tag{11.14}
+\]</div>
+<p>which for the quadratic cost and a linear <span class="math notranslate nohighlight">\(\sigma_y\)</span> is simply
+<span class="math notranslate nohighlight">\((\hat{\bm{y}}^{(t)}-\bm{y}^{(t)})/T\)</span>.</p>
+<p><strong>The last hidden state.</strong>
+At <span class="math notranslate nohighlight">\(t=T\)</span> the state influences the cost only through the output at that step,</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_{\bm{h}^{(T)}}\mathcal{L}
+  = \bm{V}^{\mathsf{T}}\nabla_{\bm{o}^{(T)}}\mathcal{L}.\tag{11.15}
+\]</div>
+<p><strong>Earlier hidden states.</strong>
+For <span class="math notranslate nohighlight">\(t&lt;T\)</span> the state has <em>two</em> routes to the cost: through the output at
+step <span class="math notranslate nohighlight">\(t\)</span>, and through the state at step <span class="math notranslate nohighlight">\(t+1\)</span>.  The chain rule therefore gives
+two terms,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \nabla_{\bm{h}^{(t)}}\mathcal{L}
+  = \left(\frac{\partial\bm{h}^{(t+1)}}{\partial\bm{h}^{(t)}}\right)^{\mathsf{T}}
+      \nabla_{\bm{h}^{(t+1)}}\mathcal{L}
+    + \left(\frac{\partial\bm{o}^{(t)}}{\partial\bm{h}^{(t)}}\right)^{\mathsf{T}}
+      \nabla_{\bm{o}^{(t)}}\mathcal{L}\;}\tag{11.16}
+\]</div>
+<p>which, using Eq. (11.4), is</p>
+<div class="math notranslate nohighlight">
+\[
+\nabla_{\bm{h}^{(t)}}\mathcal{L}
+  = \bm{W}^{\mathsf{T}}
+    \operatorname{diag}\!\left(\sigma_h'\!\left(\bm{a}^{(t+1)}\right)\right)
+    \nabla_{\bm{h}^{(t+1)}}\mathcal{L}
+    + \bm{V}^{\mathsf{T}}\nabla_{\bm{o}^{(t)}}\mathcal{L}.\tag{11.17}
+\]</div>
+<p>Equations (11.15) and (11.17) are run
+backwards from <span class="math notranslate nohighlight">\(t=T\)</span> to <span class="math notranslate nohighlight">\(t=1\)</span>, and they are the whole of BPTT.</p>
+<p><strong>The parameters.</strong>
+Because the same matrices act at every step, each accumulates a contribution
+from every step:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{split}
+    \nabla_{\bm{c}}\mathcal{L} &amp;= \sum_{t}\nabla_{\bm{o}^{(t)}}\mathcal{L},\\
+    \nabla_{\bm{V}}\mathcal{L} &amp;= \sum_{t}
+      \left(\nabla_{\bm{o}^{(t)}}\mathcal{L}\right)\bm{h}^{(t)\mathsf{T}},\\
+    \nabla_{\bm{b}}\mathcal{L} &amp;= \sum_{t}\bm{\delta}^{(t)},\\
+    \nabla_{\bm{W}}\mathcal{L} &amp;= \sum_{t}
+      \bm{\delta}^{(t)}\bm{h}^{(t-1)\mathsf{T}},\\
+    \nabla_{\bm{U}}\mathcal{L} &amp;= \sum_{t}
+      \bm{\delta}^{(t)}\bm{x}^{(t)\mathsf{T}},
+  \end{split}\tag{11.18}
+\end{split}\]</div>
+<p>where
+<span class="math notranslate nohighlight">\(\bm{\delta}^{(t)}=\operatorname{diag}(\sigma_h'(\bm{a}^{(t)}))
+\nabla_{\bm{h}^{(t)}}\mathcal{L}\)</span>
+is the error at the pre-activation of step <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<div class="tip admonition">
+<p class="admonition-title">The backward pass is linear</p>
+<p>There is an asymmetry between the two
+passes that is easy to miss and important to notice.  The forward pass is
+non-linear: the squashing function <span class="math notranslate nohighlight">\(\sigma_h\)</span> keeps the activities bounded, and
+this is what prevents them from exploding.  The backward pass, by contrast, is
+<em>completely linear</em> in the incoming gradient – Eq. (11.16) is
+a matrix acting on <span class="math notranslate nohighlight">\(\nabla_{\bm{h}^{(t+1)}}\mathcal{L}\)</span>, with the matrix fixed
+by the forward pass.  Double the error at the final step and every error
+derivative doubles.  Nothing bounds the backward pass, which is precisely why it
+can explode when the forward pass cannot.</p>
+</div>
+</section>
+<section id="why-long-sequences-are-hard">
+<h2><span class="section-number">11.5. </span>Why long sequences are hard<a class="headerlink" href="#why-long-sequences-are-hard" title="Link to this heading">#</a></h2>
+<p>Iterating Eq. (11.17) from <span class="math notranslate nohighlight">\(T\)</span> back to <span class="math notranslate nohighlight">\(t\)</span> produces a
+<em>product</em> of Jacobians, one factor per step.  It is this product, and not
+anything about the architecture as such, that makes recurrent networks hard to
+train.</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 11.1 (Vanishing and exploding gradients)</p>
+<p>Let <span class="math notranslate nohighlight">\(\bm{h}^{(t)}=\sigma_h(\bm{U}\bm{x}^{(t)}+\bm{W}\bm{h}^{(t-1)}+\bm{b})\)</span> and
+suppose <span class="math notranslate nohighlight">\(|\sigma_h'(z)|\le\gamma\)</span> for all <span class="math notranslate nohighlight">\(z\)</span>.  Then for any <span class="math notranslate nohighlight">\(t&lt;T\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial\bm{h}^{(T)}}{\partial\bm{h}^{(t)}}
+  = \prod_{k=t+1}^{T}
+    \operatorname{diag}\!\left(\sigma_h'\!\left(\bm{a}^{(k)}\right)\right)\bm{W},\tag{11.19}
+\]</div>
+<p>and its spectral norm obeys</p>
+<div class="math notranslate nohighlight">
+\[
+\left\|\frac{\partial\bm{h}^{(T)}}{\partial\bm{h}^{(t)}}\right\|_2
+  \;\le\; \left(\gamma\,\sigma_{\max}(\bm{W})\right)^{T-t},\tag{11.20}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma_{\max}(\bm{W})\)</span> is the largest singular value.  Consequently, if
+<span class="math notranslate nohighlight">\(\gamma\,\sigma_{\max}(\bm{W})&lt;1\)</span> the gradient contribution from step <span class="math notranslate nohighlight">\(t\)</span> decays
+<em>exponentially</em> in the lag <span class="math notranslate nohighlight">\(T-t\)</span>.  If <span class="math notranslate nohighlight">\(\gamma\,\sigma_{\max}(\bm{W})&gt;1\)</span> it
+may grow exponentially.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Equation (11.19) is the chain rule applied to the recursion, one
+factor for each step, with
+<span class="math notranslate nohighlight">\(\partial\bm{h}^{(k)}/\partial\bm{h}^{(k-1)}
+=\operatorname{diag}(\sigma_h'(\bm{a}^{(k)}))\bm{W}\)</span>
+read off from Eq. (11.4).  For the bound, the spectral norm is
+submultiplicative, so the norm of the product is at most the product of the
+norms.  Each factor satisfies
+<span class="math notranslate nohighlight">\(\|\operatorname{diag}(\sigma_h'(\bm{a}^{(k)}))\bm{W}\|_2
+\le\|\operatorname{diag}(\sigma_h'(\bm{a}^{(k)}))\|_2\|\bm{W}\|_2
+\le\gamma\,\sigma_{\max}(\bm{W})\)</span>,
+since the spectral norm of a diagonal matrix is the largest absolute entry and
+that of <span class="math notranslate nohighlight">\(\bm{W}\)</span> is <span class="math notranslate nohighlight">\(\sigma_{\max}(\bm{W})\)</span>.  Multiplying <span class="math notranslate nohighlight">\(T-t\)</span> such bounds
+gives Eq. (11.20).</p>
+</div>
+<p>For <span class="math notranslate nohighlight">\(\tanh\)</span> we have <span class="math notranslate nohighlight">\(\gamma=1\)</span>, attained only at the origin, and for the logistic
+function <span class="math notranslate nohighlight">\(\gamma=1/4\)</span>, which is why <span class="math notranslate nohighlight">\(\tanh\)</span> is preferred: the logistic activation
+guarantees decay by a factor of at least four per step regardless of the weights.
+For ReLU, <span class="math notranslate nohighlight">\(\gamma=1\)</span> as well, but the derivative is <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span> rather than a
+number smoothly approaching <span class="math notranslate nohighlight">\(1\)</span>, and a ReLU recurrent network is prone to
+explosion instead; this is why the rectified family, dominant everywhere else in
+this book, is largely absent from recurrent architectures.</p>
+<div class="important admonition">
+<p class="admonition-title">Corollary 11.2 (Memory horizon)</p>
+<p>If <span class="math notranslate nohighlight">\(\gamma\,\sigma_{\max}(\bm{W})&lt;1\)</span>, define</p>
+<div class="math notranslate nohighlight">
+\[
+\tau = \frac{-1}{\log\!\left(\gamma\,\sigma_{\max}(\bm{W})\right)} &gt; 0 .\tag{11.21}
+\]</div>
+<p>Then Eq. (11.20) reads
+<span class="math notranslate nohighlight">\(\|\partial\bm{h}^{(T)}/\partial\bm{h}^{(t)}\|_2\le e^{-(T-t)/\tau}\)</span>: the
+influence of step <span class="math notranslate nohighlight">\(t\)</span> on step <span class="math notranslate nohighlight">\(T\)</span> decays with a characteristic scale of <span class="math notranslate nohighlight">\(\tau\)</span>
+steps, and falls below a tolerance <span class="math notranslate nohighlight">\(\varepsilon\)</span> once
+<span class="math notranslate nohighlight">\(T-t &gt; \tau\log(1/\varepsilon)\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Write <span class="math notranslate nohighlight">\((\gamma\sigma_{\max})^{T-t}=e^{(T-t)\log(\gamma\sigma_{\max})}\)</span> and
+substitute Eq. (11.21).</p>
+</div>
+<p>The number <span class="math notranslate nohighlight">\(\tau\)</span> deserves a name and a measurement, because it converts
+Theorem 11.1 from a qualitative warning into a design
+parameter: it is the length of sequence the network can actually use.  We
+measure it in Section <em>Measuring it</em>, and the answer is
+smaller than one expects.</p>
+<div class="tip admonition">
+<p class="admonition-title">The bound is sufficient, not necessary</p>
+<p>Equation (11.20) uses <span class="math notranslate nohighlight">\(\sigma_{\max}(\bm{W})\)</span>, not the spectral
+radius <span class="math notranslate nohighlight">\(\rho(\bm{W})\)</span>, and the two can differ substantially for non-normal
+<span class="math notranslate nohighlight">\(\bm{W}\)</span> – in the experiment below, <span class="math notranslate nohighlight">\(\rho=0.5\)</span> corresponds to
+<span class="math notranslate nohighlight">\(\sigma_{\max}=0.85\)</span> and <span class="math notranslate nohighlight">\(\rho=1.5\)</span> to <span class="math notranslate nohighlight">\(\sigma_{\max}=2.56\)</span>.  Since
+<span class="math notranslate nohighlight">\(\rho(\bm{W})\le\sigma_{\max}(\bm{W})\)</span> always, <span class="math notranslate nohighlight">\(\gamma\sigma_{\max}&lt;1\)</span> is a
+sufficient condition for the gradient to vanish, while <span class="math notranslate nohighlight">\(\rho&gt;1/\gamma\)</span> is
+necessary for sustained growth.  Between the two lies a regime in which
+transient growth is possible even though the asymptotic behaviour is decay, and
+this is where carefully initialised recurrent networks actually operate.</p>
+</div>
+<section id="measuring-it">
+<h3><span class="section-number">11.5.1. </span>Measuring it<a class="headerlink" href="#measuring-it" title="Link to this heading">#</a></h3>
+<p>Theorem 11.1 is a bound; it is worth seeing the real thing.
+We take <span class="math notranslate nohighlight">\(n_h=20\)</span>, sequences of length <span class="math notranslate nohighlight">\(T=60\)</span>, and inputs small enough that the
+network stays near the origin where <span class="math notranslate nohighlight">\(\tanh'\approx1\)</span>, so that the product is not
+confounded by saturation.  We then form Eq. (11.19) explicitly and
+measure its spectral norm as a function of the lag, scaling <span class="math notranslate nohighlight">\(\bm{W}\)</span> so that its
+spectral radius takes prescribed values.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">rho</span><span class="p">(</span><span class="n">W</span><span class="p">)</span>  <span class="n">sigma_max</span>  <span class="n">mean</span> <span class="nb">max</span><span class="p">(</span><span class="n">tanh</span><span class="s1">&#39;)   ||dh_T/dh_1||   bound sigma_max^59</span>
+  <span class="mf">0.50</span>     <span class="mf">0.853</span>        <span class="mf">1.0000</span>        <span class="mf">1.683e-18</span>        <span class="mf">8.319e-05</span>
+  <span class="mf">0.90</span>     <span class="mf">1.535</span>        <span class="mf">1.0000</span>        <span class="mf">3.487e-03</span>        <span class="mf">9.575e+10</span>
+  <span class="mf">1.10</span>     <span class="mf">1.876</span>        <span class="mf">0.9999</span>        <span class="mf">3.751e+02</span>        <span class="mf">1.327e+16</span>
+  <span class="mf">1.50</span>     <span class="mf">2.558</span>        <span class="mf">0.9882</span>        <span class="mf">2.998e+03</span>        <span class="mf">1.175e+24</span>
+</pre></div>
+</div>
+<p>At <span class="math notranslate nohighlight">\(\rho(\bm{W})=0.5\)</span> the influence of the first step on the last has fallen by
+<em>eighteen orders of magnitude</em> over fifty-nine steps.  This is not a
+gradient that a floating-point optimiser can use; it is zero.  At
+<span class="math notranslate nohighlight">\(\rho(\bm{W})=1.1\)</span> the same quantity has grown to <span class="math notranslate nohighlight">\(375\)</span>, and at <span class="math notranslate nohighlight">\(1.5\)</span> to
+<span class="math notranslate nohighlight">\(3000\)</span>, so that a single unlucky mini-batch can throw the parameters anywhere.
+The last column shows the bound (11.20) is satisfied and is very
+loose in the growing regime, as one would expect from a worst-case argument
+applied to a product of matrices whose singular vectors are not aligned.</p>
+<p>Figure 11.2(a) plots the whole decay.  The straight lines on the
+logarithmic axis are the exponential of Theorem 11.1, and the
+sign of the slope is decided by whether <span class="math notranslate nohighlight">\(\rho(\bm{W})\)</span> sits below or above one.</p>
+<p>Because those lines are straight, Corollary 11.2 can be turned
+around: instead of bounding <span class="math notranslate nohighlight">\(\tau\)</span> from <span class="math notranslate nohighlight">\(\sigma_{\max}(\bm{W})\)</span>, fit it to the
+measured decay.  Doing so at every lag from <span class="math notranslate nohighlight">\(1\)</span> to <span class="math notranslate nohighlight">\(59\)</span> gives</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">6.</span> <span class="n">the</span> <span class="n">memory</span> <span class="n">horizon</span><span class="p">:</span> <span class="n">fitted</span> <span class="n">decay</span> <span class="n">rate</span><span class="p">,</span> <span class="n">Corollary</span> <span class="mf">11.</span><span class="n">horizon</span> <span class="o">===</span>
+   <span class="n">rho</span><span class="p">(</span><span class="n">W</span><span class="p">)</span>  <span class="n">sigma_max</span>   <span class="n">fitted</span> <span class="n">tau</span> <span class="p">(</span><span class="n">steps</span><span class="p">)</span>   <span class="n">lag</span> <span class="k">for</span> <span class="n">a</span> <span class="n">factor</span> <span class="mf">1e-6</span>   <span class="n">norm</span> <span class="n">at</span> <span class="n">lag</span> <span class="mi">59</span>
+    <span class="mf">0.50</span>     <span class="mf">0.9129</span>                 <span class="mf">1.45</span>                      <span class="mi">20</span>        <span class="mf">1.967e-17</span>
+    <span class="mf">0.70</span>     <span class="mf">1.2780</span>                 <span class="mf">2.82</span>                      <span class="mi">39</span>        <span class="mf">8.229e-09</span>
+    <span class="mf">0.90</span>     <span class="mf">1.6431</span>                 <span class="mf">9.66</span>                     <span class="mi">133</span>        <span class="mf">2.264e-02</span>
+    <span class="mf">1.10</span>     <span class="mf">2.0083</span>               <span class="o">-</span><span class="mf">10.30</span>                    <span class="o">-</span><span class="mi">142</span>        <span class="mf">3.116e+03</span>
+</pre></div>
+</div>
+<p>and this is the number to remember.  At <span class="math notranslate nohighlight">\(\rho(\bm{W})=0.5\)</span> the memory horizon is
+<em>one and a half steps</em>.  Not fifty, not ten: a network initialised this way
+has forgotten its input after two steps, and no amount of training on long
+sequences will change that until the weights themselves grow.  At <span class="math notranslate nohighlight">\(\rho=0.9\)</span> the
+horizon reaches ten steps, which is still short against the <span class="math notranslate nohighlight">\(T=60\)</span> of the
+experiment, and by <span class="math notranslate nohighlight">\(\rho=1.1\)</span> the fitted <span class="math notranslate nohighlight">\(\tau\)</span> is negative – the product grows
+rather than decays, and the network is in the exploding regime.  The useful
+range is narrow and it sits just below one.</p>
+<div class="tip admonition">
+<p class="admonition-title">Truncated backpropagation through time</p>
+<p>Corollary 11.2
+also licenses the standard economy.  Running BPTT over a sequence of length
+<span class="math notranslate nohighlight">\(T=10^{4}\)</span> requires storing <span class="math notranslate nohighlight">\(10^{4}\)</span> activations; <em>truncated</em> BPTT
+propagates the gradient back only <span class="math notranslate nohighlight">\(k\)</span> steps and discards the rest.  The error
+this introduces is exactly the discarded tail of
+Eq. (11.19), bounded by</p>
+<div class="math notranslate nohighlight">
+\[
+\Bigl\|\nabla_{\bm{\theta}}\mathcal{L}
+    - \nabla_{\bm{\theta}}^{(k)}\mathcal{L}\Bigr\|
+  \;\le\; C\sum_{j&gt;k}e^{-j/\tau}
+  = \frac{C\,e^{-k/\tau}}{e^{1/\tau}-1},\tag{11.22}
+\]</div>
+<p>so the bias falls exponentially in the truncation length with the same constant
+<span class="math notranslate nohighlight">\(\tau\)</span>.  Choosing <span class="math notranslate nohighlight">\(k\)</span> a few multiples of <span class="math notranslate nohighlight">\(\tau\)</span> makes the truncation error
+negligible <em>against the gradient that survives</em> – but note what this says:
+when <span class="math notranslate nohighlight">\(\tau\)</span> is small enough for truncation to be safe, the network has no long
+memory to lose, and when it has long memory, truncation destroys it.  Truncated
+BPTT is cheap precisely when the recurrence is not doing the thing it was
+introduced for.</p>
+</div>
+<p><img alt="a The spectral norm of the Jacobian product 11.19 against the lag T-t," src="_images/rnn_gradients.png" /></p>
+<p><em>Figure 11.2: (a) The spectral norm of the Jacobian product (11.19) against the lag <span class="math notranslate nohighlight">\(T-t\)</span>, for four values of the spectral radius of <span class="math notranslate nohighlight">\(\bm{W}\)</span>.  The exponential behaviour of Theorem 11.1 is the straight line on a logarithmic axis. (b) The same quantity for the cell state of an LSTM, Eq. (11.29), at three values of the forget-gate bias, with the <span class="math notranslate nohighlight">\(\rho=0.5\)</span> curve of panel (a) repeated as a dashed line.  At <span class="math notranslate nohighlight">\(b_f=0\)</span> the LSTM is no better than the vanilla RNN; the advantage comes entirely from biasing the gate open.  (c) Gradient clipping, Eq. (11.23): the rare large norms that would otherwise destroy the parameters are rescaled, the direction is kept and everything below the threshold is untouched.</em></p>
+</section>
+<section id="gradient-clipping">
+<h3><span class="section-number">11.5.2. </span>Gradient clipping<a class="headerlink" href="#gradient-clipping" title="Link to this heading">#</a></h3>
+<p>Vanishing and exploding gradients are not symmetric problems, and they do not
+have symmetric remedies.  Explosion is the easier of the two, because it is
+visible: the gradient norm spikes and the parameters jump.  The standard fix is
+to rescale any gradient whose norm exceeds a threshold, keeping the direction
+and discarding only the magnitude,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\bm{g} \;\longleftarrow\;
+  \begin{cases}
+    \bm{g}, &amp; \|\bm{g}\|\le\theta,\\[2pt]
+    \dfrac{\theta}{\|\bm{g}\|}\,\bm{g}, &amp; \|\bm{g}\|&gt;\theta.
+  \end{cases}\tag{11.23}
+\end{split}\]</div>
+<p>Two properties make Eq. (11.23) safe to apply unconditionally.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 11.3 (Clipping is a trust region and preserves descent)</p>
+<p>Let <span class="math notranslate nohighlight">\(\tilde{\bm{g}}\)</span> be the clipped gradient of Eq. (11.23).  Then
+(i) <span class="math notranslate nohighlight">\(\tilde{\bm{g}}=\lambda\bm{g}\)</span> with <span class="math notranslate nohighlight">\(\lambda=\min(1,\theta/\|\bm{g}\|)
+\in(0,1]\)</span>, so <span class="math notranslate nohighlight">\(\langle\tilde{\bm{g}},\bm{g}\rangle=\lambda\|\bm{g}\|^{2}&gt;0\)</span>
+whenever <span class="math notranslate nohighlight">\(\bm{g}\neq\bm{0}\)</span> and <span class="math notranslate nohighlight">\(-\tilde{\bm{g}}\)</span> is a descent direction;
+(ii) <span class="math notranslate nohighlight">\(\tilde{\bm{g}}\)</span> is the solution of</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\bm{g}} = \mathop{\mathrm{arg\,max}}_{\|\bm{u}\|\le\theta}
+    \;\langle\bm{u},\bm{g}\rangle
+    \quad\text{scaled to}\quad \|\bm{u}\|=\min(\|\bm{g}\|,\theta),\tag{11.24}
+\]</div>
+<p>that is, the Euclidean projection of <span class="math notranslate nohighlight">\(\bm{g}\)</span> onto the ball of radius <span class="math notranslate nohighlight">\(\theta\)</span>;
+so a step of size <span class="math notranslate nohighlight">\(\eta\)</span> on the clipped gradient never moves the parameters
+further than <span class="math notranslate nohighlight">\(\eta\theta\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>(i) is immediate from the definition, since <span class="math notranslate nohighlight">\(\lambda&gt;0\)</span> in both branches.
+For (ii), the projection of <span class="math notranslate nohighlight">\(\bm{g}\)</span> onto <span class="math notranslate nohighlight">\(\{\|\bm{u}\|\le\theta\}\)</span> minimises
+<span class="math notranslate nohighlight">\(\|\bm{u}-\bm{g}\|^{2}\)</span>; writing <span class="math notranslate nohighlight">\(\bm{u}=r\hat{\bm{u}}\)</span> with <span class="math notranslate nohighlight">\(r\le\theta\)</span> gives
+<span class="math notranslate nohighlight">\(\|\bm{u}-\bm{g}\|^{2}=r^{2}-2r\langle\hat{\bm{u}},\bm{g}\rangle+\|\bm{g}\|^{2}\)</span>,
+minimised over directions at <span class="math notranslate nohighlight">\(\hat{\bm{u}}=\bm{g}/\|\bm{g}\|\)</span> and then over <span class="math notranslate nohighlight">\(r\)</span>
+at <span class="math notranslate nohighlight">\(r=\min(\|\bm{g}\|,\theta)\)</span>.</p>
+</div>
+<p>The two statements are why clipping is not a hack.  Property (i) says the
+optimiser is still doing gradient descent, on a rescaled gradient; property (ii)
+says the effective step length is bounded by <span class="math notranslate nohighlight">\(\eta\theta\)</span> regardless of what the
+loss surface does, which is exactly the guarantee a trust-region method
+provides.  What is lost is scale information: near a genuine cliff the clipped
+step is far shorter than the true gradient suggests, so progress is slow rather
+than catastrophic.  That is the intended trade.
+This is not a descent direction for any modified cost and it has no convergence
+theory worth the name, but it is close to universal in practice and it is
+essentially free.  Figure 11.2(c) shows the effect: the bulk of the
+updates are untouched and only the rare spikes are cut.  Note that clipping does
+nothing whatever for vanishing gradients – rescaling a gradient of <span class="math notranslate nohighlight">\(10^{-18}\)</span>
+upwards would amplify rounding noise, not signal.  Vanishing gradients require a
+change of architecture, which is the subject of Section <em>Long short-term memory</em>.</p>
+<p>Careful initialisation helps with both.  Setting <span class="math notranslate nohighlight">\(\sigma_{\max}(\bm{W})\approx1\)</span>
+puts the network at the edge between the two regimes, which is the best one can
+do with this architecture; the orthogonal or identity initialisations sometimes
+used for recurrent weights are attempts to sit exactly there.</p>
+</section>
+</section>
+<section id="implementation-and-verification">
+<h2><span class="section-number">11.6. </span>Implementation and verification<a class="headerlink" href="#implementation-and-verification" title="Link to this heading">#</a></h2>
+<p>As in Chapters 8 and 10 we write the network from
+scratch and check the gradients before trusting anything.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">h0</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;X has shape (T, n_in).  Returns outputs (T, n_out) and the cache.</span>
+
+<span class="sd">    a_t = U x_t + W h_{t-1} + b,   h_t = tanh(a_t),   yhat_t = V h_t + c</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n_h</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;W&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_h</span><span class="p">))</span>              <span class="c1"># H[0] is h_{-1}</span>
+    <span class="k">if</span> <span class="n">h0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">h0</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">n_h</span><span class="p">))</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;U&quot;</span><span class="p">]</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;W&quot;</span><span class="p">]</span> <span class="o">@</span> <span class="n">H</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span>
+        <span class="n">H</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">Y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">]</span> <span class="o">@</span> <span class="n">H</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Y</span><span class="p">,</span> <span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The backward pass is Eqs. (11.15)–(11.18), read
+off line by line.  Note the single loop running backwards and the accumulation
+with \verb!+=! into arrays that were zeroed once: that accumulation <em>is</em>
+the weight sharing.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">bptt</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">return_norms</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gradients of Eq. (11.cost) by the recursion (11.bptth).&quot;&quot;&quot;</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="n">cache</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">dY</span> <span class="o">=</span> <span class="p">(</span><span class="n">Y</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span> <span class="o">/</span> <span class="n">T</span>                    <span class="c1"># dL/dyhat_t for the cost (11.cost)</span>
+    <span class="n">dh_next</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s2">&quot;W&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">norms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">)):</span>
+        <span class="n">g</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">dY</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">H</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">g</span><span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">dh</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;V&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">dY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">dh_next</span>      <span class="c1"># Eq. (11.bptth)</span>
+        <span class="n">da</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">H</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dh</span>      <span class="c1"># through tanh</span>
+        <span class="n">g</span><span class="p">[</span><span class="s2">&quot;U&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">g</span><span class="p">[</span><span class="s2">&quot;W&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">da</span><span class="p">,</span> <span class="n">H</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">g</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">da</span>
+        <span class="n">dh_next</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;W&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">da</span>
+        <span class="k">if</span> <span class="n">return_norms</span><span class="p">:</span>
+            <span class="n">norms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dh</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">norms</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">if</span> <span class="n">return_norms</span> <span class="k">else</span> <span class="n">g</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Clipping is Eq. (11.23) applied to all parameter arrays jointly, since
+it is the norm of the full gradient vector that matters:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rescale the whole gradient if its norm exceeds theta.&quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">theta</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+            <span class="n">g</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*=</span> <span class="n">theta</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">g</span><span class="p">,</span> <span class="n">n</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checking against central differences over <em>every</em> entry of every parameter
+array, for a sequence of length twelve:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">---</span> <span class="n">BPTT</span> <span class="n">vs</span> <span class="n">central</span> <span class="n">differences</span> <span class="p">(</span><span class="n">T</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span> <span class="o">---</span>
+  <span class="n">U</span><span class="p">:</span> <span class="nb">max</span> <span class="n">relative</span> <span class="n">error</span> <span class="n">over</span> <span class="nb">all</span> <span class="mi">12</span> <span class="n">entries</span> <span class="o">=</span> <span class="mf">1.38e-09</span>
+  <span class="n">W</span><span class="p">:</span> <span class="nb">max</span> <span class="n">relative</span> <span class="n">error</span> <span class="n">over</span> <span class="nb">all</span> <span class="mi">36</span> <span class="n">entries</span> <span class="o">=</span> <span class="mf">3.22e-08</span>
+  <span class="n">V</span><span class="p">:</span> <span class="nb">max</span> <span class="n">relative</span> <span class="n">error</span> <span class="n">over</span> <span class="nb">all</span> <span class="mi">6</span> <span class="n">entries</span> <span class="o">=</span> <span class="mf">1.53e-09</span>
+  <span class="n">b</span><span class="p">:</span> <span class="nb">max</span> <span class="n">relative</span> <span class="n">error</span> <span class="n">over</span> <span class="nb">all</span> <span class="mi">6</span> <span class="n">entries</span> <span class="o">=</span> <span class="mf">8.25e-10</span>
+  <span class="n">c</span><span class="p">:</span> <span class="nb">max</span> <span class="n">relative</span> <span class="n">error</span> <span class="n">over</span> <span class="nb">all</span> <span class="mi">1</span> <span class="n">entries</span> <span class="o">=</span> <span class="mf">1.41e-10</span>
+</pre></div>
+</div>
+<p>Unlike the convolutional network of Chapter 10, this check passes
+everywhere without a smooth surrogate, because <span class="math notranslate nohighlight">\(\tanh\)</span> and the quadratic cost
+are differentiable everywhere and there is no max-pooling argmax to switch.</p>
+<section id="the-damped-oscillator">
+<h3><span class="section-number">11.6.1. </span>The damped oscillator<a class="headerlink" href="#the-damped-oscillator" title="Link to this heading">#</a></h3>
+<p>We test the network on the problem of Section <em>Where the recurrence comes from: a differential equation</em>.  A
+fourth-order Runge-Kutta integrator generates the trajectory of
+Eq. (11.8) with <span class="math notranslate nohighlight">\(\eta=0.2\)</span> over <span class="math notranslate nohighlight">\(t\in[0,40]\)</span> at <span class="math notranslate nohighlight">\(800\)</span> points,
+and the network is trained by BPTT with clipping at <span class="math notranslate nohighlight">\(\theta=1\)</span> to predict
+<span class="math notranslate nohighlight">\(x_{i+1}\)</span> from <span class="math notranslate nohighlight">\(x_i\)</span> along sequences of length <span class="math notranslate nohighlight">\(40\)</span>.  The training data come
+from a <em>single</em> trajectory, with initial condition <span class="math notranslate nohighlight">\((x_0,v_0)=(1,0)\)</span> and no
+forcing.  We then test on data the network has never seen:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">train</span><span class="p">,</span> <span class="n">IC</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>            <span class="n">MSE</span> <span class="mf">2.275e-05</span>   <span class="n">Var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">=</span><span class="mf">0.0655</span>  <span class="n">rel</span> <span class="mf">0.035</span><span class="o">%</span>
+<span class="n">test</span><span class="p">,</span> <span class="n">unseen</span> <span class="n">IC</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>      <span class="n">MSE</span> <span class="mf">2.218e-05</span>   <span class="n">Var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">=</span><span class="mf">0.0618</span>  <span class="n">rel</span> <span class="mf">0.036</span><span class="o">%</span>
+<span class="n">test</span><span class="p">,</span> <span class="n">driven</span><span class="o">+</span><span class="n">unseen</span> <span class="n">IC</span>     <span class="n">MSE</span> <span class="mf">3.595e-05</span>   <span class="n">Var</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">=</span><span class="mf">0.1488</span>  <span class="n">rel</span> <span class="mf">0.024</span><span class="o">%</span>
+</pre></div>
+</div>
+<p>The second line is the interesting one.  The network was trained on a trajectory
+starting from rest at unit displacement, and tested on one starting from the
+origin at unit velocity – a different solution of the same equation, out of
+phase with everything it saw – and the error is <em>identical</em> to the
+training error, three parts in ten thousand of the variance.  The third line
+goes further: an oscillator driven by <span class="math notranslate nohighlight">\(F(t)=0.3\cos(0.7t)\)</span>, which the network
+never saw in any form, is predicted just as well.</p>
+<p>The network has therefore not memorised a trajectory; it has learned the
+<em>update rule</em>, which is what Eq. (11.12) said it would do.
+That is the payoff of the recurrent structure, and it is the same payoff
+parameter sharing gave in Chapter 10: a rule learned once applies
+everywhere it is valid.</p>
+<p><img alt="a The damped oscillator 11.8 with eta0.2, integrated by fourth-order R" src="_images/rnn_oscillator.png" /></p>
+<p><em>Figure 11.3: (a) The damped oscillator (11.8) with <span class="math notranslate nohighlight">\(\eta=0.2\)</span>, integrated by fourth-order Runge-Kutta; the network sees only <span class="math notranslate nohighlight">\(x(t)\)</span>.  (b) The training cost under BPTT with clipping at <span class="math notranslate nohighlight">\(\theta=1\)</span>.  (c) One-step predictions on a trajectory with an initial condition the network never saw, against the Runge-Kutta solution.</em></p>
+</section>
+</section>
+<section id="long-short-term-memory">
+<h2><span class="section-number">11.7. </span>Long short-term memory<a class="headerlink" href="#long-short-term-memory" title="Link to this heading">#</a></h2>
+<p>Theorem 11.1 says that the trouble comes from a product of
+Jacobians, each carrying a factor of <span class="math notranslate nohighlight">\(\bm{W}\)</span> and a factor of <span class="math notranslate nohighlight">\(\sigma_h'\)</span>.  Any
+architecture that keeps the gradient alive over long lags must break that
+product.  The long short-term memory unit of Hochreiter and
+Schmidhuber [hochreiter1997] does so by introducing a second state
+variable whose update is <em>additive</em> rather than multiplicative.</p>
+<p>The design is usually described as a memory cell with gates.  A linear unit with
+a self-connection of weight one maintains its value indefinitely; information is
+written into it when a write gate opens, kept while a keep gate is open, and
+read out when a read gate opens.  Because the gates are logistic functions they
+are differentiable, so the whole circuit can be trained by backpropagation.  In
+modern notation the three gates are called the input, forget and output gates,
+and the cell carries a long-term state <span class="math notranslate nohighlight">\(\bm{c}\)</span> alongside the short-term state
+<span class="math notranslate nohighlight">\(\bm{h}\)</span>.</p>
+<p><strong>The forget gate.</strong>
+decides how much of the existing cell state to retain:</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{f}^{(t)} = \sigma\!\left(\bm{W}_{fx}\bm{x}^{(t)}
+    + \bm{W}_{fh}\bm{h}^{(t-1)} + \bm{b}_f\right).\tag{11.25}
+\]</div>
+<p>The logistic <span class="math notranslate nohighlight">\(\sigma\)</span> returns values near <span class="math notranslate nohighlight">\(0\)</span> for very negative arguments and
+near <span class="math notranslate nohighlight">\(1\)</span> for very positive ones, so <span class="math notranslate nohighlight">\(\bm{f}^{(t)}\)</span> acts as a soft, learned,
+per-component switch on the long-term memory.</p>
+<p><strong>The input gate.</strong>
+decides what to write, and is two functions rather than one: a logistic deciding
+<em>how much</em> to write and a <span class="math notranslate nohighlight">\(\tanh\)</span> deciding <em>what</em>,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{i}^{(t)} = \sigma\!\left(\bm{W}_{ix}\bm{x}^{(t)}
+    + \bm{W}_{ih}\bm{h}^{(t-1)} + \bm{b}_i\right),
+  \qquad
+  \bm{g}^{(t)} = \tanh\!\left(\bm{W}_{gx}\bm{x}^{(t)}
+    + \bm{W}_{gh}\bm{h}^{(t-1)} + \bm{b}_g\right).\tag{11.26}
+\]</div>
+<p><strong>The cell update.</strong>
+combines the two, with <span class="math notranslate nohighlight">\(\odot\)</span> the elementwise product:</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \bm{c}^{(t)} = \bm{f}^{(t)}\odot\bm{c}^{(t-1)}
+    + \bm{i}^{(t)}\odot\bm{g}^{(t)}.\;}\tag{11.27}
+\]</div>
+<p><strong>The output gate.</strong>
+decides how much of the cell to expose as the visible state:</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{o}^{(t)} = \sigma\!\left(\bm{W}_{ox}\bm{x}^{(t)}
+    + \bm{W}_{oh}\bm{h}^{(t-1)} + \bm{b}_o\right),
+  \qquad
+  \bm{h}^{(t)} = \bm{o}^{(t)}\odot\tanh\!\left(\bm{c}^{(t)}\right).\tag{11.28}
+\]</div>
+<p>The unit has four times the parameters of a simple RNN with the same <span class="math notranslate nohighlight">\(n_h\)</span>,
+since each of <span class="math notranslate nohighlight">\(\bm{f},\bm{i},\bm{g},\bm{o}\)</span> has its own <span class="math notranslate nohighlight">\(\bm{W}_{\cdot x}\)</span>,
+<span class="math notranslate nohighlight">\(\bm{W}_{\cdot h}\)</span> and bias.</p>
+<p>Figure 11.4 assembles the four equations into the circuit they
+describe.  It repays a slow reading, because the geometry <em>is</em> the
+argument.  Follow the horizontal line at the top, entering as <span class="math notranslate nohighlight">\(\bm{c}^{(t-1)}\)</span>
+and leaving as <span class="math notranslate nohighlight">\(\bm{c}^{(t)}\)</span>: along the way it is multiplied once, by the
+forget gate, and added to once, by the input gate.  That is all.  It passes
+through no weight matrix and no squashing function, which is precisely why
+Eq. (11.29) contains neither.  Every other path in the diagram –
+the four gates along the bottom, the output multiplication on the right –
+hangs off that line rather than lying on it.</p>
+<p>Contrast the same picture for the simple RNN, which would have the state line
+running through a matrix multiplication and a <span class="math notranslate nohighlight">\(\tanh\)</span> at every step.  The LSTM
+did not remove those operations; it moved them off the memory path.</p>
+<p><img alt="The LSTM cell of Eqs. 11.25--11.28.  The four boxes along the bottom a" src="_images/lstmcell.png" /></p>
+<p><em>Figure 11.4: The LSTM cell of Eqs. (11.25)–(11.28).  The four boxes along the bottom are the gates: <span class="math notranslate nohighlight">\(\sigma_f\)</span> the forget gate, <span class="math notranslate nohighlight">\(\sigma_i\)</span> and <span class="math notranslate nohighlight">\(\tanh_g\)</span> the two halves of the input gate, and <span class="math notranslate nohighlight">\(\sigma_o\)</span> the output gate, each taking <span class="math notranslate nohighlight">\(\bm{x}^{(t)}\)</span> and <span class="math notranslate nohighlight">\(\bm{h}^{(t-1)}\)</span> and each with its own weights.  The circled <span class="math notranslate nohighlight">\(\times\)</span> and <span class="math notranslate nohighlight">\(+\)</span> are elementwise product and sum.  The horizontal line carrying <span class="math notranslate nohighlight">\(\bm{c}^{(t-1)}\)</span> to <span class="math notranslate nohighlight">\(\bm{c}^{(t)}\)</span> is the <em>constant error carousel</em>: it meets one multiplication and one addition and no weight matrix, which is the content of Eq. (11.29) and the reason gradients survive along it.</em></p>
+<section id="why-it-works-and-by-how-much">
+<h3><span class="section-number">11.7.1. </span>Why it works, and by how much<a class="headerlink" href="#why-it-works-and-by-how-much" title="Link to this heading">#</a></h3>
+<p>The point of Eq. (11.27) is what it does to the Jacobian.
+Differentiating the cell update with respect to the previous cell state, and
+treating the gates as slowly varying,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial\bm{c}^{(t)}}{\partial\bm{c}^{(t-1)}}
+    \approx \operatorname{diag}\!\left(\bm{f}^{(t)}\right),
+  \qquad\text{so}\qquad
+  \frac{\partial\bm{c}^{(T)}}{\partial\bm{c}^{(t)}}
+    \approx \prod_{k=t+1}^{T}\operatorname{diag}\!\left(\bm{f}^{(k)}\right).\tag{11.29}
+\]</div>
+<p>Compare with Eq. (11.19).  There is no <span class="math notranslate nohighlight">\(\bm{W}\)</span> and no
+<span class="math notranslate nohighlight">\(\sigma_h'\)</span>; the product is over the forget gates alone.  If the network learns
+to hold <span class="math notranslate nohighlight">\(\bm{f}^{(k)}\approx1\)</span> on some component, the gradient along that
+component is transmitted essentially undamped for as long as the gate stays
+open.  This is often called the <em>constant error carousel</em>, and it is the
+whole idea.</p>
+<p>That is the argument.  It is worth checking, because the argument is often
+stated as though the LSTM simply solves the problem, and it does not.
+Measuring Eq. (11.29) on an untrained LSTM with <span class="math notranslate nohighlight">\(n_h=20\)</span> and
+<span class="math notranslate nohighlight">\(T=60\)</span>, for three values of the forget-gate bias:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">forget</span> <span class="n">bias</span> <span class="mf">0.0</span><span class="p">:</span> <span class="n">mean</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.5000</span>  <span class="o">||</span><span class="n">dc_T</span><span class="o">/</span><span class="n">dc_1</span><span class="o">||=</span><span class="mf">3.879e-18</span>
+  <span class="n">forget</span> <span class="n">bias</span> <span class="mf">1.0</span><span class="p">:</span> <span class="n">mean</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.7311</span>  <span class="o">||</span><span class="n">dc_T</span><span class="o">/</span><span class="n">dc_1</span><span class="o">||=</span><span class="mf">3.074e-08</span>
+  <span class="n">forget</span> <span class="n">bias</span> <span class="mf">2.0</span><span class="p">:</span> <span class="n">mean</span> <span class="n">f</span><span class="o">=</span><span class="mf">0.8810</span>  <span class="o">||</span><span class="n">dc_T</span><span class="o">/</span><span class="n">dc_1</span><span class="o">||=</span><span class="mf">2.232e-03</span>
+</pre></div>
+</div>
+<p>against <span class="math notranslate nohighlight">\(1.683\times10^{-18}\)</span> for the vanilla RNN at <span class="math notranslate nohighlight">\(\rho(\bm{W})=0.5\)</span>.  With
+<span class="math notranslate nohighlight">\(\bm{b}_f=0\)</span> the forget gates sit at <span class="math notranslate nohighlight">\(\sigma(0)=1/2\)</span>, the product is
+<span class="math notranslate nohighlight">\(2^{-59}\approx10^{-18}\)</span>, and the LSTM is <em>no better than the simple RNN it
+was invented to replace</em>.  The gain is entirely a matter of where the gates
+start: biasing them open moves the mean gate to <span class="math notranslate nohighlight">\(0.73\)</span> and buys ten orders of
+magnitude, and a bias of two buys fifteen.  Figure 11.2(b) shows
+the three curves with the vanilla RNN underneath, and the <span class="math notranslate nohighlight">\(b_f=0\)</span> curve lies
+almost exactly on top of it.</p>
+<div class="tip admonition">
+<p class="admonition-title">Initialise the forget-gate bias positive</p>
+<p>This is the practical
+consequence, and it is why implementations commonly default to <span class="math notranslate nohighlight">\(\bm{b}_f=1\)</span>; the
+empirical survey of Jozefowicz <em>et al.</em> [jozefowicz2015] found it to
+be among the most reliable single adjustments to recurrent training.  The
+architecture supplies a <em>path</em> along which gradients can travel undamped;
+the initialisation decides whether the network starts anywhere near it.  This is
+the same lesson as the He and Xavier initialisations of
+Chapter 8, in a setting where the consequence is measured in orders
+of magnitude rather than factors.</p>
+</div>
+<p>Equation (11.29) is approximate, and it is worth writing the exact
+statement, because what the approximation drops is not negligible.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 11.4 (The exact cell Jacobian)</p>
+<p>With the gates of Eqs. (11.25)–(11.28),</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial\bm{c}^{(t)}}{\partial\bm{c}^{(t-1)}}
+  = \operatorname{diag}\!\left(\bm{f}^{(t)}\right)
+  + \bm{R}^{(t)},\tag{11.30}
+\]</div>
+<p>where, writing <span class="math notranslate nohighlight">\(\bm{D}_f=\operatorname{diag}(\bm{f}(1-\bm{f}))\)</span>,
+<span class="math notranslate nohighlight">\(\bm{D}_i=\operatorname{diag}(\bm{i}(1-\bm{i}))\)</span>,
+<span class="math notranslate nohighlight">\(\bm{D}_g=\operatorname{diag}(1-\bm{g}^{2})\)</span> for the gate derivatives at step
+<span class="math notranslate nohighlight">\(t\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{R}^{(t)} =
+  \Bigl[\operatorname{diag}\!\left(\bm{c}^{(t-1)}\right)\bm{D}_f\bm{W}_{fh}
+  + \operatorname{diag}\!\left(\bm{g}^{(t)}\right)\bm{D}_i\bm{W}_{ih}
+  + \operatorname{diag}\!\left(\bm{i}^{(t)}\right)\bm{D}_g\bm{W}_{gh}\Bigr]
+  \operatorname{diag}\!\left(\bm{o}^{(t-1)}
+    \left(1-\tanh^{2}\bm{c}^{(t-1)}\right)\right).\tag{11.31}
+\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Differentiate Eq. (11.27).  The explicit dependence on
+<span class="math notranslate nohighlight">\(\bm{c}^{(t-1)}\)</span> gives <span class="math notranslate nohighlight">\(\operatorname{diag}(\bm{f}^{(t)})\)</span>.  The remaining
+dependence is through <span class="math notranslate nohighlight">\(\bm{h}^{(t-1)}=\bm{o}^{(t-1)}\odot\tanh\bm{c}^{(t-1)}\)</span>,
+which enters <span class="math notranslate nohighlight">\(\bm{f}^{(t)},\bm{i}^{(t)},\bm{g}^{(t)}\)</span> through
+<span class="math notranslate nohighlight">\(\bm{W}_{fh},\bm{W}_{ih},\bm{W}_{gh}\)</span>; the chain rule with the elementwise
+derivatives <span class="math notranslate nohighlight">\(\bm{D}_f,\bm{D}_i,\bm{D}_g\)</span> gives the bracket, and
+<span class="math notranslate nohighlight">\(\partial\bm{h}^{(t-1)}/\partial\bm{c}^{(t-1)}
+=\operatorname{diag}(\bm{o}^{(t-1)}(1-\tanh^{2}\bm{c}^{(t-1)}))\)</span> is the final
+factor.  Note that <span class="math notranslate nohighlight">\(\bm{o}^{(t-1)}\)</span> depends on <span class="math notranslate nohighlight">\(\bm{h}^{(t-2)}\)</span>, not on
+<span class="math notranslate nohighlight">\(\bm{c}^{(t-1)}\)</span>, so the expression closes.</p>
+</div>
+<p>Every term of <span class="math notranslate nohighlight">\(\bm{R}^{(t)}\)</span> carries a logistic derivative, bounded by <span class="math notranslate nohighlight">\(1/4\)</span>,
+and the factor <span class="math notranslate nohighlight">\(1-\tanh^{2}\bm{c}^{(t-1)}\)</span>, which vanishes as the cell state
+saturates.  One would therefore expect <span class="math notranslate nohighlight">\(\bm{R}\)</span> to be negligible in the regime
+the architecture is designed for.  Measuring it – assembling
+<span class="math notranslate nohighlight">\(\partial\bm{c}^{(T)}/\partial\bm{c}^{(1)}\)</span> exactly by automatic
+differentiation and comparing against the product of forget gates alone –
+shows that this expectation is wrong:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>=== 5. Eq. (11.lstmjac) is approximate: how approximate? ===
+  input scale   b_f   mean f   prod diag(f)   exact ||dc_T/dc_1||   ratio
+          1.0   0.0   0.5185       1.891e-11             2.255e-08   1192.07
+          1.0   1.0   0.7284       2.538e-05             1.514e-03     59.63
+          1.0   2.0   0.8693       1.808e-02             5.654e-01     31.27
+          1.0   4.0   0.9759       5.970e-01             8.408e+00     14.08
+          0.1   0.0   0.5007       2.672e-12             4.828e-07   180716.73
+          0.1   1.0   0.7310       6.201e-06             7.472e-02   12048.86
+          0.1   2.0   0.8799       1.247e-02             8.597e+00    689.13
+          0.1   4.0   0.9789       5.848e-01             1.144e+02    195.66
+</pre></div>
+</div>
+<p>The ratio never approaches one.  Biasing the gates open improves it by two
+orders of magnitude, from <span class="math notranslate nohighlight">\(1192\)</span> to <span class="math notranslate nohighlight">\(14\)</span>; driving the cell more <em>gently</em>
+makes it far worse, because a cell state near zero has
+<span class="math notranslate nohighlight">\(1-\tanh^{2}\bm{c}\approx1\)</span> and the gate paths of Eq. (11.31) are
+then at their most conductive.  So Eq. (11.29) should be read as a
+<em>lower bound</em> on how much gradient survives, not as an estimate of it.</p>
+<p>The sign of the discrepancy is favourable: the true Jacobian is larger than the
+constant-error-carousel argument promises, so the LSTM transmits more gradient
+than the standard story claims, by one to five orders of magnitude in these
+measurements.  But the standard story is not quantitative, and it is worth
+knowing that the gates are not merely a valve on a passive channel – they are
+themselves a conducting path.</p>
+<p>One further point.  Nothing here prevents <em>explosion</em>: since
+<span class="math notranslate nohighlight">\(\bm{f}\le\bm{1}\)</span> the diagonal term of Eq. (11.30) cannot
+amplify, but <span class="math notranslate nohighlight">\(\bm{R}^{(t)}\)</span> contains weight matrices with no such bound, so
+clipping remains necessary.</p>
+</section>
+<section id="the-gated-recurrent-unit">
+<h3><span class="section-number">11.7.2. </span>The gated recurrent unit<a class="headerlink" href="#the-gated-recurrent-unit" title="Link to this heading">#</a></h3>
+<p>The gated recurrent unit of Cho <em>et al.</em> [cho2014] applies the same
+idea with fewer parts.  It drops the separate cell state, keeping only
+<span class="math notranslate nohighlight">\(\bm{h}\)</span>, and uses two gates instead of three:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{split}
+    \bm{z}^{(t)} &amp;= \sigma\!\left(\bm{W}_{zx}\bm{x}^{(t)}
+      +\bm{W}_{zh}\bm{h}^{(t-1)}+\bm{b}_z\right),\\
+    \bm{r}^{(t)} &amp;= \sigma\!\left(\bm{W}_{rx}\bm{x}^{(t)}
+      +\bm{W}_{rh}\bm{h}^{(t-1)}+\bm{b}_r\right),\\
+    \tilde{\bm{h}}^{(t)} &amp;= \tanh\!\left(\bm{W}_{hx}\bm{x}^{(t)}
+      +\bm{W}_{hh}\left(\bm{r}^{(t)}\odot\bm{h}^{(t-1)}\right)+\bm{b}_h\right),\\
+    \bm{h}^{(t)} &amp;= \left(1-\bm{z}^{(t)}\right)\odot\bm{h}^{(t-1)}
+      + \bm{z}^{(t)}\odot\tilde{\bm{h}}^{(t)} .
+  \end{split}\tag{11.32}
+\end{split}\]</div>
+<p>The <em>update</em> gate <span class="math notranslate nohighlight">\(\bm{z}\)</span> plays the roles of both the forget and input
+gates at once – what is not written is retained, by construction – and the
+<em>reset</em> gate <span class="math notranslate nohighlight">\(\bm{r}\)</span> controls how much of the past enters the candidate
+state.  The last line has the same additive form as
+Eq. (11.27), so the same constant-error-carousel argument applies
+with <span class="math notranslate nohighlight">\(1-\bm{z}\)</span> in place of <span class="math notranslate nohighlight">\(\bm{f}\)</span>.</p>
+<p>A GRU has three sets of weight matrices against the LSTM’s four, so about
+three quarters of the parameters and correspondingly less computation.  Which
+performs better is task-dependent and not settled; the two are usually close.
+More recent work continues in the same direction: Beck <em>et
+al.</em> [beck2024] report that exponential gating and modified memory
+structures make an extended LSTM competitive with transformers and state-space
+models in both performance and scaling.</p>
+</section>
+</section>
+<section id="the-same-networks-in-pytorch-and-tensorflow">
+<h2><span class="section-number">11.8. </span>The same networks in PyTorch and TensorFlow<a class="headerlink" href="#the-same-networks-in-pytorch-and-tensorflow" title="Link to this heading">#</a></h2>
+<p>Everything so far has been derived and then implemented in NumPy.  This section
+hands the same architectures to the two libraries, and does three things with
+them: runs the two standard examples, checks that the libraries and our code
+compute the same function to rounding, and then asks the question the theory has
+been building towards – whether the gating of
+Section <em>Long short-term memory</em> lets a network learn something a simple recurrent
+network cannot.</p>
+<section id="forecasting-a-sine-wave">
+<h3><span class="section-number">11.8.1. </span>Forecasting a sine wave<a class="headerlink" href="#forecasting-a-sine-wave" title="Link to this heading">#</a></h3>
+<p>The task is the one-step-ahead forecasting of Section <em>The damped oscillator</em>,
+on a sine wave rather than a damped oscillator.  Sequences of <span class="math notranslate nohighlight">\(20\)</span> consecutive
+values are used to predict the next.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="c1"># 1. Data: a sine wave cut into overlapping windows</span>
+<span class="n">time_steps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">time_steps</span><span class="p">)</span>
+<span class="n">seq_length</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="n">seq_length</span><span class="p">):</span>
+    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">seq_length</span><span class="p">])</span>
+    <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">seq_length</span><span class="p">])</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">seq_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>     <span class="c1"># (samples, timesteps, features)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">split</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:</span><span class="n">split</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">split</span><span class="p">:]</span>
+<span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:</span><span class="n">split</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">split</span><span class="p">:]</span>
+
+<span class="c1"># 2. Model: a SimpleRNN layer is exactly Eq. (11.rnn)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">SimpleRNN</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">seq_length</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span>
+    <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;adam&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;mse&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>      <span class="c1"># 16*(1+16+1) = 288 recurrent parameters, then 17</span>
+
+<span class="c1"># 3. Training and evaluation</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                    <span class="n">validation_split</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test loss </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The same in PyTorch, where the loop is explicit:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+<span class="n">seq_length</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">seq_length</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="n">seq_length</span><span class="p">)])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">seq_length</span><span class="p">:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>              <span class="c1"># (N, T, 1), batch_first</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">split</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">SineRNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;nn.RNN implements Eq. (11.rnn) with tanh by default.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="mi">16</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">out</span><span class="p">,</span> <span class="n">h_T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>                 <span class="c1"># out: (N, T, hidden)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>          <span class="c1"># read out the last state only</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SineRNN</span><span class="p">()</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+<span class="n">lossfn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">lossfn</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="n">split</span><span class="p">]),</span> <span class="n">y</span><span class="p">[:</span><span class="n">split</span><span class="p">])</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>                            <span class="c1"># BPTT, Eqs. (11.bptth)-(11.bpttparams)</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)</span>   <span class="c1"># Eq. (11.clip)</span>
+    <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: train loss </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test loss </span><span class="si">{</span><span class="n">lossfn</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">split</span><span class="p">:]),</span><span class="w"> </span><span class="n">y</span><span class="p">[</span><span class="n">split</span><span class="p">:])</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note \verb!clip_grad_norm_!, which is Eq. (11.23) exactly and is
+justified by Proposition 11.3, and the line
+\verb!out[:, -1, :]!, which selects the sequence-to-label case of
+Eq. (11.1): only the final state is read.</p>
+<p>Run for two hundred epochs with minibatches of thirty-two, both reach the same
+place:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PyTorch</span>    <span class="n">epoch</span> <span class="mi">200</span><span class="p">:</span> <span class="n">train</span> <span class="n">mse</span> <span class="mf">0.000008</span>   <span class="n">test</span> <span class="n">mse</span> <span class="mf">0.000004</span>   <span class="p">(</span><span class="mi">321</span> <span class="n">parameters</span><span class="p">)</span>
+<span class="n">TensorFlow</span> <span class="n">epoch</span> <span class="mi">200</span><span class="p">:</span> <span class="n">train</span> <span class="n">mse</span> <span class="mf">0.000003</span>   <span class="n">test</span> <span class="n">mse</span> <span class="mf">0.000002</span>   <span class="p">(</span><span class="mi">305</span> <span class="n">parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A test mean squared error of <span class="math notranslate nohighlight">\(4\times10^{-6}\)</span> is a root-mean-square error of
+<span class="math notranslate nohighlight">\(0.003\)</span> on a signal of unit amplitude, and Figure 11.5(a)
+shows the two predictions lying on the true curve.  The parameter counts differ
+by sixteen, and the reason is the convention noted below: PyTorch’s
+\verb!nn.RNN! carries two bias vectors where Eq. (11.4) and Keras
+carry one.  Their sum is our <span class="math notranslate nohighlight">\(\bm{b}\)</span>, so the models are the same; only the
+parameterisation is redundant.</p>
+</section>
+<section id="an-lstm-on-mnist-read-row-by-row">
+<h3><span class="section-number">11.8.2. </span>An LSTM on MNIST, read row by row<a class="headerlink" href="#an-lstm-on-mnist-read-row-by-row" title="Link to this heading">#</a></h3>
+<p>A less obvious use is to treat each <span class="math notranslate nohighlight">\(28\times28\)</span> image as a sequence of <span class="math notranslate nohighlight">\(28\)</span>
+rows, each of <span class="math notranslate nohighlight">\(28\)</span> features, and classify it with an LSTM.  This is not what one
+would do in practice – Chapter 10 explains why a convolutional
+network is the right tool for images – but it is a clean demonstration of a
+sequence-to-label task, and comparing it against
+Section <em>Does it actually help? An experiment</em> is instructive.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">LSTM</span><span class="p">,</span> <span class="n">Dense</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.utils</span> <span class="kn">import</span> <span class="n">to_categorical</span>
+
+<span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">mnist</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+<span class="n">x_train</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">x_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span>
+<span class="n">x_train</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>        <span class="c1"># 28 timesteps of 28 features</span>
+<span class="n">x_test</span> <span class="o">=</span> <span class="n">x_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">))</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">to_categorical</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="n">to_categorical</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">([</span>
+    <span class="n">LSTM</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)),</span>           <span class="c1"># 4*128*(28+128+1) = 80384 params</span>
+    <span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;softmax&quot;</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s2">&quot;categorical_crossentropy&quot;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s2">&quot;adam&quot;</span><span class="p">,</span>
+              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">validation_split</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;test accuracy </span><span class="si">{</span><span class="n">test_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>and in PyTorch:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">transforms</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="n">transform</span> <span class="o">=</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span><span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+                                <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">((</span><span class="mf">0.1307</span><span class="p">,),</span> <span class="p">(</span><span class="mf">0.3081</span><span class="p">,))])</span>
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="s2">&quot;./data&quot;</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                         <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">),</span>
+                          <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">datasets</span><span class="o">.</span><span class="n">MNIST</span><span class="p">(</span><span class="s2">&quot;./data&quot;</span><span class="p">,</span> <span class="n">train</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                        <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">),</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">LSTMModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Eqs. (11.lstmf)-(11.lstmh); nn.LSTM already biases b_f, see below.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="o">=</span><span class="mi">28</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>              <span class="c1"># image as a sequence of rows</span>
+        <span class="n">out</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>                  <span class="c1"># (batch, seq, hidden)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>          <span class="c1"># last state -&gt; class scores</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">LSTMModel</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
+        <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">images</span><span class="p">),</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">correct</span> <span class="o">=</span> <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">test_loader</span><span class="p">:</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pred</span> <span class="o">==</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: test accuracy </span><span class="si">{</span><span class="mi">100</span><span class="o">*</span><span class="n">correct</span><span class="o">/</span><span class="n">total</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Two remarks.  PyTorch’s \verb!nn.LSTM! does <em>not</em> initialise the
+forget-gate bias to one; it draws all biases uniformly from
+<span class="math notranslate nohighlight">\((-1/\sqrt{n_h},1/\sqrt{n_h})\)</span>, so the mean forget gate starts at about <span class="math notranslate nohighlight">\(0.5\)</span> –
+which by Section <em>Why it works, and by how much</em> is the worst case.  Setting it explicitly is
+a few lines and is worth doing for long sequences.  And the parameter count
+<span class="math notranslate nohighlight">\(4n_h(n_x+n_h+1)\)</span> printed by \verb!model.summary()! is a useful check of the
+four gates of Eqs. (11.25)–(11.28); if the number is
+not four times that of a simple RNN, something is wrong.</p>
+</section>
+<section id="do-the-three-implementations-agree">
+<h3><span class="section-number">11.8.3. </span>Do the three implementations agree?<a class="headerlink" href="#do-the-three-implementations-agree" title="Link to this heading">#</a></h3>
+<p>The listings and the NumPy code of Section <em>Implementation and verification</em> are supposed to be
+the same function, and the recurrent case has more room for disagreement than
+the convolutional one of Section <em>Do the three implementations agree?</em>, because three conventions
+differ at once:</p>
+<ul class="simple">
+<li><p>PyTorch’s \verb!nn.RNN! and \verb!nn.LSTM! carry <em>two</em> bias vectors,
+\verb!bias_ih! and \verb!bias_hh!, where Eq. (11.4) has one.  Their
+sum is our <span class="math notranslate nohighlight">\(\bm{b}\)</span>.</p></li>
+<li><p>Keras stores the input matrix transposed – \verb!kernel! of shape
+<span class="math notranslate nohighlight">\((n_x,n_h)\)</span> against our <span class="math notranslate nohighlight">\(\bm{U}\)</span> of shape <span class="math notranslate nohighlight">\((n_h,n_x)\)</span> – and likewise the
+recurrent matrix.</p></li>
+<li><p>Both concatenate the four LSTM gates into one array in the order
+<span class="math notranslate nohighlight">\((\bm{i},\bm{f},\bm{g},\bm{o})\)</span>, whereas
+Eqs. (11.25)–(11.28) introduce them as
+<span class="math notranslate nohighlight">\((\bm{f},\bm{i},\bm{g},\bm{o})\)</span>.  Getting this wrong produces a network that
+trains perfectly well and is not the one on the page.</p></li>
+</ul>
+<p>With those reconciled, one set of weights in all three:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">1.</span> <span class="n">the</span> <span class="n">simple</span> <span class="n">RNN</span> <span class="n">of</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">11.</span><span class="n">rnn</span><span class="p">),</span> <span class="n">forward</span> <span class="o">===</span>
+  <span class="n">hidden</span> <span class="n">states</span>  <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span> <span class="p">:</span> <span class="mf">2.220e-16</span>
+  <span class="n">hidden</span> <span class="n">states</span>  <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">keras</span><span class="o">|</span> <span class="p">:</span> <span class="mf">4.441e-16</span>
+  <span class="n">outputs</span>        <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span> <span class="p">:</span> <span class="mf">2.220e-16</span>
+  <span class="n">outputs</span>        <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">keras</span><span class="o">|</span> <span class="p">:</span> <span class="mf">3.331e-16</span>
+
+<span class="o">===</span> <span class="mf">2.</span> <span class="n">backpropagation</span> <span class="n">through</span> <span class="n">time</span><span class="p">,</span> <span class="n">Eqs</span><span class="o">.</span> <span class="p">(</span><span class="mf">11.</span><span class="n">bptth</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="mf">11.</span><span class="n">bpttparams</span><span class="p">)</span> <span class="o">===</span>
+  <span class="n">our</span> <span class="n">loss</span><span class="p">,</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">11.</span><span class="n">cost</span><span class="p">)</span>   <span class="p">:</span> <span class="mf">1.171647902250</span>
+  <span class="n">torch</span> <span class="n">loss</span>                <span class="p">:</span> <span class="mf">1.171647902250</span>
+   <span class="n">array</span>   <span class="n">shape</span>        <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span>      <span class="n">scale</span>
+   <span class="n">U</span>     <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>            <span class="mf">5.551e-17</span>   <span class="mf">2.105e-01</span>
+   <span class="n">W</span>     <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>            <span class="mf">5.551e-17</span>   <span class="mf">2.329e-01</span>
+   <span class="n">V</span>     <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>            <span class="mf">1.110e-16</span>   <span class="mf">2.509e-01</span>
+   <span class="n">b</span>     <span class="p">(</span><span class="mi">8</span><span class="p">,)</span>              <span class="mf">1.110e-16</span>   <span class="mf">2.766e-01</span>
+   <span class="n">c</span>     <span class="p">(</span><span class="mi">2</span><span class="p">,)</span>              <span class="mf">1.110e-16</span>   <span class="mf">6.103e-01</span>
+
+<span class="o">===</span> <span class="mf">3.</span> <span class="n">the</span> <span class="n">LSTM</span> <span class="n">cell</span><span class="p">,</span> <span class="n">Eqs</span><span class="o">.</span> <span class="p">(</span><span class="mf">11.</span><span class="n">lstmf</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="mf">11.</span><span class="n">lstmh</span><span class="p">)</span> <span class="o">===</span>
+  <span class="n">cell</span> <span class="n">output</span>    <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span> <span class="p">:</span> <span class="mf">8.327e-17</span>
+  <span class="n">cell</span> <span class="n">output</span>    <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">keras</span><span class="o">|</span> <span class="p">:</span> <span class="mf">1.388e-16</span>
+</pre></div>
+</div>
+<p>Every entry is at unit roundoff; Figure 11.5(d) plots the
+backward-pass comparison.  The recursion of
+Eqs. (11.15)–(11.18), derived by hand in
+Section <em>Backpropagation through time</em>, is what reverse-mode automatic differentiation
+computes.</p>
+<p>The same idea settles Theorem 11.1.  Rather than forming the
+product of Eq. (11.19) ourselves, we can ask autograd for
+<span class="math notranslate nohighlight">\(\partial\bm{h}^{(T)}/\partial\bm{h}^{(1)}\)</span> column by column, with no
+reference to the theorem at all:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">4.</span> <span class="n">Theorem</span> <span class="mf">11.</span><span class="n">vanishing</span><span class="p">,</span> <span class="n">measured</span> <span class="n">by</span> <span class="n">autograd</span> <span class="ow">in</span> <span class="n">PyTorch</span> <span class="o">===</span>
+   <span class="n">rho</span><span class="p">(</span><span class="n">W</span><span class="p">)</span>   <span class="o">||</span><span class="n">dh_T</span><span class="o">/</span><span class="n">dh_1</span><span class="o">||</span> <span class="n">autograd</span>   <span class="o">||</span><span class="n">dh_T</span><span class="o">/</span><span class="n">dh_1</span><span class="o">||</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">11.</span><span class="n">jacprod</span><span class="p">)</span>   <span class="n">ratio</span>
+    <span class="mf">0.50</span>                <span class="mf">1.967e-17</span>                   <span class="mf">1.967e-17</span>    <span class="mf">1.0000</span>
+    <span class="mf">0.90</span>                <span class="mf">2.264e-02</span>                   <span class="mf">2.264e-02</span>    <span class="mf">1.0000</span>
+    <span class="mf">1.10</span>                <span class="mf">3.116e+03</span>                   <span class="mf">3.116e+03</span>    <span class="mf">1.0000</span>
+    <span class="mf">1.50</span>                <span class="mf">7.351e+04</span>                   <span class="mf">7.351e+04</span>    <span class="mf">1.0000</span>
+</pre></div>
+</div>
+<p>The vanishing gradient is not an artefact of our implementation, and it is not
+something a better library avoids.  It is a property of the composition.</p>
+</section>
+<section id="row-by-row-the-two-libraries-on-mnist">
+<h3><span class="section-number">11.8.4. </span>Row by row: the two libraries on MNIST<a class="headerlink" href="#row-by-row-the-two-libraries-on-mnist" title="Link to this heading">#</a></h3>
+<p>Training the LSTM of the listing above, and a simple RNN of the same width for
+comparison, for three epochs on the full sixty thousand images:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>\noalign{} Cell</p></th>
+<th class="head"><p>Framework</p></th>
+<th class="head"><p>Parameters</p></th>
+<th class="head"><p>Test accuracy</p></th>
+<th class="head"><p>Seconds/epoch</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>\noalign{}\noalign{} LSTM</p></td>
+<td><p>PyTorch</p></td>
+<td><p><span class="math notranslate nohighlight">\(82\,186\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.9708\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(8\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>LSTM</p></td>
+<td><p>TensorFlow</p></td>
+<td><p><span class="math notranslate nohighlight">\(81\,674\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.9743\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(21\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>simple RNN</p></td>
+<td><p>PyTorch</p></td>
+<td><p><span class="math notranslate nohighlight">\(21\,514\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.9333\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(6\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>simple RNN</p></td>
+<td><p>TensorFlow</p></td>
+<td><p><span class="math notranslate nohighlight">\(21\,386\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.9623\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(7\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>\noalign{}</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 11.1: MNIST read as <span class="math notranslate nohighlight">\(28\)</span> rows of <span class="math notranslate nohighlight">\(28\)</span>, after three epochs with Adam at
+<span class="math notranslate nohighlight">\(10^{-3}\)</span> and batches of <span class="math notranslate nohighlight">\(64\)</span>.  Both cells have <span class="math notranslate nohighlight">\(n_h=128\)</span>; the LSTM has four
+gates and therefore about four times the parameters.  Compare the convolutional
+network of Section <em>Training on MNIST, and what the dense layer is worth</em>, which reaches <span class="math notranslate nohighlight">\(0.99\)</span> on the same data.</em></p>
+<p>Three things are worth reading off Table 11.1.  The LSTM beats the
+simple RNN, by three points in PyTorch and one in TensorFlow, on a task with
+only <span class="math notranslate nohighlight">\(28\)</span> time steps – short enough that
+Corollary 11.2 does not forbid the simple RNN from working, and
+it does work, just less well.  The parameter counts differ between frameworks by
+exactly <span class="math notranslate nohighlight">\(4n_h\)</span> and <span class="math notranslate nohighlight">\(n_h\)</span>, the extra bias vector again.  And the whole exercise
+reaches <span class="math notranslate nohighlight">\(0.97\)</span> where the convolutional network of
+Section <em>Training on MNIST, and what the dense layer is worth</em> reached <span class="math notranslate nohighlight">\(0.99\)</span> with a comparable budget: reading an
+image as a sequence throws away the vertical structure that
+Chapter 10 was built to exploit, and the cost of doing so is
+visible.</p>
+</section>
+<section id="the-experiment-the-theory-demands">
+<h3><span class="section-number">11.8.5. </span>The experiment the theory demands<a class="headerlink" href="#the-experiment-the-theory-demands" title="Link to this heading">#</a></h3>
+<p>Section <em>Why it works, and by how much</em> showed that the LSTM keeps a larger Jacobian than a
+simple RNN, and Table 11.1 showed it classifying slightly better
+over <span class="math notranslate nohighlight">\(28\)</span> steps.  Neither is the claim the architecture was invented to support,
+which is that gating lets a network learn dependencies a simple recurrence
+<em>cannot</em>.  Testing that needs a task where nothing but long-range memory is
+being measured.</p>
+<p>The standard one is the <em>adding problem</em>.  Each sequence has two channels:
+the first carries values drawn uniformly from <span class="math notranslate nohighlight">\([0,1]\)</span>, the second is zero except
+for exactly two markers, one in each half of the sequence.  The target is half
+the sum of the two marked values.  Nothing can be inferred from the local
+statistics – the values are independent and identically distributed – so a
+model must hold one number from the first half of the sequence until the second
+marker arrives, while ignoring everything in between.  Predicting the mean and
+stopping gives a mean squared error of about <span class="math notranslate nohighlight">\(0.043\)</span>, and that is the number to
+beat.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">3.</span> <span class="n">the</span> <span class="n">adding</span> <span class="n">problem</span> <span class="n">at</span> <span class="n">increasing</span> <span class="n">sequence</span> <span class="n">length</span> <span class="o">===</span>
+   <span class="n">T</span>   <span class="n">baseline</span>         <span class="n">rnn</span>        <span class="n">lstm</span>         <span class="n">gru</span>
+    <span class="mi">10</span>    <span class="mf">0.0427</span>      <span class="mf">0.0016</span>      <span class="mf">0.0000</span>      <span class="mf">0.0000</span>
+    <span class="mi">30</span>    <span class="mf">0.0429</span>      <span class="mf">0.0411</span>      <span class="mf">0.0001</span>      <span class="mf">0.0000</span>
+    <span class="mi">60</span>    <span class="mf">0.0411</span>      <span class="mf">0.0407</span>      <span class="mf">0.0002</span>      <span class="mf">0.0001</span>
+   <span class="mi">120</span>    <span class="mf">0.0425</span>      <span class="mf">0.0427</span>      <span class="mf">0.0006</span>      <span class="mf">0.0001</span>
+</pre></div>
+</div>
+<p>This is the cleanest result in the chapter.  At <span class="math notranslate nohighlight">\(T=10\)</span> the simple recurrent
+network solves the task, reaching <span class="math notranslate nohighlight">\(0.0016\)</span> against a baseline of <span class="math notranslate nohighlight">\(0.0427\)</span>.  At
+<span class="math notranslate nohighlight">\(T=30\)</span> it has already failed completely – <span class="math notranslate nohighlight">\(0.0411\)</span> against <span class="math notranslate nohighlight">\(0.0429\)</span> is the
+error of a model that has learned to output the mean and nothing else – and it
+never recovers at <span class="math notranslate nohighlight">\(60\)</span> or <span class="math notranslate nohighlight">\(120\)</span>.  The LSTM and the GRU solve every case,
+including <span class="math notranslate nohighlight">\(T=120\)</span>, at errors between <span class="math notranslate nohighlight">\(10^{-4}\)</span> and <span class="math notranslate nohighlight">\(10^{-3}\)</span>: two to three
+orders of magnitude below the simple RNN, with the same hidden width, the same
+optimiser and the same number of epochs.</p>
+<p>Corollary 11.2 predicted this.  A simple recurrent network
+initialised in the usual way has a memory horizon of a few steps, so a
+dependency at lag <span class="math notranslate nohighlight">\(30\)</span> is invisible to it; the gated architectures replace the
+product of Jacobians by Eq. (11.30), whose leading term is a
+product of forget gates that training can drive towards one.  The gap between
+<span class="math notranslate nohighlight">\(T=10\)</span> and <span class="math notranslate nohighlight">\(T=30\)</span> in the table is where the horizon runs out.</p>
+<p><img alt="a One-step-ahead forecasts of the sine wave of Section Forecasting a s" src="_images/rnn_frameworks.png" /></p>
+<p><em>Figure 11.5: (a) One-step-ahead forecasts of the sine wave of Section <em>Forecasting a sine wave</em> on the held-out segment, from <code class="docutils literal notranslate"><span class="pre">nn.RNN</span></code> and from <code class="docutils literal notranslate"><span class="pre">SimpleRNN</span></code>; both lie on the true curve at a root-mean-square error of <span class="math notranslate nohighlight">\(0.003\)</span>.  (b) Test accuracy against epoch for MNIST read row by row, Table 11.1.  (c) The adding problem: mean squared error against sequence length for the three cells, with the error of predicting the mean shown dotted.  The simple RNN leaves the dotted line only at <span class="math notranslate nohighlight">\(T=10\)</span>.  (d) The largest disagreement between our BPTT recursion, Eqs. (11.15)–(11.18), and the same gradients from automatic differentiation, against the double-precision unit roundoff.</em></p>
+</section>
+</section>
+<section id="summary-and-the-programs">
+<h2><span class="section-number">11.9. </span>Summary and the programs<a class="headerlink" href="#summary-and-the-programs" title="Link to this heading">#</a></h2>
+<p>A recurrent network is the architecture obtained by insisting that a model
+respect the ordering of its data and reuse its parameters along the time axis.
+The state-space form (11.3) makes it a learned dynamical
+system, and Section <em>Where the recurrence comes from: a differential equation</em> showed that the recurrence is not
+arbitrary but exactly the structure of an explicit time-stepping scheme for a
+differential equation.</p>
+<p>Backpropagation through time is ordinary backpropagation on the unrolled graph,
+with the gradients from all steps summed into shared parameters.  The forward
+pass is non-linear and bounded; the backward pass is linear and unbounded, and
+that asymmetry is the source of every difficulty in this chapter.</p>
+<p>Theorem 11.1 makes the difficulty precise: the gradient across
+a lag is a product of Jacobians, bounded by
+<span class="math notranslate nohighlight">\((\gamma\sigma_{\max}(\bm{W}))^{T-t}\)</span>, so it vanishes or explodes exponentially
+unless the network sits at the boundary.  Measured on a network with
+<span class="math notranslate nohighlight">\(\rho(\bm{W})=0.5\)</span> over fifty-nine steps, the influence of the first state on
+the last fell by eighteen orders of magnitude.  Clipping, Eq. (11.23),
+handles explosion cheaply and does nothing at all for vanishing.</p>
+<p>The LSTM handles vanishing by giving the gradient an additive path,
+Eq. (11.27), whose Jacobian is a product of forget gates alone.  The
+measurement in Section <em>Why it works, and by how much</em> should be kept in mind alongside the
+argument: at <span class="math notranslate nohighlight">\(\bm{b}_f=0\)</span> the LSTM transmits <span class="math notranslate nohighlight">\(3.9\times10^{-18}\)</span> over fifty-nine
+steps, no better than the vanilla RNN’s <span class="math notranslate nohighlight">\(1.7\times10^{-18}\)</span>, and it is biasing
+the gate open that buys the ten to fifteen orders of magnitude.  The
+architecture supplies the path; the initialisation decides whether training
+starts near it.</p>
+<p>The experiment of Section <em>The damped oscillator</em> is the positive result.
+Trained on one trajectory of a damped oscillator and tested on a different
+initial condition, and then on a driven oscillator it had never seen, the
+network’s error was unchanged at three parts in ten thousand of the variance.
+It learned the update rule rather than the trajectory.</p>
+<p>Three quantitative additions sharpen the picture.  Corollary 11.2
+converts Theorem 11.1 into a <em>memory horizon</em> <span class="math notranslate nohighlight">\(\tau\)</span>, and
+fitting it to the measured decay gives <span class="math notranslate nohighlight">\(\tau=1.45\)</span> steps at <span class="math notranslate nohighlight">\(\rho(\bm{W})=0.5\)</span>
+and <span class="math notranslate nohighlight">\(9.66\)</span> at <span class="math notranslate nohighlight">\(\rho=0.9\)</span> – the usable range is narrow and it sits just below
+one.  Proposition 11.3 shows that clipping is the projection onto
+a ball, hence a trust region that preserves the descent direction, which is why
+it can be applied unconditionally.  And Proposition 11.4 gives
+the cell Jacobian exactly; measuring it against
+Eq. (11.29) shows the constant-error carousel to be a lower bound
+that understates the true gradient by one to five orders of magnitude, since the
+gate paths conduct as well.</p>
+<p>Section <em>The same networks in PyTorch and TensorFlow</em> then checked all of it against the libraries.
+Our forward pass and our BPTT recursion agree with PyTorch and TensorFlow to
+<span class="math notranslate nohighlight">\(4.4\times10^{-16}\)</span>, and asking autograd directly for
+<span class="math notranslate nohighlight">\(\partial\bm{h}^{(T)}/\partial\bm{h}^{(1)}\)</span> reproduces the product of
+Eq. (11.19) to a ratio of <span class="math notranslate nohighlight">\(1.0000\)</span>: the vanishing gradient is a
+property of the composition, not of an implementation.  The chapter closes with
+the experiment the theory demands.  On the adding problem a simple recurrent
+network solves <span class="math notranslate nohighlight">\(T=10\)</span> and fails completely from <span class="math notranslate nohighlight">\(T=30\)</span> onwards, sitting exactly
+on the predict-the-mean baseline, while the LSTM and the GRU solve every length
+up to <span class="math notranslate nohighlight">\(T=120\)</span> at errors two to three orders of magnitude lower.  That gap, at
+that lag, is Corollary 11.2 made visible.</p>
+<p>The programs are in the directory</p>
+<p><code class="docutils literal notranslate"><span class="pre">doc/BookML/BookPrograms/chapter11_recurrent_networks</span></code>.</p>
+<p>Every listing above appears there as a numbered file, and three modules run
+start to finish and reproduce the numbers quoted in the text:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rnn.py</span></code> – the forward pass, BPTT, clipping, Adam and the LSTM
+cell of Eqs. (11.25)–(11.28).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verify_rnn.py</span></code> – the gradient check against central
+differences, the Jacobian-product measurements of
+Section <em>Measuring it</em>, and the forget-bias study of
+Section <em>Why it works, and by how much</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">oscillator.py</span></code> – the Runge-Kutta integrator, the training data
+and the generalisation experiment of Section <em>The damped oscillator</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cross_check_rnn.py</span></code> – the three-way comparison of
+Section <em>Do the three implementations agree?</em>, the autograd measurement of
+Theorem 11.1, the exact cell Jacobian of
+Proposition 11.4 against
+Eq. (11.29), and the fitted memory horizon of
+Corollary 11.2.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rnn_torch.py</span></code> – the sine forecast, the row-by-row MNIST
+classification and the adding problem of Section <em>The experiment the theory demands</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rnn_tf.py</span></code> – the first two of those in TensorFlow.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mnist_data.py</span></code> – a loader that reads MNIST from a local
+<code class="docutils literal notranslate"><span class="pre">.npz</span></code>, so that the programs run without network access.</p></li>
+</ul>
+<p>The two measurement figures are generated by the script</p>
+<p><code class="docutils literal notranslate"><span class="pre">doc/BookML/BookFigures/ch11_figures.py</span></code></p>
+<p>and contain no hand-placed numbers.  The two
+schematics, Figures 11.1 and 11.4, are Ti<em>k</em>Z
+drawings in the chapter source rather than plots; they carry no data and are
+adapted from the course diagrams in <code class="docutils literal notranslate"><span class="pre">rnnsetup.tex</span></code> and
+<code class="docutils literal notranslate"><span class="pre">lstm.tex</span></code>.  The script <code class="docutils literal notranslate"><span class="pre">render_tikz.py</span></code> in the same directory
+compiles them standalone to PNG, so that the notebook version of the chapter,
+which cannot typeset Ti<em>k</em>Z, can display them.</p>
+</section>
+<section id="exercises">
+<h2><span class="section-number">11.10. </span>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<section id="warm-up-exercises">
+<h3><span class="section-number">11.10.1. </span>Warm-up exercises<a class="headerlink" href="#warm-up-exercises" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Parameter counting.</strong>
+(a) How many parameters has a simple RNN with <span class="math notranslate nohighlight">\(n_x=10\)</span>, <span class="math notranslate nohighlight">\(n_h=64\)</span>, <span class="math notranslate nohighlight">\(n_y=1\)</span>?
+(b) How many has the LSTM of Eqs. (11.25)–(11.28)
+with the same dimensions, and the GRU of Eq. (11.32)?
+(c) How many would a feed-forward network need if the sequence of length
+<span class="math notranslate nohighlight">\(T=200\)</span> were flattened into one vector, and what happens when <span class="math notranslate nohighlight">\(T\)</span> changes?</p></li>
+<li><p><strong>The unrolled graph.</strong>
+Draw the computational graph of Eq. (11.4) for <span class="math notranslate nohighlight">\(T=4\)</span>, marking every
+place <span class="math notranslate nohighlight">\(\bm{W}\)</span> appears.  Use it to explain why
+<span class="math notranslate nohighlight">\(\nabla_{\bm{W}}\mathcal{L}\)</span> is a sum of four terms and not one.</p></li>
+<li><p><strong>Fixed points.</strong>
+For the autonomous map (11.6) with <span class="math notranslate nohighlight">\(n_h=1\)</span>, <span class="math notranslate nohighlight">\(\sigma_h=\tanh\)</span>
+and <span class="math notranslate nohighlight">\(b=0\)</span>, show that <span class="math notranslate nohighlight">\(h^\star=0\)</span> is always a fixed point, that it is stable for
+<span class="math notranslate nohighlight">\(|W|&lt;1\)</span>, and that a pitchfork bifurcation occurs at <span class="math notranslate nohighlight">\(W=1\)</span> producing two stable
+non-zero fixed points.  Relate this to Theorem 11.1.</p></li>
+<li><p><strong>The bound.</strong>
+(a) Prove that <span class="math notranslate nohighlight">\(\rho(\bm{A})\le\|\bm{A}\|_2\)</span> for any square <span class="math notranslate nohighlight">\(\bm{A}\)</span>, with
+equality when <span class="math notranslate nohighlight">\(\bm{A}\)</span> is normal.
+(b) Construct a <span class="math notranslate nohighlight">\(2\times2\)</span> matrix with <span class="math notranslate nohighlight">\(\rho=0.5\)</span> and <span class="math notranslate nohighlight">\(\sigma_{\max}&gt;2\)</span>, and
+explain what this implies about transient growth of the gradient.
+(c) Why does Theorem 11.1 use <span class="math notranslate nohighlight">\(\sigma_{\max}\)</span> rather than
+<span class="math notranslate nohighlight">\(\rho\)</span>?</p></li>
+<li><p><strong>Activations.</strong>
+Show that the logistic function has <span class="math notranslate nohighlight">\(\gamma=\max|\sigma'|=1/4\)</span> while <span class="math notranslate nohighlight">\(\tanh\)</span>
+has <span class="math notranslate nohighlight">\(\gamma=1\)</span>.  Deduce that a logistic recurrent network loses at least two
+bits of gradient per step regardless of its weights, and explain why <span class="math notranslate nohighlight">\(\tanh\)</span>
+is the standard choice.</p></li>
+<li><p><strong>The constant error carousel.</strong>
+Derive Eq. (11.29) from Eq. (11.27), stating clearly
+which term you are dropping and when that is justified.  Then show that the
+<em>diagonal</em> part of Eq. (11.30) has norm at most one, so
+that the cell path alone can never cause explosion, and explain why
+Proposition 11.4 nevertheless leaves room for it.</p></li>
+<li><p><strong>The memory horizon.</strong>
+(a) Derive Corollary 11.2 and compute <span class="math notranslate nohighlight">\(\tau\)</span> for
+<span class="math notranslate nohighlight">\(\gamma=1\)</span> and <span class="math notranslate nohighlight">\(\sigma_{\max}=0.9\)</span>, <span class="math notranslate nohighlight">\(0.99\)</span>, <span class="math notranslate nohighlight">\(0.999\)</span>.
+(b) How large must <span class="math notranslate nohighlight">\(\sigma_{\max}\)</span> be for a horizon of <span class="math notranslate nohighlight">\(100\)</span> steps, and what
+does Theorem 11.1 then say about the exploding regime?
+(c) Reproduce the fitted horizons quoted in
+Section <em>Measuring it</em> and explain why the fitted <span class="math notranslate nohighlight">\(\tau\)</span> is
+smaller than the one Eq. (11.21) predicts from
+<span class="math notranslate nohighlight">\(\sigma_{\max}\)</span>.</p></li>
+<li><p><strong>Truncated backpropagation.</strong>
+(a) Derive the bound (11.22), stating what <span class="math notranslate nohighlight">\(C\)</span> collects.
+(b) For <span class="math notranslate nohighlight">\(\tau=5\)</span>, find the truncation length <span class="math notranslate nohighlight">\(k\)</span> that keeps the bias below one
+per cent of the surviving gradient.
+(c) Implement truncated BPTT in <code class="docutils literal notranslate"><span class="pre">rnn.py</span></code> and confirm the bound
+numerically by comparing against the untruncated gradient.</p></li>
+<li><p><strong>Clipping.</strong>
+(a) Prove Proposition 11.3.
+(b) Show that clipping each parameter array separately, rather than the
+concatenated gradient, does <em>not</em> in general preserve the direction, and
+construct a two-array example where the angle changes.
+(c) What happens to Adam’s second-moment estimate when clipping is active
+often, and does that argue for clipping before or after the optimiser state
+is updated?</p></li>
+<li><p><strong>The exact cell Jacobian.</strong>
+(a) Derive Proposition 11.4, being careful about which
+quantities <span class="math notranslate nohighlight">\(\bm{o}^{(t-1)}\)</span> depends on.
+(b) Bound <span class="math notranslate nohighlight">\(\|\bm{R}^{(t)}\|_2\)</span> in terms of the gate weight norms and
+<span class="math notranslate nohighlight">\(\|\bm{c}^{(t-1)}\|_\infty\)</span>.
+(c) Explain, from Eq. (11.31), why the measured ratio in
+Section <em>Why it works, and by how much</em> gets <em>worse</em> rather than better when the input
+is scaled down.</p></li>
+<li><p><strong>The adding problem.</strong>
+Reproduce Section <em>The experiment the theory demands</em> and extend it.
+(a) At which <span class="math notranslate nohighlight">\(T\)</span> does the simple RNN fail, and how does that compare with the
+horizon <span class="math notranslate nohighlight">\(\tau\)</span> of its initialisation?
+(b) Set the forget-gate bias of the LSTM to zero and repeat.  Does the LSTM
+still solve <span class="math notranslate nohighlight">\(T=120\)</span>?
+(c) Replace the LSTM by a simple RNN with <span class="math notranslate nohighlight">\(\bm{W}\)</span> initialised to the
+identity and ReLU activations – the identity RNN – and report where it sits
+between the two.</p></li>
+</ol>
+</section>
+<section id="project-style-exercise-recurrent-networks-from-scratch">
+<h3><span class="section-number">11.10.2. </span>Project-style exercise: recurrent networks from scratch<a class="headerlink" href="#project-style-exercise-recurrent-networks-from-scratch" title="Link to this heading">#</a></h3>
+<p><strong>Part a: the machinery.</strong>
+Implement the forward pass (11.4) and backpropagation through
+time (11.15)–(11.18) in NumPy.  Verify every
+entry of every gradient against central differences for at least three sequence
+lengths, and report the largest relative error.</p>
+<p><strong>Part b: the dynamics.</strong>
+Study the autonomous map (11.6) numerically for <span class="math notranslate nohighlight">\(n_h=2\)</span> and
+<span class="math notranslate nohighlight">\(n_h=3\)</span>.  Find fixed points, classify them by the eigenvalues of
+Eq. (11.7), and exhibit a limit cycle.  Can you find chaotic
+behaviour, and how would you establish that it is chaotic rather than merely
+long-period?</p>
+<p><strong>Part c: measuring the theorem.</strong>
+Reproduce Section <em>Measuring it</em>: form the Jacobian
+product (11.19) explicitly and measure its norm against the lag
+for several spectral radii.  Confirm the bound (11.20), report
+how loose it is, and explain the looseness.  Then repeat with saturating inputs
+and describe what changes.</p>
+<p><strong>Part d: the oscillator.</strong>
+Reproduce Section <em>The damped oscillator</em>.  Then push it: train on the undamped
+case <span class="math notranslate nohighlight">\(\eta=0\)</span> and test on <span class="math notranslate nohighlight">\(\eta=0.2\)</span>, and vice versa.  Train on one forcing
+frequency and test on another.  Where does the learned update rule stop
+generalising, and does that boundary make physical sense?</p>
+<p><strong>Part e: clipping.</strong>
+Train with and without Eq. (11.23) over a range of thresholds
+<span class="math notranslate nohighlight">\(\theta\)</span> and sequence lengths.  Record the distribution of gradient norms.  At
+what sequence length does training fail without clipping, and does clipping ever
+hurt?</p>
+<p><strong>Part f: gates.</strong>
+Implement the LSTM of Eqs. (11.25)–(11.28) and the GRU
+of Eq. (11.32) from scratch, with verified gradients.  Reproduce the
+forget-bias measurement of Section <em>Why it works, and by how much</em> for both.  Then design a
+task that genuinely requires long memory – for instance, output the first
+element of the sequence at the final step, with <span class="math notranslate nohighlight">\(T\)</span> ranging from <span class="math notranslate nohighlight">\(10\)</span> to <span class="math notranslate nohighlight">\(200\)</span> –
+and plot the accuracy of the RNN, the LSTM and the GRU against <span class="math notranslate nohighlight">\(T\)</span> at matched
+parameter counts.  This is the experiment that decides whether the gates are
+worth their cost.</p>
+<p><strong>Part g: against a library.</strong>
+Rebuild the same architectures in PyTorch or TensorFlow and verify that they
+agree with yours numerically: feed both the same weights and the same input and
+compare the forward and backward passes to machine precision.  Check the
+library’s forget-gate bias initialisation, and measure what setting it to one
+does to your long-memory task from part f.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter10.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">10. </span>Chapter 10: Convolutional Neural Networks</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter12.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">12. </span>Chapter 12: Autoencoders</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sequences-and-what-we-want-from-them">11.1. Sequences, and what we want from them</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-architecture">11.2. The architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-rnn-as-a-discrete-time-dynamical-system">11.2.1. The RNN as a discrete-time dynamical system</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#where-the-recurrence-comes-from-a-differential-equation">11.3. Where the recurrence comes from: a differential equation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#backpropagation-through-time">11.4. Backpropagation through time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-long-sequences-are-hard">11.5. Why long sequences are hard</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#measuring-it">11.5.1. Measuring it</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gradient-clipping">11.5.2. Gradient clipping</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-and-verification">11.6. Implementation and verification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-damped-oscillator">11.6.1. The damped oscillator</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#long-short-term-memory">11.7. Long short-term memory</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-it-works-and-by-how-much">11.7.1. Why it works, and by how much</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-gated-recurrent-unit">11.7.2. The gated recurrent unit</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-networks-in-pytorch-and-tensorflow">11.8. The same networks in PyTorch and TensorFlow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#forecasting-a-sine-wave">11.8.1. Forecasting a sine wave</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#an-lstm-on-mnist-read-row-by-row">11.8.2. An LSTM on MNIST, read row by row</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-the-three-implementations-agree">11.8.3. Do the three implementations agree?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#row-by-row-the-two-libraries-on-mnist">11.8.4. Row by row: the two libraries on MNIST</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-experiment-the-theory-demands">11.8.5. The experiment the theory demands</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">11.9. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">11.10. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">11.10.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-recurrent-networks-from-scratch">11.10.2. Project-style exercise: recurrent networks from scratch</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

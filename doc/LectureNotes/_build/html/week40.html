@@ -1,0 +1,2008 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Week 40: Gradient descent methods (continued) and start Neural networks &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'week40';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Week 41 Neural networks and constructing a neural network code" href="week41.html" />
+    <link rel="prev" title="Week 39: Resampling methods and logistic regression" href="week39.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Applied Data Analysis and Machine Learning
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers and Grading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Review of Statistics with Resampling Techniques and Linear Algebra</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">1. Elements of Probability Theory and Statistical Data Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linalg.html">2. Linear Algebra, Handling of Arrays and more Python Features</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">From Regression to Support Vector Machines</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">3. Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">4. Ridge and Lasso Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">5. Resampling Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">6. Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapteroptimization.html">7. Optimization, the central part of any Machine Learning algortithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">8. Support Vector Machines, overarching aims</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Decision Trees, Ensemble Methods and Boosting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter6.html">9. Decision trees, overarching aims</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">10. Ensemble Methods: From a Single Tree to Many Trees and Extreme Boosting, Meet the Jungle of Methods</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dimensionality Reduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">11. Basic ideas of the Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clustering.html">12. Clustering and Unsupervised Learning</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning Methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">13. Neural networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">14. Building a Feed Forward Neural Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter11.html">15. Solving Differential Equations  with Deep Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter12.html">16. Convolutional Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter13.html">17. Recurrent neural networks: Overarching view</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Weekly material, notes and exercises</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek34.html">Exercises week 34</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week34.html">Week 34: Introduction to the course, Logistics and Practicalities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek35.html">Exercises week 35</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week35.html">Week 35: From Ordinary Linear Regression to Ridge and Lasso Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek36.html">Exercises week 36</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week36.html">Week 36: Linear Regression and Gradient descent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek37.html">Exercises week 37</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week37.html">Week 37: Gradient descent methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek38.html">Exercises week 38</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week38.html">Week 38: Statistical analysis, bias-variance tradeoff and resampling methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek39.html">Exercises week 39</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week39.html">Week 39: Resampling methods and logistic regression</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Week 40: Gradient descent methods (continued) and start Neural networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week41.html">Week 41 Neural networks and constructing a neural network code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek41.html">Exercises week 41</a></li>
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="week42.html">Week 42 Constructing a Neural Network code with examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek42.html">Exercises week 42</a></li>
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="week43.html">Week 43: Deep Learning: Constructing a Neural Network code and solving differential equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek43.html">Exercises week 43</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week44.html">Week 44,  Solving differential equations with neural networks and start Convolutional Neural Networks (CNN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek44.html">Exercises week 44</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week45.html">Week 45,  Convolutional Neural Networks (CCNs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week46.html">Week 46: Decision Trees, Ensemble methods  and Random Forests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week47.html">Week 47: Recurrent neural networks and Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek47.html">Exercise week 47-48</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week48.html">Week 48: Autoencoders and summary of course</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Projects</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="project1.html">Project 1 on Machine Learning, deadline October 6 (midnight), 2025</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project2.html">Project 2 on Machine Learning, deadline November 10 (Midnight)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project3.html">Project 3 on Machine Learning, deadline December 15 (midnight), 2025</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/week40.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Week 40: Gradient descent methods (continued) and start Neural networks</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lecture-monday-september-29-2025">Lecture Monday September 29, 2025</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#suggested-readings-and-videos">Suggested readings and videos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-sessions-tuesday-and-wednesday">Lab sessions Tuesday and Wednesday</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logistic-regression-from-last-week">Logistic Regression, from last week</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classification-problems">Classification problems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-and-deep-learning">Optimization and Deep learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basics">Basics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-parameters">Two parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-likelihood">Maximum likelihood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-cost-function-rewritten">The cost function rewritten</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimizing-the-cross-entropy">Minimizing the cross entropy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-more-compact-expression">A more compact expression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-to-more-predictors">Extending to more predictors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#including-more-classes">Including more classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-classes">More classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-the-central-part-of-any-machine-learning-algortithm">Optimization, the central part of any Machine Learning algortithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#revisiting-our-logistic-regression-case">Revisiting our Logistic Regression case</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-equations-to-solve">The equations to solve</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-using-newton-raphson-s-method">Solving using Newton-Raphson’s method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-code-for-logistic-regression">Example code for Logistic Regression</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-data-generation">Synthetic data generation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-scikit-learn">Using <strong>Scikit-learn</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-correlation-matrix">Using the correlation matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discussing-the-correlation-data">Discussing the correlation data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-measures-in-classification-studies">Other measures in classification studies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-neural-networks">Introduction to Neural networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#artificial-neurons">Artificial neurons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-network-types">Neural network types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feed-forward-neural-networks">Feed-forward neural networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convolutional-neural-network">Convolutional Neural Network</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recurrent-neural-networks">Recurrent neural networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-types-of-networks">Other types of networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multilayer-perceptrons">Multilayer perceptrons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-multilayer-perceptrons">Why multilayer perceptrons?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustration-of-a-single-perceptron-model-and-a-multi-perceptron-model">Illustration of a single perceptron model and a multi-perceptron model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-of-xor-or-and-and-gates">Examples of XOR, OR and AND gates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#does-logistic-regression-do-a-better-job">Does Logistic Regression do a better Job?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-neural-networks">Adding Neural Networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-model">Mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Mathematical model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-vector-notation">Matrix-vector notation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-vector-notation-and-activation">Matrix-vector notation  and activation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#activation-functions">Activation functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#activation-functions-logistic-and-hyperbolic-ones">Activation functions, Logistic and Hyperbolic ones</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relevance">Relevance</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
+doconce format html week40.do.txt --no_mako -->
+<!-- dom:TITLE: Week 40: Gradient descent methods (continued) and start Neural networks --><section class="tex2jax_ignore mathjax_ignore" id="week-40-gradient-descent-methods-continued-and-start-neural-networks">
+<h1>Week 40: Gradient descent methods (continued) and start Neural networks<a class="headerlink" href="#week-40-gradient-descent-methods-continued-and-start-neural-networks" title="Link to this heading">#</a></h1>
+<p><strong>Morten Hjorth-Jensen</strong>, Department of Physics, University of Oslo, Norway</p>
+<p>Date: <strong>September 29-October 3, 2025</strong></p>
+<section id="lecture-monday-september-29-2025">
+<h2>Lecture Monday September 29, 2025<a class="headerlink" href="#lecture-monday-september-29-2025" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Logistic regression and gradient descent, examples on how to code</p></li>
+</ol>
+<!-- o Automatic differentiation and gradient descent, examples using Logistic regression -->
+<ol class="arabic simple" start="2">
+<li><p>Start with the basics of Neural Networks, setting up the basic steps, from the simple perceptron model to the multi-layer perceptron model</p></li>
+<li><p>Video of lecture at <a class="reference external" href="https://youtu.be/MS3Tv8FVArs">https://youtu.be/MS3Tv8FVArs</a></p></li>
+<li><p>Whiteboard notes at <a class="github reference external" href="https://github.com/CompPhysics/MachineLearning/blob/master/doc/HandWrittenNotes/2025/FYSSTKweek40.pdf">CompPhysics/MachineLearning</a></p></li>
+</ol>
+</section>
+<section id="suggested-readings-and-videos">
+<h2>Suggested readings and videos<a class="headerlink" href="#suggested-readings-and-videos" title="Link to this heading">#</a></h2>
+<p><strong>Readings and Videos:</strong></p>
+<ol class="arabic simple">
+<li><p>The lecture notes for week 40 (these notes)</p></li>
+</ol>
+<!-- o For a good discussion on gradient methods, we would like to recommend Goodfellow et al section 4.3-4.5 and# sections 8.3-8.6. We will come back to the latter chapter in our discussion of Neural networks as well. -->
+<ol class="arabic simple" start="2">
+<li><p>For neural networks we recommend Goodfellow et al chapter 6 and Raschka et al chapter 2 (contains also material about gradient descent) and chapter 11 (we will use this next week)</p></li>
+</ol>
+<!-- o Video on gradient descent at <https://www.youtube.com/watch?v=sDv4f4s2SB8> -->
+<!-- o Video on automatic differentiation  at <https://www.youtube.com/watch?v=wG_nF1awSSY> -->
+<ol class="arabic simple" start="3">
+<li><p>Neural Networks demystified at <a class="reference external" href="https://www.youtube.com/watch?v=bxe2T-V8XRs&amp;amp;list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU&amp;amp;ab_channel=WelchLabs">https://www.youtube.com/watch?v=bxe2T-V8XRs&amp;list=PLiaHhY2iBX9hdHaRr6b7XevZtgZRa1PoU&amp;ab_channel=WelchLabs</a></p></li>
+<li><p>Building Neural Networks from scratch at URL:<a class="reference external" href="https://www.youtube.com/watch?v=Wo5dMEP_BbI&amp;amp;list=PLQVvvaa0QuDcjD5BAw2DxE6OF2tius3V3&amp;amp;ab_channel=sentdex">https://www.youtube.com/watch?v=Wo5dMEP_BbI&amp;list=PLQVvvaa0QuDcjD5BAw2DxE6OF2tius3V3&amp;ab_channel=sentdex</a>”</p></li>
+</ol>
+</section>
+<section id="lab-sessions-tuesday-and-wednesday">
+<h2>Lab sessions Tuesday and Wednesday<a class="headerlink" href="#lab-sessions-tuesday-and-wednesday" title="Link to this heading">#</a></h2>
+<p><strong>Material for the active learning sessions on Tuesday and Wednesday.</strong></p>
+<ul class="simple">
+<li><p>Work on project 1 and discussions on how to structure your report</p></li>
+<li><p>No weekly exercises for week 40, project work only</p></li>
+<li><p>Video on how to write scientific reports recorded during one of the lab sessions at <a class="reference external" href="https://youtu.be/tVW1ZDmZnwM">https://youtu.be/tVW1ZDmZnwM</a></p></li>
+<li><p>A general guideline can be found at <a class="github reference external" href="https://github.com/CompPhysics/MachineLearning/blob/master/doc/Projects/EvaluationGrading/EvaluationForm.md">CompPhysics/MachineLearning</a>.</p></li>
+</ul>
+</section>
+<section id="logistic-regression-from-last-week">
+<h2>Logistic Regression, from last week<a class="headerlink" href="#logistic-regression-from-last-week" title="Link to this heading">#</a></h2>
+<p>In linear regression our main interest was centered on learning the
+coefficients of a functional fit (say a polynomial) in order to be
+able to predict the response of a continuous variable on some unseen
+data. The fit to the continuous variable <span class="math notranslate nohighlight">\(y_i\)</span> is based on some
+independent variables <span class="math notranslate nohighlight">\(\boldsymbol{x}_i\)</span>. Linear regression resulted in
+analytical expressions for standard ordinary Least Squares or Ridge
+regression (in terms of matrices to invert) for several quantities,
+ranging from the variance and thereby the confidence intervals of the
+parameters <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> to the mean squared error. If we can invert
+the product of the design matrices, linear regression gives then a
+simple recipe for fitting our data.</p>
+</section>
+<section id="classification-problems">
+<h2>Classification problems<a class="headerlink" href="#classification-problems" title="Link to this heading">#</a></h2>
+<p>Classification problems, however, are concerned with outcomes taking
+the form of discrete variables (i.e. categories). We may for example,
+on the basis of DNA sequencing for a number of patients, like to find
+out which mutations are important for a certain disease; or based on
+scans of various patients’ brains, figure out if there is a tumor or
+not; or given a specific physical system, we’d like to identify its
+state, say whether it is an ordered or disordered system (typical
+situation in solid state physics); or classify the status of a
+patient, whether she/he has a stroke or not and many other similar
+situations.</p>
+<p>The most common situation we encounter when we apply logistic
+regression is that of two possible outcomes, normally denoted as a
+binary outcome, true or false, positive or negative, success or
+failure etc.</p>
+</section>
+<section id="optimization-and-deep-learning">
+<h2>Optimization and Deep learning<a class="headerlink" href="#optimization-and-deep-learning" title="Link to this heading">#</a></h2>
+<p>Logistic regression will also serve as our stepping stone towards
+neural network algorithms and supervised deep learning. For logistic
+learning, the minimization of the cost function leads to a non-linear
+equation in the parameters <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span>. The optimization of the
+problem calls therefore for minimization algorithms.</p>
+<p>As we have discussed earlier, this forms the
+bottle neck of all machine learning algorithms, namely how to find
+reliable minima of a multi-variable function. This leads us to the
+family of gradient descent methods. The latter are the working horses
+of basically all modern machine learning algorithms.</p>
+<p>We note also that many of the topics discussed here on logistic
+regression are also commonly used in modern supervised Deep Learning
+models, as we will see later.</p>
+</section>
+<section id="basics">
+<h2>Basics<a class="headerlink" href="#basics" title="Link to this heading">#</a></h2>
+<p>We consider the case where the outputs/targets, also called the
+responses or the outcomes, <span class="math notranslate nohighlight">\(y_i\)</span> are discrete and only take values
+from <span class="math notranslate nohighlight">\(k=0,\dots,K-1\)</span> (i.e. <span class="math notranslate nohighlight">\(K\)</span> classes).</p>
+<p>The goal is to predict the
+output classes from the design matrix <span class="math notranslate nohighlight">\(\boldsymbol{X}\in\mathbb{R}^{n\times p}\)</span>
+made of <span class="math notranslate nohighlight">\(n\)</span> samples, each of which carries <span class="math notranslate nohighlight">\(p\)</span> features or predictors. The
+primary goal is to identify the classes to which new unseen samples
+belong.</p>
+<p>Last week we  specialized to the case of two classes only, with outputs
+<span class="math notranslate nohighlight">\(y_i=0\)</span> and <span class="math notranslate nohighlight">\(y_i=1\)</span>. Our outcomes could represent the status of a
+credit card user that could default or not on her/his credit card
+debt. That is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+y_i = \begin{bmatrix} 0 &amp; \mathrm{no}\\  1 &amp; \mathrm{yes} \end{bmatrix}.
+\end{split}\]</div>
+</section>
+<section id="two-parameters">
+<h2>Two parameters<a class="headerlink" href="#two-parameters" title="Link to this heading">#</a></h2>
+<p>We assume now that we have two classes with <span class="math notranslate nohighlight">\(y_i\)</span> either <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span>. Furthermore we assume also that we have only two parameters <span class="math notranslate nohighlight">\(\theta\)</span> in our fitting of the Sigmoid function, that is we define probabilities</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+p(y_i=1|x_i,\boldsymbol{\theta}) &amp;= \frac{\exp{(\theta_0+\theta_1x_i)}}{1+\exp{(\theta_0+\theta_1x_i)}},\nonumber\\
+p(y_i=0|x_i,\boldsymbol{\theta}) &amp;= 1 - p(y_i=1|x_i,\boldsymbol{\theta}),
+\end{align*}
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> are the weights we wish to extract from data, in our case <span class="math notranslate nohighlight">\(\theta_0\)</span> and <span class="math notranslate nohighlight">\(\theta_1\)</span>.</p>
+<p>Note that we used</p>
+<div class="math notranslate nohighlight">
+\[
+p(y_i=0\vert x_i, \boldsymbol{\theta}) = 1-p(y_i=1\vert x_i, \boldsymbol{\theta}).
+\]</div>
+</section>
+<section id="maximum-likelihood">
+<h2>Maximum likelihood<a class="headerlink" href="#maximum-likelihood" title="Link to this heading">#</a></h2>
+<p>In order to define the total likelihood for all possible outcomes from a<br />
+dataset <span class="math notranslate nohighlight">\(\mathcal{D}=\{(y_i,x_i)\}\)</span>, with the binary labels
+<span class="math notranslate nohighlight">\(y_i\in\{0,1\}\)</span> and where the data points are drawn independently, we use the so-called <a class="reference external" href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation">Maximum Likelihood Estimation</a> (MLE) principle.
+We aim thus at maximizing
+the probability of seeing the observed data. We can then approximate the
+likelihood in terms of the product of the individual probabilities of a specific outcome <span class="math notranslate nohighlight">\(y_i\)</span>, that is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+P(\mathcal{D}|\boldsymbol{\theta})&amp; = \prod_{i=1}^n \left[p(y_i=1|x_i,\boldsymbol{\theta})\right]^{y_i}\left[1-p(y_i=1|x_i,\boldsymbol{\theta}))\right]^{1-y_i}\nonumber \\
+\end{align*}
+\end{split}\]</div>
+<p>from which we obtain the log-likelihood and our <strong>cost/loss</strong> function</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{C}(\boldsymbol{\theta}) = \sum_{i=1}^n \left( y_i\log{p(y_i=1|x_i,\boldsymbol{\theta})} + (1-y_i)\log\left[1-p(y_i=1|x_i,\boldsymbol{\theta}))\right]\right).
+\]</div>
+</section>
+<section id="the-cost-function-rewritten">
+<h2>The cost function rewritten<a class="headerlink" href="#the-cost-function-rewritten" title="Link to this heading">#</a></h2>
+<p>Reordering the logarithms, we can rewrite the <strong>cost/loss</strong> function as</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{C}(\boldsymbol{\theta}) = \sum_{i=1}^n  \left(y_i(\theta_0+\theta_1x_i) -\log{(1+\exp{(\theta_0+\theta_1x_i)})}\right).
+\]</div>
+<p>The maximum likelihood estimator is defined as the set of parameters that maximize the log-likelihood where we maximize with respect to <span class="math notranslate nohighlight">\(\theta\)</span>.
+Since the cost (error) function is just the negative log-likelihood, for logistic regression we have that</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{C}(\boldsymbol{\theta})=-\sum_{i=1}^n  \left(y_i(\theta_0+\theta_1x_i) -\log{(1+\exp{(\theta_0+\theta_1x_i)})}\right).
+\]</div>
+<p>This equation is known in statistics as the <strong>cross entropy</strong>. Finally, we note that just as in linear regression,
+in practice we often supplement the cross-entropy with additional regularization terms, usually <span class="math notranslate nohighlight">\(L_1\)</span> and <span class="math notranslate nohighlight">\(L_2\)</span> regularization as we did for Ridge and Lasso regression.</p>
+</section>
+<section id="minimizing-the-cross-entropy">
+<h2>Minimizing the cross entropy<a class="headerlink" href="#minimizing-the-cross-entropy" title="Link to this heading">#</a></h2>
+<p>The cross entropy is a convex function of the weights <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> and,
+therefore, any local minimizer is a global minimizer.</p>
+<p>Minimizing this
+cost function with respect to the two parameters <span class="math notranslate nohighlight">\(\theta_0\)</span> and <span class="math notranslate nohighlight">\(\theta_1\)</span> we obtain</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial \mathcal{C}(\boldsymbol{\theta})}{\partial \theta_0} = -\sum_{i=1}^n  \left(y_i -\frac{\exp{(\theta_0+\theta_1x_i)}}{1+\exp{(\theta_0+\theta_1x_i)}}\right),
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial \mathcal{C}(\boldsymbol{\theta})}{\partial \theta_1} = -\sum_{i=1}^n  \left(y_ix_i -x_i\frac{\exp{(\theta_0+\theta_1x_i)}}{1+\exp{(\theta_0+\theta_1x_i)}}\right).
+\]</div>
+</section>
+<section id="a-more-compact-expression">
+<h2>A more compact expression<a class="headerlink" href="#a-more-compact-expression" title="Link to this heading">#</a></h2>
+<p>Let us now define a vector <span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span> with <span class="math notranslate nohighlight">\(n\)</span> elements <span class="math notranslate nohighlight">\(y_i\)</span>, an
+<span class="math notranslate nohighlight">\(n\times p\)</span> matrix <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> which contains the <span class="math notranslate nohighlight">\(x_i\)</span> values and a
+vector <span class="math notranslate nohighlight">\(\boldsymbol{p}\)</span> of fitted probabilities <span class="math notranslate nohighlight">\(p(y_i\vert x_i,\boldsymbol{\theta})\)</span>. We can rewrite in a more compact form the first
+derivative of the cost function as</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial \mathcal{C}(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}} = -\boldsymbol{X}^T\left(\boldsymbol{y}-\boldsymbol{p}\right).
+\]</div>
+<p>If we in addition define a diagonal matrix <span class="math notranslate nohighlight">\(\boldsymbol{W}\)</span> with elements
+<span class="math notranslate nohighlight">\(p(y_i\vert x_i,\boldsymbol{\theta})(1-p(y_i\vert x_i,\boldsymbol{\theta})\)</span>, we can obtain a compact expression of the second derivative as</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial^2 \mathcal{C}(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^T} = \boldsymbol{X}^T\boldsymbol{W}\boldsymbol{X}.
+\]</div>
+</section>
+<section id="extending-to-more-predictors">
+<h2>Extending to more predictors<a class="headerlink" href="#extending-to-more-predictors" title="Link to this heading">#</a></h2>
+<p>Within a binary classification problem, we can easily expand our model to include multiple predictors. Our ratio between likelihoods is then with <span class="math notranslate nohighlight">\(p\)</span> predictors</p>
+<div class="math notranslate nohighlight">
+\[
+\log{ \frac{p(\boldsymbol{\theta}\boldsymbol{x})}{1-p(\boldsymbol{\theta}\boldsymbol{x})}} = \theta_0+\theta_1x_1+\theta_2x_2+\dots+\theta_px_p.
+\]</div>
+<p>Here we defined <span class="math notranslate nohighlight">\(\boldsymbol{x}=[1,x_1,x_2,\dots,x_p]\)</span> and <span class="math notranslate nohighlight">\(\boldsymbol{\theta}=[\theta_0, \theta_1, \dots, \theta_p]\)</span> leading to</p>
+<div class="math notranslate nohighlight">
+\[
+p(\boldsymbol{\theta}\boldsymbol{x})=\frac{ \exp{(\theta_0+\theta_1x_1+\theta_2x_2+\dots+\theta_px_p)}}{1+\exp{(\theta_0+\theta_1x_1+\theta_2x_2+\dots+\theta_px_p)}}.
+\]</div>
+</section>
+<section id="including-more-classes">
+<h2>Including more classes<a class="headerlink" href="#including-more-classes" title="Link to this heading">#</a></h2>
+<p>Till now we have mainly focused on two classes, the so-called binary
+system. Suppose we wish to extend to <span class="math notranslate nohighlight">\(K\)</span> classes.  Let us for the sake
+of simplicity assume we have only two predictors. We have then following model</p>
+<div class="math notranslate nohighlight">
+\[
+\log{\frac{p(C=1\vert x)}{p(K\vert x)}} = \theta_{10}+\theta_{11}x_1,
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+\log{\frac{p(C=2\vert x)}{p(K\vert x)}} = \theta_{20}+\theta_{21}x_1,
+\]</div>
+<p>and so on till the class <span class="math notranslate nohighlight">\(C=K-1\)</span> class</p>
+<div class="math notranslate nohighlight">
+\[
+\log{\frac{p(C=K-1\vert x)}{p(K\vert x)}} = \theta_{(K-1)0}+\theta_{(K-1)1}x_1,
+\]</div>
+<p>and the model is specified in term of <span class="math notranslate nohighlight">\(K-1\)</span> so-called log-odds or
+<strong>logit</strong> transformations.</p>
+</section>
+<section id="more-classes">
+<h2>More classes<a class="headerlink" href="#more-classes" title="Link to this heading">#</a></h2>
+<p>In our discussion of neural networks we will encounter the above again
+in terms of a slightly modified function, the so-called <strong>Softmax</strong> function.</p>
+<p>The softmax function is used in various multiclass classification
+methods, such as multinomial logistic regression (also known as
+softmax regression), multiclass linear discriminant analysis, naive
+Bayes classifiers, and artificial neural networks.  Specifically, in
+multinomial logistic regression and linear discriminant analysis, the
+input to the function is the result of <span class="math notranslate nohighlight">\(K\)</span> distinct linear functions,
+and the predicted probability for the <span class="math notranslate nohighlight">\(k\)</span>-th class given a sample
+vector <span class="math notranslate nohighlight">\(\boldsymbol{x}\)</span> and a weighting vector <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> is (with two
+predictors):</p>
+<div class="math notranslate nohighlight">
+\[
+p(C=k\vert \mathbf {x} )=\frac{\exp{(\theta_{k0}+\theta_{k1}x_1)}}{1+\sum_{l=1}^{K-1}\exp{(\theta_{l0}+\theta_{l1}x_1)}}.
+\]</div>
+<p>It is easy to extend to more predictors. The final class is</p>
+<div class="math notranslate nohighlight">
+\[
+p(C=K\vert \mathbf {x} )=\frac{1}{1+\sum_{l=1}^{K-1}\exp{(\theta_{l0}+\theta_{l1}x_1)}},
+\]</div>
+<p>and they sum to one. Our earlier discussions were all specialized to
+the case with two classes only. It is easy to see from the above that
+what we derived earlier is compatible with these equations.</p>
+<p>To find the optimal parameters we would typically use a gradient
+descent method.  Newton’s method and gradient descent methods are
+discussed in the material on <a class="reference external" href="https://compphysics.github.io/MachineLearning/doc/pub/Splines/html/Splines-bs.html">optimization
+methods</a>.</p>
+</section>
+<section id="optimization-the-central-part-of-any-machine-learning-algortithm">
+<h2>Optimization, the central part of any Machine Learning algortithm<a class="headerlink" href="#optimization-the-central-part-of-any-machine-learning-algortithm" title="Link to this heading">#</a></h2>
+<p>Almost every problem in machine learning and data science starts with
+a dataset <span class="math notranslate nohighlight">\(X\)</span>, a model <span class="math notranslate nohighlight">\(g(\theta)\)</span>, which is a function of the
+parameters <span class="math notranslate nohighlight">\(\theta\)</span> and a cost function <span class="math notranslate nohighlight">\(C(X, g(\theta))\)</span> that allows
+us to judge how well the model <span class="math notranslate nohighlight">\(g(\theta)\)</span> explains the observations
+<span class="math notranslate nohighlight">\(X\)</span>. The model is fit by finding the values of <span class="math notranslate nohighlight">\(\theta\)</span> that minimize
+the cost function. Ideally we would be able to solve for <span class="math notranslate nohighlight">\(\theta\)</span>
+analytically, however this is not possible in general and we must use
+some approximative/numerical method to compute the minimum.</p>
+</section>
+<section id="revisiting-our-logistic-regression-case">
+<h2>Revisiting our Logistic Regression case<a class="headerlink" href="#revisiting-our-logistic-regression-case" title="Link to this heading">#</a></h2>
+<p>In our discussion on Logistic Regression we studied the
+case of
+two classes, with <span class="math notranslate nohighlight">\(y_i\)</span> either
+<span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span>. Furthermore we assumed also that we have only two
+parameters <span class="math notranslate nohighlight">\(\theta\)</span> in our fitting, that is we
+defined probabilities</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+p(y_i=1|x_i,\boldsymbol{\theta}) &amp;= \frac{\exp{(\theta_0+\theta_1x_i)}}{1+\exp{(\theta_0+\theta_1x_i)}},\nonumber\\
+p(y_i=0|x_i,\boldsymbol{\theta}) &amp;= 1 - p(y_i=1|x_i,\boldsymbol{\theta}),
+\end{align*}
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\theta}\)</span> are the weights we wish to extract from data, in our case <span class="math notranslate nohighlight">\(\theta_0\)</span> and <span class="math notranslate nohighlight">\(\theta_1\)</span>.</p>
+</section>
+<section id="the-equations-to-solve">
+<h2>The equations to solve<a class="headerlink" href="#the-equations-to-solve" title="Link to this heading">#</a></h2>
+<p>Our compact equations used a definition of a vector <span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span> with <span class="math notranslate nohighlight">\(n\)</span>
+elements <span class="math notranslate nohighlight">\(y_i\)</span>, an <span class="math notranslate nohighlight">\(n\times p\)</span> matrix <span class="math notranslate nohighlight">\(\boldsymbol{X}\)</span> which contains the
+<span class="math notranslate nohighlight">\(x_i\)</span> values and a vector <span class="math notranslate nohighlight">\(\boldsymbol{p}\)</span> of fitted probabilities
+<span class="math notranslate nohighlight">\(p(y_i\vert x_i,\boldsymbol{\theta})\)</span>. We rewrote in a more compact form
+the first derivative of the cost function as</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial \mathcal{C}(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}} = -\boldsymbol{X}^T\left(\boldsymbol{y}-\boldsymbol{p}\right).
+\]</div>
+<p>If we in addition define a diagonal matrix <span class="math notranslate nohighlight">\(\boldsymbol{W}\)</span> with elements
+<span class="math notranslate nohighlight">\(p(y_i\vert x_i,\boldsymbol{\theta})(1-p(y_i\vert x_i,\boldsymbol{\theta})\)</span>, we can obtain a compact expression of the second derivative as</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial^2 \mathcal{C}(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^T} = \boldsymbol{X}^T\boldsymbol{W}\boldsymbol{X}.
+\]</div>
+<p>This defines what is called  the Hessian matrix.</p>
+</section>
+<section id="solving-using-newton-raphson-s-method">
+<h2>Solving using Newton-Raphson’s method<a class="headerlink" href="#solving-using-newton-raphson-s-method" title="Link to this heading">#</a></h2>
+<p>If we can set up these equations, Newton-Raphson’s iterative method is normally the method of choice. It requires however that we can compute in an efficient way the  matrices that define the first and second derivatives.</p>
+<p>Our iterative scheme is then given by</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\theta}^{\mathrm{new}} = \boldsymbol{\theta}^{\mathrm{old}}-\left(\frac{\partial^2 \mathcal{C}(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^T}\right)^{-1}_{\boldsymbol{\theta}^{\mathrm{old}}}\times \left(\frac{\partial \mathcal{C}(\boldsymbol{\theta})}{\partial \boldsymbol{\theta}}\right)_{\boldsymbol{\theta}^{\mathrm{old}}},
+\]</div>
+<p>or in matrix form as</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{\theta}^{\mathrm{new}} = \boldsymbol{\theta}^{\mathrm{old}}-\left(\boldsymbol{X}^T\boldsymbol{W}\boldsymbol{X} \right)^{-1}\times \left(-\boldsymbol{X}^T(\boldsymbol{y}-\boldsymbol{p}) \right)_{\boldsymbol{\theta}^{\mathrm{old}}}.
+\]</div>
+<p>The right-hand side is computed with the old values of <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
+<p>If we can compute these matrices, in particular the Hessian, the above is often the easiest method to implement.</p>
+</section>
+<section id="example-code-for-logistic-regression">
+<h2>Example code for Logistic Regression<a class="headerlink" href="#example-code-for-logistic-regression" title="Link to this heading">#</a></h2>
+<p>Here we make a class for Logistic regression. The code uses a simple data set and includes both a binary case and a multiclass case.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import numpy as np
+
+class LogisticRegression:
+    &quot;&quot;&quot;
+    Logistic Regression for binary and multiclass classification.
+    &quot;&quot;&quot;
+    def __init__(self, lr=0.01, epochs=1000, fit_intercept=True, verbose=False):
+        self.lr = lr                  # Learning rate for gradient descent
+        self.epochs = epochs          # Number of iterations
+        self.fit_intercept = fit_intercept  # Whether to add intercept (bias)
+        self.verbose = verbose        # Print loss during training if True
+        self.weights = None
+        self.multi_class = False      # Will be determined at fit time
+
+    def _add_intercept(self, X):
+        &quot;&quot;&quot;Add intercept term (column of ones) to feature matrix.&quot;&quot;&quot;
+        intercept = np.ones((X.shape[0], 1))
+        return np.concatenate((intercept, X), axis=1)
+
+    def _sigmoid(self, z):
+        &quot;&quot;&quot;Sigmoid function for binary logistic.&quot;&quot;&quot;
+        return 1 / (1 + np.exp(-z))
+
+    def _softmax(self, Z):
+        &quot;&quot;&quot;Softmax function for multiclass logistic.&quot;&quot;&quot;
+        exp_Z = np.exp(Z - np.max(Z, axis=1, keepdims=True))
+        return exp_Z / np.sum(exp_Z, axis=1, keepdims=True)
+
+    def fit(self, X, y):
+        &quot;&quot;&quot;
+        Train the logistic regression model using gradient descent.
+        Supports binary (sigmoid) and multiclass (softmax) based on y.
+        &quot;&quot;&quot;
+        X = np.array(X)
+        y = np.array(y)
+        n_samples, n_features = X.shape
+
+        # Add intercept if needed
+        if self.fit_intercept:
+            X = self._add_intercept(X)
+            n_features += 1
+
+        # Determine classes and mode (binary vs multiclass)
+        unique_classes = np.unique(y)
+        if len(unique_classes) &gt; 2:
+            self.multi_class = True
+        else:
+            self.multi_class = False
+
+        # ----- Multiclass case -----
+        if self.multi_class:
+            n_classes = len(unique_classes)
+            # Map original labels to 0...n_classes-1
+            class_to_index = {c: idx for idx, c in enumerate(unique_classes)}
+            y_indices = np.array([class_to_index[c] for c in y])
+            # Initialize weight matrix (features x classes)
+            self.weights = np.zeros((n_features, n_classes))
+
+            # One-hot encode y
+            Y_onehot = np.zeros((n_samples, n_classes))
+            Y_onehot[np.arange(n_samples), y_indices] = 1
+
+            # Gradient descent
+            for epoch in range(self.epochs):
+                scores = X.dot(self.weights)          # Linear scores (n_samples x n_classes)
+                probs = self._softmax(scores)        # Probabilities (n_samples x n_classes)
+                # Compute gradient (features x classes)
+                gradient = (1 / n_samples) * X.T.dot(probs - Y_onehot)
+                # Update weights
+                self.weights -= self.lr * gradient
+
+                if self.verbose and epoch % 100 == 0:
+                    # Compute current loss (categorical cross-entropy)
+                    loss = -np.sum(Y_onehot * np.log(probs + 1e-15)) / n_samples
+                    print(f&quot;[Epoch {epoch}] Multiclass loss: {loss:.4f}&quot;)
+
+        # ----- Binary case -----
+        else:
+            # Convert y to 0/1 if not already
+            if not np.array_equal(unique_classes, [0, 1]):
+                # Map the two classes to 0 and 1
+                class0, class1 = unique_classes
+                y_binary = np.where(y == class1, 1, 0)
+            else:
+                y_binary = y.copy().astype(int)
+
+            # Initialize weights vector (features,)
+            self.weights = np.zeros(n_features)
+
+            # Gradient descent
+            for epoch in range(self.epochs):
+                linear_model = X.dot(self.weights)     # (n_samples,)
+                probs = self._sigmoid(linear_model)   # (n_samples,)
+                # Gradient for binary cross-entropy
+                gradient = (1 / n_samples) * X.T.dot(probs - y_binary)
+                self.weights -= self.lr * gradient
+
+                if self.verbose and epoch % 100 == 0:
+                    # Compute binary cross-entropy loss
+                    loss = -np.mean(
+                        y_binary * np.log(probs + 1e-15) + 
+                        (1 - y_binary) * np.log(1 - probs + 1e-15)
+                    )
+                    print(f&quot;[Epoch {epoch}] Binary loss: {loss:.4f}&quot;)
+
+    def predict_prob(self, X):
+        &quot;&quot;&quot;
+        Compute probability estimates. Returns a 1D array for binary or
+        a 2D array (n_samples x n_classes) for multiclass.
+        &quot;&quot;&quot;
+        X = np.array(X)
+        # Add intercept if the model used it
+        if self.fit_intercept:
+            X = self._add_intercept(X)
+        scores = X.dot(self.weights)
+        if self.multi_class:
+            return self._softmax(scores)
+        else:
+            return self._sigmoid(scores)
+
+    def predict(self, X):
+        &quot;&quot;&quot;
+        Predict class labels for samples in X.
+        Returns integer class labels (0,1 for binary, or 0...C-1 for multiclass).
+        &quot;&quot;&quot;
+        probs = self.predict_prob(X)
+        if self.multi_class:
+            # Choose class with highest probability
+            return np.argmax(probs, axis=1)
+        else:
+            # Threshold at 0.5 for binary
+            return (probs &gt;= 0.5).astype(int)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The class implements the sigmoid and softmax internally. During fit(),
+we check the number of classes: if more than 2, we set
+self.multi_class=True and perform multinomial logistic regression. We
+one-hot encode the target vector and update a weight matrix with
+softmax probabilities. Otherwise, we do standard binary logistic
+regression, converting labels to 0/1 if needed and updating a weight
+vector. In both cases we use batch gradient descent on the
+cross-entropy loss (we add a small epsilon 1e-15 to logs for numerical
+stability). Progress (loss) can be printed if verbose=True.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Evaluation Metrics
+#We define helper functions for accuracy and cross-entropy loss. Accuracy is the fraction of correct predictions . For loss, we compute the appropriate cross-entropy:
+
+def accuracy_score(y_true, y_pred):
+    &quot;&quot;&quot;Accuracy = (# correct predictions) / (total samples).&quot;&quot;&quot;
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    return np.mean(y_true == y_pred)
+
+def binary_cross_entropy(y_true, y_prob):
+    &quot;&quot;&quot;
+    Binary cross-entropy loss.
+    y_true: true binary labels (0 or 1), y_prob: predicted probabilities for class 1.
+    &quot;&quot;&quot;
+    y_true = np.array(y_true)
+    y_prob = np.clip(np.array(y_prob), 1e-15, 1-1e-15)
+    return -np.mean(y_true * np.log(y_prob) + (1 - y_true) * np.log(1 - y_prob))
+
+def categorical_cross_entropy(y_true, y_prob):
+    &quot;&quot;&quot;
+    Categorical cross-entropy loss for multiclass.
+    y_true: true labels (0...C-1), y_prob: array of predicted probabilities (n_samples x C).
+    &quot;&quot;&quot;
+    y_true = np.array(y_true, dtype=int)
+    y_prob = np.clip(np.array(y_prob), 1e-15, 1-1e-15)
+    # One-hot encode true labels
+    n_samples, n_classes = y_prob.shape
+    one_hot = np.zeros_like(y_prob)
+    one_hot[np.arange(n_samples), y_true] = 1
+    # Compute cross-entropy
+    loss_vec = -np.sum(one_hot * np.log(y_prob), axis=1)
+    return np.mean(loss_vec)
+</pre></div>
+</div>
+</div>
+</div>
+<section id="synthetic-data-generation">
+<h3>Synthetic data generation<a class="headerlink" href="#synthetic-data-generation" title="Link to this heading">#</a></h3>
+<p>Binary classification data: Create two Gaussian clusters in 2D. For example, class 0 around mean [-2,-2] and class 1 around [2,2].
+Multiclass data: Create several Gaussian clusters (one per class) spread out in feature space.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import numpy as np
+
+def generate_binary_data(n_samples=100, n_features=2, random_state=None):
+    &quot;&quot;&quot;
+    Generate synthetic binary classification data.
+    Returns (X, y) where X is (n_samples x n_features), y in {0,1}.
+    &quot;&quot;&quot;
+    rng = np.random.RandomState(random_state)
+    # Half samples for class 0, half for class 1
+    n0 = n_samples // 2
+    n1 = n_samples - n0
+    # Class 0 around mean -2, class 1 around +2
+    mean0 = -2 * np.ones(n_features)
+    mean1 =  2 * np.ones(n_features)
+    X0 = rng.randn(n0, n_features) + mean0
+    X1 = rng.randn(n1, n_features) + mean1
+    X = np.vstack((X0, X1))
+    y = np.array([0]*n0 + [1]*n1)
+    return X, y
+
+def generate_multiclass_data(n_samples=150, n_features=2, n_classes=3, random_state=None):
+    &quot;&quot;&quot;
+    Generate synthetic multiclass data with n_classes Gaussian clusters.
+    &quot;&quot;&quot;
+    rng = np.random.RandomState(random_state)
+    X = []
+    y = []
+    samples_per_class = n_samples // n_classes
+    for cls in range(n_classes):
+        # Random cluster center for each class
+        center = rng.uniform(-5, 5, size=n_features)
+        Xi = rng.randn(samples_per_class, n_features) + center
+        yi = [cls] * samples_per_class
+        X.append(Xi)
+        y.extend(yi)
+    X = np.vstack(X)
+    y = np.array(y)
+    return X, y
+
+
+# Generate and test on binary data
+X_bin, y_bin = generate_binary_data(n_samples=200, n_features=2, random_state=42)
+model_bin = LogisticRegression(lr=0.1, epochs=1000)
+model_bin.fit(X_bin, y_bin)
+y_prob_bin = model_bin.predict_prob(X_bin)      # probabilities for class 1
+y_pred_bin = model_bin.predict(X_bin)           # predicted classes 0 or 1
+
+acc_bin = accuracy_score(y_bin, y_pred_bin)
+loss_bin = binary_cross_entropy(y_bin, y_prob_bin)
+print(f&quot;Binary Classification - Accuracy: {acc_bin:.2f}, Cross-Entropy Loss: {loss_bin:.2f}&quot;)
+#For multiclass:
+# Generate and test on multiclass data
+X_multi, y_multi = generate_multiclass_data(n_samples=300, n_features=2, n_classes=3, random_state=1)
+model_multi = LogisticRegression(lr=0.1, epochs=1000)
+model_multi.fit(X_multi, y_multi)
+y_prob_multi = model_multi.predict_prob(X_multi)     # (n_samples x 3) probabilities
+y_pred_multi = model_multi.predict(X_multi)          # predicted labels 0,1,2
+
+acc_multi = accuracy_score(y_multi, y_pred_multi)
+loss_multi = categorical_cross_entropy(y_multi, y_prob_multi)
+print(f&quot;Multiclass Classification - Accuracy: {acc_multi:.2f}, Cross-Entropy Loss: {loss_multi:.2f}&quot;)
+
+# CSV Export
+import csv
+
+# Export binary results
+with open(&#39;binary_results.csv&#39;, mode=&#39;w&#39;, newline=&#39;&#39;) as f:
+    writer = csv.writer(f)
+    writer.writerow([&quot;TrueLabel&quot;, &quot;PredictedLabel&quot;])
+    for true, pred in zip(y_bin, y_pred_bin):
+        writer.writerow([true, pred])
+
+# Export multiclass results
+with open(&#39;multiclass_results.csv&#39;, mode=&#39;w&#39;, newline=&#39;&#39;) as f:
+    writer = csv.writer(f)
+    writer.writerow([&quot;TrueLabel&quot;, &quot;PredictedLabel&quot;])
+    for true, pred in zip(y_multi, y_pred_multi):
+        writer.writerow([true, pred])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="using-scikit-learn">
+<h2>Using <strong>Scikit-learn</strong><a class="headerlink" href="#using-scikit-learn" title="Link to this heading">#</a></h2>
+<p>We show here how we can use a logistic regression case on a data set
+included in <em>scikit_learn</em>, the so-called Wisconsin breast cancer data
+using Logistic regression as our algorithm for classification. This is
+a widely studied data set and can easily be included in demonstrations
+of classification problems.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%matplotlib inline
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import  train_test_split 
+from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LogisticRegression
+
+# Load the data
+cancer = load_breast_cancer()
+
+X_train, X_test, y_train, y_test = train_test_split(cancer.data,cancer.target,random_state=0)
+print(X_train.shape)
+print(X_test.shape)
+# Logistic Regression
+logreg = LogisticRegression(solver=&#39;lbfgs&#39;)
+logreg.fit(X_train, y_train)
+print(&quot;Test set accuracy with Logistic Regression: {:.2f}&quot;.format(logreg.score(X_test,y_test)))
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="using-the-correlation-matrix">
+<h2>Using the correlation matrix<a class="headerlink" href="#using-the-correlation-matrix" title="Link to this heading">#</a></h2>
+<p>In addition to the above scores, we could also study the covariance (and the correlation matrix).
+We use <strong>Pandas</strong> to compute the correlation matrix.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import  train_test_split 
+from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LogisticRegression
+cancer = load_breast_cancer()
+import pandas as pd
+# Making a data frame
+cancerpd = pd.DataFrame(cancer.data, columns=cancer.feature_names)
+
+fig, axes = plt.subplots(15,2,figsize=(10,20))
+malignant = cancer.data[cancer.target == 0]
+benign = cancer.data[cancer.target == 1]
+ax = axes.ravel()
+
+for i in range(30):
+    _, bins = np.histogram(cancer.data[:,i], bins =50)
+    ax[i].hist(malignant[:,i], bins = bins, alpha = 0.5)
+    ax[i].hist(benign[:,i], bins = bins, alpha = 0.5)
+    ax[i].set_title(cancer.feature_names[i])
+    ax[i].set_yticks(())
+ax[0].set_xlabel(&quot;Feature magnitude&quot;)
+ax[0].set_ylabel(&quot;Frequency&quot;)
+ax[0].legend([&quot;Malignant&quot;, &quot;Benign&quot;], loc =&quot;best&quot;)
+fig.tight_layout()
+plt.show()
+
+import seaborn as sns
+correlation_matrix = cancerpd.corr().round(1)
+# use the heatmap function from seaborn to plot the correlation matrix
+# annot = True to print the values inside the square
+plt.figure(figsize=(15,8))
+sns.heatmap(data=correlation_matrix, annot=True)
+plt.show()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="discussing-the-correlation-data">
+<h2>Discussing the correlation data<a class="headerlink" href="#discussing-the-correlation-data" title="Link to this heading">#</a></h2>
+<p>In the above example we note two things. In the first plot we display
+the overlap of benign and malignant tumors as functions of the various
+features in the Wisconsin data set. We see that for
+some of the features we can distinguish clearly the benign and
+malignant cases while for other features we cannot. This can point to
+us which features may be of greater interest when we wish to classify
+a benign or not benign tumour.</p>
+<p>In the second figure we have computed the so-called correlation
+matrix, which in our case with thirty features becomes a <span class="math notranslate nohighlight">\(30\times 30\)</span>
+matrix.</p>
+<p>We constructed this matrix using <strong>pandas</strong> via the statements</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cancerpd = pd.DataFrame(cancer.data, columns=cancer.feature_names)
+</pre></div>
+</div>
+</div>
+</div>
+<p>and then</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>correlation_matrix = cancerpd.corr().round(1)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Diagonalizing this matrix we can in turn say something about which
+features are of relevance and which are not. This leads  us to
+the classical Principal Component Analysis (PCA) theorem with
+applications. This will be discussed later this semester.</p>
+</section>
+<section id="other-measures-in-classification-studies">
+<h2>Other measures in classification studies<a class="headerlink" href="#other-measures-in-classification-studies" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import  train_test_split 
+from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LogisticRegression
+
+# Load the data
+cancer = load_breast_cancer()
+
+X_train, X_test, y_train, y_test = train_test_split(cancer.data,cancer.target,random_state=0)
+print(X_train.shape)
+print(X_test.shape)
+# Logistic Regression
+logreg = LogisticRegression(solver=&#39;lbfgs&#39;)
+logreg.fit(X_train, y_train)
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import cross_validate
+#Cross validation
+accuracy = cross_validate(logreg,X_test,y_test,cv=10)[&#39;test_score&#39;]
+print(accuracy)
+print(&quot;Test set accuracy with Logistic Regression: {:.2f}&quot;.format(logreg.score(X_test,y_test)))
+
+import scikitplot as skplt
+y_pred = logreg.predict(X_test)
+skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True)
+plt.show()
+y_probas = logreg.predict_proba(X_test)
+skplt.metrics.plot_roc(y_test, y_probas)
+plt.show()
+skplt.metrics.plot_cumulative_gain(y_test, y_probas)
+plt.show()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="introduction-to-neural-networks">
+<h2>Introduction to Neural networks<a class="headerlink" href="#introduction-to-neural-networks" title="Link to this heading">#</a></h2>
+<p>Artificial neural networks are computational systems that can learn to
+perform tasks by considering examples, generally without being
+programmed with any task-specific rules. It is supposed to mimic a
+biological system, wherein neurons interact by sending signals in the
+form of mathematical functions between layers. All layers can contain
+an arbitrary number of neurons, and each connection is represented by
+a weight variable.</p>
+</section>
+<section id="artificial-neurons">
+<h2>Artificial neurons<a class="headerlink" href="#artificial-neurons" title="Link to this heading">#</a></h2>
+<p>The field of artificial neural networks has a long history of
+development, and is closely connected with the advancement of computer
+science and computers in general. A model of artificial neurons was
+first developed by McCulloch and Pitts in 1943 to study signal
+processing in the brain and has later been refined by others. The
+general idea is to mimic neural networks in the human brain, which is
+composed of billions of neurons that communicate with each other by
+sending electrical signals.  Each neuron accumulates its incoming
+signals, which must exceed an activation threshold to yield an
+output. If the threshold is not overcome, the neuron remains inactive,
+i.e. has zero output.</p>
+<p>This behaviour has inspired a simple mathematical model for an artificial neuron.</p>
+<!-- Equation labels as ordinary links -->
+<div id="artificialNeuron"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+ y = f\left(\sum_{i=1}^n w_ix_i\right) = f(u)
+\label{artificialNeuron} \tag{1}
+\end{equation}
+\]</div>
+<p>Here, the output <span class="math notranslate nohighlight">\(y\)</span> of the neuron is the value of its activation function, which have as input
+a weighted sum of signals <span class="math notranslate nohighlight">\(x_i, \dots ,x_n\)</span> received by <span class="math notranslate nohighlight">\(n\)</span> other neurons.</p>
+<p>Conceptually, it is helpful to divide neural networks into four
+categories:</p>
+<ol class="arabic simple">
+<li><p>general purpose neural networks for supervised learning,</p></li>
+<li><p>neural networks designed specifically for image processing, the most prominent example of this class being Convolutional Neural Networks (CNNs),</p></li>
+<li><p>neural networks for sequential data such as Recurrent Neural Networks (RNNs), and</p></li>
+<li><p>neural networks for unsupervised learning such as Deep Boltzmann Machines.</p></li>
+</ol>
+<p>In natural science, DNNs and CNNs have already found numerous
+applications. In statistical physics, they have been applied to detect
+phase transitions in 2D Ising and Potts models, lattice gauge
+theories, and different phases of polymers, or solving the
+Navier-Stokes equation in weather forecasting.  Deep learning has also
+found interesting applications in quantum physics. Various quantum
+phase transitions can be detected and studied using DNNs and CNNs,
+topological phases, and even non-equilibrium many-body
+localization. Representing quantum states as DNNs quantum state
+tomography are among some of the impressive achievements to reveal the
+potential of DNNs to facilitate the study of quantum systems.</p>
+<p>In quantum information theory, it has been shown that one can perform
+gate decompositions with the help of neural.</p>
+<p>The applications are not limited to the natural sciences. There is a
+plethora of applications in essentially all disciplines, from the
+humanities to life science and medicine.</p>
+</section>
+<section id="neural-network-types">
+<h2>Neural network types<a class="headerlink" href="#neural-network-types" title="Link to this heading">#</a></h2>
+<p>An artificial neural network (ANN), is a computational model that
+consists of layers of connected neurons, or nodes or units.  We will
+refer to these interchangeably as units or nodes, and sometimes as
+neurons.</p>
+<p>It is supposed to mimic a biological nervous system by letting each
+neuron interact with other neurons by sending signals in the form of
+mathematical functions between layers.  A wide variety of different
+ANNs have been developed, but most of them consist of an input layer,
+an output layer and eventual layers in-between, called <em>hidden
+layers</em>. All layers can contain an arbitrary number of nodes, and each
+connection between two nodes is associated with a weight variable.</p>
+<p>Neural networks (also called neural nets) are neural-inspired
+nonlinear models for supervised learning.  As we will see, neural nets
+can be viewed as natural, more powerful extensions of supervised
+learning methods such as linear and logistic regression and soft-max
+methods we discussed earlier.</p>
+</section>
+<section id="feed-forward-neural-networks">
+<h2>Feed-forward neural networks<a class="headerlink" href="#feed-forward-neural-networks" title="Link to this heading">#</a></h2>
+<p>The feed-forward neural network (FFNN) was the first and simplest type
+of ANNs that were devised. In this network, the information moves in
+only one direction: forward through the layers.</p>
+<p>Nodes are represented by circles, while the arrows display the
+connections between the nodes, including the direction of information
+flow. Additionally, each arrow corresponds to a weight variable
+(figure to come).  We observe that each node in a layer is connected
+to <em>all</em> nodes in the subsequent layer, making this a so-called
+<em>fully-connected</em> FFNN.</p>
+</section>
+<section id="convolutional-neural-network">
+<h2>Convolutional Neural Network<a class="headerlink" href="#convolutional-neural-network" title="Link to this heading">#</a></h2>
+<p>A different variant of FFNNs are <em>convolutional neural networks</em>
+(CNNs), which have a connectivity pattern inspired by the animal
+visual cortex. Individual neurons in the visual cortex only respond to
+stimuli from small sub-regions of the visual field, called a receptive
+field. This makes the neurons well-suited to exploit the strong
+spatially local correlation present in natural images. The response of
+each neuron can be approximated mathematically as a convolution
+operation.  (figure to come)</p>
+<p>Convolutional neural networks emulate the behaviour of neurons in the
+visual cortex by enforcing a <em>local</em> connectivity pattern between
+nodes of adjacent layers: Each node in a convolutional layer is
+connected only to a subset of the nodes in the previous layer, in
+contrast to the fully-connected FFNN.  Often, CNNs consist of several
+convolutional layers that learn local features of the input, with a
+fully-connected layer at the end, which gathers all the local data and
+produces the outputs. They have wide applications in image and video
+recognition.</p>
+</section>
+<section id="recurrent-neural-networks">
+<h2>Recurrent neural networks<a class="headerlink" href="#recurrent-neural-networks" title="Link to this heading">#</a></h2>
+<p>So far we have only mentioned ANNs where information flows in one
+direction: forward. <em>Recurrent neural networks</em> on the other hand,
+have connections between nodes that form directed <em>cycles</em>. This
+creates a form of internal memory which are able to capture
+information on what has been calculated before; the output is
+dependent on the previous computations. Recurrent NNs make use of
+sequential information by performing the same task for every element
+in a sequence, where each element depends on previous elements. An
+example of such information is sentences, making recurrent NNs
+especially well-suited for handwriting and speech recognition.</p>
+</section>
+<section id="other-types-of-networks">
+<h2>Other types of networks<a class="headerlink" href="#other-types-of-networks" title="Link to this heading">#</a></h2>
+<p>There are many other kinds of ANNs that have been developed. One type
+that is specifically designed for interpolation in multidimensional
+space is the radial basis function (RBF) network. RBFs are typically
+made up of three layers: an input layer, a hidden layer with
+non-linear radial symmetric activation functions and a linear output
+layer (‘’linear’’ here means that each node in the output layer has a
+linear activation function). The layers are normally fully-connected
+and there are no cycles, thus RBFs can be viewed as a type of
+fully-connected FFNN. They are however usually treated as a separate
+type of NN due the unusual activation functions.</p>
+</section>
+<section id="multilayer-perceptrons">
+<h2>Multilayer perceptrons<a class="headerlink" href="#multilayer-perceptrons" title="Link to this heading">#</a></h2>
+<p>One uses often so-called fully-connected feed-forward neural networks
+with three or more layers (an input layer, one or more hidden layers
+and an output layer) consisting of neurons that have non-linear
+activation functions.</p>
+<p>Such networks are often called <em>multilayer perceptrons</em> (MLPs).</p>
+</section>
+<section id="why-multilayer-perceptrons">
+<h2>Why multilayer perceptrons?<a class="headerlink" href="#why-multilayer-perceptrons" title="Link to this heading">#</a></h2>
+<p>According to the <em>Universal approximation theorem</em>, a feed-forward
+neural network with just a single hidden layer containing a finite
+number of neurons can approximate a continuous multidimensional
+function to arbitrary accuracy, assuming the activation function for
+the hidden layer is a <strong>non-constant, bounded and
+monotonically-increasing continuous function</strong>.</p>
+<p>Note that the requirements on the activation function only applies to
+the hidden layer, the output nodes are always assumed to be linear, so
+as to not restrict the range of output values.</p>
+</section>
+<section id="illustration-of-a-single-perceptron-model-and-a-multi-perceptron-model">
+<h2>Illustration of a single perceptron model and a multi-perceptron model<a class="headerlink" href="#illustration-of-a-single-perceptron-model-and-a-multi-perceptron-model" title="Link to this heading">#</a></h2>
+<!-- dom:FIGURE: [figures/nns.png, width=600 frac=0.8]  In a) we show a single perceptron model while in b) we dispay a network with two  hidden layers, an input layer and an output layer. -->
+<!-- begin figure -->
+<p><img src="figures/nns.png" width="600"><p style="font-size: 0.9em"><i>Figure 1: In a) we show a single perceptron model while in b) we dispay a network with two  hidden layers, an input layer and an output layer.</i></p></p>
+<!-- end figure --></section>
+<section id="examples-of-xor-or-and-and-gates">
+<h2>Examples of XOR, OR and AND gates<a class="headerlink" href="#examples-of-xor-or-and-and-gates" title="Link to this heading">#</a></h2>
+<p>Let us first try to fit various gates using standard linear
+regression. The gates we are thinking of are the classical XOR, OR and
+AND gates, well-known elements in computer science. The tables here
+show how we can set up the inputs <span class="math notranslate nohighlight">\(x_1\)</span> and <span class="math notranslate nohighlight">\(x_2\)</span> in order to yield a
+specific target <span class="math notranslate nohighlight">\(y_i\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;&quot;&quot;
+Simple code that tests XOR, OR and AND gates with linear regression
+&quot;&quot;&quot;
+
+import numpy as np
+# Design matrix
+X = np.array([ [1, 0, 0], [1, 0, 1], [1, 1, 0],[1, 1, 1]],dtype=np.float64)
+print(f&quot;The X.TX  matrix:{X.T @ X}&quot;)
+Xinv = np.linalg.pinv(X.T @ X)
+print(f&quot;The invers of X.TX  matrix:{Xinv}&quot;)
+
+# The XOR gate 
+yXOR = np.array( [ 0, 1 ,1, 0])
+ThetaXOR  = Xinv @ X.T @ yXOR
+print(f&quot;The values of theta for the XOR gate:{ThetaXOR}&quot;)
+print(f&quot;The linear regression prediction  for the XOR gate:{X @ ThetaXOR}&quot;)
+
+
+# The OR gate 
+yOR = np.array( [ 0, 1 ,1, 1])
+ThetaOR  = Xinv @ X.T @ yOR
+print(f&quot;The values of theta for the OR gate:{ThetaOR}&quot;)
+print(f&quot;The linear regression prediction  for the OR gate:{X @ ThetaOR}&quot;)
+
+
+# The OR gate 
+yAND = np.array( [ 0, 0 ,0, 1])
+ThetaAND  = Xinv @ X.T @ yAND
+print(f&quot;The values of theta for the AND gate:{ThetaAND}&quot;)
+print(f&quot;The linear regression prediction  for the AND gate:{X @ ThetaAND}&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+<p>What is happening here?</p>
+</section>
+<section id="does-logistic-regression-do-a-better-job">
+<h2>Does Logistic Regression do a better Job?<a class="headerlink" href="#does-logistic-regression-do-a-better-job" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;&quot;&quot;
+Simple code that tests XOR and OR gates with linear regression
+and logistic regression
+&quot;&quot;&quot;
+
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+import numpy as np
+
+# Design matrix
+X = np.array([ [1, 0, 0], [1, 0, 1], [1, 1, 0],[1, 1, 1]],dtype=np.float64)
+print(f&quot;The X.TX  matrix:{X.T @ X}&quot;)
+Xinv = np.linalg.pinv(X.T @ X)
+print(f&quot;The invers of X.TX  matrix:{Xinv}&quot;)
+
+# The XOR gate 
+yXOR = np.array( [ 0, 1 ,1, 0])
+ThetaXOR  = Xinv @ X.T @ yXOR
+print(f&quot;The values of theta for the XOR gate:{ThetaXOR}&quot;)
+print(f&quot;The linear regression prediction  for the XOR gate:{X @ ThetaXOR}&quot;)
+
+
+# The OR gate 
+yOR = np.array( [ 0, 1 ,1, 1])
+ThetaOR  = Xinv @ X.T @ yOR
+print(f&quot;The values of theta for the OR gate:{ThetaOR}&quot;)
+print(f&quot;The linear regression prediction  for the OR gate:{X @ ThetaOR}&quot;)
+
+
+# The OR gate 
+yAND = np.array( [ 0, 0 ,0, 1])
+ThetaAND  = Xinv @ X.T @ yAND
+print(f&quot;The values of theta for the AND gate:{ThetaAND}&quot;)
+print(f&quot;The linear regression prediction  for the AND gate:{X @ ThetaAND}&quot;)
+
+# Now we change to logistic regression
+
+
+# Logistic Regression
+logreg = LogisticRegression()
+logreg.fit(X, yOR)
+print(&quot;Test set accuracy with Logistic Regression for OR gate: {:.2f}&quot;.format(logreg.score(X,yOR)))
+
+logreg.fit(X, yXOR)
+print(&quot;Test set accuracy with Logistic Regression for XOR gate: {:.2f}&quot;.format(logreg.score(X,yXOR)))
+
+
+logreg.fit(X, yAND)
+print(&quot;Test set accuracy with Logistic Regression for AND gate: {:.2f}&quot;.format(logreg.score(X,yAND)))
+</pre></div>
+</div>
+</div>
+</div>
+<p>Not exactly impressive, but somewhat better.</p>
+</section>
+<section id="adding-neural-networks">
+<h2>Adding Neural Networks<a class="headerlink" href="#adding-neural-networks" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>
+# and now neural networks with Scikit-Learn and the XOR
+
+from sklearn.neural_network import MLPClassifier
+from sklearn.datasets import make_classification
+X, yXOR = make_classification(n_samples=100, random_state=1)
+FFNN = MLPClassifier(random_state=1, max_iter=300).fit(X, yXOR)
+FFNN.predict_proba(X)
+print(f&quot;Test set accuracy with Feed Forward Neural Network  for XOR gate:{FFNN.score(X, yXOR)}&quot;)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="mathematical-model">
+<h2>Mathematical model<a class="headerlink" href="#mathematical-model" title="Link to this heading">#</a></h2>
+<p>The output <span class="math notranslate nohighlight">\(y\)</span> is produced via the activation function <span class="math notranslate nohighlight">\(f\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+y = f\left(\sum_{i=1}^n w_ix_i + b_i\right) = f(z),
+\]</div>
+<p>This function receives <span class="math notranslate nohighlight">\(x_i\)</span> as inputs.
+Here the activation <span class="math notranslate nohighlight">\(z=(\sum_{i=1}^n w_ix_i+b_i)\)</span>.
+In an FFNN of such neurons, the <em>inputs</em> <span class="math notranslate nohighlight">\(x_i\)</span> are the <em>outputs</em> of
+the neurons in the preceding layer. Furthermore, an MLP is
+fully-connected, which means that each neuron receives a weighted sum
+of the outputs of <em>all</em> neurons in the previous layer.</p>
+</section>
+<section id="id1">
+<h2>Mathematical model<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>First, for each node <span class="math notranslate nohighlight">\(i\)</span> in the first hidden layer, we calculate a weighted sum <span class="math notranslate nohighlight">\(z_i^1\)</span> of the input coordinates <span class="math notranslate nohighlight">\(x_j\)</span>,</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto1"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation} z_i^1 = \sum_{j=1}^{M} w_{ij}^1 x_j + b_i^1
+\label{_auto1} \tag{2}
+\end{equation}
+\]</div>
+<p>Here <span class="math notranslate nohighlight">\(b_i\)</span> is the so-called bias which is normally needed in
+case of zero activation weights or inputs. How to fix the biases and
+the weights will be discussed below.  The value of <span class="math notranslate nohighlight">\(z_i^1\)</span> is the
+argument to the activation function <span class="math notranslate nohighlight">\(f_i\)</span> of each node <span class="math notranslate nohighlight">\(i\)</span>, The
+variable <span class="math notranslate nohighlight">\(M\)</span> stands for all possible inputs to a given node <span class="math notranslate nohighlight">\(i\)</span> in the
+first layer.  We define  the output <span class="math notranslate nohighlight">\(y_i^1\)</span> of all neurons in layer 1 as</p>
+<!-- Equation labels as ordinary links -->
+<div id="outputLayer1"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+ y_i^1 = f(z_i^1) = f\left(\sum_{j=1}^M w_{ij}^1 x_j  + b_i^1\right)
+\label{outputLayer1} \tag{3}
+\end{equation}
+\]</div>
+<p>where we assume that all nodes in the same layer have identical
+activation functions, hence the notation <span class="math notranslate nohighlight">\(f\)</span>. In general, we could assume in the more general case that different layers have different activation functions.
+In this case we would identify these functions with a superscript <span class="math notranslate nohighlight">\(l\)</span> for the <span class="math notranslate nohighlight">\(l\)</span>-th layer,</p>
+<!-- Equation labels as ordinary links -->
+<div id="generalLayer"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+ y_i^l = f^l(u_i^l) = f^l\left(\sum_{j=1}^{N_{l-1}} w_{ij}^l y_j^{l-1} + b_i^l\right)
+\label{generalLayer} \tag{4}
+\end{equation}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_l\)</span> is the number of nodes in layer <span class="math notranslate nohighlight">\(l\)</span>. When the output of
+all the nodes in the first hidden layer are computed, the values of
+the subsequent layer can be calculated and so forth until the output
+is obtained.</p>
+</section>
+<section id="id2">
+<h2>Mathematical model<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>The output of neuron <span class="math notranslate nohighlight">\(i\)</span> in layer 2 is thus,</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto2"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+ y_i^2 = f^2\left(\sum_{j=1}^N w_{ij}^2 y_j^1 + b_i^2\right) 
+\label{_auto2} \tag{5}
+\end{equation}
+\]</div>
+<!-- Equation labels as ordinary links -->
+<div id="outputLayer2"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation} 
+ = f^2\left[\sum_{j=1}^N w_{ij}^2f^1\left(\sum_{k=1}^M w_{jk}^1 x_k + b_j^1\right) + b_i^2\right]
+\label{outputLayer2} \tag{6}
+\end{equation}
+\]</div>
+<p>where we have substituted <span class="math notranslate nohighlight">\(y_k^1\)</span> with the inputs <span class="math notranslate nohighlight">\(x_k\)</span>. Finally, the ANN output reads</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto3"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+ y_i^3 = f^3\left(\sum_{j=1}^N w_{ij}^3 y_j^2 + b_i^3\right) 
+\label{_auto3} \tag{7}
+\end{equation}
+\]</div>
+<!-- Equation labels as ordinary links -->
+<div id="_auto4"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation} 
+ = f_3\left[\sum_{j} w_{ij}^3 f^2\left(\sum_{k} w_{jk}^2 f^1\left(\sum_{m} w_{km}^1 x_m + b_k^1\right) + b_j^2\right)
+  + b_1^3\right]
+\label{_auto4} \tag{8}
+\end{equation}
+\]</div>
+</section>
+<section id="id3">
+<h2>Mathematical model<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>We can generalize this expression to an MLP with <span class="math notranslate nohighlight">\(l\)</span> hidden
+layers. The complete functional form is,</p>
+<!-- Equation labels as ordinary links -->
+<div id="completeNN"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+y^{l+1}_i = f^{l+1}\left[\!\sum_{j=1}^{N_l} w_{ij}^3 f^l\left(\sum_{k=1}^{N_{l-1}}w_{jk}^{l-1}\left(\dots f^1\left(\sum_{n=1}^{N_0} w_{mn}^1 x_n+ b_m^1\right)\dots\right)+b_k^2\right)+b_1^3\right] 
+\label{completeNN} \tag{9}
+\end{equation}
+\]</div>
+<p>which illustrates a basic property of MLPs: The only independent
+variables are the input values <span class="math notranslate nohighlight">\(x_n\)</span>.</p>
+</section>
+<section id="id4">
+<h2>Mathematical model<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>This confirms that an MLP, despite its quite convoluted mathematical
+form, is nothing more than an analytic function, specifically a
+mapping of real-valued vectors <span class="math notranslate nohighlight">\(\hat{x} \in \mathbb{R}^n \rightarrow
+\hat{y} \in \mathbb{R}^m\)</span>.</p>
+<p>Furthermore, the flexibility and universality of an MLP can be
+illustrated by realizing that the expression is essentially a nested
+sum of scaled activation functions of the form</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto5"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+ f(x) = c_1 f(c_2 x + c_3) + c_4
+\label{_auto5} \tag{10}
+\end{equation}
+\]</div>
+<p>where the parameters <span class="math notranslate nohighlight">\(c_i\)</span> are weights and biases. By adjusting these
+parameters, the activation functions can be shifted up and down or
+left and right, change slope or be rescaled which is the key to the
+flexibility of a neural network.</p>
+<section id="matrix-vector-notation">
+<h3>Matrix-vector notation<a class="headerlink" href="#matrix-vector-notation" title="Link to this heading">#</a></h3>
+<p>We can introduce a more convenient notation for the activations in an A NN.</p>
+<p>Additionally, we can represent the biases and activations
+as layer-wise column vectors <span class="math notranslate nohighlight">\(\hat{b}_l\)</span> and <span class="math notranslate nohighlight">\(\hat{y}_l\)</span>, so that the <span class="math notranslate nohighlight">\(i\)</span>-th element of each vector
+is the bias <span class="math notranslate nohighlight">\(b_i^l\)</span> and activation <span class="math notranslate nohighlight">\(y_i^l\)</span> of node <span class="math notranslate nohighlight">\(i\)</span> in layer <span class="math notranslate nohighlight">\(l\)</span> respectively.</p>
+<p>We have that <span class="math notranslate nohighlight">\(\mathrm{W}_l\)</span> is an <span class="math notranslate nohighlight">\(N_{l-1} \times N_l\)</span> matrix, while <span class="math notranslate nohighlight">\(\hat{b}_l\)</span> and <span class="math notranslate nohighlight">\(\hat{y}_l\)</span> are <span class="math notranslate nohighlight">\(N_l \times 1\)</span> column vectors.
+With this notation, the sum becomes a matrix-vector multiplication, and we can write
+the equation for the activations of hidden layer 2 (assuming three nodes for simplicity) as</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto6"></div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{equation}
+ \hat{y}_2 = f_2(\mathrm{W}_2 \hat{y}_{1} + \hat{b}_{2}) = 
+ f_2\left(\left[\begin{array}{ccc}
+    w^2_{11} &amp;w^2_{12} &amp;w^2_{13} \\
+    w^2_{21} &amp;w^2_{22} &amp;w^2_{23} \\
+    w^2_{31} &amp;w^2_{32} &amp;w^2_{33} \\
+    \end{array} \right] \cdot
+    \left[\begin{array}{c}
+           y^1_1 \\
+           y^1_2 \\
+           y^1_3 \\
+          \end{array}\right] + 
+    \left[\begin{array}{c}
+           b^2_1 \\
+           b^2_2 \\
+           b^2_3 \\
+          \end{array}\right]\right).
+\label{_auto6} \tag{11}
+\end{equation}
+\end{split}\]</div>
+</section>
+<section id="matrix-vector-notation-and-activation">
+<h3>Matrix-vector notation  and activation<a class="headerlink" href="#matrix-vector-notation-and-activation" title="Link to this heading">#</a></h3>
+<p>The activation of node <span class="math notranslate nohighlight">\(i\)</span> in layer 2 is</p>
+<!-- Equation labels as ordinary links -->
+<div id="_auto7"></div>
+<div class="math notranslate nohighlight">
+\[
+\begin{equation}
+ y^2_i = f_2\Bigr(w^2_{i1}y^1_1 + w^2_{i2}y^1_2 + w^2_{i3}y^1_3 + b^2_i\Bigr) = 
+ f_2\left(\sum_{j=1}^3 w^2_{ij} y_j^1 + b^2_i\right).
+\label{_auto7} \tag{12}
+\end{equation}
+\]</div>
+<p>This is not just a convenient and compact notation, but also a useful
+and intuitive way to think about MLPs: The output is calculated by a
+series of matrix-vector multiplications and vector additions that are
+used as input to the activation functions. For each operation
+<span class="math notranslate nohighlight">\(\mathrm{W}_l \hat{y}_{l-1}\)</span> we move forward one layer.</p>
+</section>
+<section id="activation-functions">
+<h3>Activation functions<a class="headerlink" href="#activation-functions" title="Link to this heading">#</a></h3>
+<p>A property that characterizes a neural network, other than its
+connectivity, is the choice of activation function(s).  As described
+in, the following restrictions are imposed on an activation function
+for a FFNN to fulfill the universal approximation theorem</p>
+<ul class="simple">
+<li><p>Non-constant</p></li>
+<li><p>Bounded</p></li>
+<li><p>Monotonically-increasing</p></li>
+<li><p>Continuous</p></li>
+</ul>
+</section>
+<section id="activation-functions-logistic-and-hyperbolic-ones">
+<h3>Activation functions, Logistic and Hyperbolic ones<a class="headerlink" href="#activation-functions-logistic-and-hyperbolic-ones" title="Link to this heading">#</a></h3>
+<p>The second requirement excludes all linear functions. Furthermore, in
+a MLP with only linear activation functions, each layer simply
+performs a linear transformation of its inputs.</p>
+<p>Regardless of the number of layers, the output of the NN will be
+nothing but a linear function of the inputs. Thus we need to introduce
+some kind of non-linearity to the NN to be able to fit non-linear
+functions Typical examples are the logistic <em>Sigmoid</em></p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = \frac{1}{1 + e^{-x}},
+\]</div>
+<p>and the <em>hyperbolic tangent</em> function</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = \tanh(x)
+\]</div>
+</section>
+<section id="relevance">
+<h3>Relevance<a class="headerlink" href="#relevance" title="Link to this heading">#</a></h3>
+<p>The <em>sigmoid</em> function are more biologically plausible because the
+output of inactive neurons are zero. Such activation function are
+called <em>one-sided</em>. However, it has been shown that the hyperbolic
+tangent performs better than the sigmoid for training MLPs.  has
+become the most popular for <em>deep neural networks</em></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&quot;&quot;&quot;The sigmoid function (or the logistic curve) is a 
+function that takes any real number, z, and outputs a number (0,1).
+It is useful in neural networks for assigning weights on a relative scale.
+The value z is the weighted sum of parameters involved in the learning algorithm.&quot;&quot;&quot;
+
+import numpy
+import matplotlib.pyplot as plt
+import math as mt
+
+z = numpy.arange(-5, 5, .1)
+sigma_fn = numpy.vectorize(lambda z: 1/(1+numpy.exp(-z)))
+sigma = sigma_fn(z)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(z, sigma)
+ax.set_ylim([-0.1, 1.1])
+ax.set_xlim([-5,5])
+ax.grid(True)
+ax.set_xlabel(&#39;z&#39;)
+ax.set_title(&#39;sigmoid function&#39;)
+
+plt.show()
+
+&quot;&quot;&quot;Step Function&quot;&quot;&quot;
+z = numpy.arange(-5, 5, .02)
+step_fn = numpy.vectorize(lambda z: 1.0 if z &gt;= 0.0 else 0.0)
+step = step_fn(z)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(z, step)
+ax.set_ylim([-0.5, 1.5])
+ax.set_xlim([-5,5])
+ax.grid(True)
+ax.set_xlabel(&#39;z&#39;)
+ax.set_title(&#39;step function&#39;)
+
+plt.show()
+
+&quot;&quot;&quot;Sine Function&quot;&quot;&quot;
+z = numpy.arange(-2*mt.pi, 2*mt.pi, 0.1)
+t = numpy.sin(z)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(z, t)
+ax.set_ylim([-1.0, 1.0])
+ax.set_xlim([-2*mt.pi,2*mt.pi])
+ax.grid(True)
+ax.set_xlabel(&#39;z&#39;)
+ax.set_title(&#39;sine function&#39;)
+
+plt.show()
+
+&quot;&quot;&quot;Plots a graph of the squashing function used by a rectified linear
+unit&quot;&quot;&quot;
+z = numpy.arange(-2, 2, .1)
+zero = numpy.zeros(len(z))
+y = numpy.max([zero, z], axis=0)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.plot(z, y)
+ax.set_ylim([-2.0, 2.0])
+ax.set_xlim([-2.0, 2.0])
+ax.grid(True)
+ax.set_xlabel(&#39;z&#39;)
+ax.set_title(&#39;Rectified linear unit&#39;)
+
+plt.show()
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="week39.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Week 39: Resampling methods and logistic regression</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="week41.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Week 41 Neural networks and constructing a neural network code</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lecture-monday-september-29-2025">Lecture Monday September 29, 2025</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#suggested-readings-and-videos">Suggested readings and videos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lab-sessions-tuesday-and-wednesday">Lab sessions Tuesday and Wednesday</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logistic-regression-from-last-week">Logistic Regression, from last week</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classification-problems">Classification problems</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-and-deep-learning">Optimization and Deep learning</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basics">Basics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-parameters">Two parameters</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-likelihood">Maximum likelihood</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-cost-function-rewritten">The cost function rewritten</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#minimizing-the-cross-entropy">Minimizing the cross entropy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-more-compact-expression">A more compact expression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-to-more-predictors">Extending to more predictors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#including-more-classes">Including more classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-classes">More classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimization-the-central-part-of-any-machine-learning-algortithm">Optimization, the central part of any Machine Learning algortithm</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#revisiting-our-logistic-regression-case">Revisiting our Logistic Regression case</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-equations-to-solve">The equations to solve</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-using-newton-raphson-s-method">Solving using Newton-Raphson’s method</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-code-for-logistic-regression">Example code for Logistic Regression</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#synthetic-data-generation">Synthetic data generation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-scikit-learn">Using <strong>Scikit-learn</strong></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-correlation-matrix">Using the correlation matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#discussing-the-correlation-data">Discussing the correlation data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-measures-in-classification-studies">Other measures in classification studies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-neural-networks">Introduction to Neural networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#artificial-neurons">Artificial neurons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neural-network-types">Neural network types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feed-forward-neural-networks">Feed-forward neural networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convolutional-neural-network">Convolutional Neural Network</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recurrent-neural-networks">Recurrent neural networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-types-of-networks">Other types of networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multilayer-perceptrons">Multilayer perceptrons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-multilayer-perceptrons">Why multilayer perceptrons?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#illustration-of-a-single-perceptron-model-and-a-multi-perceptron-model">Illustration of a single perceptron model and a multi-perceptron model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples-of-xor-or-and-and-gates">Examples of XOR, OR and AND gates</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#does-logistic-regression-do-a-better-job">Does Logistic Regression do a better Job?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-neural-networks">Adding Neural Networks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mathematical-model">Mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Mathematical model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-vector-notation">Matrix-vector notation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-vector-notation-and-activation">Matrix-vector notation  and activation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#activation-functions">Activation functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#activation-functions-logistic-and-hyperbolic-ones">Activation functions, Logistic and Hyperbolic ones</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#relevance">Relevance</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

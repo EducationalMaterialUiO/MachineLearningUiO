@@ -1,0 +1,856 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Exercises week 43 &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'exercisesweek43';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Week 44, Solving differential equations with neural networks and start Convolutional Neural Networks (CNN)" href="week44.html" />
+    <link rel="prev" title="Week 43: Deep Learning: Constructing a Neural Network code and solving differential equations" href="week43.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Applied Data Analysis and Machine Learning
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers and Grading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Review of Statistics with Resampling Techniques and Linear Algebra</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">1. Elements of Probability Theory and Statistical Data Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linalg.html">2. Linear Algebra, Handling of Arrays and more Python Features</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">From Regression to Support Vector Machines</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">3. Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">4. Ridge and Lasso Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">5. Resampling Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">6. Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapteroptimization.html">7. Optimization, the central part of any Machine Learning algortithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">8. Support Vector Machines, overarching aims</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Decision Trees, Ensemble Methods and Boosting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter6.html">9. Decision trees, overarching aims</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">10. Ensemble Methods: From a Single Tree to Many Trees and Extreme Boosting, Meet the Jungle of Methods</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dimensionality Reduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">11. Basic ideas of the Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clustering.html">12. Clustering and Unsupervised Learning</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning Methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">13. Neural networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">14. Building a Feed Forward Neural Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter11.html">15. Solving Differential Equations  with Deep Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter12.html">16. Convolutional Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter13.html">17. Recurrent neural networks: Overarching view</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Weekly material, notes and exercises</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek34.html">Exercises week 34</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week34.html">Week 34: Introduction to the course, Logistics and Practicalities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek35.html">Exercises week 35</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week35.html">Week 35: From Ordinary Linear Regression to Ridge and Lasso Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek36.html">Exercises week 36</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week36.html">Week 36: Linear Regression and Gradient descent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek37.html">Exercises week 37</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week37.html">Week 37: Gradient descent methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek38.html">Exercises week 38</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week38.html">Week 38: Statistical analysis, bias-variance tradeoff and resampling methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek39.html">Exercises week 39</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week39.html">Week 39: Resampling methods and logistic regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week40.html">Week 40: Gradient descent methods (continued) and start Neural networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week41.html">Week 41 Neural networks and constructing a neural network code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek41.html">Exercises week 41</a></li>
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="week42.html">Week 42 Constructing a Neural Network code with examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek42.html">Exercises week 42</a></li>
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="week43.html">Week 43: Deep Learning: Constructing a Neural Network code and solving differential equations</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Exercises week 43</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week44.html">Week 44,  Solving differential equations with neural networks and start Convolutional Neural Networks (CNN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek44.html">Exercises week 44</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week45.html">Week 45,  Convolutional Neural Networks (CCNs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week46.html">Week 46: Decision Trees, Ensemble methods  and Random Forests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week47.html">Week 47: Recurrent neural networks and Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek47.html">Exercise week 47-48</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week48.html">Week 48: Autoencoders and summary of course</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Projects</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="project1.html">Project 1 on Machine Learning, deadline October 6 (midnight), 2025</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project2.html">Project 2 on Machine Learning, deadline November 10 (Midnight)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project3.html">Project 3 on Machine Learning, deadline December 15 (midnight), 2025</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/exercisesweek43.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Exercises week 43</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Exercises week 43</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#overarching-aims-of-the-exercises-for-week-43">Overarching aims of the exercises for week 43</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#confusion-matrix">Confusion Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#roc-curve">ROC Curve</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cumulative-gain">Cumulative Gain</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-measures-precision-recall-and-the-f-1-measure">Other measures: Precision, Recall, and the F<span class="math notranslate nohighlight">\(_1\)</span> Measure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-a">Exercise a)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-b">Exercise b)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-c-week-43">Exercise c) week 43</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <!-- HTML file automatically generated from DocOnce source (https://github.com/doconce/doconce/)
+doconce format html exercisesweek43.do.txt  -->
+<!-- dom:TITLE: Exercises week 43  --><section class="tex2jax_ignore mathjax_ignore" id="exercises-week-43">
+<h1>Exercises week 43<a class="headerlink" href="#exercises-week-43" title="Link to this heading">#</a></h1>
+<p><strong>October 20-24, 2025</strong></p>
+<p>Date: <strong>Deadline Friday October 24 at midnight</strong></p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="overarching-aims-of-the-exercises-for-week-43">
+<h1>Overarching aims of the exercises for week 43<a class="headerlink" href="#overarching-aims-of-the-exercises-for-week-43" title="Link to this heading">#</a></h1>
+<p>The aim of the exercises this week is to gain some confidence with
+ways to visualize the results of a classification problem.  We will
+target three ways of setting up the analysis. The first and simplest
+one is the</p>
+<ol class="arabic simple">
+<li><p>so-called confusion matrix. The next one is the so-called</p></li>
+<li><p>ROC curve. Finally we have the</p></li>
+<li><p>Cumulative gain curve.</p></li>
+</ol>
+<p>We will use Logistic Regression as method for the classification in
+this exercise. You can compare these results with those obtained with
+your neural network code from project 2 without a hidden layer.</p>
+<p>In these exercises we will use binary and  multi-class data sets
+(the Iris data set from week 41).</p>
+<p>The underlying mathematics is described here.</p>
+<section id="confusion-matrix">
+<h2>Confusion Matrix<a class="headerlink" href="#confusion-matrix" title="Link to this heading">#</a></h2>
+<p>A <strong>confusion matrix</strong> summarizes a classifier’s performance by
+tabulating predictions versus true labels.  For binary classification,
+it is a <span class="math notranslate nohighlight">\(2\times2\)</span> table whose entries are counts of outcomes:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{l|cc} &amp; \text{Predicted Positive} &amp; \text{Predicted Negative} \\ \hline \text{Actual Positive} &amp; TP &amp; FN \\ \text{Actual Negative} &amp; FP &amp; TN \end{array}.
+\end{split}\]</div>
+<p>Here TP (true positives) is the number of cases correctly predicted as
+positive, FP (false positives) is the number incorrectly predicted as
+positive, TN (true negatives) is correctly predicted negative, and FN
+(false negatives) is incorrectly predicted negative .  In other words,
+“positive” means class 1 and “negative” means class 0; for example, TP
+occurs when the prediction and actual are both positive.  Formally:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}, \quad \text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}},
+\]</div>
+<p>where TPR and FPR are the true and false positive rates defined below.</p>
+<p>In multiclass classification with <span class="math notranslate nohighlight">\(K\)</span> classes, the confusion matrix
+generalizes to a <span class="math notranslate nohighlight">\(K\times K\)</span> table.  Entry <span class="math notranslate nohighlight">\(N_{ij}\)</span> in the table is
+the count of instances whose true class is <span class="math notranslate nohighlight">\(i\)</span> and whose predicted
+class is <span class="math notranslate nohighlight">\(j\)</span>.  For example, a three-class confusion matrix can be written
+as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{c|ccc} &amp; \text{Pred Class 1} &amp; \text{Pred Class 2} &amp; \text{Pred Class 3} \\ \hline \text{Act Class 1} &amp; N_{11} &amp; N_{12} &amp; N_{13} \\ \text{Act Class 2} &amp; N_{21} &amp; N_{22} &amp; N_{23} \\ \text{Act Class 3} &amp; N_{31} &amp; N_{32} &amp; N_{33} \end{array}.
+\end{split}\]</div>
+<p>Here the diagonal entries <span class="math notranslate nohighlight">\(N_{ii}\)</span> are the true positives for each
+class, and off-diagonal entries are misclassifications.  This matrix
+allows computation of per-class metrics: e.g. for class <span class="math notranslate nohighlight">\(i\)</span>,
+<span class="math notranslate nohighlight">\(\mathrm{TP}_i=N_{ii}\)</span>, <span class="math notranslate nohighlight">\(\mathrm{FN}_i=\sum_{j\neq i}N_{ij}\)</span>,
+<span class="math notranslate nohighlight">\(\mathrm{FP}_i=\sum_{j\neq i}N_{ji}\)</span>, and <span class="math notranslate nohighlight">\(\mathrm{TN}_i\)</span> is the sum of
+all remaining entries.</p>
+<p>As defined above, TPR and FPR come from the binary case. In binary
+terms with <span class="math notranslate nohighlight">\(P\)</span> actual positives and <span class="math notranslate nohighlight">\(N\)</span> actual negatives, one has</p>
+<div class="math notranslate nohighlight">
+\[
+\text{TPR} = \frac{TP}{P} = \frac{TP}{TP+FN}, \quad \text{FPR} =
+\frac{FP}{N} = \frac{FP}{FP+TN},
+\]</div>
+<p>as used in standard confusion-matrix
+formulations. These rates will be used in constructing ROC curves.</p>
+</section>
+<section id="roc-curve">
+<h2>ROC Curve<a class="headerlink" href="#roc-curve" title="Link to this heading">#</a></h2>
+<p>The Receiver Operating Characteristic (ROC) curve plots the trade-off
+between true positives and false positives as a discrimination
+threshold varies.  Specifically, for a binary classifier that outputs
+a score or probability, one varies the threshold <span class="math notranslate nohighlight">\(t\)</span> for declaring
+<strong>positive</strong>, and computes at each <span class="math notranslate nohighlight">\(t\)</span> the true positive rate
+<span class="math notranslate nohighlight">\(\mathrm{TPR}(t)\)</span> and false positive rate <span class="math notranslate nohighlight">\(\mathrm{FPR}(t)\)</span> using the
+confusion matrix at that threshold.  The ROC curve is then the graph
+of TPR versus FPR.  By definition,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{TPR} = \frac{TP}{TP+FN}, \qquad \mathrm{FPR} = \frac{FP}{FP+TN},
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(TP,FP,TN,FN\)</span> are counts determined by threshold <span class="math notranslate nohighlight">\(t\)</span>.  A perfect
+classifier would reach the point (FPR=0, TPR=1) at some threshold.</p>
+<p>Formally, the ROC curve is obtained by plotting
+<span class="math notranslate nohighlight">\((\mathrm{FPR}(t),\mathrm{TPR}(t))\)</span> for all <span class="math notranslate nohighlight">\(t\in[0,1]\)</span> (or as <span class="math notranslate nohighlight">\(t\)</span>
+sweeps through the sorted scores).  The Area Under the ROC Curve (AUC)
+quantifies the average performance over all thresholds.  It can be
+interpreted probabilistically: <span class="math notranslate nohighlight">\(\mathrm{AUC} =
+\Pr\bigl(s(X^+)&gt;s(X^-)\bigr)\)</span>, the probability that a random positive
+instance <span class="math notranslate nohighlight">\(X^+\)</span> receives a higher score <span class="math notranslate nohighlight">\(s\)</span> than a random negative
+instance <span class="math notranslate nohighlight">\(X^-\)</span> .  Equivalently, the AUC is the integral under the ROC
+curve:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{AUC} \;=\; \int_{0}^{1} \mathrm{TPR}(f)\,df,
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(f\)</span> ranges over FPR (or fraction of negatives).  A model that guesses at random yields a diagonal ROC (AUC=0.5), whereas a perfect model yields AUC=1.0.</p>
+</section>
+<section id="cumulative-gain">
+<h2>Cumulative Gain<a class="headerlink" href="#cumulative-gain" title="Link to this heading">#</a></h2>
+<p>The cumulative gain curve (or gains chart) evaluates how many
+positives are captured as one targets an increasing fraction of the
+population, sorted by model confidence.  To construct it, sort all
+instances by decreasing predicted probability of the positive class.
+Then, for the top <span class="math notranslate nohighlight">\(\alpha\)</span> fraction of instances, compute the fraction
+of all actual positives that fall in this subset.  In formula form, if
+<span class="math notranslate nohighlight">\(P\)</span> is the total number of positive instances and <span class="math notranslate nohighlight">\(P(\alpha)\)</span> is the
+number of positives among the top <span class="math notranslate nohighlight">\(\alpha\)</span> of the data, the cumulative
+gain at level <span class="math notranslate nohighlight">\(\alpha\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{Gain}(\alpha) \;=\; \frac{P(\alpha)}{P}.
+\]</div>
+<p>For example, cutting off at the top 10% of predictions yields a gain
+equal to (positives in top 10%) divided by (total positives) .
+Plotting <span class="math notranslate nohighlight">\(\mathrm{Gain}(\alpha)\)</span> versus <span class="math notranslate nohighlight">\(\alpha\)</span> (often in percent)
+gives the gain curve.  The baseline (random) curve is the diagonal
+<span class="math notranslate nohighlight">\(\mathrm{Gain}(\alpha)=\alpha\)</span>, while an ideal model has a steep climb
+toward 1.</p>
+<p>A related measure is the {\em lift}, often called the gain ratio.  It is the ratio of the model’s capture rate to that of random selection.  Equivalently,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{Lift}(\alpha) \;=\; \frac{\mathrm{Gain}(\alpha)}{\alpha}.
+\]</div>
+<p>A lift <span class="math notranslate nohighlight">\(&gt;1\)</span> indicates better-than-random targeting.  In practice, gain
+and lift charts (used e.g.\ in marketing or imbalanced classification)
+show how many positives can be “gained” by focusing on a fraction of
+the population .</p>
+</section>
+<section id="other-measures-precision-recall-and-the-f-1-measure">
+<h2>Other measures: Precision, Recall, and the F<span class="math notranslate nohighlight">\(_1\)</span> Measure<a class="headerlink" href="#other-measures-precision-recall-and-the-f-1-measure" title="Link to this heading">#</a></h2>
+<p>Precision and recall (sensitivity) quantify binary classification
+accuracy in terms of positive predictions.  They are defined from the
+confusion matrix as:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{Precision} = \frac{TP}{TP + FP}, \qquad \text{Recall} = \frac{TP}{TP + FN}.
+\]</div>
+<p>Precision is the fraction of predicted positives that are correct, and
+recall is the fraction of actual positives that are correctly
+identified .  A high-precision classifier makes few false-positive
+errors, while a high-recall classifier makes few false-negative
+errors.</p>
+<p>The F<span class="math notranslate nohighlight">\(_1\)</span> score (balanced F-measure) combines precision and recall into a single metric via their harmonic mean.  The usual formula is:</p>
+<div class="math notranslate nohighlight">
+\[
+F_1 =2\frac{\text{Precision}\times\text{Recall}}{\text{Precision} + \text{Recall}}.
+\]</div>
+<p>This can be shown to equal</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{2\,TP}{2\,TP + FP + FN}.
+\]</div>
+<p>The F<span class="math notranslate nohighlight">\(_1\)</span> score ranges from 0 (worst) to 1 (best), and balances the
+trade-off between precision and recall.</p>
+<p>For multi-class classification, one computes per-class
+precision/recall/F<span class="math notranslate nohighlight">\(_1\)</span> (treating each class as “positive” in a
+one-vs-rest manner) and then averages.  Common averaging methods are:</p>
+<p>Micro-averaging: Sum all true positives, false positives, and false negatives across classes, then compute precision/recall/F<span class="math notranslate nohighlight">\(_1\)</span> from these totals.
+Macro-averaging: Compute the F<span class="math notranslate nohighlight">\(1\)</span> score <span class="math notranslate nohighlight">\(F{1,i}\)</span> for each class <span class="math notranslate nohighlight">\(i\)</span> separately, then take the unweighted mean: <span class="math notranslate nohighlight">\(F_{1,\mathrm{macro}} = \frac{1}{K}\sum_{i=1}^K F_{1,i}\)</span> .  This treats all classes equally regardless of size.
+Weighted-averaging: Like macro-average, but weight each class’s <span class="math notranslate nohighlight">\(F_{1,i}\)</span> by its support <span class="math notranslate nohighlight">\(n_i\)</span> (true count): <span class="math notranslate nohighlight">\(F_{1,\mathrm{weighted}} = \frac{1}{N}\sum_{i=1}^K n_i F_{1,i}\)</span>, where <span class="math notranslate nohighlight">\(N=\sum_i n_i\)</span>.  This accounts for class imbalance by giving more weight to larger classes .</p>
+<p>Each of these averages has different use-cases. Micro-average is
+dominated by common classes, macro-average highlights performance on
+rare classes, and weighted-average is a compromise.  These formulas
+and concepts allow rigorous evaluation of classifier performance in
+both binary and multi-class settings.</p>
+</section>
+<section id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<p>Here is a simple code example which uses  the Logistic regression machinery from <strong>scikit-learn</strong>.
+At the end it sets up the confusion matrix and the ROC and cumulative gain curves.
+Feel free to use these functionalities (we don’t expect you to write your own code for say the confusion matrix).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span>  <span class="n">train_test_split</span> 
+<span class="c1"># from sklearn.datasets import fill in the data set</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="c1"># Load the data, fill inn</span>
+<span class="n">mydata</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="o">?</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">mydata</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">cancer</span><span class="o">.</span><span class="n">target</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="c1"># Logistic Regression</span>
+<span class="c1"># define which type of problem, binary or multiclass</span>
+<span class="n">logreg</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;lbfgs&#39;</span><span class="p">)</span>
+<span class="n">logreg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">LabelEncoder</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">cross_validate</span>
+<span class="c1">#Cross validation</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span><span class="n">logreg</span><span class="p">,</span><span class="n">X_test</span><span class="p">,</span><span class="n">y_test</span><span class="p">,</span><span class="n">cv</span><span class="o">=</span><span class="mi">10</span><span class="p">)[</span><span class="s1">&#39;test_score&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test set accuracy with Logistic Regression: </span><span class="si">{:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">logreg</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span><span class="n">y_test</span><span class="p">)))</span>
+
+<span class="kn">import</span> <span class="nn">scikitplot</span> <span class="k">as</span> <span class="nn">skplt</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">logreg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">skplt</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">plot_confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">y_probas</span> <span class="o">=</span> <span class="n">logreg</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">skplt</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">plot_roc</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_probas</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">skplt</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">plot_cumulative_gain</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_probas</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="exercise-a">
+<h3>Exercise a)<a class="headerlink" href="#exercise-a" title="Link to this heading">#</a></h3>
+<p>Convince yourself about the mathematics for the confusion matrix, the ROC and the cumlative gain curves for both a binary and a multiclass classification problem.</p>
+</section>
+<section id="exercise-b">
+<h3>Exercise b)<a class="headerlink" href="#exercise-b" title="Link to this heading">#</a></h3>
+<p>Use a binary classification data available from <strong>scikit-learn</strong>. As an example you can use
+the MNIST data set and just specialize to two numbers. To do so you can use the following code lines</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_digits</span>
+<span class="n">digits</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span><span class="n">n_class</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Load only two classes, e.g., 0 and 1</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">digits</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Alternatively, you can use the <em>make<span class="math notranslate nohighlight">\(\_\)</span>classification</em>
+functionality. This function generates a random <span class="math notranslate nohighlight">\(n\)</span>-class classification
+dataset, which can be configured for binary classification by setting
+n_classes=2. You can also control the number of samples, features,
+informative features, redundant features, and more.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_classification</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_features</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">n_informative</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_redundant</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>You can use this option for the multiclass case as well, see the next exercise.
+If you prefer to study other binary classification datasets, feel free
+to replace the above suggestions with your own dataset.</p>
+<p>Make plots of the confusion matrix, the ROC curve and the cumulative gain curve.</p>
+</section>
+<section id="exercise-c-week-43">
+<h3>Exercise c) week 43<a class="headerlink" href="#exercise-c-week-43" title="Link to this heading">#</a></h3>
+<p>As a multiclass problem, we will use the Iris data set discussed in
+the exercises from weeks 41 and 42. This is a three-class data set and
+you can set it up using <strong>scikit-learn</strong>,</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_iris</span>
+<span class="n">iris</span> <span class="o">=</span> <span class="n">load_iris</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># Features</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">iris</span><span class="o">.</span><span class="n">target</span> <span class="c1"># Target labels</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Make plots of the confusion matrix, the ROC curve and the cumulative
+gain curve for this (or other) multiclass data set.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="week43.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Week 43: Deep Learning: Constructing a Neural Network code and solving differential equations</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="week44.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Week 44,  Solving differential equations with neural networks and start Convolutional Neural Networks (CNN)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Exercises week 43</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#overarching-aims-of-the-exercises-for-week-43">Overarching aims of the exercises for week 43</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#confusion-matrix">Confusion Matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#roc-curve">ROC Curve</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cumulative-gain">Cumulative Gain</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-measures-precision-recall-and-the-f-1-measure">Other measures: Precision, Recall, and the F<span class="math notranslate nohighlight">\(_1\)</span> Measure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-a">Exercise a)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-b">Exercise b)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-c-week-43">Exercise c) week 43</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

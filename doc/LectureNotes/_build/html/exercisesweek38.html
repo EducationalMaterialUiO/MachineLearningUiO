@@ -1,0 +1,785 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Exercises week 38 &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'exercisesweek38';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Week 38: Statistical analysis, bias-variance tradeoff and resampling methods" href="week38.html" />
+    <link rel="prev" title="Week 37: Gradient descent methods" href="week37.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Applied Data Analysis and Machine Learning
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers and Grading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Review of Statistics with Resampling Techniques and Linear Algebra</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="statistics.html">1. Elements of Probability Theory and Statistical Data Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linalg.html">2. Linear Algebra, Handling of Arrays and more Python Features</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">From Regression to Support Vector Machines</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">3. Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">4. Ridge and Lasso Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">5. Resampling Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">6. Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapteroptimization.html">7. Optimization, the central part of any Machine Learning algortithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">8. Support Vector Machines, overarching aims</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Decision Trees, Ensemble Methods and Boosting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter6.html">9. Decision trees, overarching aims</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">10. Ensemble Methods: From a Single Tree to Many Trees and Extreme Boosting, Meet the Jungle of Methods</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Dimensionality Reduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">11. Basic ideas of the Principal Component Analysis (PCA)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clustering.html">12. Clustering and Unsupervised Learning</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning Methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">13. Neural networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">14. Building a Feed Forward Neural Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter11.html">15. Solving Differential Equations  with Deep Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter12.html">16. Convolutional Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter13.html">17. Recurrent neural networks: Overarching view</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Weekly material, notes and exercises</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek34.html">Exercises week 34</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week34.html">Week 34: Introduction to the course, Logistics and Practicalities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek35.html">Exercises week 35</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week35.html">Week 35: From Ordinary Linear Regression to Ridge and Lasso Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek36.html">Exercises week 36</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week36.html">Week 36: Linear Regression and Gradient descent</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek37.html">Exercises week 37</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week37.html">Week 37: Gradient descent methods</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Exercises week 38</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week38.html">Week 38: Statistical analysis, bias-variance tradeoff and resampling methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek39.html">Exercises week 39</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week39.html">Week 39: Resampling methods and logistic regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week40.html">Week 40: Gradient descent methods (continued) and start Neural networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week41.html">Week 41 Neural networks and constructing a neural network code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek41.html">Exercises week 41</a></li>
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="week42.html">Week 42 Constructing a Neural Network code with examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek42.html">Exercises week 42</a></li>
+
+
+
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="week43.html">Week 43: Deep Learning: Constructing a Neural Network code and solving differential equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek43.html">Exercises week 43</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week44.html">Week 44,  Solving differential equations with neural networks and start Convolutional Neural Networks (CNN)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek44.html">Exercises week 44</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week45.html">Week 45,  Convolutional Neural Networks (CCNs)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week46.html">Week 46: Decision Trees, Ensemble methods  and Random Forests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="week47.html">Week 47: Recurrent neural networks and Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exercisesweek47.html">Exercise week 47-48</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="week48.html">Week 48: Autoencoders and summary of course</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Projects</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="project1.html">Project 1 on Machine Learning, deadline October 6 (midnight), 2025</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project2.html">Project 2 on Machine Learning, deadline November 10 (Midnight)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project3.html">Project 3 on Machine Learning, deadline December 15 (midnight), 2025</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/exercisesweek38.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Exercises week 38</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-15-19">September 15-19</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-and-the-bias-variance-trade-off">Resampling and the Bias-Variance Trade-off</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-goals">Learning goals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deliverables">Deliverables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-the-books">Use the books!</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#definitions">Definitions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-expectation-values-for-ordinary-least-squares-expressions">Exercise 1: Expectation values for ordinary least squares expressions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-expectation-values-for-ridge-regression">Exercise 2: Expectation values for Ridge regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-3-deriving-the-expression-for-the-bias-variance-trade-off">Exercise 3: Deriving the expression for the Bias-Variance Trade-off</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-4-computing-the-bias-and-variance">Exercise 4: Computing the Bias and Variance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-5-interpretation-of-scaling-and-metrics">Exercise 5: Interpretation of scaling and metrics</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="exercises-week-38">
+<h1>Exercises week 38<a class="headerlink" href="#exercises-week-38" title="Link to this heading">#</a></h1>
+<section id="september-15-19">
+<h2>September 15-19<a class="headerlink" href="#september-15-19" title="Link to this heading">#</a></h2>
+</section>
+<section id="resampling-and-the-bias-variance-trade-off">
+<h2>Resampling and the Bias-Variance Trade-off<a class="headerlink" href="#resampling-and-the-bias-variance-trade-off" title="Link to this heading">#</a></h2>
+<section id="learning-goals">
+<h3>Learning goals<a class="headerlink" href="#learning-goals" title="Link to this heading">#</a></h3>
+<p>After completing these exercises, you will know how to</p>
+<ul class="simple">
+<li><p>Derive expectation and variances values related to linear regression</p></li>
+<li><p>Compute expectation and variances values related to linear regression</p></li>
+<li><p>Compute and evaluate the trade-off between bias and variance of a model</p></li>
+</ul>
+</section>
+<section id="deliverables">
+<h3>Deliverables<a class="headerlink" href="#deliverables" title="Link to this heading">#</a></h3>
+<p>Complete the following exercises while working in a jupyter notebook. Then, in canvas, include</p>
+<ul class="simple">
+<li><p>The jupyter notebook with the exercises completed</p></li>
+<li><p>An exported PDF of the notebook (<a class="reference external" href="https://code.visualstudio.com/docs/datascience/jupyter-notebooks#_export-your-jupyter-notebook">https://code.visualstudio.com/docs/datascience/jupyter-notebooks#_export-your-jupyter-notebook</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="use-the-books">
+<h2>Use the books!<a class="headerlink" href="#use-the-books" title="Link to this heading">#</a></h2>
+<p>This week deals with various mean values and variances in linear regression methods (here it may be useful to look up chapter 3, equation (3.8) of <a class="reference external" href="https://www.springer.com/gp/book/9780387848570">Trevor Hastie, Robert Tibshirani, Jerome H. Friedman, The Elements of Statistical Learning, Springer</a>).</p>
+<p>For more discussions on Ridge regression and calculation of expectation values, <a class="reference external" href="https://arxiv.org/abs/1509.09169">Wessel van Wieringen’s</a> article is highly recommended.</p>
+<p>The exercises this week are also a part of project 1 and can be reused in the theory part of the project.</p>
+<section id="definitions">
+<h3>Definitions<a class="headerlink" href="#definitions" title="Link to this heading">#</a></h3>
+<p>We assume that there exists a continuous function <span class="math notranslate nohighlight">\(f(\boldsymbol{x})\)</span> and a normal distributed error <span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}\sim N(0, \sigma^2)\)</span> which describes our data</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{y} = f(\boldsymbol{x})+\boldsymbol{\varepsilon}
+\]</div>
+<p>We further assume that this continous function can be modeled with a linear model <span class="math notranslate nohighlight">\(\mathbf{\tilde{y}}\)</span> of some features <span class="math notranslate nohighlight">\(\mathbf{X}\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[
+\boldsymbol{y} = \boldsymbol{\tilde{y}} + \boldsymbol{\varepsilon} = \boldsymbol{X}\boldsymbol{\beta} +\boldsymbol{\varepsilon}
+\]</div>
+<p>We therefore get that our data <span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span> has an expectation value <span class="math notranslate nohighlight">\(\boldsymbol{X}\boldsymbol{\beta}\)</span> and variance <span class="math notranslate nohighlight">\(\sigma^2\)</span>, that is <span class="math notranslate nohighlight">\(\boldsymbol{y}\)</span> follows a normal distribution with mean value <span class="math notranslate nohighlight">\(\boldsymbol{X}\boldsymbol{\beta}\)</span> and variance <span class="math notranslate nohighlight">\(\sigma^2\)</span>.</p>
+</section>
+</section>
+<section id="exercise-1-expectation-values-for-ordinary-least-squares-expressions">
+<h2>Exercise 1: Expectation values for ordinary least squares expressions<a class="headerlink" href="#exercise-1-expectation-values-for-ordinary-least-squares-expressions" title="Link to this heading">#</a></h2>
+<p><strong>a)</strong> With the expressions for the optimal parameters <span class="math notranslate nohighlight">\(\boldsymbol{\hat{\beta}_{OLS}}\)</span> show that</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}(\boldsymbol{\hat{\beta}_{OLS}}) = \boldsymbol{\beta}.
+\]</div>
+<p><strong>b)</strong> Show that the variance of <span class="math notranslate nohighlight">\(\boldsymbol{\hat{\beta}_{OLS}}\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{Var}(\boldsymbol{\hat{\beta}_{OLS}}) = \sigma^2 \, (\mathbf{X}^{T} \mathbf{X})^{-1}.
+\]</div>
+<p>We can use the last expression when we define a <a class="reference external" href="https://en.wikipedia.org/wiki/Confidence_interval">confidence interval</a> for the parameters <span class="math notranslate nohighlight">\(\boldsymbol{\hat{\beta}_{OLS}}\)</span>.
+A given parameter <span class="math notranslate nohighlight">\({\boldsymbol{\hat{\beta}_{OLS}}}_j\)</span> is given by the diagonal matrix element of the above matrix.</p>
+</section>
+<section id="exercise-2-expectation-values-for-ridge-regression">
+<h2>Exercise 2: Expectation values for Ridge regression<a class="headerlink" href="#exercise-2-expectation-values-for-ridge-regression" title="Link to this heading">#</a></h2>
+<p><strong>a)</strong> With the expressions for the optimal parameters <span class="math notranslate nohighlight">\(\boldsymbol{\hat{\beta}_{Ridge}}\)</span> show that</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E} \big[ \hat{\boldsymbol{\beta}}^{\mathrm{Ridge}} \big]=(\mathbf{X}^{T} \mathbf{X} + \lambda \mathbf{I}_{pp})^{-1} (\mathbf{X}^{\top} \mathbf{X})\boldsymbol{\beta}
+\]</div>
+<p>We see that <span class="math notranslate nohighlight">\(\mathbb{E} \big[ \hat{\boldsymbol{\beta}}^{\mathrm{Ridge}} \big] \not= \mathbb{E} \big[\hat{\boldsymbol{\beta}}^{\mathrm{OLS}}\big ]\)</span> for any <span class="math notranslate nohighlight">\(\lambda &gt; 0\)</span>.</p>
+<p><strong>b)</strong> Show that the variance is</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{Var}[\hat{\boldsymbol{\beta}}^{\mathrm{Ridge}}]=\sigma^2[  \mathbf{X}^{T} \mathbf{X} + \lambda \mathbf{I} ]^{-1}  \mathbf{X}^{T}\mathbf{X} \{ [  \mathbf{X}^{\top} \mathbf{X} + \lambda \mathbf{I} ]^{-1}\}^{T}
+\]</div>
+<p>We see that if the parameter <span class="math notranslate nohighlight">\(\lambda\)</span> goes to infinity then the variance of the Ridge parameters <span class="math notranslate nohighlight">\(\boldsymbol{\beta}\)</span> goes to zero.</p>
+</section>
+<section id="exercise-3-deriving-the-expression-for-the-bias-variance-trade-off">
+<h2>Exercise 3: Deriving the expression for the Bias-Variance Trade-off<a class="headerlink" href="#exercise-3-deriving-the-expression-for-the-bias-variance-trade-off" title="Link to this heading">#</a></h2>
+<p>The aim of this exercise is to derive the equations for the bias-variance tradeoff to be used in project 1.</p>
+<p>The parameters <span class="math notranslate nohighlight">\(\boldsymbol{\hat{\beta}_{OLS}}\)</span> are found by optimizing the mean squared error via the so-called cost function</p>
+<div class="math notranslate nohighlight">
+\[
+C(\boldsymbol{X},\boldsymbol{\beta}) =\frac{1}{n}\sum_{i=0}^{n-1}(y_i-\tilde{y}_i)^2=\mathbb{E}\left[(\boldsymbol{y}-\boldsymbol{\tilde{y}})^2\right]
+\]</div>
+<p><strong>a)</strong> Show that you can rewrite this into an expression which contains</p>
+<ul class="simple">
+<li><p>the variance of the model (the variance term)</p></li>
+<li><p>the expected deviation of the mean of the model from the true data (the bias term)</p></li>
+<li><p>the variance of the noise</p></li>
+</ul>
+<p>In other words, show that:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[(\boldsymbol{y}-\boldsymbol{\tilde{y}})^2\right]=\mathrm{Bias}[\tilde{y}]+\mathrm{var}[\tilde{y}]+\sigma^2,
+\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{Bias}[\tilde{y}]=\mathbb{E}\left[\left(\boldsymbol{y}-\mathbb{E}\left[\boldsymbol{\tilde{y}}\right]\right)^2\right],
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{var}[\tilde{y}]=\mathbb{E}\left[\left(\tilde{\boldsymbol{y}}-\mathbb{E}\left[\boldsymbol{\tilde{y}}\right]\right)^2\right]=\frac{1}{n}\sum_i(\tilde{y}_i-\mathbb{E}\left[\boldsymbol{\tilde{y}}\right])^2.
+\]</div>
+<p>In order to arrive at the equation for the bias, we have to approximate the unknown function <span class="math notranslate nohighlight">\(f\)</span> with the output/target values <span class="math notranslate nohighlight">\(y\)</span>.</p>
+<p><strong>b)</strong> Explain what the terms mean and discuss their interpretations.</p>
+</section>
+<section id="exercise-4-computing-the-bias-and-variance">
+<h2>Exercise 4: Computing the Bias and Variance<a class="headerlink" href="#exercise-4-computing-the-bias-and-variance" title="Link to this heading">#</a></h2>
+<p>Before you compute the bias and variance of a real model for different complexities, let’s for now assume that you have sampled predictions and targets for a single model complexity using bootstrap resampling.</p>
+<p><strong>a)</strong> Using the expression above, compute the mean squared error, bias and variance of the given data. Check that the sum of the bias and variance correctly gives (approximately) the mean squared error.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">bootstraps</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">bootstraps</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">10</span>
+<span class="c1"># The definition of targets has been updated, and was wrong earlier in the week.</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="n">mse</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">bias</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">variance</span> <span class="o">=</span> <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>b)</strong> Change the prediction values in some way to increase the bias while decreasing the variance.</p>
+<p><strong>c)</strong> Change the prediction values in some way to increase the variance while decreasing the bias.</p>
+<p><strong>d)</strong> Perform a bias-variance analysis of a polynomial OLS model fit to a one-dimensional function by computing and plotting the bias and variances values as a function of the polynomial degree of your model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">PolynomialFeatures</span><span class="p">,</span>
+<span class="p">)</span>  <span class="c1"># use the fit_transform method of the created object!</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.utils</span> <span class="kn">import</span> <span class="n">resample</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">bootstraps</span> <span class="o">=</span> <span class="mi">1000</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+
+<span class="n">biases</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">variances</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">mses</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># for p in range(1, 5):</span>
+<span class="c1">#    predictions = ...</span>
+<span class="c1">#    targets = ...</span>
+<span class="c1">#</span>
+<span class="c1">#    X = ...</span>
+<span class="c1">#    X_train, X_test, y_train, y_test = ...</span>
+<span class="c1">#    for b in range(bootstraps):</span>
+<span class="c1">#        X_train_re, y_train_re = ...</span>
+<span class="c1">#</span>
+<span class="c1">#        # fit your model on the sampled data</span>
+<span class="c1">#</span>
+<span class="c1">#        # make predictions on the test data</span>
+<span class="c1">#        predictions[b, :] =</span>
+<span class="c1">#        targets[b, :] =</span>
+<span class="c1">#</span>
+<span class="c1">#    biases.append(...)</span>
+<span class="c1">#    variances.append(...)</span>
+<span class="c1">#    mses.append(...)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>e)</strong> Discuss the bias-variance trade-off as function of your model complexity (the degree of the polynomial).</p>
+<p><strong>f)</strong> Compute and discuss the bias and variance as function of the number of data points (choose a suitable polynomial degree to show something interesting).</p>
+</section>
+<section id="exercise-5-interpretation-of-scaling-and-metrics">
+<h2>Exercise 5: Interpretation of scaling and metrics<a class="headerlink" href="#exercise-5-interpretation-of-scaling-and-metrics" title="Link to this heading">#</a></h2>
+<p>In this course, we often ask you to scale data and compute various metrics. Although these practices are “standard” in the field, we will require you to demonstrate an understanding of <em>why</em> you need to scale data and use these metrics. Both so that you can make better arguements about your results, and so that you will hopefully make fewer mistakes.</p>
+<p>First, a few reminders: In this course you should always scale the columns of the feature matrix, and sometimes scale the target data, when it is worth the effort. By scaling, we mean subtracting the mean and dividing by the standard deviation, though there are many other ways to scale data. When scaling either the feature matrix or the target data, the intercept becomes a bit harder to implement and understand, so take care.</p>
+<p>Briefly answer the following:</p>
+<p><strong>a)</strong> Why do we scale data?</p>
+<p><strong>b)</strong> Why does the OLS method give practically equivelent models on scaled and unscaled data?</p>
+<p><strong>c)</strong> Why does the Ridge method <strong>not</strong> give practically equivelent models on scaled and unscaled data? Why do we only consider the model on scaled data correct?</p>
+<p><strong>d)</strong> Why do we say that the Ridge method gives a biased model?</p>
+<p><strong>e)</strong> Is the MSE of the OLS method affected by scaling of the feature matrix? Is it affected by scaling of the target data?</p>
+<p><strong>f)</strong> Read about the R2 score, a metric we will ask you to use a lot later in the course. Is the R2 score of the OLS method affected by scaling of the feature matrix? Is it affected by scaling of the target data?</p>
+<p><strong>g)</strong> Give interpretations of the following R2 scores: 0, 0.5, 1.</p>
+<p><strong>h)</strong> What is an advantage of the R2 score over the MSE?</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="week37.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Week 37: Gradient descent methods</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="week38.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Week 38: Statistical analysis, bias-variance tradeoff and resampling methods</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-15-19">September 15-19</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resampling-and-the-bias-variance-trade-off">Resampling and the Bias-Variance Trade-off</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-goals">Learning goals</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deliverables">Deliverables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-the-books">Use the books!</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#definitions">Definitions</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-expectation-values-for-ordinary-least-squares-expressions">Exercise 1: Expectation values for ordinary least squares expressions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-expectation-values-for-ridge-regression">Exercise 2: Expectation values for Ridge regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-3-deriving-the-expression-for-the-bias-variance-trade-off">Exercise 3: Deriving the expression for the Bias-Variance Trade-off</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-4-computing-the-bias-and-variance">Exercise 4: Computing the Bias and Variance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-5-interpretation-of-scaling-and-metrics">Exercise 5: Interpretation of scaling and metrics</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

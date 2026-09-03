@@ -1,0 +1,127 @@
+=== 1. why no linear model can read the raw spins ===
+
+  The spin configurations are drawn independently and uniformly, so the
+  law of s is invariant under flipping any single spin s_j -> -s_j.  The
+  energy H = -J sum_k s_k s_{k+1} contains s_j only through the two terms
+  s_{j-1}s_j and s_j s_{j+1}, and flipping s_j changes the sign of both
+  and of s_j itself.  Hence E[H s_j] = -E[H s_j] = 0 for every j: the
+  energy is uncorrelated with every single spin, although it is a
+  deterministic function of all of them.
+
+  measured over 10000 configurations:
+    max_j |corr(s_j, H)|                        : 0.0276
+    max_j |mean(H s_j)|                         : 0.1748
+
+  ordinary least squares on the L raw spins plus an intercept,
+  fitted on all 10000 configurations:
+    intercept                                   : +0.0395
+    max_j |theta_j|                             : 0.1765
+    R^2                                         : 0.004280
+
+  The intercept reproduces the mean energy and nothing else is learned.
+  Ridge and Lasso can only shrink these coefficients further, so they
+  do no better.  The linear model on raw spins is not merely weak; it is
+  exactly as good as predicting the mean.
+
+=== 2. the exact ReLU network, Proposition 8.isingexact ===
+
+  For s_j, s_k in {-1,+1},
+      s_j s_k = |s_j + s_k| - 1,
+  because the sum is +-2 when the spins agree and 0 when they differ.
+  Since |z| = ReLU(z) + ReLU(-z),
+      H(s) = -J sum_j ( |s_j + s_{j+1}| - 1 )
+           = J L - J sum_j [ ReLU(s_j + s_{j+1}) + ReLU(-s_j - s_{j+1}) ],
+  which is a one-hidden-layer ReLU network with 2L hidden units, all
+  first-layer weights equal to +-1, all first-layer biases zero, all
+  output weights equal to -J and output bias J L.
+
+  the hand-built network evaluated on all 10000 configurations:
+    hidden units                                : 80
+    distinct first-layer weights                : [-1.0, 0.0, 1.0]
+    max |network(s) - H(s)|                     : 0.000e+00
+    R^2                                         : 1.0000000000
+
+  Exactly zero error, not approximately zero.  The universal
+  approximation theorem of Section 8.5 guarantees that some network comes
+  arbitrarily close; here the construction is finite and exact, and the
+  width 2L it needs is the same piecewise-linear counting that appears in
+  the proof.
+
+=== 3. a network trained from scratch on the raw spins ===
+
+  The same 400 training configurations that Chapter 3 used, but with the
+  L = 40 raw spins as input instead of the L^2 = 1600 outer products.  One
+  hidden layer, ReLU, mean squared error, Adam.
+
+   epochs   R^2 train    R^2 test
+       20    0.919057    0.187639
+      100    1.000000    0.277651
+      180    1.000000    0.277658
+      260    1.000000    0.277658
+      340    0.999990    0.282606
+
+  width study, 400 epochs each:
+
+   hidden units   R^2 train    R^2 test
+             10    0.957966   -0.599135
+             25    1.000000   -0.055285
+             50    1.000000    0.193549
+            100    0.976503    0.185764
+            200    0.999999    0.282703
+            400    0.996122    0.315478
+
+  training-set-size study, 200 hidden units, 400 epochs:
+
+   training rows   R^2 test
+             100   -0.213211
+             200   -0.088174
+             400    0.283759
+             800    0.610756
+            1600    0.875358
+            3200    0.952438
+
+  Representable is not the same as learnable.  Proposition 8.isingexact
+  produces a network with 80 hidden units and zero error, yet 400
+  configurations are nowhere near enough to find it: the training score
+  is 1 and the test score is a quarter of that.  With more data the gap
+  closes.  Given 8000 configurations, 400 hidden units and 1500 epochs:
+
+    R^2 train                                   : 0.998800
+    R^2 test                                    : 0.980170
+    RMS error in units of the energy quantum 2J : 0.4516
+
+=== 4. a network on the outer-product features of Chapter 3 ===
+
+  Given the L^2 features the problem is linear, and Chapter 3 showed that
+  the Lasso solves it almost exactly.  A network given the same features
+  has to discover that a linear function suffices.
+
+   epochs   R^2 train    R^2 test
+       20    0.999894    0.339385
+      100    0.999590    0.348838
+      180    0.998660    0.365584
+      260    0.998803    0.381900
+      340    0.995679    0.383330
+
+=== 5. everything on one test set ===
+
+   model                            R^2 on the 9600 test configurations
+   OLS,   L^2 outer products              0.522863
+   Ridge, L^2 outer products              0.522863
+   Lasso, L^2 outer products              0.999963
+   network, L^2 outer products            0.390631
+   OLS,   L raw spins                    -0.112870
+   network, L raw spins                   0.282703
+   exact network, L raw spins             1.000000
+
+=== 6. the same network in PyTorch ===
+
+   framework      R^2 train    R^2 test
+   numpy           0.999999    0.282703
+   PyTorch         0.996700    0.267799
+
+  The two implementations are independent -- different initialisations,
+  different shuffles -- so they are not expected to agree digit by digit.
+  They agree on the conclusion, which is what a cross-check is for.
+
+done

@@ -1,0 +1,70 @@
+# Table of contents for the jupyter-book version of
+# "Machine Learning and the Physical Sciences".
+# The parts mirror the \part structure of doc/BookML/book.tex.
+#
+# The chapter notebooks are GENERATED from doc/BookML/*.tex by
+# BookPrograms/tex_to_notebook.py -- edit the LaTeX, not the notebooks.
+format: jb-book
+root: intro
+
+parts:
+  - caption: About the course
+    chapters:
+      - file: schedule
+      - file: teachers
+      - file: textbooks
+
+  - caption: Introduction
+    chapters:
+      - file: introduction.ipynb   # unnumbered, as in the printed book
+
+  - caption: Mathematical and statistical basis with essential computational elements
+    numbered: true
+    chapters:
+      - file: chapter1.ipynb   # Linear Algebra for Machine Learning
+      - file: chapter2.ipynb   # Elements of Probability Theory and Statistics
+
+  - caption: Classical methods
+    numbered: true
+    chapters:
+      - file: chapter3.ipynb   # Linear Regression
+      - file: chapter4.ipynb   # Optimization
+      - file: chapter5.ipynb   # Logistic Regression
+      - file: chapter6.ipynb   # Support Vector Machines
+      - file: chapter7.ipynb   # Ensemble methods and decision trees
+
+  - caption: Deep Learning
+    numbered: true
+    chapters:
+      - file: chapter8.ipynb   # Neural Networks
+      - file: chapter9.ipynb   # Neural networks for differential equations
+      - file: chapter10.ipynb  # Convolutional neural networks
+      - file: chapter11.ipynb  # Recurrent neural networks
+      - file: chapter12.ipynb  # Autoencoders
+      - file: chapter13.ipynb  # Transformers
+
+  - caption: Generative Methods
+    numbered: true
+    chapters:
+      - file: chapter14.ipynb  # Boltzmann machines
+      - file: chapter15.ipynb  # Variational autoencoders
+      - file: chapter16.ipynb  # Diffusion models and normalizing flows
+      - file: chapter17.ipynb  # Generative adversarial networks
+
+  - caption: Concluding remarks and perspectives
+    numbered: true
+    chapters:
+      - file: conclusions.ipynb
+
+# Still to come, matching the remaining part of book.tex:
+#   - caption: Reinforcement Learning
+#     numbered: true
+#     chapters:
+#       - file: chapter18.ipynb
+#
+#  - caption: Projects
+#    numbered: false
+#    chapters:
+#      - file: project1.ipynb
+#      - file: project2.ipynb
+#      - file: project3.ipynb

@@ -1,0 +1,53 @@
+=== the common set-up ===
+  80 points, labels in {-1,+1}, Gaussian kernel with gamma = 0.5, penalty lambda = 1.0
+  every method below minimises  sum_i L(y_i, f(x_i)) + (lambda/2)||f||^2
+  over the same space, with f = K alpha.
+
+=== 0. the hinge solver certifies itself ===
+  primal value  26.4874425949
+  dual value    26.4874425949
+  duality gap   1.528e-13
+  a zero gap proves the box quadratic programme was solved exactly,
+  by Section 6.dual; no external solver is needed to check it
+
+=== 1. Theorem 6.threelosses: alpha_i = -L'(y_i, f_i)/lambda ===
+   loss          L'(y,f)                      predicted alpha        max |alpha - predicted|
+   squared       f - y                        (y - f)/lambda        1.332e-15
+   logistic      -y sigma(-y f)               y sigma(-y f)/lambda  1.468e-13
+   hinge         -y if yf<1, 0 if yf>1        y/lambda or 0         0.000e+00
+   (the hinge row excludes the points sitting exactly on the margin,
+    where L is not differentiable and alpha may take any value
+    between 0 and y/lambda -- there are 15 of them here)
+
+=== 2. the consequence: which coefficients vanish ===
+   method                    non-zero alpha   |alpha|_max   sum L(y_i,f_i)   (lambda/2)||f||^2   objective
+   kernel ridge                         80        1.9253        10.738297            4.251415   14.989712
+   kernel logistic                      80        0.8013        29.757767            7.832128   37.589895
+   support vector machine               44        1.0000        17.979270            8.508173   26.487443
+
+  Only the hinge loss is exactly flat on an open set -- it is zero
+  for every point with margin above one -- so only for the hinge is
+  L' exactly zero there, and only the support vector machine has
+  zero coefficients.  The squared and logistic losses have nowhere
+  vanishing derivatives, so every point contributes.
+
+   how the sparsity moves with the penalty:
+     lambda    SVM non-zeros   ridge non-zeros   logistic non-zeros
+       0.10              24                  80                     80
+       1.00              44                  80                     80
+      10.00              79                  80                     80
+     100.00              80                  80                     80
+   the support vectors grow in number as the penalty rises, because
+   a flatter f leaves more points inside the margin; the other two
+   are dense at every penalty
+
+=== 3. three different representations, one similar function ===
+   method                    test accuracy   agreement with SVM
+   kernel ridge                      0.9025               0.9800
+   kernel logistic                   0.8760               0.9635
+   support vector machine            0.8825               1.0000
+   the three decision boundaries agree on the large majority of the
+   plane while being built from very different numbers of points.
+   The choice among them is a choice of what to pay for: a closed
+   form (squared), a calibrated probability (logistic), or a sparse
+   representation (hinge).

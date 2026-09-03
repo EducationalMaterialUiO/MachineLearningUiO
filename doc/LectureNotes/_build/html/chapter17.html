@@ -1,0 +1,2077 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>17. Chapter 17: Generative Adversarial Networks &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter17';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="18. Chapter 18: Concluding remarks and perspectives" href="conclusions.html" />
+    <link rel="prev" title="16. Chapter 16: Diffusion Models and Normalizing Flows" href="chapter16.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Machine Learning and the Physical Sciences
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mathematical and statistical basis with essential computational elements</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">1. Chapter 1: Linear Algebra for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">2. Chapter 2: Elements of Probability Theory and Statistics</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">3. Chapter 3: Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">4. Chapter 4: Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">5. Chapter 5: Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter6.html">6. Chapter 6: Support Vector Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">7. Chapter 7: Ensemble methods; from simple decision trees to Gradient Boosting</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">8. Chapter 8: Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">9. Chapter 9: Neural Networks for Differential Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">10. Chapter 10: Convolutional Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter11.html">11. Chapter 11: Recurrent Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter12.html">12. Chapter 12: Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter13.html">13. Chapter 13: Transformers</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Generative Methods</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter14.html">14. Chapter 14: Boltzmann Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15.html">15. Chapter 15: Variational Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter16.html">16. Chapter 16: Diffusion Models and Normalizing Flows</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">17. Chapter 17: Generative Adversarial Networks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Concluding remarks and perspectives</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="conclusions.html">18. Chapter 18: Concluding remarks and perspectives</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chapter17.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 17: Generative Adversarial Networks</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-networks-and-a-game">17.1. Two networks and a game</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-gans-are-used-for">17.1.1. What GANs are used for</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-minimax-objective">17.2. The minimax objective</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-optimal-discriminator">17.3. The optimal discriminator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-objective-is-a-jensen-shannon-divergence">17.4. The objective is a Jensen-Shannon divergence</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-alternating-gradients">17.5. Training: alternating gradients</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-non-saturating-generator-loss">17.5.1. The non-saturating generator loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-sided-label-smoothing">17.5.2. One-sided label smoothing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-convergence-looks-like">17.5.3. What convergence looks like</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-actually-goes-wrong">17.6. What actually goes wrong</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#non-convergence-the-game-itself">17.6.1. Non-convergence: the game itself</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vanishing-gradients-the-discriminator-wins">17.6.2. Vanishing gradients: the discriminator wins</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mode-collapse-and-a-topological-obstruction">17.6.3. Mode collapse, and a topological obstruction</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-wasserstein-distance">17.7. The Wasserstein distance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluating-a-model-with-no-likelihood">17.8. Evaluating a model with no likelihood</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-mean-discrepancy">17.8.1. Maximum mean discrepancy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fr-echet-inception-distance">17.8.2. Fr’echet inception distance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectures">17.9. Architectures</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-fully-connected-baseline">17.9.1. The fully connected baseline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convolutions-dcgan">17.9.2. Convolutions: DCGAN</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conditioning">17.9.3. Conditioning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-the-latent-space">17.9.4. Reading the latent space</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gans-in-pytorch-and-tensorflow">17.10. GANs in PyTorch and TensorFlow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">17.11. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">17.12. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">17.12.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-an-adversarial-generator">17.12.2. Project-style exercise: an adversarial generator</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-17-generative-adversarial-networks">
+<h1><span class="section-number">17. </span>Chapter 17: Generative Adversarial Networks<a class="headerlink" href="#chapter-17-generative-adversarial-networks" title="Link to this heading">#</a></h1>
+<!-- Macro definitions for MathJax, mirroring book.tex -->
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\bm}[1]{\boldsymbol{#1}}
+\newcommand{\Det}[1]{|\boldsymbol{#1}|}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\var}{\mathrm{Var}}
+\newcommand{\cov}{\mathrm{Cov}}
+\newcommand{\Prob}{\mathrm{Prob}}
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\]</div>
+<p>Every generative model of Chapters 14 to 16
+was built around the likelihood.  The restricted Boltzmann machine of
+Chapter 14 wrote down an unnormalised density and struggled
+with the partition function; the variational autoencoder of
+Chapter 15 replaced the intractable <span class="math notranslate nohighlight">\(\log p(\bm{x})\)</span> by a bound; the
+diffusion model of Chapter 16 replaced it by a bound with <span class="math notranslate nohighlight">\(T\)</span>
+terms.  In each case the object being optimised was, directly or indirectly, the
+probability the model assigns to the data.</p>
+<p>This chapter is about giving that up.  A <em>generative adversarial network</em>
+never evaluates <span class="math notranslate nohighlight">\(p_{\bm{\theta}}(\bm{x})\)</span>, never bounds it, and never
+approximates a partition function.  It trains a generator by asking a second
+network – a <em>discriminator</em> – whether the generated samples look real,
+and improves the generator until the discriminator can no longer tell.  The
+training signal is not a likelihood but the output of a classifier that is being
+retrained at the same time.</p>
+<p>The construction is due to Goodfellow and coworkers [goodfellow2014gan] and
+it is best read as a two-player game.  That reading is what gives the chapter
+its structure: we shall write down the value function of the game
+(Section <em>The minimax objective</em>), solve it for one player exactly
+(Section <em>The optimal discriminator</em>), show that the resulting objective for the other
+player is a Jensen-Shannon divergence (Section <em>The objective is a Jensen-Shannon divergence</em>), and then spend
+the rest of the chapter on the consequences – both the good ones, which are the
+sharpest samples any single-pass generator produces, and the bad ones, which are
+that the game may fail to converge at all.</p>
+<p>The material follows the lecture notes for the last week of FYS-STK4155 and the
+accompanying notes on generative adversarial networks; Chapter 20 of
+Goodfellow, Bengio and Courville [goodfellow2016] is the standard textbook
+treatment.  Every identity stated
+below is verified numerically by the programs described in
+Section <em>Summary and the programs</em>: no result in this chapter is quoted without
+having been recomputed.</p>
+<section id="two-networks-and-a-game">
+<h2><span class="section-number">17.1. </span>Two networks and a game<a class="headerlink" href="#two-networks-and-a-game" title="Link to this heading">#</a></h2>
+<p>A generative adversarial network consists of two networks with opposing
+objectives.</p>
+<p>The <em>generator</em> <span class="math notranslate nohighlight">\(G\)</span> takes a noise vector <span class="math notranslate nohighlight">\(\bm{z}\in\mathbb{R}^{k}\)</span> drawn
+from a fixed prior <span class="math notranslate nohighlight">\(p_{z}\)</span> – usually <span class="math notranslate nohighlight">\(\mathcal{N}(\bm{0},\bm{I})\)</span> or a uniform
+distribution on a cube – and maps it into data space,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x} = G(\bm{z};\bm{\theta}^{(g)}),
+  \qquad \bm{z}\sim p_{z}(\bm{z}),
+  \qquad G:\mathbb{R}^{k}\to\mathbb{R}^{d}.\tag{17.1}
+\]</div>
+<p>The distribution of the output is written <span class="math notranslate nohighlight">\(p_{g}\)</span>.  It is the push-forward of
+<span class="math notranslate nohighlight">\(p_z\)</span> through <span class="math notranslate nohighlight">\(G\)</span>, and this is the first thing that distinguishes a GAN from
+everything that came before: we can <em>sample</em> from <span class="math notranslate nohighlight">\(p_g\)</span> by drawing
+<span class="math notranslate nohighlight">\(\bm{z}\)</span> and applying one forward pass, but we cannot in general
+<em>evaluate</em> it.  If <span class="math notranslate nohighlight">\(G\)</span> happened to be a diffeomorphism the change of
+variables of Chapter 16, Theorem 16.5, would
+give</p>
+<div class="math notranslate nohighlight">
+\[
+p_g(\bm{x}) = p_z\!\left(G^{-1}(\bm{x})\right)
+    \left|\det\frac{\partial G^{-1}}{\partial\bm{x}}\right|,\tag{17.2}
+\]</div>
+<p>but <span class="math notranslate nohighlight">\(G\)</span> is a generic network with <span class="math notranslate nohighlight">\(k\ne d\)</span> and no invertibility constraint, so
+Eq. (17.2) does not apply.  We call <span class="math notranslate nohighlight">\(p_g\)</span> an <em>implicit</em>
+distribution: defined by a sampling procedure and nothing else.</p>
+<p>The <em>discriminator</em> <span class="math notranslate nohighlight">\(D\)</span> takes a point in data space and returns a
+probability,</p>
+<div class="math notranslate nohighlight">
+\[
+D(\bm{x};\bm{\theta}^{(d)})\in(0,1),
+  \qquad
+  D(\bm{x}) \;\approx\; \Prob(\bm{x}\text{ came from the data}),\tag{17.3}
+\]</div>
+<p>which we shall always implement as a sigmoid applied to a real-valued logit
+<span class="math notranslate nohighlight">\(u(\bm{x})\)</span>, so that <span class="math notranslate nohighlight">\(D=\sigma(u)\)</span> and the losses below can be written with the
+softplus function and evaluated without overflow.</p>
+<p>The two are trained against each other.  The generator wants <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span>
+large; the discriminator wants <span class="math notranslate nohighlight">\(D(\bm{x})\)</span> large on data and <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span>
+small on samples.  Neither network ever sees the other’s parameters: all the
+information the generator receives about the data arrives through the
+discriminator’s gradient.</p>
+<div class="tip admonition">
+<p class="admonition-title">Supervised, unsupervised, or neither?</p>
+<p>A GAN is normally listed as an
+unsupervised method, and the end product – a model of <span class="math notranslate nohighlight">\(p_r\)</span> built from
+unlabelled samples – justifies that.  But internally the discriminator solves
+a perfectly ordinary <em>supervised</em> binary classification problem, with
+labels that the construction supplies for free: real is <span class="math notranslate nohighlight">\(1\)</span>, generated is <span class="math notranslate nohighlight">\(0\)</span>.
+The unsupervised task has been converted into a supervised one, at the price
+that the training set for the classifier changes at every step.  This is why
+GANs extend so naturally to the semi-supervised setting, where the
+discriminator is given <span class="math notranslate nohighlight">\(C+1\)</span> classes – the <span class="math notranslate nohighlight">\(C\)</span> real classes plus “generated”
+– and the unlabelled data still contribute through the adversarial term.</p>
+</div>
+<section id="what-gans-are-used-for">
+<h3><span class="section-number">17.1.1. </span>What GANs are used for<a class="headerlink" href="#what-gans-are-used-for" title="Link to this heading">#</a></h3>
+<p>The applications that made GANs prominent are almost all in image space:
+synthesis of photorealistic faces and scenes, super-resolution, inpainting,
+image-to-image translation between paired or unpaired domains, style transfer,
+text-to-image generation, video prediction and face ageing.  In the physical
+sciences they have been used for fast surrogate simulation – generating
+calorimeter showers or lattice configurations far more cheaply than the
+underlying simulator – for data augmentation when the interesting events are
+rare, and for anomaly detection through the reconstruction error of an
+inverted generator.</p>
+<p>What all of these share is that the target is a sharp, high-dimensional signal
+for which no tractable likelihood is available and for which a pixel-wise loss
+is known to be the wrong criterion.  That is the regime where an adversarial
+loss earns its cost, and Section <em>What actually goes wrong</em> is about what that cost
+is.</p>
+</section>
+</section>
+<section id="the-minimax-objective">
+<h2><span class="section-number">17.2. </span>The minimax objective<a class="headerlink" href="#the-minimax-objective" title="Link to this heading">#</a></h2>
+<p>The learning problem is posed as a zero-sum game.  A single function
+<span class="math notranslate nohighlight">\(V(G,D)\)</span> gives the reward of the discriminator; the generator receives <span class="math notranslate nohighlight">\(-V\)</span>.
+The default choice is</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \min_{G}\max_{D}\; V(G,D)
+   = \mathbb{E}_{\bm{x}\sim p_r}\bigl[\log D(\bm{x})\bigr]
+   + \mathbb{E}_{\bm{z}\sim p_z}\bigl[\log\bigl(1-D(G(\bm{z}))\bigr)\bigr] . \;}\tag{17.4}
+\]</div>
+<p>Read the two terms separately.  The first is large when <span class="math notranslate nohighlight">\(D\)</span> assigns high
+probability to real data.  The second is large when <span class="math notranslate nohighlight">\(D\)</span> assigns low probability
+to generated data.  Maximising their sum over <span class="math notranslate nohighlight">\(\bm{\theta}^{(d)}\)</span> is exactly
+maximum likelihood for a binary classifier with balanced classes – the
+right-hand side of Eq. (17.4) is the negative binary
+cross-entropy of Chapter 5, Eq. (5.13), with
+the two classes “real” and “generated”.</p>
+<p>Since <span class="math notranslate nohighlight">\(G\)</span> appears only in the second term, minimising <span class="math notranslate nohighlight">\(V\)</span> over
+<span class="math notranslate nohighlight">\(\bm{\theta}^{(g)}\)</span> means minimising
+<span class="math notranslate nohighlight">\(\mathbb{E}_{\bm{z}}[\log(1-D(G(\bm{z})))]\)</span>; the generator is pushing
+<span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> up.  Changing variables from <span class="math notranslate nohighlight">\(\bm{z}\)</span> to <span class="math notranslate nohighlight">\(\bm{x}=G(\bm{z})\)</span>
+lets us write the same thing entirely in data space,</p>
+<div class="math notranslate nohighlight">
+\[
+V(G,D) = \mathbb{E}_{\bm{x}\sim p_r}\bigl[\log D(\bm{x})\bigr]
+         + \mathbb{E}_{\bm{x}\sim p_g}\bigl[\log(1-D(\bm{x}))\bigr]
+         = \int\Bigl[p_r(\bm{x})\log D(\bm{x})
+           + p_g(\bm{x})\log\bigl(1-D(\bm{x})\bigr)\Bigr]\ud{\bm{x}},\tag{17.5}
+\]</div>
+<p>which is the form we shall analyse.  Note what has happened: the parameters
+<span class="math notranslate nohighlight">\(\bm{\theta}^{(g)}\)</span> have disappeared into <span class="math notranslate nohighlight">\(p_g\)</span>, and the game is now a game
+between two <em>distributions</em>, <span class="math notranslate nohighlight">\(p_g\)</span> and <span class="math notranslate nohighlight">\(D\)</span>.  Everything in the next two
+sections is a statement about that idealised game; Section <em>Training: alternating gradients</em>
+returns to the parameters.</p>
+<p>In the numerical work we write the two terms with the softplus function
+<span class="math notranslate nohighlight">\(\zeta(u)=\log(1+e^{u})\)</span>, using <span class="math notranslate nohighlight">\(\log\sigma(u)=-\zeta(-u)\)</span> and
+<span class="math notranslate nohighlight">\(\log(1-\sigma(u))=-\zeta(u)\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softplus</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;log(1+exp(u)), evaluated without overflow.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">u</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">value_function</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">x_real</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;V(G,D) = E[log D(x)] + E[log(1 - D(G(z)))],  Eq. (17.minimax).&quot;&quot;&quot;</span>
+    <span class="n">u_real</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">x_real</span><span class="p">)</span>
+    <span class="n">u_fake</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">generator</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">softplus</span><span class="p">(</span><span class="o">-</span><span class="n">u_real</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">softplus</span><span class="p">(</span><span class="n">u_fake</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-optimal-discriminator">
+<h2><span class="section-number">17.3. </span>The optimal discriminator<a class="headerlink" href="#the-optimal-discriminator" title="Link to this heading">#</a></h2>
+<p>Hold the generator fixed, so that <span class="math notranslate nohighlight">\(p_g\)</span> is a fixed distribution, and ask for
+the discriminator that maximises Eq. (17.5).  Because <span class="math notranslate nohighlight">\(D\)</span>
+enters the integral pointwise – the value of <span class="math notranslate nohighlight">\(D\)</span> at one <span class="math notranslate nohighlight">\(\bm{x}\)</span> does not
+constrain its value at another, if we optimise over all measurable functions –
+the problem separates into one scalar maximisation per point.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 17.1 (Optimal discriminator)</p>
+<p>For fixed <span class="math notranslate nohighlight">\(p_g\)</span>, the value function Eq. (17.5) is maximised by</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  D^{*}(\bm{x}) = \frac{p_r(\bm{x})}{p_r(\bm{x})+p_g(\bm{x})}\;}\tag{17.6}
+\]</div>
+<p>at every <span class="math notranslate nohighlight">\(\bm{x}\)</span> with <span class="math notranslate nohighlight">\(p_r(\bm{x})+p_g(\bm{x})&gt;0\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Write <span class="math notranslate nohighlight">\(A=p_r(\bm{x})\)</span>, <span class="math notranslate nohighlight">\(B=p_g(\bm{x})\)</span> and <span class="math notranslate nohighlight">\(t=D(\bm{x})\in(0,1)\)</span>.  The
+integrand is <span class="math notranslate nohighlight">\(f(t)=A\log t + B\log(1-t)\)</span>, and</p>
+<div class="math notranslate nohighlight">
+\[
+f'(t) = \frac{A}{t}-\frac{B}{1-t}
+        = \frac{A-(A+B)t}{t(1-t)},\tag{17.7}
+\]</div>
+<p>which vanishes at <span class="math notranslate nohighlight">\(t^{*}=A/(A+B)\)</span>.  The second derivative,</p>
+<div class="math notranslate nohighlight">
+\[
+f''(t) = -\frac{A}{t^{2}}-\frac{B}{(1-t)^{2}} &lt; 0
+  \qquad\text{for all } t\in(0,1),\tag{17.8}
+\]</div>
+<p>is negative wherever <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> are not both zero, so <span class="math notranslate nohighlight">\(f\)</span> is strictly concave
+and <span class="math notranslate nohighlight">\(t^{*}\)</span> is its unique maximum.  Since the choice of <span class="math notranslate nohighlight">\(t\)</span> at one point does
+not affect any other point, maximising the integrand pointwise maximises the
+integral.</p>
+</div>
+<p>Equation (17.6) is worth reading twice.  It says the optimal
+discriminator is the <em>Bayes-optimal classifier</em> for the two-class problem
+<span class="math notranslate nohighlight">\(\{\)</span>real, generated<span class="math notranslate nohighlight">\(\}\)</span> with equal class priors: the posterior probability that
+a point came from <span class="math notranslate nohighlight">\(p_r\)</span> rather than <span class="math notranslate nohighlight">\(p_g\)</span>.  A perfectly trained discriminator
+is therefore not an adversary in any mysterious sense; it is a density ratio
+estimator.  Rearranging,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{p_r(\bm{x})}{p_g(\bm{x})} = \frac{D^{*}(\bm{x})}{1-D^{*}(\bm{x})}
+  = e^{\,u^{*}(\bm{x})},\tag{17.9}
+\]</div>
+<p>so the <em>logit</em> of the optimal discriminator is the log density ratio.  The
+generator is being told, at every point, how much too little or too much mass
+it has put there – which is precisely the information a likelihood would have
+given, obtained without ever computing one.</p>
+<p>We check Proposition 17.1 in two ways.  First, pointwise: for
+several pairs <span class="math notranslate nohighlight">\((A,B)\)</span> we maximise <span class="math notranslate nohighlight">\(f(t)\)</span> numerically and compare against
+<span class="math notranslate nohighlight">\(A/(A+B)\)</span>,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">1.</span> <span class="n">the</span> <span class="n">pointwise</span> <span class="n">maximiser</span> <span class="n">of</span> <span class="n">A</span> <span class="n">log</span> <span class="n">t</span> <span class="o">+</span> <span class="n">B</span> <span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">t</span><span class="p">)</span> <span class="o">===</span>
+      <span class="n">A</span>          <span class="n">B</span>        <span class="n">numerical</span> <span class="n">t</span><span class="o">*</span>       <span class="n">A</span><span class="o">/</span><span class="p">(</span><span class="n">A</span><span class="o">+</span><span class="n">B</span><span class="p">)</span>      <span class="o">|</span><span class="n">diff</span><span class="o">|</span>
+    <span class="mf">0.9000</span>     <span class="mf">0.1000</span>     <span class="mf">0.9000000001</span>  <span class="mf">0.9000000000</span>   <span class="mf">1.1e-10</span>
+    <span class="mf">0.5000</span>     <span class="mf">0.5000</span>     <span class="mf">0.5000000000</span>  <span class="mf">0.5000000000</span>   <span class="mf">1.1e-16</span>
+    <span class="mf">0.2000</span>     <span class="mf">0.8000</span>     <span class="mf">0.1999999970</span>  <span class="mf">0.2000000000</span>   <span class="mf">3.0e-09</span>
+    <span class="mf">0.0010</span>     <span class="mf">0.4000</span>     <span class="mf">0.0024937656</span>  <span class="mf">0.0024937656</span>   <span class="mf">3.5e-11</span>
+    <span class="mf">0.3700</span>     <span class="mf">0.1100</span>     <span class="mf">0.7708333325</span>  <span class="mf">0.7708333333</span>   <span class="mf">8.7e-10</span>
+  <span class="n">worst</span> <span class="n">deviation</span> <span class="kn">from</span> <span class="nn">Eq.</span> <span class="p">(</span><span class="mf">17.</span><span class="n">dstar</span><span class="p">):</span> <span class="mf">2.97e-09</span>
+
+  <span class="sa">f</span><span class="s1">&#39;&#39;</span><span class="p">(</span><span class="n">t</span><span class="o">*</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.7172</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">so</span> <span class="n">t</span><span class="o">*</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">maximum</span>
+</pre></div>
+</div>
+<p>Second, and more interestingly, with a network.  We take two known
+one-dimensional densities, <span class="math notranslate nohighlight">\(p_r=\mathcal{N}(0,1)\)</span> and
+<span class="math notranslate nohighlight">\(p_g=\mathcal{N}(1.5,0.6^{2})\)</span>, draw twenty thousand samples from each, and
+train a discriminator on the binary cross-entropy of
+Eq. (17.4) with the generator frozen.  Nothing in the training
+knows the densities; the network sees only samples.  Comparing the trained
+<span class="math notranslate nohighlight">\(D\)</span> against Eq. (17.6):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">2.</span> <span class="n">a</span> <span class="n">trained</span> <span class="n">discriminator</span> <span class="n">against</span> <span class="n">a</span> <span class="n">known</span> <span class="n">pair</span> <span class="n">of</span> <span class="n">densities</span> <span class="o">===</span>
+     <span class="n">x</span>        <span class="n">mixture</span>     <span class="n">D_net</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>   <span class="n">p_r</span><span class="o">/</span><span class="p">(</span><span class="n">p_r</span><span class="o">+</span><span class="n">p_g</span><span class="p">)</span>   <span class="o">|</span><span class="n">diff</span><span class="o">|</span>
+   <span class="o">-</span><span class="mf">2.00</span>     <span class="mf">2.70e-02</span>    <span class="mf">0.99998</span>        <span class="mf">1.00000</span>    <span class="mf">0.0000</span>
+    <span class="mf">0.00</span>     <span class="mf">2.14e-01</span>    <span class="mf">0.91331</span>        <span class="mf">0.93177</span>    <span class="mf">0.0185</span>
+    <span class="mf">1.00</span>     <span class="mf">3.56e-01</span>    <span class="mf">0.38890</span>        <span class="mf">0.33993</span>    <span class="mf">0.0490</span>
+    <span class="mf">2.00</span>     <span class="mf">2.62e-01</span>    <span class="mf">0.13343</span>        <span class="mf">0.10307</span>    <span class="mf">0.0304</span>
+    <span class="mf">3.00</span>     <span class="mf">1.68e-02</span>    <span class="mf">0.11105</span>        <span class="mf">0.13172</span>    <span class="mf">0.0207</span>
+    <span class="mf">4.00</span>     <span class="mf">1.23e-04</span>    <span class="mf">0.09246</span>        <span class="mf">0.54233</span>    <span class="mf">0.4499</span>
+    <span class="mf">5.00</span>     <span class="mf">7.57e-07</span>    <span class="mf">0.07672</span>        <span class="mf">0.98207</span>    <span class="mf">0.9053</span>
+  <span class="n">where</span> <span class="n">the</span> <span class="n">mixture</span> <span class="n">density</span> <span class="n">exceeds</span> <span class="mi">1</span><span class="o">%</span> <span class="n">of</span> <span class="n">its</span> <span class="n">peak</span> <span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="o">-</span><span class="mf">2.77</span><span class="p">,</span><span class="mf">3.33</span><span class="p">]):</span>
+      <span class="nb">max</span> <span class="o">|</span><span class="n">D_net</span> <span class="o">-</span> <span class="n">D</span><span class="o">*|</span> <span class="o">=</span> <span class="mf">0.0911</span><span class="p">,</span> <span class="n">rms</span> <span class="o">=</span> <span class="mf">0.0240</span>
+  <span class="n">over</span> <span class="n">the</span> <span class="n">whole</span> <span class="n">grid</span><span class="p">,</span> <span class="n">including</span> <span class="n">the</span> <span class="n">empty</span> <span class="n">tails</span><span class="p">:</span>
+      <span class="nb">max</span> <span class="o">|</span><span class="n">D_net</span> <span class="o">-</span> <span class="n">D</span><span class="o">*|</span> <span class="o">=</span> <span class="mf">0.9053</span><span class="p">,</span> <span class="n">rms</span> <span class="o">=</span> <span class="mf">0.2647</span>
+  <span class="n">V</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">trained</span> <span class="n">network</span> <span class="p">:</span> <span class="o">-</span><span class="mf">0.753844</span>
+  <span class="mi">2</span> <span class="n">JS</span> <span class="o">-</span> <span class="mi">2</span> <span class="n">log</span> <span class="mi">2</span> <span class="n">by</span> <span class="n">quadrature</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.751959</span>
+</pre></div>
+</div>
+<p>Two things should be noticed.  Where there are data the network reproduces
+Eq. (17.6) to a root-mean-square error of <span class="math notranslate nohighlight">\(0.024\)</span>, which is what
+one expects from twenty thousand samples and a network of this size.  Where
+there are no data – at <span class="math notranslate nohighlight">\(x=5\)</span> the mixture density is <span class="math notranslate nohighlight">\(7.6\times10^{-7}\)</span> – it is
+wrong by <span class="math notranslate nohighlight">\(0.9\)</span>, and confidently so.  Figure 17.1 shows
+this.  It is the first hint of a theme that runs through the whole chapter:
+statements about <span class="math notranslate nohighlight">\(D^{*}\)</span> are statements about the region where <span class="math notranslate nohighlight">\(p_r+p_g\)</span> is
+appreciable, and the generator receives no reliable guidance anywhere else.
+The last two lines of the output anticipate the next section.</p>
+<p><img alt="a The two one-dimensional distributions used to test Proposition 17.1," src="_images/gan_discriminator.png" /></p>
+<p><em>Figure 17.1: (a) The two one-dimensional distributions used to test Proposition 17.1, with their overlap shaded.  (b) The trained discriminator against the closed form <span class="math notranslate nohighlight">\(p_r/(p_r+p_g)\)</span> of Eq. (17.6); the shaded band marks where the mixture density exceeds one per cent of its peak.  Inside it the agreement is <span class="math notranslate nohighlight">\(0.024\)</span> rms; outside it the network is arbitrary, because no sample ever landed there. (c) The ratio of the two generator gradients of Section <em>The non-saturating generator loss</em>, measured while training the discriminator alone against a frozen generator, against the pointwise prediction <span class="math notranslate nohighlight">\((1-D)/D\)</span> of Eq. (17.19).</em></p>
+</section>
+<section id="the-objective-is-a-jensen-shannon-divergence">
+<h2><span class="section-number">17.4. </span>The objective is a Jensen-Shannon divergence<a class="headerlink" href="#the-objective-is-a-jensen-shannon-divergence" title="Link to this heading">#</a></h2>
+<p>We now substitute Eq. (17.6) back into the value function and ask
+what the generator is really minimising.  Two divergences are needed.</p>
+<p>The <em>Kullback-Leibler divergence</em> of Chapter 14,
+Section <em>The same statement as a divergence</em>, is</p>
+<div class="math notranslate nohighlight">
+\[
+D_{\mathrm{KL}}(p\,\|\,q) = \int p(\bm{x})\log\frac{p(\bm{x})}{q(\bm{x})}
+  \,\ud{\bm{x}} \;\ge\; 0,\tag{17.10}
+\]</div>
+<p>with equality if and only if <span class="math notranslate nohighlight">\(p=q\)</span> almost everywhere.  It is not symmetric and
+it is infinite whenever <span class="math notranslate nohighlight">\(p\)</span> puts mass where <span class="math notranslate nohighlight">\(q\)</span> puts none.</p>
+<p>The <em>Jensen-Shannon divergence</em> repairs both defects by comparing each
+distribution to their mixture <span class="math notranslate nohighlight">\(m=\tfrac{1}{2}(p+q)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+D_{\mathrm{JS}}(p\,\|\,q)
+   = \tfrac{1}{2}D_{\mathrm{KL}}\!\left(p\,\Big\|\,\frac{p+q}{2}\right)
+   + \tfrac{1}{2}D_{\mathrm{KL}}\!\left(q\,\Big\|\,\frac{p+q}{2}\right).\tag{17.11}
+\]</div>
+<div class="important admonition">
+<p class="admonition-title">Lemma 17.2 (Range of the Jensen-Shannon divergence)</p>
+<p><span class="math notranslate nohighlight">\(0\le D_{\mathrm{JS}}(p\|q)\le\log 2\)</span> for any pair of distributions, with
+<span class="math notranslate nohighlight">\(D_{\mathrm{JS}}=0\)</span> if and only if <span class="math notranslate nohighlight">\(p=q\)</span> almost everywhere and
+<span class="math notranslate nohighlight">\(D_{\mathrm{JS}}=\log 2\)</span> if and only if <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(q\)</span> have disjoint supports.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Non-negativity and the equality case follow from those of
+<span class="math notranslate nohighlight">\(D_{\mathrm{KL}}\)</span>, since <span class="math notranslate nohighlight">\(m=p\)</span> almost everywhere forces <span class="math notranslate nohighlight">\(p=q\)</span>.  For the upper
+bound write out Eq. (17.11),</p>
+<div class="math notranslate nohighlight">
+\[
+D_{\mathrm{JS}}(p\|q)
+   = \frac{1}{2}\int p\log\frac{2p}{p+q}
+   + \frac{1}{2}\int q\log\frac{2q}{p+q}
+   = \log 2 + \frac{1}{2}\int p\log\frac{p}{p+q}
+            + \frac{1}{2}\int q\log\frac{q}{p+q},
+\]</div>
+<p>and note that <span class="math notranslate nohighlight">\(p/(p+q)\le1\)</span> and <span class="math notranslate nohighlight">\(q/(p+q)\le1\)</span> pointwise, so both integrals are
+<span class="math notranslate nohighlight">\(\le0\)</span> and <span class="math notranslate nohighlight">\(D_{\mathrm{JS}}\le\log2\)</span>.  Equality requires
+<span class="math notranslate nohighlight">\(p\log\bigl(p/(p+q)\bigr)=0\)</span> and <span class="math notranslate nohighlight">\(q\log\bigl(q/(p+q)\bigr)=0\)</span> almost
+everywhere, that is, <span class="math notranslate nohighlight">\(q=0\)</span> wherever <span class="math notranslate nohighlight">\(p&gt;0\)</span> and conversely: disjoint supports.</p>
+</div>
+<p>The bound <span class="math notranslate nohighlight">\(\log2\)</span> is the whole story of Section <em>The Wasserstein distance</em>, so it is worth
+having proved rather than quoted.</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 17.3 (The value at the optimum)</p>
+<p>With <span class="math notranslate nohighlight">\(D^{*}\)</span> of Eq. (17.6),</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;V(G,D^{*}) = 2\,D_{\mathrm{JS}}(p_r\,\|\,p_g) - 2\log 2 . \;}\tag{17.12}
+\]</div>
+<p>Consequently <span class="math notranslate nohighlight">\(V(G,D^{*})\ge-2\log2\)</span>, with equality if and only if <span class="math notranslate nohighlight">\(p_g=p_r\)</span>,
+and at that point <span class="math notranslate nohighlight">\(D^{*}\equiv\tfrac{1}{2}\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Substituting Eq. (17.6) into Eq. (17.5),</p>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<div class="amsmath math notranslate nohighlight" id="equation-fc71d91f-32a7-4945-80f3-d057b55f45f8">
+<span class="eqno">(17.1)<a class="headerlink" href="#equation-fc71d91f-32a7-4945-80f3-d057b55f45f8" title="Permalink to this equation">#</a></span>\[\begin{align}
+V(G,D^{*})
+  &amp;= \int p_r\log\frac{p_r}{p_r+p_g} \ud{\bm{x}}
+   + \int p_g\log\frac{p_g}{p_r+p_g} \ud{\bm{x}}
+  \nonumber  
+
+  &amp;= \int p_r\log\frac{p_r}{\tfrac{1}{2}(p_r+p_g)} \ud{\bm{x}} - \log 2
+   + \int p_g\log\frac{p_g}{\tfrac{1}{2}(p_r+p_g)} \ud{\bm{x}} - \log 2
+  \nonumber  
+
+  &amp;= 2\left[\tfrac{1}{2}D_{\mathrm{KL}}\!\left(p_r\Big\|\tfrac{p_r+p_g}{2}\right)
+     + \tfrac{1}{2}D_{\mathrm{KL}}\!\left(p_g\Big\|\tfrac{p_r+p_g}{2}\right)\right]
+     - 2\log 2,
+\end{align}\]</div>
+<div class="math notranslate nohighlight">
+\[\]</div>
+<p>where in the second line we multiplied and divided each argument of the
+logarithm by <span class="math notranslate nohighlight">\(2\)</span>, each such step contributing <span class="math notranslate nohighlight">\(-\log2\)</span> because <span class="math notranslate nohighlight">\(p_r\)</span> and <span class="math notranslate nohighlight">\(p_g\)</span>
+integrate to one.  The bracket is Eq. (17.11).  The bound then follows
+from Lemma 17.2, and <span class="math notranslate nohighlight">\(p_g=p_r\)</span> gives
+<span class="math notranslate nohighlight">\(D^{*}=p_r/(2p_r)=\tfrac{1}{2}\)</span> directly from Eq. (17.6).</p>
+</div>
+<p>So the game, played to the discriminator’s optimum at every step, is</p>
+<div class="math notranslate nohighlight">
+\[
+G^{*} = \mathop{\mathrm{arg\,min}}_{G}\;\Bigl[\max_{D}V(G,D)\Bigr]
+        = \mathop{\mathrm{arg\,min}}_{G}\;D_{\mathrm{JS}}(p_r\,\|\,p_g),\tag{17.14}
+\]</div>
+<p>a statement of remarkable economy: fitting a classifier and then fooling it is
+the same thing as minimising a symmetric divergence between the model and the
+data.  The value <span class="math notranslate nohighlight">\(-2\log2\approx-1.386\)</span> is the signature of success, and
+<span class="math notranslate nohighlight">\(D\equiv\tfrac{1}{2}\)</span> is the signature the practitioner actually monitors,
+since <span class="math notranslate nohighlight">\(V\)</span> requires <span class="math notranslate nohighlight">\(D^{*}\)</span> and <span class="math notranslate nohighlight">\(D\)</span> is available directly.</p>
+<p>Both statements are checked by quadrature on one-dimensional Gaussians, where
+the JS divergence can be computed independently:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">3.</span> <span class="n">the</span> <span class="n">value</span> <span class="n">at</span> <span class="n">the</span> <span class="n">optimal</span> <span class="n">discriminator</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">JS</span> <span class="n">divergence</span> <span class="o">===</span>
+   <span class="n">m_g</span>   <span class="n">s_g</span>      <span class="n">V</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="n">D</span><span class="o">*</span><span class="p">)</span>       <span class="mi">2</span> <span class="n">JS</span> <span class="o">-</span> <span class="mi">2</span><span class="n">log2</span>        <span class="o">|</span><span class="n">diff</span><span class="o">|</span>      <span class="n">JS</span>
+   <span class="mf">0.0</span>   <span class="mf">1.0</span>   <span class="o">-</span><span class="mf">1.38629436</span>     <span class="o">-</span><span class="mf">1.38629436</span>    <span class="mf">2.24e-12</span>   <span class="mf">0.00000</span>
+   <span class="mf">0.5</span>   <span class="mf">1.0</span>   <span class="o">-</span><span class="mf">1.32567176</span>     <span class="o">-</span><span class="mf">1.32567176</span>    <span class="mf">2.24e-12</span>   <span class="mf">0.03031</span>
+   <span class="mf">1.5</span>   <span class="mf">0.6</span>   <span class="o">-</span><span class="mf">0.75195864</span>     <span class="o">-</span><span class="mf">0.75195864</span>    <span class="mf">2.24e-12</span>   <span class="mf">0.31717</span>
+   <span class="mf">3.0</span>   <span class="mf">1.0</span>   <span class="o">-</span><span class="mf">0.33273975</span>     <span class="o">-</span><span class="mf">0.33273975</span>    <span class="mf">1.35e-12</span>   <span class="mf">0.52678</span>
+   <span class="mf">6.0</span>   <span class="mf">0.8</span>   <span class="o">-</span><span class="mf">0.00249849</span>     <span class="o">-</span><span class="mf">0.00249869</span>    <span class="mf">1.99e-07</span>   <span class="mf">0.69190</span>
+  <span class="n">the</span> <span class="n">equal</span> <span class="n">case</span> <span class="n">p_g</span> <span class="o">=</span> <span class="n">p_r</span> <span class="n">gives</span> <span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="n">log2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.38629436</span> <span class="ow">and</span> <span class="n">D</span><span class="o">*</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span>
+  <span class="n">the</span> <span class="n">JS</span> <span class="n">divergence</span> <span class="ow">is</span> <span class="n">bounded</span> <span class="n">by</span> <span class="n">log</span> <span class="mi">2</span> <span class="o">=</span> <span class="mf">0.69314718</span>
+</pre></div>
+</div>
+<p>The agreement is at the level of the quadrature, <span class="math notranslate nohighlight">\(10^{-12}\)</span>.  The last row is
+the case that Section <em>The Wasserstein distance</em> is about: two Gaussians six standard
+deviations apart have <span class="math notranslate nohighlight">\(D_{\mathrm{JS}}=0.6919\)</span>, within <span class="math notranslate nohighlight">\(10^{-3}\)</span> of the
+ceiling <span class="math notranslate nohighlight">\(\log2=0.6931\)</span>, and <span class="math notranslate nohighlight">\(V(G,D^{*})\)</span> has correspondingly flattened to
+<span class="math notranslate nohighlight">\(-0.0025\)</span>.  Moving them further apart changes almost nothing.</p>
+<div class="tip admonition">
+<p class="admonition-title">Which divergence, and why it matters</p>
+<p>The VAE of
+Chapter 15 minimises <span class="math notranslate nohighlight">\(D_{\mathrm{KL}}(q\|p)\)</span> in the latent space and
+maximises a likelihood in data space, which amounts to minimising the
+<em>forward</em> divergence <span class="math notranslate nohighlight">\(D_{\mathrm{KL}}(p_r\|p_g)\)</span>.  That divergence is
+infinite wherever the model assigns zero density to real data, so it is
+<em>mode-covering</em>: the model is heavily punished for missing anything and
+will spread mass over regions with no data rather than risk a gap.  Blur is the
+visible symptom.</p>
+<p>The reverse divergence <span class="math notranslate nohighlight">\(D_{\mathrm{KL}}(p_g\|p_r)\)</span> punishes putting mass where
+there are no data but not the converse, and is therefore <em>mode-seeking</em>:
+it is content to model one mode well and ignore the rest.  The Jensen-Shannon
+divergence of Eq. (17.11) is a symmetrised average of the two and sits
+between them – which is why GAN samples are sharper than VAE samples and why
+GANs, unlike VAEs, can quietly drop modes.  Sharpness and mode dropping are two
+readings of the same choice of divergence, not two independent facts.</p>
+</div>
+</section>
+<section id="training-alternating-gradients">
+<h2><span class="section-number">17.5. </span>Training: alternating gradients<a class="headerlink" href="#training-alternating-gradients" title="Link to this heading">#</a></h2>
+<p>The theory of the previous two sections assumed that <span class="math notranslate nohighlight">\(D\)</span> reaches its optimum
+for each <span class="math notranslate nohighlight">\(G\)</span>.  In practice we can afford neither an inner optimisation to
+convergence nor an optimisation over all measurable functions, and we take one
+gradient step for each player in turn.  One iteration is</p>
+<ol class="arabic">
+<li><p>Freeze <span class="math notranslate nohighlight">\(\bm{\theta}^{(g)}\)</span> and take <span class="math notranslate nohighlight">\(n_{\mathrm{critic}}\)</span> ascent steps on
+the discriminator,</p>
+<div class="math notranslate nohighlight">
+\[
+   \bm{\theta}^{(d)} \leftarrow \bm{\theta}^{(d)}
+   + \eta_d\,\nabla_{\bm{\theta}^{(d)}}V(G,D),\tag{17.15}
+   \]</div>
+<p>where <span class="math notranslate nohighlight">\(V\)</span> is estimated on a minibatch of real data and a minibatch of
+generated data.  The generated batch is <em>detached</em> from the
+computational graph, so that no gradient reaches <span class="math notranslate nohighlight">\(\bm{\theta}^{(g)}\)</span> here.</p>
+</li>
+<li><p>Freeze <span class="math notranslate nohighlight">\(\bm{\theta}^{(d)}\)</span> and take one descent step on the generator,</p>
+<div class="math notranslate nohighlight">
+\[
+   \bm{\theta}^{(g)} \leftarrow \bm{\theta}^{(g)}
+   - \eta_g\,\nabla_{\bm{\theta}^{(g)}}\mathcal{L}_G .\tag{17.16}
+   \]</div>
+</li>
+</ol>
+<p>The usual choice is <span class="math notranslate nohighlight">\(n_{\mathrm{critic}}=1\)</span>: the discriminator is kept
+<em>near</em> its optimum rather than at it, and the theory of
+Section <em>The objective is a Jensen-Shannon divergence</em> is an idealisation of what the algorithm does.  In terms
+of minibatch estimates the two losses are</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}_D = -\frac{1}{N}\sum_{i=1}^{N}\log D(\bm{x}_i)
+                  -\frac{1}{M}\sum_{j=1}^{M}
+                    \log\bigl(1-D(G(\bm{z}_j))\bigr),\tag{17.17}
+\]</div>
+<p>which is <span class="math notranslate nohighlight">\(-V\)</span> estimated on the batch, and the generator loss of the next
+subsection.</p>
+<section id="the-non-saturating-generator-loss">
+<h3><span class="section-number">17.5.1. </span>The non-saturating generator loss<a class="headerlink" href="#the-non-saturating-generator-loss" title="Link to this heading">#</a></h3>
+<p>Equation (17.4) says the generator should minimise
+<span class="math notranslate nohighlight">\(\mathbb{E}[\log(1-D(G(\bm{z})))]\)</span>.  This is a bad idea, and the reason is
+worth deriving rather than asserting.</p>
+<p>Write <span class="math notranslate nohighlight">\(u=u(G(\bm{z}))\)</span> for the discriminator logit at a generated point, so
+that <span class="math notranslate nohighlight">\(D=\sigma(u)\)</span>.  Then</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial}{\partial u}\log\bigl(1-\sigma(u)\bigr) = -\sigma(u) = -D,
+  \qquad
+  \frac{\partial}{\partial u}\bigl(-\log\sigma(u)\bigr) = -(1-\sigma(u)) = -(1-D).\tag{17.18}
+\]</div>
+<p>Both losses reach <span class="math notranslate nohighlight">\(\bm{\theta}^{(g)}\)</span> through the same chain
+<span class="math notranslate nohighlight">\(\partial u/\partial\bm{\theta}^{(g)}\)</span>, so the two gradients differ only by the
+scalar prefactor, and their ratio is</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \frac{\bigl\|\nabla_{\bm{\theta}^{(g)}}\mathcal{L}_G^{\mathrm{non\text{-}sat}}\bigr\|}
+       {\bigl\|\nabla_{\bm{\theta}^{(g)}}\mathcal{L}_G^{\mathrm{sat}}\bigr\|}
+  = \frac{1-D(G(\bm{z}))}{D(G(\bm{z}))} \;}\tag{17.19}
+\]</div>
+<p>pointwise.  Early in training the discriminator wins easily and
+<span class="math notranslate nohighlight">\(D(G(\bm{z}))=\varepsilon\ll1\)</span>.  The saturating gradient is then proportional
+to <span class="math notranslate nohighlight">\(\varepsilon\)</span> and vanishes; the non-saturating one is proportional to
+<span class="math notranslate nohighlight">\(1-\varepsilon\approx1\)</span> and does not.  The generator is starved of gradient
+exactly when it is worst and most needs one.  The remedy, which is what
+everyone uses, is to replace minimising <span class="math notranslate nohighlight">\(\log(1-D)\)</span> with maximising <span class="math notranslate nohighlight">\(\log D\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \mathcal{L}_G = -\mathbb{E}_{\bm{z}\sim p_z}
+    \bigl[\log D(G(\bm{z}))\bigr] . \;}\tag{17.20}
+\]</div>
+<p>Both losses are minimised by the same <span class="math notranslate nohighlight">\(G\)</span> – both are decreasing functions of
+<span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> – so the fixed point of the game is unchanged.  Only the
+gradient magnitudes differ, and Eq. (17.19) says by how much.
+Note that Eq. (17.20) is no longer the negative of anything the
+discriminator maximises: the game is no longer zero-sum, only adversarial.</p>
+<p>The prefactors of Eq. (17.18) are confirmed by automatic
+differentiation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">5.</span> <span class="n">the</span> <span class="n">two</span> <span class="n">generator</span> <span class="n">losses</span> <span class="n">at</span> <span class="n">D</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">z</span><span class="p">))</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">===</span>
+      <span class="n">eps</span>     <span class="o">|</span><span class="n">dL_sat</span><span class="o">/</span><span class="n">du</span><span class="o">|</span>   <span class="o">|</span><span class="n">dL_nonsat</span><span class="o">/</span><span class="n">du</span><span class="o">|</span>      <span class="n">ratio</span>    <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">eps</span><span class="p">)</span><span class="o">/</span><span class="n">eps</span>
+   <span class="mf">1.0e-01</span>     <span class="mf">1.000e-01</span>        <span class="mf">0.900000</span>         <span class="mf">9.0</span>           <span class="mf">9.0</span>
+   <span class="mf">1.0e-02</span>     <span class="mf">1.000e-02</span>        <span class="mf">0.990000</span>        <span class="mf">99.0</span>          <span class="mf">99.0</span>
+   <span class="mf">1.0e-03</span>     <span class="mf">1.000e-03</span>        <span class="mf">0.999000</span>       <span class="mf">999.0</span>         <span class="mf">999.0</span>
+   <span class="mf">1.0e-04</span>     <span class="mf">1.000e-04</span>        <span class="mf">0.999900</span>      <span class="mf">9999.0</span>        <span class="mf">9999.0</span>
+</pre></div>
+</div>
+<p>Pointwise identities are one thing; what a batch gradient does is another.  We
+therefore construct the situation the argument is about.  Take an untrained
+generator, freeze it, and train the discriminator alone for two thousand steps,
+measuring both generator gradients along the way without ever applying them:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">2.</span> <span class="n">the</span> <span class="n">generator</span> <span class="n">gradient</span> <span class="n">under</span> <span class="n">a</span> <span class="n">strong</span> <span class="n">discriminator</span> <span class="o">===</span>
+   <span class="n">D</span> <span class="n">steps</span>    <span class="n">D</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>    <span class="o">||</span><span class="n">dL_sat</span><span class="o">/</span><span class="n">dtheta</span><span class="o">||</span>   <span class="o">||</span><span class="n">dL_nonsat</span><span class="o">/</span><span class="n">dtheta</span><span class="o">||</span>   <span class="n">ratio</span>  <span class="mi">1</span><span class="o">/</span><span class="n">D</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="mi">0</span>   <span class="mf">3.67e-01</span>           <span class="mf">1.533e+00</span>            <span class="mf">2.596e+00</span>      <span class="mf">1.7</span>        <span class="mf">2.7</span>
+       <span class="mi">50</span>   <span class="mf">2.92e-01</span>           <span class="mf">1.737e+00</span>            <span class="mf">2.778e+00</span>      <span class="mf">1.6</span>        <span class="mf">3.4</span>
+      <span class="mi">200</span>   <span class="mf">1.17e-01</span>           <span class="mf">2.174e+00</span>            <span class="mf">1.216e+01</span>      <span class="mf">5.6</span>        <span class="mf">8.6</span>
+      <span class="mi">500</span>   <span class="mf">8.79e-02</span>           <span class="mf">3.111e+00</span>            <span class="mf">2.380e+01</span>      <span class="mf">7.7</span>       <span class="mf">11.4</span>
+     <span class="mi">1000</span>   <span class="mf">3.39e-02</span>           <span class="mf">1.484e+00</span>            <span class="mf">3.132e+01</span>     <span class="mf">21.1</span>       <span class="mf">29.5</span>
+     <span class="mi">2000</span>   <span class="mf">2.41e-02</span>           <span class="mf">1.489e+00</span>            <span class="mf">3.431e+01</span>     <span class="mf">23.0</span>       <span class="mf">41.5</span>
+</pre></div>
+</div>
+<p>The non-saturating gradient grows by a factor of thirteen as the discriminator
+improves, while the saturating one stays where it was.  The measured ratio
+tracks <span class="math notranslate nohighlight">\(1/D(G(\bm{z}))\)</span> but stays below it, and the reason is instructive: a
+batch gradient is a sum over samples, and the saturating gradient is held up by
+the minority of samples that the discriminator still rates highest.
+Equation (17.19) is a pointwise statement, and the batch
+average of a ratio is not the ratio of batch averages.
+Figure 17.1(c) plots the measured ratio against the
+prediction over the whole trajectory.</p>
+</section>
+<section id="one-sided-label-smoothing">
+<h3><span class="section-number">17.5.2. </span>One-sided label smoothing<a class="headerlink" href="#one-sided-label-smoothing" title="Link to this heading">#</a></h3>
+<p>A second, cheaper defence against an overconfident discriminator [salimans2016] is to replace
+the target label <span class="math notranslate nohighlight">\(1\)</span> for real data by <span class="math notranslate nohighlight">\(s&lt;1\)</span>, leaving the target for generated
+data at <span class="math notranslate nohighlight">\(0\)</span>.  This changes the optimum in a way that is easy to compute.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 17.4 (Smoothed optimal discriminator)</p>
+<p>If the real term of Eq. (17.17) is replaced by the cross-entropy
+against a soft target <span class="math notranslate nohighlight">\(s\in(0,1]\)</span>, so that the pointwise objective becomes
+<span class="math notranslate nohighlight">\(f_s(t)= A\bigl[s\log t+(1-s)\log(1-t)\bigr]+B\log(1-t)\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[
+D_s^{*}(\bm{x}) = s\,\frac{p_r(\bm{x})}{p_r(\bm{x})+p_g(\bm{x})}
+   = s\,D^{*}(\bm{x}).\tag{17.21}
+\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>With <span class="math notranslate nohighlight">\(A=p_r\)</span>, <span class="math notranslate nohighlight">\(B=p_g\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+f_s'(t) = \frac{As}{t} - \frac{A(1-s)+B}{1-t}
+          = \frac{As - \bigl(As + A(1-s) + B\bigr)t}{t(1-t)}
+          = \frac{As-(A+B)t}{t(1-t)},
+\]</div>
+<p>which vanishes at <span class="math notranslate nohighlight">\(t=sA/(A+B)\)</span>.  The second derivative is negative as in
+Eq. (17.8), so this is the maximum.</p>
+</div>
+<p>The optimal discriminator is thus the old one scaled by <span class="math notranslate nohighlight">\(s\)</span>, and in particular
+it can never exceed <span class="math notranslate nohighlight">\(s\)</span>.  Since the generator’s gradient is proportional to
+<span class="math notranslate nohighlight">\(1-D\)</span> by Eq. (17.18), capping <span class="math notranslate nohighlight">\(D\)</span> below <span class="math notranslate nohighlight">\(1\)</span> keeps that factor
+bounded away from zero.  Note that the smoothing must be <em>one-sided</em>:
+smoothing the generated target to some <span class="math notranslate nohighlight">\(\varepsilon&gt;0\)</span> instead of <span class="math notranslate nohighlight">\(0\)</span> would put
+a <span class="math notranslate nohighlight">\(+\varepsilon\,p_g\)</span> term in the numerator of Eq. (17.21) and
+reward the generator for placing mass where <span class="math notranslate nohighlight">\(p_r\)</span> is small, which is exactly
+backwards.  Numerically,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">4.</span> <span class="n">one</span><span class="o">-</span><span class="n">sided</span> <span class="n">label</span> <span class="n">smoothing</span><span class="p">,</span> <span class="n">D</span><span class="o">*</span><span class="n">_s</span> <span class="o">=</span> <span class="n">s</span> <span class="n">p_r</span><span class="o">/</span><span class="p">(</span><span class="n">p_r</span><span class="o">+</span><span class="n">p_g</span><span class="p">)</span> <span class="o">===</span>
+     <span class="n">s</span>        <span class="n">A</span>        <span class="n">B</span>     <span class="n">numerical</span> <span class="n">t</span><span class="o">*</span>    <span class="n">s</span> <span class="n">A</span><span class="o">/</span><span class="p">(</span><span class="n">A</span><span class="o">+</span><span class="n">B</span><span class="p">)</span>      <span class="o">|</span><span class="n">diff</span><span class="o">|</span>
+   <span class="mf">1.00</span>    <span class="mf">0.600</span>    <span class="mf">0.400</span>    <span class="mf">0.600000000</span>  <span class="mf">0.600000000</span>    <span class="mf">3.9e-10</span>
+   <span class="mf">0.90</span>    <span class="mf">0.600</span>    <span class="mf">0.400</span>    <span class="mf">0.539999995</span>  <span class="mf">0.540000000</span>    <span class="mf">5.3e-09</span>
+   <span class="mf">0.90</span>    <span class="mf">0.250</span>    <span class="mf">0.750</span>    <span class="mf">0.224999999</span>  <span class="mf">0.225000000</span>    <span class="mf">1.2e-09</span>
+   <span class="mf">0.70</span>    <span class="mf">0.250</span>    <span class="mf">0.750</span>    <span class="mf">0.174999999</span>  <span class="mf">0.175000000</span>    <span class="mf">9.7e-10</span>
+</pre></div>
+</div>
+<p>and repeating the strong-discriminator experiment with <span class="math notranslate nohighlight">\(s=0.9\)</span> gives, after the
+same two thousand steps, <span class="math notranslate nohighlight">\(D(\bm{x})=0.8629\)</span> instead of <span class="math notranslate nohighlight">\(0.9710\)</span>: the
+discriminator has been prevented from becoming certain, which is the entire
+purpose.</p>
+<p>The three losses are three lines of code:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">d_loss</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">x_real</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;L_D = -V, with one-sided label smoothing s = `smooth`, Eq. (17.dloss).&quot;&quot;&quot;</span>
+    <span class="n">u_real</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">x_real</span><span class="p">)</span>
+    <span class="n">u_fake</span> <span class="o">=</span> <span class="n">discriminator</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">generator</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+    <span class="n">real</span> <span class="o">=</span> <span class="n">smooth</span> <span class="o">*</span> <span class="n">softplus</span><span class="p">(</span><span class="o">-</span><span class="n">u_real</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">smooth</span><span class="p">)</span> <span class="o">*</span> <span class="n">softplus</span><span class="p">(</span><span class="n">u_real</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">softplus</span><span class="p">(</span><span class="n">u_fake</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">g_loss_nonsat</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;L_G = -E[log D(G(z))],  the non-saturating loss, Eq. (17.nonsat).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">softplus</span><span class="p">(</span><span class="o">-</span><span class="n">discriminator</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">generator</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">z</span><span class="p">))))</span>
+
+
+<span class="k">def</span> <span class="nf">g_loss_sat</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;L_G = E[log(1 - D(G(z)))],  the original minimax loss, Eq. (17.minimax).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">softplus</span><span class="p">(</span><span class="n">discriminator</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">generator</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">z</span><span class="p">))))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="what-convergence-looks-like">
+<h3><span class="section-number">17.5.3. </span>What convergence looks like<a class="headerlink" href="#what-convergence-looks-like" title="Link to this heading">#</a></h3>
+<p>Theorem 17.3 gives two observable signatures of a converged game:
+<span class="math notranslate nohighlight">\(D(\bm{x})\)</span> and <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> both at <span class="math notranslate nohighlight">\(\tfrac{1}{2}\)</span>, and <span class="math notranslate nohighlight">\(V\)</span> at <span class="math notranslate nohighlight">\(-2\log2\)</span>.
+We train a small non-saturating GAN on a mixture of eight Gaussians arranged on
+a circle – two-dimensional so that everything can be plotted – and watch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">1.</span> <span class="n">the</span> <span class="n">game</span> <span class="n">at</span> <span class="n">equilibrium</span><span class="p">:</span> <span class="n">eight</span> <span class="n">Gaussians</span><span class="p">,</span> <span class="n">non</span><span class="o">-</span><span class="n">saturating</span> <span class="o">===</span>
+  <span class="n">trained</span> <span class="ow">in</span> <span class="mf">25.1</span><span class="n">s</span><span class="p">,</span> <span class="mi">8</span><span class="o">/</span><span class="mi">8</span> <span class="n">modes</span> <span class="n">covered</span><span class="p">,</span> <span class="mf">86.2</span><span class="o">%</span> <span class="n">of</span> <span class="n">samples</span> <span class="n">within</span> <span class="mf">0.5</span> <span class="n">of</span> <span class="n">a</span> <span class="n">mode</span>
+  <span class="n">energy</span> <span class="n">distance</span> <span class="n">to</span> <span class="n">the</span> <span class="n">data</span><span class="p">:</span> <span class="mf">0.05205</span>
+
+     <span class="n">iteration</span>        <span class="n">V</span>        <span class="n">D</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>     <span class="n">D</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+           <span class="mi">1</span>    <span class="o">-</span><span class="mf">1.4334</span>   <span class="mf">0.5391</span>   <span class="mf">0.5449</span>
+         <span class="mi">900</span>    <span class="o">-</span><span class="mf">1.0864</span>   <span class="mf">0.5531</span>   <span class="mf">0.3654</span>
+        <span class="mi">1900</span>    <span class="o">-</span><span class="mf">1.1741</span>   <span class="mf">0.5736</span>   <span class="mf">0.4186</span>
+        <span class="mi">3900</span>    <span class="o">-</span><span class="mf">1.3179</span>   <span class="mf">0.5873</span>   <span class="mf">0.5083</span>
+  <span class="n">mean</span> <span class="n">over</span> <span class="n">the</span> <span class="n">last</span> <span class="mi">1000</span> <span class="n">iterations</span><span class="p">:</span> <span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.2752</span><span class="p">,</span> <span class="n">D</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="mf">0.5570</span><span class="p">,</span> <span class="n">D</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">z</span><span class="p">))</span> <span class="o">=</span> <span class="mf">0.4533</span>
+  <span class="n">the</span> <span class="n">theoretical</span> <span class="n">equilibrium</span> <span class="ow">is</span> <span class="n">V</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="n">log2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.3863</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p>The discriminator settles at <span class="math notranslate nohighlight">\(0.557\)</span> on real data and <span class="math notranslate nohighlight">\(0.453\)</span> on generated
+data, and the value function at <span class="math notranslate nohighlight">\(-1.275\)</span> against the predicted <span class="math notranslate nohighlight">\(-1.386\)</span>;
+Figure 17.2 shows the trajectories.  The game does not
+converge to the equilibrium so much as circle it, which is the honest picture:
+the residual gap of <span class="math notranslate nohighlight">\(0.11\)</span> in <span class="math notranslate nohighlight">\(V\)</span> is not numerical error but the game’s failure
+to sit still.  Section <em>Non-convergence: the game itself</em> explains why it cannot.</p>
+<p><img alt="A non-saturating GAN on a mixture of eight Gaussians, trained for 4000" src="_images/gan_equilibrium.png" /></p>
+<p><em>Figure 17.2: A non-saturating GAN on a mixture of eight Gaussians, trained for <span class="math notranslate nohighlight">\(4000\)</span> alternating steps.  (a) Data and generated samples; all eight modes are covered, with <span class="math notranslate nohighlight">\(86\%\)</span> of samples within <span class="math notranslate nohighlight">\(0.5\)</span> of a mode centre and the remainder strung along the connecting filaments discussed in Proposition 17.5.  (b) <span class="math notranslate nohighlight">\(D(\bm{x})\)</span> and <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> against iteration; both hover around the equilibrium value <span class="math notranslate nohighlight">\(\tfrac{1}{2}\)</span> of Theorem 17.3 without settling on it.  (c) The value function <span class="math notranslate nohighlight">\(V(G,D)\)</span> against the predicted <span class="math notranslate nohighlight">\(-2\log2=-1.386\)</span>.</em></p>
+</section>
+</section>
+<section id="what-actually-goes-wrong">
+<h2><span class="section-number">17.6. </span>What actually goes wrong<a class="headerlink" href="#what-actually-goes-wrong" title="Link to this heading">#</a></h2>
+<p>GAN training is notoriously unstable, and the instability is not a matter of
+insufficient tuning.  Three distinct failure mechanisms operate, and it is
+worth separating them because they have different remedies.</p>
+<section id="non-convergence-the-game-itself">
+<h3><span class="section-number">17.6.1. </span>Non-convergence: the game itself<a class="headerlink" href="#non-convergence-the-game-itself" title="Link to this heading">#</a></h3>
+<p>The pair <span class="math notranslate nohighlight">\((G^{*},D^{*})\)</span> of Theorem 17.3 is a Nash equilibrium:
+neither player can improve unilaterally.  Gradient descent-ascent, however, is
+not an algorithm for finding Nash equilibria, and the difference is not
+subtle.  The cleanest demonstration is the smallest possible zero-sum game,</p>
+<div class="math notranslate nohighlight">
+\[
+V(x,y) = xy,\tag{17.22}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(x\)</span> minimising and <span class="math notranslate nohighlight">\(y\)</span> maximising.  The unique Nash equilibrium is the
+origin.  Simultaneous gradient updates give</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}x_{t+1}\\y_{t+1}\end{pmatrix}
+   = \begin{pmatrix}1 &amp; -\eta\\ \eta &amp; 1\end{pmatrix}
+     \begin{pmatrix}x_{t}\\y_{t}\end{pmatrix},\tag{17.23}
+\end{split}\]</div>
+<p>whose matrix has eigenvalues <span class="math notranslate nohighlight">\(1\pm i\eta\)</span> of modulus <span class="math notranslate nohighlight">\(\sqrt{1+\eta^{2}}&gt;1\)</span>.
+The iteration therefore <em>spirals outward</em>, and does so exactly:</p>
+<div class="math notranslate nohighlight">
+\[
+x_t^{2}+y_t^{2} = (1+\eta^{2})^{t}\,\bigl(x_0^{2}+y_0^{2}\bigr).\tag{17.24}
+\]</div>
+<p>No step size helps; smaller <span class="math notranslate nohighlight">\(\eta\)</span> only slows the divergence.</p>
+<p>Now alternate, using the updated <span class="math notranslate nohighlight">\(x\)</span> in the <span class="math notranslate nohighlight">\(y\)</span> update as every practical
+implementation does:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}x_{t+1}\\y_{t+1}\end{pmatrix}
+   = \begin{pmatrix}1 &amp; -\eta\\ \eta &amp; 1-\eta^{2}\end{pmatrix}
+     \begin{pmatrix}x_{t}\\y_{t}\end{pmatrix}.\tag{17.25}
+\end{split}\]</div>
+<p>The determinant is <span class="math notranslate nohighlight">\(1-\eta^{2}+\eta^{2}=1\)</span> and the trace is <span class="math notranslate nohighlight">\(2-\eta^{2}\)</span>, so
+for <span class="math notranslate nohighlight">\(\eta&lt;2\)</span> the eigenvalues are complex conjugates on the unit circle: the
+orbit neither converges nor diverges but circulates forever at constant radius.
+Both statements are exact and both are checked:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">7.</span> <span class="n">the</span> <span class="n">bilinear</span> <span class="n">game</span> <span class="n">V</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">xy</span><span class="p">,</span> <span class="n">unique</span> <span class="n">Nash</span> <span class="n">at</span> <span class="n">the</span> <span class="n">origin</span> <span class="o">===</span>
+    <span class="n">eta</span>   <span class="n">steps</span>    <span class="o">||</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="o">||</span> <span class="n">simultaneous</span>   <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">eta</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="p">(</span><span class="n">T</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>    <span class="o">||</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="o">||</span> <span class="n">alternating</span>
+   <span class="mf">0.10</span>    <span class="mi">1000</span>             <span class="mf">2.0474e+02</span>         <span class="mf">2.0474e+02</span>             <span class="mf">1.399261</span>
+   <span class="mf">0.05</span>    <span class="mi">1000</span>             <span class="mf">4.9284e+00</span>         <span class="mf">4.9284e+00</span>             <span class="mf">1.411927</span>
+   <span class="mf">0.01</span>    <span class="mi">1000</span>             <span class="mf">1.4867e+00</span>         <span class="mf">1.4867e+00</span>             <span class="mf">1.412129</span>
+</pre></div>
+</div>
+<p>The starting point has <span class="math notranslate nohighlight">\(\|(x_0,y_0)\|=\sqrt2=1.41421\)</span>, and the alternating
+iteration is still within <span class="math notranslate nohighlight">\(1.1\%\)</span> of it after a thousand steps, while the
+simultaneous one at <span class="math notranslate nohighlight">\(\eta=0.1\)</span> has grown by a factor of <span class="math notranslate nohighlight">\(145\)</span>.  This single
+<span class="math notranslate nohighlight">\(2\times2\)</span> example explains two facts about GAN practice at once: why the
+updates are alternated rather than simultaneous, and why even then the loss
+curves oscillate instead of descending.  A GAN is not minimising anything; it
+is orbiting.</p>
+<p>The standard stabilisers all attack this.  Setting Adam’s <span class="math notranslate nohighlight">\(\beta_1=0.5\)</span> instead
+of <span class="math notranslate nohighlight">\(0.9\)</span> reduces the momentum that turns a circulating orbit into an expanding
+one.  Two-time-scale updates [heusel2017] (<span class="math notranslate nohighlight">\(\eta_d&gt;\eta_g\)</span>) keep the discriminator closer to
+its optimum, which is where the theory of Section <em>The objective is a Jensen-Shannon divergence</em> lives.
+Spectral normalisation bounds the Lipschitz constant of <span class="math notranslate nohighlight">\(D\)</span> [miyato2018],
+damping the feedback.  None of them makes the game convex.</p>
+</section>
+<section id="vanishing-gradients-the-discriminator-wins">
+<h3><span class="section-number">17.6.2. </span>Vanishing gradients: the discriminator wins<a class="headerlink" href="#vanishing-gradients-the-discriminator-wins" title="Link to this heading">#</a></h3>
+<p>The second mechanism was derived in Section <em>The non-saturating generator loss</em>.  If <span class="math notranslate nohighlight">\(D\)</span> becomes
+perfect – <span class="math notranslate nohighlight">\(D(\bm{x})=1\)</span> on data, <span class="math notranslate nohighlight">\(D(G(\bm{z}))=0\)</span> on samples – then <span class="math notranslate nohighlight">\(V\)</span> is at
+its ceiling and, with the saturating loss, the generator receives nothing.  The
+non-saturating loss removes the symptom, but the underlying condition is real:
+a discriminator that separates the two distributions perfectly has, by
+Eq. (17.9), an infinite logit, and its gradient carries no
+information about <em>how far</em> the generator is from the data, only that it
+is on the wrong side.  This is the failure the Wasserstein critic of
+Section <em>The Wasserstein distance</em> is designed to remove at the source.</p>
+</section>
+<section id="mode-collapse-and-a-topological-obstruction">
+<h3><span class="section-number">17.6.3. </span>Mode collapse, and a topological obstruction<a class="headerlink" href="#mode-collapse-and-a-topological-obstruction" title="Link to this heading">#</a></h3>
+<p>The third mechanism is the one peculiar to adversarial training.  In
+<em>mode collapse</em> the generator maps many different <span class="math notranslate nohighlight">\(\bm{z}\)</span> to the same, or
+very nearly the same, output.  The mechanism is easy to see from the alternating
+algorithm: for a <em>fixed</em> discriminator the generator’s optimal response is
+to place all its mass at <span class="math notranslate nohighlight">\(\mathop{\mathrm{arg\,max}}_{\bm{x}}D(\bm{x})\)</span> – a single point –
+because Eq. (17.20) contains nothing that rewards diversity.  The
+discriminator then learns to reject that point, the generator moves to the next
+best one, and the pair cycles.  The theory of Section <em>The objective is a Jensen-Shannon divergence</em> does not
+apply, because it assumed <span class="math notranslate nohighlight">\(D=D^{*}\)</span>, and <span class="math notranslate nohighlight">\(D^{*}\)</span> would penalise the collapse
+immediately.</p>
+<p>It is instructive to try to provoke it.  We use the standard benchmark, a
+<span class="math notranslate nohighlight">\(5\times5\)</span> grid of narrow Gaussians, and run three objectives:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">3.</span> <span class="n">mode</span> <span class="n">collapse</span><span class="p">:</span> <span class="n">a</span> <span class="mi">5</span><span class="n">x5</span> <span class="n">grid</span> <span class="n">of</span> <span class="n">narrow</span> <span class="n">modes</span> <span class="o">===</span>
+  <span class="n">objective</span>              <span class="n">time</span>   <span class="n">modes</span>  <span class="ow">in</span><span class="o">-</span><span class="n">mode</span>   <span class="n">energy</span> <span class="n">dist</span>  <span class="nb">min</span><span class="o">/</span><span class="nb">max</span> <span class="n">per</span> <span class="n">mode</span>
+  <span class="n">non</span><span class="o">-</span><span class="n">saturating</span>           <span class="mi">46</span><span class="n">s</span>   <span class="mi">15</span><span class="o">/</span><span class="mi">25</span>    <span class="mf">52.4</span><span class="o">%</span>      <span class="mf">0.08026</span>      <span class="mi">0</span> <span class="o">/</span>  <span class="mi">354</span>
+  <span class="n">strong</span> <span class="n">discriminator</span>     <span class="mi">25</span><span class="n">s</span>   <span class="mi">16</span><span class="o">/</span><span class="mi">25</span>    <span class="mf">53.3</span><span class="o">%</span>      <span class="mf">0.12127</span>      <span class="mi">2</span> <span class="o">/</span>  <span class="mi">482</span>
+  <span class="n">WGAN</span><span class="o">-</span><span class="n">GP</span>                 <span class="mi">159</span><span class="n">s</span>   <span class="mi">17</span><span class="o">/</span><span class="mi">25</span>    <span class="mf">46.1</span><span class="o">%</span>      <span class="mf">0.02638</span>      <span class="mi">3</span> <span class="o">/</span>  <span class="mi">349</span>
+  <span class="n">a</span> <span class="n">uniform</span> <span class="n">generator</span> <span class="n">would</span> <span class="n">put</span> <span class="mi">200</span> <span class="n">of</span> <span class="n">the</span> <span class="mi">5000</span> <span class="n">samples</span> <span class="n">on</span> <span class="n">each</span> <span class="n">mode</span>
+</pre></div>
+</div>
+<p>None of the three covers the target.  The non-saturating GAN reaches fifteen of
+the twenty-five modes and puts <span class="math notranslate nohighlight">\(354\)</span> of five thousand samples on its favourite
+and none at all on its least favourite; strengthening the discriminator makes
+the imbalance worse, not better, and drives the energy distance up by half.
+WGAN-GP reaches seventeen modes and cuts the energy distance by a factor of
+three, which is a real improvement, but it too is far from uniform.
+Figure 17.4 shows the full distribution of samples over
+modes for the three runs.  We report the failure rather than tuning until it
+goes away, because the shape of the failure is more informative than a
+successful run would be.</p>
+<p>Look at Figure 17.3.  The generated samples do not sit on
+twenty-five islands: they lie along connected filaments that thread through the
+modes and, in the outer runs, trace the boundary of the square.  This is not an
+accident of optimisation but a constraint that no amount of training can
+remove.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 17.5 (The support of <span class="math notranslate nohighlight">\(p_g\)</span> is connected)</p>
+<p>Let <span class="math notranslate nohighlight">\(G:\mathbb{R}^{k}\to\mathbb{R}^{d}\)</span> be continuous and let <span class="math notranslate nohighlight">\(p_z\)</span> have
+connected support <span class="math notranslate nohighlight">\(S_z\)</span>.  Then <span class="math notranslate nohighlight">\(G(S_z)\)</span> is connected, and
+<span class="math notranslate nohighlight">\(\mathrm{supp}(p_g)=\overline{G(S_z)}\)</span> is connected.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>The continuous image of a connected set is connected, and the closure of a
+connected set is connected.</p>
+</div>
+<p>A Gaussian or uniform prior has connected support and a neural network is
+continuous, so <span class="math notranslate nohighlight">\(p_g\)</span> is supported on a connected set no matter what the
+parameters are.  If <span class="math notranslate nohighlight">\(p_r\)</span> is supported on twenty-five disjoint islands, the two
+supports cannot coincide: the generator must either miss modes or connect them
+with filaments carrying mass the data do not have.  It does both, and
+Figure 17.3 is a picture of the compromise.  Real image
+manifolds are not literally disconnected, but they are close enough to it –
+a picture halfway between a <span class="math notranslate nohighlight">\(3\)</span> and an <span class="math notranslate nohighlight">\(8\)</span> is not a digit – that the same
+tension appears, and it is one reason samples from a GAN occasionally look like
+a blend of two classes.</p>
+<p><img alt="Mode collapse on a 5times5 grid of narrow Gaussians.  a The target.  b" src="_images/gan_collapse.png" /></p>
+<p><em>Figure 17.3: Mode collapse on a <span class="math notranslate nohighlight">\(5\times5\)</span> grid of narrow Gaussians.  (a) The target.  (b) The non-saturating GAN after <span class="math notranslate nohighlight">\(8000\)</span> steps: fifteen of the twenty-five modes are visited, and the samples lie along connected curves rather than on islands.  (c) The same with a wider discriminator, a larger discriminator learning rate and three discriminator steps per generator step: the imbalance is worse and the energy distance rises from <span class="math notranslate nohighlight">\(0.080\)</span> to <span class="math notranslate nohighlight">\(0.121\)</span>. (d) WGAN-GP, which reaches seventeen modes and an energy distance of <span class="math notranslate nohighlight">\(0.026\)</span>. The filaments in all three panels are forced by Proposition 17.5.</em></p>
+<p><img alt="How the five thousand generated samples of Figure 17.3 are distributed" src="_images/gan_modecounts.png" /></p>
+<p><em>Figure 17.4: How the five thousand generated samples of Figure 17.3 are distributed over the twenty-five modes, sorted from most to least visited for each objective.  A generator matching the target would produce the flat line at <span class="math notranslate nohighlight">\(200\)</span>.  All three are far from it; WGAN-GP is flattest in the tail, which is what its lower energy distance is measuring.</em></p>
+<p>The standard mitigations follow the diagnosis.  <em>Minibatch discrimination</em>
+gives the discriminator access to statistics across a batch rather than single
+samples, so that a batch of near-identical outputs is detectable and
+punishable.  <em>Unrolled GANs</em> [metz2017] differentiate the generator loss through
+several future discriminator updates, so that <span class="math notranslate nohighlight">\(G\)</span> cannot exploit a
+short-sighted <span class="math notranslate nohighlight">\(D\)</span>.  <em>Spectral normalisation</em> [miyato2018] and the gradient penalty of
+Section <em>The Wasserstein distance</em> bound the discriminator’s Lipschitz constant.  Raising
+<span class="math notranslate nohighlight">\(k\)</span>, the latent dimension, does not help: it cannot change
+Proposition 17.5, and in our experiments <span class="math notranslate nohighlight">\(k=16\)</span> was
+measurably worse than <span class="math notranslate nohighlight">\(k=2\)</span>.</p>
+</section>
+</section>
+<section id="the-wasserstein-distance">
+<h2><span class="section-number">17.7. </span>The Wasserstein distance<a class="headerlink" href="#the-wasserstein-distance" title="Link to this heading">#</a></h2>
+<p>Lemma 17.2 contains a warning that
+Section <em>Vanishing gradients: the discriminator wins</em> only hinted at.  If <span class="math notranslate nohighlight">\(p_r\)</span> and <span class="math notranslate nohighlight">\(p_g\)</span> have disjoint
+supports, then <span class="math notranslate nohighlight">\(D_{\mathrm{JS}}(p_r\|p_g)=\log2\)</span> <em>exactly</em>, whatever the
+distance between the supports.  By Theorem 17.3 the objective is
+then flat: its gradient with respect to any parameter of <span class="math notranslate nohighlight">\(G\)</span> that moves <span class="math notranslate nohighlight">\(p_g\)</span>
+without creating overlap is zero.</p>
+<p>This is not a pathological case.  A generator maps a <span class="math notranslate nohighlight">\(k\)</span>-dimensional latent
+into <span class="math notranslate nohighlight">\(\mathbb{R}^{d}\)</span> with <span class="math notranslate nohighlight">\(k\ll d\)</span>, so <span class="math notranslate nohighlight">\(p_g\)</span> is supported on a manifold of
+dimension at most <span class="math notranslate nohighlight">\(k\)</span>; the data lie on their own low-dimensional manifold; two
+such manifolds in general position intersect in a set of measure zero.  Early in
+training the supports are effectively disjoint, and the ideal objective offers
+no guidance at all.</p>
+<p>The canonical illustration is one-dimensional.  Let <span class="math notranslate nohighlight">\(p_r\)</span> be uniform on
+<span class="math notranslate nohighlight">\([0,1]\)</span> and <span class="math notranslate nohighlight">\(p_g\)</span> uniform on <span class="math notranslate nohighlight">\([\theta,\theta+1]\)</span>.  The overlap has length
+<span class="math notranslate nohighlight">\((1-\theta)_+\)</span>; on it both densities are <span class="math notranslate nohighlight">\(1\)</span> and the mixture is also <span class="math notranslate nohighlight">\(1\)</span>, so
+that region contributes nothing to Eq. (17.11); off it exactly one
+density is <span class="math notranslate nohighlight">\(1\)</span> while the mixture is <span class="math notranslate nohighlight">\(\tfrac12\)</span>, contributing <span class="math notranslate nohighlight">\(\log2\)</span> per unit
+length.  Hence</p>
+<div class="math notranslate nohighlight">
+\[
+D_{\mathrm{JS}}(p_r\|p_g) = \min(\theta,1)\log 2,
+  \qquad
+  W(p_r,p_g) = \theta .\tag{17.26}
+\]</div>
+<p>For <span class="math notranslate nohighlight">\(\theta\ge1\)</span> the divergence is pinned at <span class="math notranslate nohighlight">\(\log2\)</span> with zero derivative,
+while the Wasserstein distance defined below keeps a derivative of <span class="math notranslate nohighlight">\(1\)</span>
+everywhere.  Figure 17.5 plots both, together with the
+Gaussian case computed by quadrature:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mi">6</span><span class="n">b</span><span class="o">.</span> <span class="n">JS</span> <span class="ow">and</span> <span class="n">W</span> <span class="k">for</span> <span class="n">two</span> <span class="n">unit</span> <span class="n">Gaussians</span><span class="p">,</span> <span class="n">by</span> <span class="n">quadrature</span> <span class="o">===</span>
+       <span class="n">mu</span>       <span class="n">JS</span><span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">||</span><span class="n">N</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>      <span class="n">W</span> <span class="o">=</span> <span class="o">|</span><span class="n">mu</span><span class="o">|</span>
+      <span class="mf">0.50</span>            <span class="mf">0.03031130</span>          <span class="mf">0.5000</span>
+      <span class="mf">1.00</span>            <span class="mf">0.11142148</span>          <span class="mf">1.0000</span>
+      <span class="mf">2.00</span>            <span class="mf">0.33683082</span>          <span class="mf">2.0000</span>
+      <span class="mf">4.00</span>            <span class="mf">0.63272019</span>          <span class="mf">4.0000</span>
+      <span class="mf">8.00</span>            <span class="mf">0.68516989</span>          <span class="mf">8.0000</span>
+</pre></div>
+</div>
+<p>Gaussians have full support, so the divergence never quite reaches <span class="math notranslate nohighlight">\(\log2\)</span>; but
+at <span class="math notranslate nohighlight">\(\mu=8\)</span> it is within <span class="math notranslate nohighlight">\(0.008\)</span> of the ceiling and for practical purposes the
+gradient is gone.</p>
+<p>The <em>Wasserstein-1</em> or earth-mover distance measures how far mass must be
+moved rather than how much the densities disagree:</p>
+<div class="math notranslate nohighlight">
+\[
+W(p_r,p_g) = \inf_{\gamma\in\Pi(p_r,p_g)}
+    \mathbb{E}_{(\bm{x},\bm{y})\sim\gamma}\bigl[\|\bm{x}-\bm{y}\|\bigr],\tag{17.27}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Pi(p_r,p_g)\)</span> is the set of joint distributions – transport plans –
+with the prescribed marginals.  The infimum over plans is intractable, but the
+Kantorovich-Rubinstein duality [villani2009] converts it into a maximisation over
+functions,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  W(p_r,p_g) = \sup_{\|f\|_{L}\le1}
+    \Bigl(\mathbb{E}_{\bm{x}\sim p_r}[f(\bm{x})]
+        - \mathbb{E}_{\bm{x}\sim p_g}[f(\bm{x})]\Bigr),\;}\tag{17.28}
+\]</div>
+<p>the supremum running over all <span class="math notranslate nohighlight">\(1\)</span>-Lipschitz <span class="math notranslate nohighlight">\(f\)</span>.  This is a form we can
+parameterise: replace <span class="math notranslate nohighlight">\(f\)</span> by a network <span class="math notranslate nohighlight">\(f_w\)</span>, drop the sigmoid – the output is
+no longer a probability, which is why <span class="math notranslate nohighlight">\(f_w\)</span> is called a <em>critic</em> rather
+than a discriminator – and maximise Eq. (17.28) by gradient ascent.</p>
+<p>The Lipschitz constraint is the whole difficulty.  The original WGAN [arjovsky2017] clipped
+every weight to <span class="math notranslate nohighlight">\([-c,c]\)</span>, which enforces <em>some</em> Lipschitz bound but also
+cripples the critic’s capacity.  The gradient penalty [gulrajani2017] replaces the hard
+constraint by a soft one, using the fact that a differentiable function is
+<span class="math notranslate nohighlight">\(1\)</span>-Lipschitz if and only if <span class="math notranslate nohighlight">\(\|\nabla f\|\le1\)</span> everywhere, and that the optimal
+critic in Eq. (17.28) has <span class="math notranslate nohighlight">\(\|\nabla f\|=1\)</span> almost everywhere on the
+transport paths.  Sampling those paths by interpolating between real and
+generated points gives</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \mathcal{L}_{\mathrm{critic}}
+   = \mathbb{E}_{p_g}[f_w(\bm{x})] - \mathbb{E}_{p_r}[f_w(\bm{x})]
+   + \lambda\,\mathbb{E}_{\hat{\bm{x}}}
+     \Bigl[\bigl(\|\nabla_{\hat{\bm{x}}}f_w(\hat{\bm{x}})\|_2-1\bigr)^{2}\Bigr],\;}\tag{17.29}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\hat{\bm{x}}=\epsilon\bm{x}+(1-\epsilon)G(\bm{z})\)</span>, <span class="math notranslate nohighlight">\(\epsilon\sim U[0,1]\)</span>
+and <span class="math notranslate nohighlight">\(\lambda=10\)</span> the standard choice.  The generator maximises
+<span class="math notranslate nohighlight">\(\mathbb{E}[f_w(G(\bm{z}))]\)</span>.  Because the critic is now expected to be trained
+close to its optimum, <span class="math notranslate nohighlight">\(n_{\mathrm{critic}}=5\)</span> is used instead of <span class="math notranslate nohighlight">\(1\)</span>.</p>
+<p>Two practical differences follow.  The critic loss is an estimate of <span class="math notranslate nohighlight">\(W\)</span> up to
+a constant, so unlike <span class="math notranslate nohighlight">\(V\)</span> it <em>decreases as the samples improve</em> and is
+usable as a progress indicator; and batch normalisation must be removed from
+the critic, since the penalty is a statement about the gradient with respect to
+a single input and batch normalisation makes the output depend on the whole
+batch.  In our two-dimensional experiment WGAN-GP gave the lowest energy
+distance of the three objectives, <span class="math notranslate nohighlight">\(0.026\)</span> against <span class="math notranslate nohighlight">\(0.080\)</span>, at four times the
+cost in wall-clock time.  The implementation is short:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gradient_penalty</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">x_real</span><span class="p">,</span> <span class="n">x_fake</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;E[(||grad f_w(xhat)||_2 - 1)^2] on the segments between real and fake.&quot;&quot;&quot;</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_real</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">xhat</span> <span class="o">=</span> <span class="n">eps</span> <span class="o">*</span> <span class="n">x_real</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_fake</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">critic</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">x</span><span class="p">)))(</span><span class="n">xhat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">g</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-12</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">critic_loss</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">x_real</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">lam</span><span class="o">=</span><span class="mf">10.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;L_critic = E_pg[f] - E_pr[f] + lambda * GP,  Eq. (17.wgangp).&quot;&quot;&quot;</span>
+    <span class="n">x_fake</span> <span class="o">=</span> <span class="n">generator</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">critic</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">x_fake</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">critic</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">x_real</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">w</span> <span class="o">+</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">gradient_penalty</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">x_real</span><span class="p">,</span> <span class="n">x_fake</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><img alt="Why the Jensen-Shannon divergence gives up.  a prU0,1 against pgUtheta" src="_images/gan_divergences.png" /></p>
+<p><em>Figure 17.5: Why the Jensen-Shannon divergence gives up.  (a) <span class="math notranslate nohighlight">\(p_r=U[0,1]\)</span> against <span class="math notranslate nohighlight">\(p_g=U[\theta,\theta+1]\)</span>: Eq. (17.26) makes <span class="math notranslate nohighlight">\(D_{\mathrm{JS}}\)</span> constant at <span class="math notranslate nohighlight">\(\log2\)</span> for <span class="math notranslate nohighlight">\(\theta\ge1\)</span>, so the objective has no gradient there, while <span class="math notranslate nohighlight">\(W=\theta\)</span> has slope <span class="math notranslate nohighlight">\(1\)</span> everywhere.  (b) The same comparison for <span class="math notranslate nohighlight">\(\mathcal{N}(0,1)\)</span> against <span class="math notranslate nohighlight">\(\mathcal{N}(\mu,1)\)</span>, computed by quadrature: the supports overlap so <span class="math notranslate nohighlight">\(D_{\mathrm{JS}}\)</span> approaches <span class="math notranslate nohighlight">\(\log2\)</span> asymptotically instead of reaching it, but by <span class="math notranslate nohighlight">\(\mu=4\)</span> it is already within <span class="math notranslate nohighlight">\(0.06\)</span> of the ceiling.</em></p>
+</section>
+<section id="evaluating-a-model-with-no-likelihood">
+<h2><span class="section-number">17.8. </span>Evaluating a model with no likelihood<a class="headerlink" href="#evaluating-a-model-with-no-likelihood" title="Link to this heading">#</a></h2>
+<p>Every generative model of the preceding chapters could be scored on held-out
+data by its likelihood or a bound on it.  A GAN offers neither, and the
+question “is this model better than that one?” has to be answered from
+samples alone.  Three families of answer are in use.</p>
+<section id="maximum-mean-discrepancy">
+<h3><span class="section-number">17.8.1. </span>Maximum mean discrepancy<a class="headerlink" href="#maximum-mean-discrepancy" title="Link to this heading">#</a></h3>
+<p>Given a kernel <span class="math notranslate nohighlight">\(k(\cdot,\cdot)\)</span>, the <em>maximum mean discrepancy</em> [gretton2012]
+between
+<span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(q\)</span> is the distance between their mean embeddings in the corresponding
+reproducing kernel Hilbert space,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{MMD}^{2}(p,q)
+   = \mathbb{E}_{\bm{x},\bm{x}'\sim p}[k(\bm{x},\bm{x}')]
+   - 2\,\mathbb{E}_{\bm{x}\sim p,\,\bm{y}\sim q}[k(\bm{x},\bm{y})]
+   + \mathbb{E}_{\bm{y},\bm{y}'\sim q}[k(\bm{y},\bm{y}')].\tag{17.30}
+\]</div>
+<p>For a <em>characteristic</em> kernel – the Gaussian
+<span class="math notranslate nohighlight">\(k(\bm{x},\bm{y})=\exp(-\|\bm{x}-\bm{y}\|^{2}/2\sigma^{2})\)</span> is one – the mean
+embedding determines the distribution, so <span class="math notranslate nohighlight">\(\mathrm{MMD}(p,q)=0\)</span> if and only if
+<span class="math notranslate nohighlight">\(p=q\)</span>.  With <span class="math notranslate nohighlight">\(n\)</span> real and <span class="math notranslate nohighlight">\(m\)</span> generated samples the unbiased estimator omits
+the diagonal terms,</p>
+<div class="math notranslate nohighlight">
+\[
+\widehat{\mathrm{MMD}}^{2}
+   = \frac{1}{n(n-1)}\sum_{i\ne j}k(\bm{x}_i,\bm{x}_j)
+   - \frac{2}{nm}\sum_{i,j}k(\bm{x}_i,\bm{y}_j)
+   + \frac{1}{m(m-1)}\sum_{i\ne j}k(\bm{y}_i,\bm{y}_j),\tag{17.31}
+\]</div>
+<p>because <span class="math notranslate nohighlight">\(k(\bm{x}_i,\bm{x}_i)=1\)</span> contributes a bias of order <span class="math notranslate nohighlight">\(1/n\)</span> that does
+not cancel between the three terms.  The <em>energy distance</em> used throughout
+this chapter is the same construction with the conditionally negative definite
+kernel <span class="math notranslate nohighlight">\(-\|\bm{x}-\bm{y}\|\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{E}(p,q) = 2\,\mathbb{E}\|\bm{x}-\bm{y}\|
+    - \mathbb{E}\|\bm{x}-\bm{x}'\| - \mathbb{E}\|\bm{y}-\bm{y}'\| \;\ge\;0,\tag{17.32}
+\]</div>
+<p>which needs no bandwidth to be chosen and is what makes it convenient for the
+two-dimensional experiments here.  In high dimensions the choice of <span class="math notranslate nohighlight">\(\sigma\)</span> in
+Eq. (17.30) matters a great deal, which is the practical objection to
+MMD on images.</p>
+</section>
+<section id="fr-echet-inception-distance">
+<h3><span class="section-number">17.8.2. </span>Fr’echet inception distance<a class="headerlink" href="#fr-echet-inception-distance" title="Link to this heading">#</a></h3>
+<p>The most widely reported metric [heusel2017] sidesteps the kernel choice by working in the
+feature space of a fixed pretrained classifier.  Push <span class="math notranslate nohighlight">\(n\)</span> real and <span class="math notranslate nohighlight">\(n\)</span>
+generated images through the penultimate layer of an InceptionV3 network, fit
+a Gaussian to each set of feature vectors, and report the Fr’echet distance
+between the two Gaussians:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{FID} = \|\bm{\mu}_r-\bm{\mu}_g\|^{2}
+    + \mathrm{Tr}\!\left(\bm{\Sigma}_r+\bm{\Sigma}_g
+      - 2\bigl(\bm{\Sigma}_r\bm{\Sigma}_g\bigr)^{1/2}\right).\tag{17.33}
+\]</div>
+<p>Equation (17.33) is not an arbitrary formula: it is exactly the
+squared <span class="math notranslate nohighlight">\(2\)</span>-Wasserstein distance between two Gaussians, so FID is
+<span class="math notranslate nohighlight">\(W_2^{2}\)</span> computed in feature space under a Gaussian approximation.  The
+connection to Section <em>The Wasserstein distance</em> is therefore closer than it looks – the
+metric of choice for evaluating GANs is a Wasserstein distance, in a space
+where the disjoint-support problem has been removed by the feature map.</p>
+<p>Lower is better.  The caveats are that FID depends on the feature extractor,
+that it is biased at small <span class="math notranslate nohighlight">\(n\)</span> (ten thousand samples is the usual minimum
+because <span class="math notranslate nohighlight">\(\bm{\Sigma}\)</span> is a <span class="math notranslate nohighlight">\(2048\times2048\)</span> matrix), and that a Gaussian is a
+crude model of the feature distribution.  The older <em>inception score</em>,
+<span class="math notranslate nohighlight">\(\exp\bigl(\mathbb{E}_{\bm{x}}D_{\mathrm{KL}}(p(y|\bm{x})\|p(y))\bigr)\)</span>,
+rewards confident and diverse classifications but never looks at the real data
+at all, and is correspondingly easy to fool.</p>
+<div class="tip admonition">
+<p class="admonition-title">No metric detects mode collapse reliably</p>
+<p>A generator that reproduces
+one mode perfectly can achieve a respectable FID, because the Gaussian fit in
+Eq. (17.33) is dominated by the mean and the bulk of the covariance.
+This is why the experiments of Section <em>Mode collapse, and a topological obstruction</em> count modes
+explicitly, which is possible only because the target was constructed.  For
+real data the honest procedures are precision-recall curves, which separate
+fidelity from coverage instead of averaging them, and looking at a large grid
+of samples.  A single number that summarises a distribution will always be
+able to hide something.</p>
+</div>
+</section>
+</section>
+<section id="architectures">
+<h2><span class="section-number">17.9. </span>Architectures<a class="headerlink" href="#architectures" title="Link to this heading">#</a></h2>
+<p>The theory above says nothing about how <span class="math notranslate nohighlight">\(G\)</span> and <span class="math notranslate nohighlight">\(D\)</span> are built, and in practice
+the architecture matters as much as the loss.</p>
+<section id="the-fully-connected-baseline">
+<h3><span class="section-number">17.9.1. </span>The fully connected baseline<a class="headerlink" href="#the-fully-connected-baseline" title="Link to this heading">#</a></h3>
+<p>For MNIST the original recipe is a pair of multilayer perceptrons,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{z}\in\mathbb{R}^{100}
+  \;\to\; 256 \;\to\; 512 \;\to\; 1024 \;\to\; \mathbb{R}^{784},\tag{17.34}
+\]</div>
+<p>with the generator using batch normalisation and LeakyReLU<span class="math notranslate nohighlight">\((0.2)\)</span> after each
+linear layer and <span class="math notranslate nohighlight">\(\tanh\)</span> at the output, and the discriminator mirroring it
+without batch normalisation and with dropout.  Four conventions in that
+sentence deserve their reasons:</p>
+<ul class="simple">
+<li><p><strong><span class="math notranslate nohighlight">\(\tanh\)</span> at the generator output</strong>, with the data rescaled to
+<span class="math notranslate nohighlight">\([-1,1]\)</span>.  A bounded output prevents the generator from escaping to large
+values when the discriminator is briefly weak.</p></li>
+<li><p><strong>LeakyReLU rather than ReLU</strong>, in both networks.  A dead ReLU unit
+in <span class="math notranslate nohighlight">\(D\)</span> contributes no gradient to <span class="math notranslate nohighlight">\(G\)</span> either, and the adversarial game
+provides plenty of opportunity for units to die.</p></li>
+<li><p><strong>Batch normalisation in <span class="math notranslate nohighlight">\(G\)</span> but not in <span class="math notranslate nohighlight">\(D\)</span></strong>.  In <span class="math notranslate nohighlight">\(D\)</span> it makes the
+verdict on one sample depend on the rest of the batch, which is both a leak
+of information and a source of instability; in <span class="math notranslate nohighlight">\(G\)</span> it keeps activations
+scaled while the target distribution moves.</p></li>
+<li><p><strong>Adam with <span class="math notranslate nohighlight">\(\beta_1=0.5\)</span></strong> and <span class="math notranslate nohighlight">\(\eta=2\times10^{-4}\)</span>.  The reduced
+momentum is the practical response to Eq. (17.23).</p></li>
+</ul>
+</section>
+<section id="convolutions-dcgan">
+<h3><span class="section-number">17.9.2. </span>Convolutions: DCGAN<a class="headerlink" href="#convolutions-dcgan" title="Link to this heading">#</a></h3>
+<p>The deep convolutional GAN of Radford, Metz and Chintala [radford2016] replaced the fully
+connected layers with strided convolutions: fractionally strided (transposed)
+convolutions in <span class="math notranslate nohighlight">\(G\)</span> to upsample from <span class="math notranslate nohighlight">\(\bm{z}\)</span> to an image, ordinary strided
+convolutions in <span class="math notranslate nohighlight">\(D\)</span> to downsample, no pooling anywhere, and no fully connected
+layers except the projection of <span class="math notranslate nohighlight">\(\bm{z}\)</span>.  Weights are initialised from
+<span class="math notranslate nohighlight">\(\mathcal{N}(0,0.02^{2})\)</span>.  These conventions are still the default starting
+point, and the architectural reason is the one from Chapter 10: the
+convolutional prior of locality and weight sharing is right for images, and a
+generator that must learn translation equivariance from scratch wastes its
+capacity on it.</p>
+</section>
+<section id="conditioning">
+<h3><span class="section-number">17.9.3. </span>Conditioning<a class="headerlink" href="#conditioning" title="Link to this heading">#</a></h3>
+<p>A <em>conditional</em> GAN [mirza2014] gives both networks a side input <span class="math notranslate nohighlight">\(\bm{y}\)</span> – a class
+label, a segmentation map, a text embedding:</p>
+<div class="math notranslate nohighlight">
+\[
+\min_G\max_D\;
+   \mathbb{E}_{\bm{x},\bm{y}\sim p_r}\bigl[\log D(\bm{x}\mid\bm{y})\bigr]
+ + \mathbb{E}_{\bm{y}\sim p_r,\,\bm{z}\sim p_z}
+   \bigl[\log\bigl(1-D(G(\bm{z}\mid\bm{y})\mid\bm{y})\bigr)\bigr].\tag{17.35}
+\]</div>
+<p>The analysis is unchanged: conditioning on <span class="math notranslate nohighlight">\(\bm{y}\)</span> and applying
+Proposition 17.1 pointwise in <span class="math notranslate nohighlight">\(\bm{x}\)</span> for each fixed <span class="math notranslate nohighlight">\(\bm{y}\)</span>
+gives</p>
+<div class="math notranslate nohighlight">
+\[
+D^{*}(\bm{x}\mid\bm{y})
+   = \frac{p_r(\bm{x}\mid\bm{y})}{p_r(\bm{x}\mid\bm{y})+p_g(\bm{x}\mid\bm{y})},\tag{17.36}
+\]</div>
+<p>and Theorem 17.3 becomes a statement about the expectation over
+<span class="math notranslate nohighlight">\(\bm{y}\)</span> of the conditional divergences,
+<span class="math notranslate nohighlight">\(\mathbb{E}_{\bm{y}}\bigl[D_{\mathrm{JS}}(p_r(\cdot|\bm{y})\|p_g(\cdot|\bm{y}))\bigr]\)</span>.
+For MNIST, <span class="math notranslate nohighlight">\(\bm{y}\)</span> is a one-hot vector in <span class="math notranslate nohighlight">\(\mathbb{R}^{10}\)</span> concatenated to
+<span class="math notranslate nohighlight">\(\bm{z}\)</span> and, as an extra channel or an extra input vector, to <span class="math notranslate nohighlight">\(\bm{x}\)</span>.
+Conditioning is what turns a GAN from a curiosity into a tool: image-to-image
+translation, super-resolution and text-to-image synthesis are all
+Eq. (17.35) with different <span class="math notranslate nohighlight">\(\bm{y}\)</span>.</p>
+</section>
+<section id="reading-the-latent-space">
+<h3><span class="section-number">17.9.4. </span>Reading the latent space<a class="headerlink" href="#reading-the-latent-space" title="Link to this heading">#</a></h3>
+<p>A trained generator can be probed by interpolating between two noise vectors.
+Linear interpolation,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{z}(\alpha) = (1-\alpha)\bm{z}_1 + \alpha\bm{z}_2,
+  \qquad \alpha\in[0,1],\tag{17.37}
+\]</div>
+<p>is the obvious choice and it is wrong, for a reason worth computing.  For
+<span class="math notranslate nohighlight">\(\bm{z}\sim\mathcal{N}(\bm{0},\bm{I}_k)\)</span> we have
+<span class="math notranslate nohighlight">\(\mathbb{E}\|\bm{z}\|^{2}=k\)</span>, and the norm concentrates: its standard deviation
+tends to <span class="math notranslate nohighlight">\(1/\sqrt2\)</span> independently of <span class="math notranslate nohighlight">\(k\)</span>.  The midpoint of two independent
+draws has</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left\|\tfrac{1}{2}(\bm{z}_1+\bm{z}_2)\right\|^{2}
+   = \tfrac14\bigl(k+k\bigr) = \frac{k}{2},\tag{17.38}
+\]</div>
+<p>so its norm is smaller by <span class="math notranslate nohighlight">\(\sqrt2\)</span>.  For <span class="math notranslate nohighlight">\(k=100\)</span> that is a shift from <span class="math notranslate nohighlight">\(10\)</span> to
+<span class="math notranslate nohighlight">\(7.07\)</span>, some four standard deviations inward – a region from which the prior
+essentially never draws and on which the generator has therefore never been
+trained.  Measured:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">8.</span> <span class="n">the</span> <span class="n">norm</span> <span class="n">of</span> <span class="n">a</span> <span class="n">Gaussian</span> <span class="n">latent</span> <span class="n">vector</span> <span class="o">===</span>
+      <span class="n">k</span>     <span class="n">E</span><span class="o">||</span><span class="n">z</span><span class="o">||</span>    <span class="n">sd</span><span class="p">(</span><span class="o">||</span><span class="n">z</span><span class="o">||</span><span class="p">)</span>   <span class="n">E</span><span class="o">||</span><span class="p">(</span><span class="n">z1</span><span class="o">+</span><span class="n">z2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">||</span>   <span class="n">sqrt</span><span class="p">(</span><span class="n">k</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>   <span class="n">deviation</span> <span class="ow">in</span> <span class="n">sd</span>
+      <span class="mi">2</span>     <span class="mf">1.2532</span>      <span class="mf">0.6537</span>          <span class="mf">0.8861</span>      <span class="mf">1.0000</span>             <span class="mf">0.6</span>
+     <span class="mi">16</span>     <span class="mf">3.9372</span>      <span class="mf">0.7026</span>          <span class="mf">2.7835</span>      <span class="mf">2.8284</span>             <span class="mf">1.6</span>
+    <span class="mi">100</span>     <span class="mf">9.9754</span>      <span class="mf">0.7049</span>          <span class="mf">7.0539</span>      <span class="mf">7.0711</span>             <span class="mf">4.1</span>
+</pre></div>
+</div>
+<p>The remedy is to interpolate along the sphere the prior actually occupies,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{z}(\alpha)
+   = \frac{\sin\bigl((1-\alpha)\Omega\bigr)}{\sin\Omega}\,\bm{z}_1
+   + \frac{\sin(\alpha\Omega)}{\sin\Omega}\,\bm{z}_2,
+  \qquad
+  \cos\Omega = \frac{\bm{z}_1\cdot\bm{z}_2}{\|\bm{z}_1\|\|\bm{z}_2\|},\tag{17.39}
+\]</div>
+<p>which preserves the norm when <span class="math notranslate nohighlight">\(\|\bm{z}_1\|=\|\bm{z}_2\|\)</span> and reduces to
+Eq. (17.37) as <span class="math notranslate nohighlight">\(\Omega\to0\)</span>.  A smooth transition under
+Eq. (17.39) is evidence that the generator has learned a coherent
+manifold; abrupt jumps indicate that it has memorised a few outputs.  It is a
+qualitative test, but it detects things FID does not.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>\noalign{} Variant</p></th>
+<th class="head"><p>Change</p></th>
+<th class="head"><p>Objective</p></th>
+<th class="head"><p>What it buys</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>\noalign{}\noalign{} GAN</p></td>
+<td><p>–</p></td>
+<td><p><span class="math notranslate nohighlight">\(D_{\mathrm{JS}}\)</span>, Eq. (17.12)</p></td>
+<td><p>the construction</p></td>
+</tr>
+<tr class="row-odd"><td><p>Non-sat.</p></td>
+<td><p><span class="math notranslate nohighlight">\(-\log D(G(\bm{z}))\)</span></p></td>
+<td><p>same fixed point</p></td>
+<td><p>gradients when losing</p></td>
+</tr>
+<tr class="row-even"><td><p>cGAN</p></td>
+<td><p>side input <span class="math notranslate nohighlight">\(\bm{y}\)</span></p></td>
+<td><p>conditional <span class="math notranslate nohighlight">\(D_{\mathrm{JS}}\)</span></p></td>
+<td><p>control</p></td>
+</tr>
+<tr class="row-odd"><td><p>WGAN</p></td>
+<td><p>critic, weight clipping</p></td>
+<td><p><span class="math notranslate nohighlight">\(W\)</span>, Eq. (17.28)</p></td>
+<td><p>gradients on disjoint supports</p></td>
+</tr>
+<tr class="row-even"><td><p>WGAN-GP</p></td>
+<td><p>gradient penalty</p></td>
+<td><p>Eq. (17.29)</p></td>
+<td><p>Lipschitz without clipping</p></td>
+</tr>
+<tr class="row-odd"><td><p>DCGAN</p></td>
+<td><p>strided convolutions</p></td>
+<td><p>any of the above</p></td>
+<td><p>images</p></td>
+</tr>
+<tr class="row-even"><td><p>StyleGAN [karras2019]</p></td>
+<td><p>style-modulated generator</p></td>
+<td><p>any of the above</p></td>
+<td><p>control of scale-wise detail</p></td>
+</tr>
+<tr class="row-odd"><td><p>\noalign{}</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 17.1: The main variants.  All but the last two rows differ only in the loss
+or the conditioning; the architecture rows change what the networks are made
+of.</em></p>
+</section>
+</section>
+<section id="gans-in-pytorch-and-tensorflow">
+<h2><span class="section-number">17.10. </span>GANs in PyTorch and TensorFlow<a class="headerlink" href="#gans-in-pytorch-and-tensorflow" title="Link to this heading">#</a></h2>
+<p>The two-dimensional programs above were written with explicit gradients so that
+the two players could be seen separately.  In a library the same structure
+appears as two optimisers and one detach.  Here is the PyTorch version of the
+architectures of Section <em>The fully connected baseline</em>; note that the discriminator returns a
+<em>logit</em>, so that \verb!BCEWithLogitsLoss! can apply the sigmoid internally
+and the losses of Eqs. (17.17) and (17.20) are
+evaluated stably:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+
+<span class="k">def</span> <span class="nf">make_generator_fc</span><span class="p">(</span><span class="n">k_z</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_out</span><span class="o">=</span><span class="mi">784</span><span class="p">,</span> <span class="n">widths</span><span class="o">=</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;z in R^k -&gt; image in [-1,1]^784, Eq. (17.generator).&quot;&quot;&quot;</span>
+    <span class="n">layers</span><span class="p">,</span> <span class="n">n_in</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">k_z</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">widths</span><span class="p">:</span>
+        <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_in</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>
+                   <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="n">n_in</span> <span class="o">=</span> <span class="n">w</span>
+    <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_in</span><span class="p">,</span> <span class="n">n_out</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">make_discriminator_fc</span><span class="p">(</span><span class="n">n_in</span><span class="o">=</span><span class="mi">784</span><span class="p">,</span> <span class="n">widths</span><span class="o">=</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> <span class="n">p_drop</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;image -&gt; logit u(x); D(x) = sigmoid(u(x)).  No batch norm in D.&quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">widths</span><span class="p">:</span>
+        <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_in</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+                   <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p_drop</span><span class="p">)]</span>
+        <span class="n">n_in</span> <span class="o">=</span> <span class="n">w</span>
+    <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_in</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The training step is the algorithm of Section <em>Training: alternating gradients</em> written out.
+The single most important line is \verb!.detach()!: without it the
+discriminator update would also send gradients backwards into the generator,
+which is not what Eq. (17.15) says.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">G</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">make_generator_fc</span><span class="p">(),</span> <span class="n">make_discriminator_fc</span><span class="p">()</span>
+<span class="n">opt_g</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">2e-4</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">))</span>
+<span class="n">opt_d</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">2e-4</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">))</span>
+<span class="n">bce</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>                            <span class="c1"># x in [-1,1], flattened</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># --- discriminator: gradient ascent on V, Eq. (17.dstep) --------------</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">x_fake</span> <span class="o">=</span> <span class="n">G</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>                     <span class="c1"># no gradient into G here</span>
+    <span class="n">u_real</span><span class="p">,</span> <span class="n">u_fake</span> <span class="o">=</span> <span class="n">D</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">D</span><span class="p">(</span><span class="n">x_fake</span><span class="p">)</span>
+    <span class="n">loss_d</span> <span class="o">=</span> <span class="p">(</span><span class="n">bce</span><span class="p">(</span><span class="n">u_real</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">u_real</span><span class="p">,</span> <span class="n">smooth</span><span class="p">))</span>   <span class="c1"># smooth = 1.0 or 0.9</span>
+              <span class="o">+</span> <span class="n">bce</span><span class="p">(</span><span class="n">u_fake</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">u_fake</span><span class="p">)))</span>       <span class="c1"># Eq. (17.dloss)</span>
+    <span class="n">opt_d</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">loss_d</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">opt_d</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+    <span class="c1"># --- generator: non-saturating loss, Eq. (17.nonsat) ------------------</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">loss_g</span> <span class="o">=</span> <span class="n">bce</span><span class="p">(</span><span class="n">D</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">z</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>    <span class="c1"># = -log D(G(z))</span>
+    <span class="n">opt_g</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">loss_g</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">opt_g</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The gradient penalty of Eq. (17.29) needs a derivative with
+respect to an <em>input</em>, which is why \verb!create_graph=True! appears: the
+penalty is itself differentiated when the critic is updated.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">gradient_penalty</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">x_real</span><span class="p">,</span> <span class="n">x_fake</span><span class="p">):</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">x_real</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">x_real</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="n">xhat</span> <span class="o">=</span> <span class="p">(</span><span class="n">eps</span> <span class="o">*</span> <span class="n">x_real</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_fake</span><span class="p">)</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">D</span><span class="p">(</span><span class="n">xhat</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">xhat</span><span class="p">,</span> <span class="n">create_graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">g</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The TensorFlow version is the same algorithm with different bookkeeping.
+PyTorch accumulates gradients on the parameters and we zero them; TensorFlow
+records a tape and we ask it for the gradient of one loss with respect to one
+list of variables.  The two tapes are the two players:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
+
+<span class="n">bce</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">BinaryCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">make_generator_fc</span><span class="p">(</span><span class="n">k_z</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">n_out</span><span class="o">=</span><span class="mi">784</span><span class="p">,</span> <span class="n">widths</span><span class="o">=</span><span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">k_z</span><span class="p">,))])</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">widths</span><span class="p">:</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">use_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">BatchNormalization</span><span class="p">())</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.2</span><span class="p">))</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">n_out</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">m</span>
+
+
+<span class="k">def</span> <span class="nf">make_discriminator_fc</span><span class="p">(</span><span class="n">n_in</span><span class="o">=</span><span class="mi">784</span><span class="p">,</span> <span class="n">widths</span><span class="o">=</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">512</span><span class="p">,</span> <span class="mi">256</span><span class="p">),</span> <span class="n">p_drop</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span><span class="n">keras</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_in</span><span class="p">,))])</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">widths</span><span class="p">:</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.2</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p_drop</span><span class="p">))</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>                     <span class="c1"># a logit, not a probability</span>
+    <span class="k">return</span> <span class="n">m</span>
+
+
+<span class="n">G</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">make_generator_fc</span><span class="p">(),</span> <span class="n">make_discriminator_fc</span><span class="p">()</span>
+<span class="n">opt_g</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">2e-4</span><span class="p">,</span> <span class="n">beta_1</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">opt_d</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">2e-4</span><span class="p">,</span> <span class="n">beta_1</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+
+<span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k_z</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># --- discriminator ----------------------------------------------------</span>
+    <span class="n">x_fake</span> <span class="o">=</span> <span class="n">G</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">k_z</span><span class="p">]),</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># outside the tape</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>                         <span class="c1"># = detach()</span>
+        <span class="n">u_real</span><span class="p">,</span> <span class="n">u_fake</span> <span class="o">=</span> <span class="n">D</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">D</span><span class="p">(</span><span class="n">x_fake</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loss_d</span> <span class="o">=</span> <span class="p">(</span><span class="n">bce</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">u_real</span><span class="p">),</span> <span class="n">smooth</span><span class="p">),</span> <span class="n">u_real</span><span class="p">)</span>
+                  <span class="o">+</span> <span class="n">bce</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">u_fake</span><span class="p">),</span> <span class="n">u_fake</span><span class="p">))</span>
+    <span class="n">opt_d</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss_d</span><span class="p">,</span> <span class="n">D</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">),</span>
+                              <span class="n">D</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">))</span>
+
+    <span class="c1"># --- generator, Eq. (17.nonsat) ---------------------------------------</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">u_fake</span> <span class="o">=</span> <span class="n">D</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">k_z</span><span class="p">]),</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loss_g</span> <span class="o">=</span> <span class="n">bce</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">u_fake</span><span class="p">),</span> <span class="n">u_fake</span><span class="p">)</span>
+    <span class="n">opt_g</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss_g</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">),</span>
+                              <span class="n">G</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">loss_d</span><span class="p">,</span> <span class="n">loss_g</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">u_real</span><span class="p">),</span> <span class="n">tf</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">u_fake</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In both frameworks the quantities to watch during training are not the losses
+– which oscillate, by Section <em>Non-convergence: the game itself</em> – but the mean of
+<span class="math notranslate nohighlight">\(D(\bm{x})\)</span> and of <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span>.  Theorem 17.3 says both should
+approach <span class="math notranslate nohighlight">\(\tfrac12\)</span>.  If <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> collapses towards zero the
+discriminator is winning and the generator is starving; if <span class="math notranslate nohighlight">\(D(\bm{x})\)</span> falls
+towards <span class="math notranslate nohighlight">\(\tfrac12\)</span> while <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> rises above it, the discriminator has
+been overwhelmed and its gradient is no longer informative.  Both are reasons
+to stop, and neither is visible in the loss curves.</p>
+<div class="tip admonition">
+<p class="admonition-title">When to stop</p>
+<p>There is no early-stopping criterion for a GAN, because
+there is no held-out score that decreases monotonically.  The practical
+procedure is to save samples on a fixed noise batch <span class="math notranslate nohighlight">\(\bm{z}_{\mathrm{fixed}}\)</span>
+at every epoch – as both programs do – and to select the epoch afterwards,
+by FID if the domain has a trusted feature extractor and by eye if not.
+Keeping the noise fixed matters: it separates changes in the generator from
+changes in the sample.</p>
+</div>
+</section>
+<section id="summary-and-the-programs">
+<h2><span class="section-number">17.11. </span>Summary and the programs<a class="headerlink" href="#summary-and-the-programs" title="Link to this heading">#</a></h2>
+<p>A generative adversarial network replaces the likelihood by a classifier.  The
+classifier’s optimum, Proposition 17.1, is the density ratio
+<span class="math notranslate nohighlight">\(p_r/(p_r+p_g)\)</span> in disguise, verified here to <span class="math notranslate nohighlight">\(3\times10^{-9}\)</span> pointwise and to
+<span class="math notranslate nohighlight">\(0.024\)</span> rms by a trained network wherever data exist – and badly violated
+where they do not, which is Figure 17.1(b) and the first
+warning of the chapter.  Substituting that optimum back, the generator turns out
+to be minimising a Jensen-Shannon divergence, Theorem 17.3,
+confirmed against quadrature to <span class="math notranslate nohighlight">\(10^{-12}\)</span>, with the global minimum <span class="math notranslate nohighlight">\(-2\log2\)</span>
+attained exactly when <span class="math notranslate nohighlight">\(p_g=p_r\)</span> and <span class="math notranslate nohighlight">\(D\equiv\tfrac12\)</span>.</p>
+<p>That is the theory, and the rest of the chapter is the distance between it and
+the algorithm.  The saturating loss of Eq. (17.4) starves the
+generator by a factor <span class="math notranslate nohighlight">\((1-D)/D\)</span>, Eq. (17.19), which we measured
+growing to <span class="math notranslate nohighlight">\(23\)</span> while the discriminator trained alone; the non-saturating loss
+of Eq. (17.20) fixes it without moving the fixed point.  Label
+smoothing caps the discriminator at <span class="math notranslate nohighlight">\(s\)</span>, Proposition 17.4, and
+was measured holding <span class="math notranslate nohighlight">\(D(\bm{x})\)</span> down to <span class="math notranslate nohighlight">\(0.86\)</span> instead of <span class="math notranslate nohighlight">\(0.97\)</span>.  Alternating
+gradient updates do not converge to a Nash equilibrium: on the bilinear game
+the simultaneous iteration diverges exactly as <span class="math notranslate nohighlight">\((1+\eta^{2})^{t/2}\)</span> and the
+alternating one circulates forever, both confirmed to five figures, which is
+why our trained GAN sat at <span class="math notranslate nohighlight">\(V=-1.275\)</span> rather than <span class="math notranslate nohighlight">\(-1.386\)</span> and why the loss
+curves of any GAN oscillate.</p>
+<p>Two limitations are structural rather than numerical.  The Jensen-Shannon
+divergence is pinned at <span class="math notranslate nohighlight">\(\log2\)</span> on disjoint supports,
+Lemma 17.2, so early training has no gradient at all in the
+idealised objective; the Wasserstein distance of Eq. (17.28) with the
+gradient penalty of Eq. (17.29) repairs this, and cut the energy
+distance on our benchmark from <span class="math notranslate nohighlight">\(0.080\)</span> to <span class="math notranslate nohighlight">\(0.026\)</span> at four times the cost.  And
+the support of <span class="math notranslate nohighlight">\(p_g\)</span> is connected whatever the parameters,
+Proposition 17.5, so a disconnected target cannot be matched:
+none of our three objectives covered more than seventeen of twenty-five modes,
+and all three produced the connecting filaments of
+Figure 17.3.</p>
+<p>What is bought with all this is a generator that produces sharp samples in a
+single forward pass, with no bound, no partition function and no iterative
+sampler – and an evaluation problem, since with no likelihood the only
+available scores are two-sample statistics, Eqs. (17.30)
+and (17.33), none of which reliably detects the mode collapse the
+method is prone to.</p>
+<p>The programs are in the directory</p>
+<p><code class="docutils literal notranslate"><span class="pre">doc/BookML/BookPrograms/chapter17_gan</span></code>.</p>
+<p>Every listing above appears there, and five modules run start to finish and
+reproduce the numbers quoted in the text:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gan.py</span></code> – the networks, the three generator losses of
+Section <em>The non-saturating generator loss</em>, the gradient penalty of
+Eq. (17.29), Adam with <span class="math notranslate nohighlight">\(\beta_1=0.5\)</span>, the alternating
+training loop, and the two-dimensional targets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verify_gan.py</span></code> – the eight checks: the pointwise optimum,
+the trained discriminator against Eq. (17.6), the
+Jensen-Shannon identity, label smoothing, the two generator gradients,
+the failure of <span class="math notranslate nohighlight">\(D_{\mathrm{JS}}\)</span> on disjoint supports, the bilinear
+game, and the geometry of the Gaussian prior.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">run_compare.py</span></code> – the equilibrium experiment of
+Section <em>What convergence looks like</em>, the gradient-starvation experiment of
+Section <em>The non-saturating generator loss</em>, and the mode-collapse comparison of
+Section <em>Mode collapse, and a topological obstruction</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gan_torch.py</span></code> – the MNIST program in PyTorch, with the
+fully connected and DCGAN architectures and the non-saturating,
+saturating and WGAN-GP losses selectable from the command line.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gan_tf.py</span></code> – the same program in TensorFlow.</p></li>
+</ul>
+<p>The figures are generated by <code class="docutils literal notranslate"><span class="pre">ch17_figures.py</span></code> in
+<code class="docutils literal notranslate"><span class="pre">doc/BookML/BookFigures</span></code>; none is drawn by hand.</p>
+</section>
+<section id="exercises">
+<h2><span class="section-number">17.12. </span>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<section id="warm-up-exercises">
+<h3><span class="section-number">17.12.1. </span>Warm-up exercises<a class="headerlink" href="#warm-up-exercises" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>The optimal discriminator.</strong>
+(a) Derive Eq. (17.6) by differentiating
+<span class="math notranslate nohighlight">\(f(t)=A\log t+B\log(1-t)\)</span> and verify with Eq. (17.8) that it
+is a maximum and not a minimum.
+(b) What is <span class="math notranslate nohighlight">\(D^{*}\)</span> at a point where <span class="math notranslate nohighlight">\(p_r&gt;0\)</span> but <span class="math notranslate nohighlight">\(p_g=0\)</span>, and what does the
+generator learn there?
+(c) Show that the logit of <span class="math notranslate nohighlight">\(D^{*}\)</span> is the log density ratio,
+Eq. (17.9), and explain why this makes <span class="math notranslate nohighlight">\(D^{*}\)</span> a substitute for
+a likelihood.</p></li>
+<li><p><strong>Bounds on the Jensen-Shannon divergence.</strong>
+Prove Lemma 17.2 and state the conditions for equality at
+each end.  Then compute <span class="math notranslate nohighlight">\(D_{\mathrm{JS}}\)</span> for two Bernoulli distributions
+with parameters <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(q\)</span> and plot it; where is it steepest?</p></li>
+<li><p><strong>Vanishing gradients.</strong>
+At <span class="math notranslate nohighlight">\(D(G(\bm{z}))=\varepsilon\ll1\)</span>, compute the magnitude of the generator
+gradient for the saturating and the non-saturating losses and confirm
+Eq. (17.19).  Then explain why the measured ratio in
+Section <em>The non-saturating generator loss</em> was <span class="math notranslate nohighlight">\(23\)</span> when <span class="math notranslate nohighlight">\(1/D(G(\bm{z}))\)</span> was <span class="math notranslate nohighlight">\(41.5\)</span>.</p></li>
+<li><p><strong>Label smoothing.</strong>
+(a) Derive Proposition 17.4.
+(b) Repeat the derivation smoothing <em>both</em> labels, real to <span class="math notranslate nohighlight">\(s\)</span> and
+generated to <span class="math notranslate nohighlight">\(\varepsilon&gt;0\)</span>, and show that the optimum becomes
+<span class="math notranslate nohighlight">\(\bigl(sp_r+\varepsilon p_g\bigr)/(p_r+p_g)\)</span>.  Explain from this expression
+why two-sided smoothing is a bad idea.</p></li>
+<li><p><strong>Wasserstein against Jensen-Shannon.</strong>
+(a) Derive Eq. (17.26) for the two uniform
+distributions.
+(b) Show that <span class="math notranslate nohighlight">\(W(\mathcal{N}(0,1),\mathcal{N}(\mu,1))=|\mu|\)</span>, using the fact
+that in one dimension the optimal transport plan matches quantiles.
+(c) Which of the two has a useful gradient at <span class="math notranslate nohighlight">\(\mu=10\)</span>?</p></li>
+<li><p><strong>The bilinear game.</strong>
+Verify the eigenvalues quoted for Eqs. (17.23)
+and (17.25), derive Eq. (17.24), and show that
+the alternating iteration conserves a quadratic form.  What does this
+conserved quantity correspond to in a real GAN?</p></li>
+<li><p><strong>Counting.</strong>
+A GAN, a VAE and a diffusion model with <span class="math notranslate nohighlight">\(T=1000\)</span> each generate one image.
+How many network evaluations does each need?  How many does each need to
+evaluate, or bound, <span class="math notranslate nohighlight">\(\log p(\bm{x})\)</span> for a given <span class="math notranslate nohighlight">\(\bm{x}\)</span>?</p></li>
+<li><p><strong>Conditioning.</strong>
+Derive Eq. (17.36) and state the conditional form of
+Theorem 17.3.  What happens if the generator ignores <span class="math notranslate nohighlight">\(\bm{y}\)</span>
+entirely – can the discriminator detect it, and if so how?</p></li>
+</ol>
+</section>
+<section id="project-style-exercise-an-adversarial-generator">
+<h3><span class="section-number">17.12.2. </span>Project-style exercise: an adversarial generator<a class="headerlink" href="#project-style-exercise-an-adversarial-generator" title="Link to this heading">#</a></h3>
+<p><strong>Part a: the theory, numerically.</strong>
+Reproduce the checks of Section <em>The optimal discriminator</em> and
+Section <em>The objective is a Jensen-Shannon divergence</em>: maximise the integrand pointwise against
+Eq. (17.6), train a discriminator on two known one-dimensional
+densities and compare it with the closed form both where the data are and where
+they are not, and verify Eq. (17.12) against quadrature for several
+pairs of Gaussians.  Report the accuracy you obtain and explain the size of
+each discrepancy.</p>
+<p><strong>Part b: the two losses.</strong>
+Implement both generator losses.  Freeze an untrained generator, train the
+discriminator alone, and plot both generator gradient norms against
+<span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> as in Figure 17.1(c).  Then train two full
+GANs, one with each loss, from the same seed, and compare.  Under what
+conditions does the saturating loss actually fail, and why did it not fail on
+the eight-Gaussian problem of Section <em>What convergence looks like</em>?</p>
+<p><strong>Part c: the equilibrium.</strong>
+Train on the eight-Gaussian mixture and monitor <span class="math notranslate nohighlight">\(D(\bm{x})\)</span>, <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> and
+<span class="math notranslate nohighlight">\(V\)</span>.  Do they approach the values of Theorem 17.3?  Vary the
+learning-rate ratio <span class="math notranslate nohighlight">\(\eta_d/\eta_g\)</span> and <span class="math notranslate nohighlight">\(n_{\mathrm{critic}}\)</span>, and report how
+close to <span class="math notranslate nohighlight">\(-2\log2\)</span> you can get.  Then add Adam momentum <span class="math notranslate nohighlight">\(\beta_1=0.9\)</span> and
+describe what happens in the light of Eq. (17.23).</p>
+<p><strong>Part d: mode collapse.</strong>
+Reproduce the <span class="math notranslate nohighlight">\(5\times5\)</span> experiment.  Count modes, plot the histogram of
+Figure 17.4, and try at least three mitigations: minibatch
+discrimination, one-sided label smoothing, and WGAN-GP.  Which helps most, and
+does any of them beat Proposition 17.5?  Test the
+proposition directly by plotting <span class="math notranslate nohighlight">\(G\)</span> along a straight line in latent space and
+showing that the output path is continuous.</p>
+<p><strong>Part e: Wasserstein.</strong>
+Implement the critic and the gradient penalty of Eq. (17.29).
+Verify that the penalty really does keep <span class="math notranslate nohighlight">\(\|\nabla f_w\|\)</span> near <span class="math notranslate nohighlight">\(1\)</span> by
+measuring it on interpolates during training.  Compare <span class="math notranslate nohighlight">\(\lambda=0\)</span>, <span class="math notranslate nohighlight">\(1\)</span>, <span class="math notranslate nohighlight">\(10\)</span>
+and <span class="math notranslate nohighlight">\(100\)</span>, and compare the gradient penalty against weight clipping at several
+clip values.  Does the critic loss track sample quality, as claimed in
+Section <em>The Wasserstein distance</em>?</p>
+<p><strong>Part f: MNIST.</strong>
+Train the fully connected GAN of Section <em>The fully connected baseline</em> on MNIST in PyTorch or
+TensorFlow, saving samples from a fixed noise batch at every epoch.  Then train
+the DCGAN version and compare.  Report FID or, if that is too expensive,
+MMD in the feature space of a small classifier you train yourself.  Show the
+latent interpolations of Eqs. (17.37) and (17.39) side by
+side and comment on the difference in the light of
+Eq. (17.38).</p>
+<p><strong>Part g: conditioning.</strong>
+Extend your MNIST GAN to the conditional form of Eq. (17.35) and
+generate each digit on demand.  Then use the conditional generator for data
+augmentation: train a classifier on <span class="math notranslate nohighlight">\(1000\)</span> real images, and on <span class="math notranslate nohighlight">\(1000\)</span> real
+images plus generated ones, and report the test accuracy of each.  Does the
+augmentation help, and does the answer depend on how far the generator has
+been trained?</p>
+<p><strong>Part h: a physics application.</strong>
+Train a GAN on configurations of the two-dimensional Ising model at several
+temperatures, as in part e of the Chapter 14 project, and
+compare the energy and magnetisation histograms of the generated
+configurations with the true ones.  Then compare against the RBM of
+Chapter 14 and the diffusion model of
+Chapter 16 at matched parameter counts.  Which reproduces the
+critical region best, which is fastest to sample, and which would you trust to
+report an uncertainty?  Defend your answer with the divergences of this
+chapter, not with the pictures.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter16.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">16. </span>Chapter 16: Diffusion Models and Normalizing Flows</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="conclusions.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">18. </span>Chapter 18: Concluding remarks and perspectives</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-networks-and-a-game">17.1. Two networks and a game</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-gans-are-used-for">17.1.1. What GANs are used for</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-minimax-objective">17.2. The minimax objective</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-optimal-discriminator">17.3. The optimal discriminator</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-objective-is-a-jensen-shannon-divergence">17.4. The objective is a Jensen-Shannon divergence</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-alternating-gradients">17.5. Training: alternating gradients</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-non-saturating-generator-loss">17.5.1. The non-saturating generator loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#one-sided-label-smoothing">17.5.2. One-sided label smoothing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-convergence-looks-like">17.5.3. What convergence looks like</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-actually-goes-wrong">17.6. What actually goes wrong</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#non-convergence-the-game-itself">17.6.1. Non-convergence: the game itself</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vanishing-gradients-the-discriminator-wins">17.6.2. Vanishing gradients: the discriminator wins</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mode-collapse-and-a-topological-obstruction">17.6.3. Mode collapse, and a topological obstruction</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-wasserstein-distance">17.7. The Wasserstein distance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluating-a-model-with-no-likelihood">17.8. Evaluating a model with no likelihood</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maximum-mean-discrepancy">17.8.1. Maximum mean discrepancy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fr-echet-inception-distance">17.8.2. Fr’echet inception distance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architectures">17.9. Architectures</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-fully-connected-baseline">17.9.1. The fully connected baseline</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convolutions-dcgan">17.9.2. Convolutions: DCGAN</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conditioning">17.9.3. Conditioning</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-the-latent-space">17.9.4. Reading the latent space</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gans-in-pytorch-and-tensorflow">17.10. GANs in PyTorch and TensorFlow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">17.11. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">17.12. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">17.12.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-an-adversarial-generator">17.12.2. Project-style exercise: an adversarial generator</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

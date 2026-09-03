@@ -1,0 +1,62 @@
+=== 0. the problem ===
+  120 points in the plane, class 1 inside a disc of radius sqrt(3), 5% of the labels flipped;
+  52 positives, 68 negatives.  No linear boundary can do better than chance here.
+
+=== 1. kernel IRLS against gradient descent, Eq. (5.kirls) ===
+  Newton iterations to ||delta alpha|| < 1e-13 : 6
+  cost at the IRLS solution                    : 56.439419034239
+  cost at the gradient solution                : 56.439593485206
+  max |f_irls(x) - f_grad(x)| on the training set: 9.141e-05
+
+  the Newton iterates, showing the quadratic rate:
+    iteration        cost          ||delta alpha||
+            1    56.8201866189          3.602e+00
+            2    56.4403059843          2.888e-01
+            3    56.4394190411          1.438e-02
+            4    56.4394190342          3.825e-05
+            5    56.4394190342          3.059e-10
+            6    56.4394190342          2.018e-15
+  the step length squares at each iteration once close to the
+  minimum, which is the signature of Newton's method
+
+=== 2. the kernel form against an explicit feature map ===
+  With the quadratic kernel (x.x' + 1)^2 the feature map is only
+  six-dimensional, so the primal problem can be solved directly and
+  the two answers compared.
+
+  max |k(x,x') - phi(x).phi(x')|: 4.263e-14
+  max |f_kernel(x) - f_primal(x)| on 400 test points: 6.004e-13
+  ||theta_primal||^2 = 13.2542532295,   alpha^T K alpha = 13.2542532295
+  the two penalties are the same number because both are the squared
+  norm of the same function in the same space
+
+  scikit-learn in the same map, C = 1/lambda:
+    max |theta_ours - theta_sklearn| : 9.498e-09
+    max |f_ours - f_sklearn| on test : 7.232e-08
+
+=== 3. Proposition 5.kalpharesidual: alpha = (y - p) / lambda ===
+  Setting the gradient K[(p - y) + lambda alpha] to zero and using
+  that K is invertible gives alpha_i = (y_i - p_i) / lambda: the
+  dual coefficient of a point is its residual, divided by the
+  penalty.  Residuals are never exactly zero, so alpha is dense.
+
+   lambda   max |alpha - (y-p)/lambda|   non-zero alpha of 120   |alpha|_min
+     0.10                   1.471e-11                 120   2.065e-02
+     1.00                   1.477e-13                 120   6.360e-02
+    10.00                   1.422e-15                 120   3.472e-02
+  every one of the coefficients is non-zero at every penalty; the
+  contrast with the support vectors of Chapter 6 is the whole point
+  of Theorem 6.threelosses
+
+=== 4. the penalty, measured ===
+   lambda    train accuracy   test accuracy   alpha^T K alpha
+     0.001           0.9500          0.9300         5027.0188
+     0.010           0.9417          0.9275          696.1591
+     0.100           0.9500          0.9375          144.9844
+     1.000           0.9333          0.9400           22.4656
+    10.000           0.8750          0.9150            1.0326
+   100.000           0.8667          0.8700            0.0146
+  a small penalty reproduces the 5% of flipped labels and pays for
+  it on the test set; a large one flattens the function towards a
+  constant.  The best test accuracy is in between, which is
+  Eq. (2.biasvariance) once more.

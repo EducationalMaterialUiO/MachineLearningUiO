@@ -1,0 +1,141 @@
+=== 1. the explicit construction of Theorem 8.relurate ===
+  A single hidden layer of N ReLU units, weights written down rather
+  than trained: interpolate F at the N+1 knots t_k = a + k(b-a)/N.
+  The bound is L(b-a)/2N.
+
+  target F(x) = sin(2 pi x) on [0,1], Lipschitz constant L = 2 pi
+     N    sup error   bound L/2N   ratio
+     2    1.000e+00    1.571e+00   0.6366
+     4    2.105e-01    7.854e-01   0.2680
+     8    7.038e-02    3.927e-01   0.1792
+    16    1.885e-02    1.963e-01   0.0960
+    32    4.792e-03    9.817e-02   0.0488
+    64    1.203e-03    4.909e-02   0.0245
+   128    3.011e-04    2.454e-02   0.0123
+   256    7.529e-05    1.227e-02   0.0061
+   512    1.882e-05    6.136e-03   0.0031
+  the bound holds with room to spare: a smooth target is much easier
+  than the worst Lipschitz function of the same constant
+
+  worst case, F(x) = L*dist(x, hZ) with h = 1/N: the interpolant is
+  identically zero at every knot, so the error equals the bound
+     N    sup error   bound L/2N   ratio
+     2    2.500e-01    2.500e-01   1.0000
+     4    1.250e-01    1.250e-01   1.0000
+     8    6.250e-02    6.250e-02   1.0000
+    16    3.125e-02    3.125e-02   1.0000
+    32    1.562e-02    1.562e-02   1.0000
+    64    7.810e-03    7.812e-03   0.9997
+   128    3.905e-03    3.906e-03   0.9997
+   256    1.953e-03    1.953e-03   0.9997
+   512    9.763e-04    9.766e-04   0.9997
+  the constant 1/2 in Theorem 8.relurate cannot be improved
+
+=== 2. representability is not learnability ===
+  Same architecture, same width, but the weights are found by Adam
+  from a random start rather than written down.  Best of five seeds,
+  6000 full-batch steps on 2001 points, lr 0.01 with cosine decay.
+
+     N   constructed   default init   kinks spread   ratio
+     2     1.000e+00      1.000e+00      9.170e-01     0.9
+     4     2.105e-01      1.108e+00      9.170e-01     4.4
+     8     7.038e-02      1.837e-01      8.465e-02     1.2
+    16     1.885e-02      7.203e-02      5.557e-02     2.9
+    32     4.792e-03      4.279e-02      1.660e-02     3.5
+    64     1.203e-03      4.386e-02      6.359e-03     5.3
+  the last column is the trained-with-spread-kinks error divided by
+  the constructed error; best of five seeds in each column
+  the default initialisation is the worse problem: most kinks start
+  outside [0,1] and never enter it.  Even with the kinks placed where
+  the construction puts them, gradient descent falls further behind
+  the constructed network as the width grows.  The existence proof
+  says nothing whatever about the optimisation problem.
+
+=== 3. depth against width: the sawtooth s_k ===
+  T(x) = 2 relu(x) - 4 relu(x - 1/2) is the tent map, computed by one
+  layer of two ReLU units.  s_k = T composed k times has 2^k linear
+  pieces, so a depth-k network with 2k units in total represents it
+  exactly, while one hidden layer needs at least 2^k - 1 units.
+
+     k   units in the deep net   linear pieces measured   2^k
+     1                       2                        2      2
+     2                       4                        4      4
+     3                       6                        8      8
+     4                       8                       16     16
+     5                      10                       32     32
+     6                      12                       64     64
+     7                      14                      128    128
+     8                      16                      256    256
+  the deep network is exact and its size grows linearly in k while
+  the number of pieces it produces grows exponentially
+
+  Now the shallow networks.  For each k we fit one hidden layer of
+  width N to s_k and measure the sup error and the number of linear
+  pieces the fitted network actually has.
+
+   k = 2, s_k has 4 pieces, the theorem needs N >= 3
+      N   sup error   pieces of the fit   N+1
+      2      0.5001                   1      3
+      4      0.0000                   4      5
+      8      0.0004                   7      9
+     16      0.0002                  12     17
+     32      0.0006                  27     33
+     64      0.0006                  49     65
+
+   k = 3, s_k has 8 pieces, the theorem needs N >= 7
+      N   sup error   pieces of the fit   N+1
+      2      0.5002                   2      3
+      4      0.5212                   2      5
+      8      0.5506                   6      9
+     16      0.0096                  14     17
+     32      0.0067                  25     33
+     64      0.0031                  54     65
+
+   k = 4, s_k has 16 pieces, the theorem needs N >= 15
+      N   sup error   pieces of the fit   N+1
+      2      0.5045                   2      3
+      4      0.5097                   3      5
+      8      0.5094                   5      9
+     16      0.5217                  14     17
+     32      0.5392                  28     33
+     64      0.4103                  60     65
+
+  below the threshold the error sits at about 1/2, which is the
+  bound of Theorem 8.depth; above it the fit improves
+
+=== 4. Barron's rate, Theorem 8.barron ===
+  Target F(x) = (1/M) sum_m c_m cos(kappa a_m . x), M = 12 unit ridge
+  directions a_m drawn at random.  Its Fourier transform is a sum of
+  point masses at +-kappa a_m, so the Barron norm of Eq. (8.barronnorm)
+  is known exactly:  C_F = kappa (1/M) sum_m |c_m|.  Crucially C_F does
+  not depend on d, and we draw x uniformly from the unit ball so that
+  the radius r = 1 in every dimension too.  Theorem 8.barron then
+  predicts the same bound (2 r C_F)^2 / N in d = 1, 5 and 20.
+
+  kappa = 2:  C_F = 1.7281
+      N       d = 1       d = 5      d = 20   bound (2 C_F)^2/N
+      4   4.521e-06   2.254e-04   4.142e-04           2.986e+00
+      8   5.329e-07   6.819e-05   2.752e-04           1.493e+00
+     16   2.202e-07   5.162e-05   6.524e-05           7.466e-01
+     32   2.785e-07   8.314e-06   2.814e-05           3.733e-01
+     64   4.307e-07   4.529e-06   2.267e-05           1.866e-01
+    128   3.776e-07   4.238e-06   1.553e-05           9.332e-02
+  measured slopes of log(mse) against log(N):   -0.53  -1.23  -1.02   (Theorem 8.barron: -1)
+  ratio of the d = 20 error to the d = 1 error at N = 128:  41.1
+
+  kappa = 8:  C_F = 6.9124
+      N       d = 1       d = 5      d = 20   bound (2 C_F)^2/N
+      4   1.296e-02   2.689e-02   3.186e-02           4.778e+01
+      8   1.206e-04   1.166e-02   5.971e-03           2.389e+01
+     16   2.330e-04   6.902e-03   2.202e-03           1.195e+01
+     32   2.491e-04   1.391e-03   4.978e-04           5.973e+00
+     64   2.693e-04   1.247e-03   6.183e-04           2.986e+00
+    128   1.850e-04   7.520e-04   6.779e-04           1.493e+00
+  measured slopes of log(mse) against log(N):   -0.77  -1.08  -1.14   (Theorem 8.barron: -1)
+  ratio of the d = 20 error to the d = 1 error at N = 128:  3.7
+
+  the bound of Theorem 8.barron holds everywhere and with room to
+  spare; the error grows with kappa, that is with C_F, and only
+  weakly with d.  Compare Eq. (8.curse): for a general Lipschitz
+  target the width needed at fixed accuracy is raised to the power d,
+  and no experiment at d = 20 would be possible at all

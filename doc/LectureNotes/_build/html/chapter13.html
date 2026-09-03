@@ -1,0 +1,1798 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>13. Chapter 13: Transformers &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter13';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="14. Chapter 14: Boltzmann Machines" href="chapter14.html" />
+    <link rel="prev" title="12. Chapter 12: Autoencoders" href="chapter12.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Machine Learning and the Physical Sciences
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mathematical and statistical basis with essential computational elements</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">1. Chapter 1: Linear Algebra for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">2. Chapter 2: Elements of Probability Theory and Statistics</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">3. Chapter 3: Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">4. Chapter 4: Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">5. Chapter 5: Logistic Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter6.html">6. Chapter 6: Support Vector Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">7. Chapter 7: Ensemble methods; from simple decision trees to Gradient Boosting</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">8. Chapter 8: Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">9. Chapter 9: Neural Networks for Differential Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">10. Chapter 10: Convolutional Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter11.html">11. Chapter 11: Recurrent Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter12.html">12. Chapter 12: Autoencoders</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">13. Chapter 13: Transformers</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Generative Methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter14.html">14. Chapter 14: Boltzmann Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15.html">15. Chapter 15: Variational Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter16.html">16. Chapter 16: Diffusion Models and Normalizing Flows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17.html">17. Chapter 17: Generative Adversarial Networks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Concluding remarks and perspectives</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="conclusions.html">18. Chapter 18: Concluding remarks and perspectives</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chapter13.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 13: Transformers</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tokens">13.1. Tokens</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scaled-dot-product-attention">13.2. Scaled dot-product attention</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-attention-is">13.2.1. What attention is</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#masking-and-position">13.3. Masking and position</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-head-attention-and-the-transformer-block">13.4. Multi-head attention and the transformer block</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-and-verification">13.5. Implementation and verification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-one-attention-layer-cannot-do">13.6. What one attention layer cannot do</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparisons-and-interpretations">13.7. Comparisons and interpretations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#against-the-other-architectures">13.7.1. Against the other architectures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-statistical-mechanics-reading">13.7.2. A statistical-mechanics reading</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kernels-and-graphs">13.7.3. Kernels and graphs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-matters-for-differential-equations">13.7.4. Why this matters for differential equations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-and-tensorflow">13.8. PyTorch and TensorFlow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-the-three-implementations-agree">13.8.1. Do the three implementations agree?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-scaling-in-the-library">13.8.2. The scaling, in the library</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permutation-equivariance-tested">13.8.3. Permutation equivariance, tested</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#associative-recall-in-the-frameworks">13.8.4. Associative recall, in the frameworks</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#strengths-weaknesses-and-what-to-remember">13.9. Strengths, weaknesses and what to remember</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">13.10. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">13.10.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-a-transformer-from-scratch">13.10.2. Project-style exercise: a transformer from scratch</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-13-transformers">
+<h1><span class="section-number">13. </span>Chapter 13: Transformers<a class="headerlink" href="#chapter-13-transformers" title="Link to this heading">#</a></h1>
+<!-- Macro definitions for MathJax, mirroring book.tex -->
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\bm}[1]{\boldsymbol{#1}}
+\newcommand{\Det}[1]{|\boldsymbol{#1}|}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\var}{\mathrm{Var}}
+\newcommand{\cov}{\mathrm{Cov}}
+\newcommand{\Prob}{\mathrm{Prob}}
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\]</div>
+<p>Each architecture in this book has been a restriction of the dense layer,
+justified by a property of the data.  Chapter 10 imposed locality
+and translation equivariance and obtained convolution; Chapter 11
+imposed sequential processing with a carried state and obtained recurrence.  In
+each case a <em>fixed</em> interaction pattern was written into the architecture
+before any data were seen: a convolutional layer couples a pixel to its
+neighbours whatever the image contains, and a recurrent layer couples each step
+to the previous one whatever the sequence says.</p>
+<p>The transformer takes the opposite decision.  It couples every element to every
+other element, and it lets the <em>strength</em> of each coupling be computed from
+the data at run time.  The interaction pattern is not designed; it is inferred,
+afresh for every input.  That single change of principle – from fixed couplings
+to <em>adaptive</em> couplings – is what this chapter is about, and it turns out
+to have consequences that are mathematically sharp, physically suggestive, and
+occasionally limiting in ways worth knowing.</p>
+<p>This chapter follows the transformer lecture notes for the course.  We derive
+attention, prove the properties that characterise it, implement it from scratch
+with verified gradients, and measure two things that matter: why the
+<span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> in Eq. (13.5) is not cosmetic, and what a single
+attention layer provably cannot compute.</p>
+<section id="tokens">
+<h2><span class="section-number">13.1. </span>Tokens<a class="headerlink" href="#tokens" title="Link to this heading">#</a></h2>
+<p>A transformer consumes a sequence of vectors,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x}_1,\bm{x}_2,\dots,\bm{x}_n,
+  \qquad \bm{x}_i\in\mathbb{R}^{d},\tag{13.1}
+\]</div>
+<p>called <em>tokens</em>, and returns another sequence of the same length,
+<span class="math notranslate nohighlight">\((\bm{y}_1,\dots,\bm{y}_n)\)</span>.  What a token <em>is</em> depends on the problem:
+a word in a sentence, a patch of an image, a node of a discretised field, or a
+sample of a solution to a partial differential equation.  Collect them as the
+rows of <span class="math notranslate nohighlight">\(\bm{X}\in\mathbb{R}^{n\times d}\)</span>.</p>
+<p>The generality is the point.  Anything that can be cut into pieces and given
+a vector description can be handed to a transformer, and the architecture makes
+no assumption about how the pieces are arranged.  As Theorem 13.2 will
+prove, it makes <em>no</em> assumption about their order either, which is a
+liberation and a problem in equal measure.</p>
+</section>
+<section id="scaled-dot-product-attention">
+<h2><span class="section-number">13.2. </span>Scaled dot-product attention<a class="headerlink" href="#scaled-dot-product-attention" title="Link to this heading">#</a></h2>
+<p>For each position <span class="math notranslate nohighlight">\(i\)</span> we want an output that is a weighted combination of
+information drawn from all positions,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{y}_i = \sum_{j=1}^{n} A_{ij}\,\bm{v}_j,\tag{13.2}
+\]</div>
+<p>with weights <span class="math notranslate nohighlight">\(A_{ij}\)</span> that depend on the data.  Three learned linear maps
+supply the ingredients.  From each token we form a <em>query</em>, a <em>key</em>
+and a <em>value</em>,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{q}_i = \bm{W}_Q^{\mathsf{T}}\bm{x}_i,
+  \qquad
+  \bm{k}_j = \bm{W}_K^{\mathsf{T}}\bm{x}_j,
+  \qquad
+  \bm{v}_j = \bm{W}_V^{\mathsf{T}}\bm{x}_j,\tag{13.3}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\bm{W}_Q,\bm{W}_K\in\mathbb{R}^{d\times d_k}\)</span> and
+<span class="math notranslate nohighlight">\(\bm{W}_V\in\mathbb{R}^{d\times d_v}\)</span>.  The reading is worth memorising: the
+query is what position <span class="math notranslate nohighlight">\(i\)</span> is looking for, the key is what position <span class="math notranslate nohighlight">\(j\)</span>
+advertises, and the value is what position <span class="math notranslate nohighlight">\(j\)</span> contributes if selected.</p>
+<p>The weight is the softmax of the query-key inner product,</p>
+<div class="math notranslate nohighlight">
+\[
+A_{ij} = \frac{\exp(s_{ij})}{\sum_{\ell}\exp(s_{i\ell})},
+  \qquad
+  s_{ij} = \frac{\bm{q}_i\cdot\bm{k}_j}{\sqrt{d_k}} .\tag{13.4}
+\]</div>
+<p>In matrix form, with <span class="math notranslate nohighlight">\(\bm{Q}=\bm{X}\bm{W}_Q\)</span>, <span class="math notranslate nohighlight">\(\bm{K}=\bm{X}\bm{W}_K\)</span> and
+<span class="math notranslate nohighlight">\(\bm{V}=\bm{X}\bm{W}_V\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \mathrm{Attention}(\bm{Q},\bm{K},\bm{V})
+  = \mathrm{softmax}\!\left(\frac{\bm{Q}\bm{K}^{\mathsf{T}}}{\sqrt{d_k}}\right)
+    \bm{V}. \;}\tag{13.5}
+\]</div>
+<p>The <span class="math notranslate nohighlight">\(n\times n\)</span> matrix <span class="math notranslate nohighlight">\(\bm{Q}\bm{K}^{\mathsf{T}}\)</span> holds the interaction between
+every pair of positions; the softmax normalises each row; multiplication by
+<span class="math notranslate nohighlight">\(\bm{V}\)</span> aggregates.  When <span class="math notranslate nohighlight">\(\bm{Q}\)</span>, <span class="math notranslate nohighlight">\(\bm{K}\)</span> and <span class="math notranslate nohighlight">\(\bm{V}\)</span> all come from the
+same <span class="math notranslate nohighlight">\(\bm{X}\)</span>, as here, this is <em>self</em>-attention.</p>
+<section id="what-attention-is">
+<h3><span class="section-number">13.2.1. </span>What attention is<a class="headerlink" href="#what-attention-is" title="Link to this heading">#</a></h3>
+<p>Three statements characterise Eq. (13.5), and each has a
+consequence that is easy to state and easy to forget.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 13.1 (Attention averages)</p>
+<p>The matrix <span class="math notranslate nohighlight">\(\bm{A}\)</span> of Eq. (13.4) is <em>row-stochastic</em>:
+<span class="math notranslate nohighlight">\(A_{ij}&gt;0\)</span> and <span class="math notranslate nohighlight">\(\sum_j A_{ij}=1\)</span> for every <span class="math notranslate nohighlight">\(i\)</span>.  Consequently each output
+<span class="math notranslate nohighlight">\(\bm{y}_i\)</span> lies in the convex hull of the value vectors
+<span class="math notranslate nohighlight">\(\{\bm{v}_1,\dots,\bm{v}_n\}\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>Positivity is immediate from the exponential, and the denominator of
+Eq. (13.4) is exactly the sum of the numerators over <span class="math notranslate nohighlight">\(j\)</span>, so the
+rows sum to one.  A combination with non-negative coefficients summing to one is
+by definition a convex combination, and Eq. (13.2) exhibits
+<span class="math notranslate nohighlight">\(\bm{y}_i\)</span> as one.</p>
+</div>
+<p>The consequence is a genuine limitation.  A single attention layer cannot
+produce an output outside the convex hull of its own values: it can select,
+blend and interpolate, but it cannot extrapolate.  This is one reason the
+feed-forward sublayer of Section <em>Multi-head attention and the transformer block</em> is not an optional extra –
+without it a stack of attention layers would be confined to convex hulls
+forever.</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 13.2 (Permutation equivariance)</p>
+<p>Let <span class="math notranslate nohighlight">\(\bm{\Pi}\)</span> be an <span class="math notranslate nohighlight">\(n\times n\)</span> permutation matrix.  Then self-attention
+satisfies</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{Attention}(\bm{\Pi}\bm{X})
+  = \bm{\Pi}\,\mathrm{Attention}(\bm{X}).\tag{13.6}
+\]</div>
+<p>The output at a position depends on the <em>set</em> of tokens and on which token
+sits at that position, but not on the order of the others.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>The three maps of Eq. (13.3) act on each row independently, so
+<span class="math notranslate nohighlight">\(\bm{\Pi}\bm{X}\)</span> produces <span class="math notranslate nohighlight">\(\bm{\Pi}\bm{Q}\)</span>, <span class="math notranslate nohighlight">\(\bm{\Pi}\bm{K}\)</span> and
+<span class="math notranslate nohighlight">\(\bm{\Pi}\bm{V}\)</span>.  The score matrix becomes
+<span class="math notranslate nohighlight">\((\bm{\Pi}\bm{Q})(\bm{\Pi}\bm{K})^{\mathsf{T}}/\sqrt{d_k}
+=\bm{\Pi}\bm{S}\bm{\Pi}^{\mathsf{T}}\)</span>.  A row-wise softmax commutes with a
+permutation of the rows, and permuting the columns of a row permutes the entries
+of that row’s softmax identically, so
+<span class="math notranslate nohighlight">\(\mathrm{softmax}(\bm{\Pi}\bm{S}\bm{\Pi}^{\mathsf{T}})
+=\bm{\Pi}\,\mathrm{softmax}(\bm{S})\,\bm{\Pi}^{\mathsf{T}}\)</span>.  Finally
+<span class="math notranslate nohighlight">\(\bm{\Pi}\bm{A}\bm{\Pi}^{\mathsf{T}}\bm{\Pi}\bm{V}=\bm{\Pi}\bm{A}\bm{V}\)</span>, using
+<span class="math notranslate nohighlight">\(\bm{\Pi}^{\mathsf{T}}\bm{\Pi}=\bm{I}\)</span>.</p>
+</div>
+<p>Compare Theorem 10.7, which said convolution is the unique linear
+map equivariant to <em>translation</em>.  Attention is equivariant to the much
+larger group of <em>all</em> permutations, and a larger symmetry group means a
+weaker model: attention knows nothing about order at all.  For a sentence or a
+time series that is unacceptable, and Section <em>Masking and position</em> puts the
+order back in by hand.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 13.3 (Cost)</p>
+<p>Computing Eq. (13.5) requires <span class="math notranslate nohighlight">\(\bigO(n^{2}d_k+n^{2}d_v)\)</span>
+arithmetic operations and <span class="math notranslate nohighlight">\(\bigO(n^{2})\)</span> memory for the matrix <span class="math notranslate nohighlight">\(\bm{A}\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p><span class="math notranslate nohighlight">\(\bm{Q}\bm{K}^{\mathsf{T}}\)</span> is a product of an <span class="math notranslate nohighlight">\(n\times d_k\)</span> and a <span class="math notranslate nohighlight">\(d_k\times n\)</span>
+matrix, costing <span class="math notranslate nohighlight">\(\bigO(n^{2}d_k)\)</span>; the softmax is <span class="math notranslate nohighlight">\(\bigO(n^{2})\)</span>; and
+<span class="math notranslate nohighlight">\(\bm{A}\bm{V}\)</span> costs <span class="math notranslate nohighlight">\(\bigO(n^{2}d_v)\)</span>.</p>
+</div>
+<p>The quadratic scaling in sequence length is the central practical difficulty of
+the architecture, and the reason for a large literature on sparse, low-rank and
+kernelised approximations.  Contrast a convolution, which by
+Eq. (10.18) touches only <span class="math notranslate nohighlight">\(F^{2}\)</span> neighbours per position, and a
+recurrent layer, which is linear in <span class="math notranslate nohighlight">\(n\)</span> but strictly sequential and therefore
+cannot be parallelised across time.  Attention buys global access and
+parallelism, and pays for both in <span class="math notranslate nohighlight">\(n^{2}\)</span>.</p>
+<p>\subsection{Why the \texorpdfstring{<span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span>}{1/sqrt(dk)}}</p>
+<p>The scaling in Eq. (13.5) looks like a detail.  It is not, and
+the reason can be made precise.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 13.4 (Variance of the logits)</p>
+<p>Let <span class="math notranslate nohighlight">\(\bm{q},\bm{k}\in\mathbb{R}^{d_k}\)</span> have independent entries with mean zero
+and variance <span class="math notranslate nohighlight">\(\sigma^{2}\)</span>.  Then</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{E}\left[\bm{q}\cdot\bm{k}\right]=0,
+  \qquad
+  \var\left[\bm{q}\cdot\bm{k}\right]=d_k\sigma^{4},\tag{13.7}
+\]</div>
+<p>so the logits have standard deviation <span class="math notranslate nohighlight">\(\sigma^{2}\sqrt{d_k}\)</span>, growing without
+bound with the head dimension.  Dividing by <span class="math notranslate nohighlight">\(\sqrt{d_k}\)</span> makes the variance
+independent of <span class="math notranslate nohighlight">\(d_k\)</span>.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p><span class="math notranslate nohighlight">\(\bm{q}\cdot\bm{k}=\sum_{r}q_rk_r\)</span> is a sum of <span class="math notranslate nohighlight">\(d_k\)</span> independent terms, each of
+mean <span class="math notranslate nohighlight">\(\mathbb{E}[q_r]\mathbb{E}[k_r]=0\)</span> and variance
+<span class="math notranslate nohighlight">\(\mathbb{E}[q_r^{2}k_r^{2}]-0=\sigma^{4}\)</span> by independence.  Variances of
+independent variables add.</p>
+</div>
+<p>Measured with <span class="math notranslate nohighlight">\(\sigma^{2}=1\)</span> over <span class="math notranslate nohighlight">\(4000\)</span> samples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">d_k</span>    <span class="n">Var</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">k</span><span class="p">)</span> <span class="n">unscaled</span>   <span class="n">Var</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">k</span><span class="p">)</span> <span class="n">scaled</span>   <span class="n">prediction</span> <span class="n">d_k</span>
+      <span class="mi">4</span>              <span class="mf">4.22</span>            <span class="mf">1.0538</span>             <span class="mi">4</span>
+     <span class="mi">16</span>             <span class="mf">15.87</span>            <span class="mf">0.9916</span>            <span class="mi">16</span>
+     <span class="mi">64</span>             <span class="mf">61.48</span>            <span class="mf">0.9607</span>            <span class="mi">64</span>
+    <span class="mi">256</span>            <span class="mf">251.83</span>            <span class="mf">0.9837</span>           <span class="mi">256</span>
+   <span class="mi">1024</span>           <span class="mf">1011.47</span>            <span class="mf">0.9878</span>          <span class="mi">1024</span>
+</pre></div>
+</div>
+<p>The middle column tracks the last one over three decades, and the scaled variant
+sits at one throughout.  Figure 13.1(a) plots it.</p>
+<p>That is the statistics.  The reason it matters is what large logits do to the
+softmax.  As the spread of the scores grows, the softmax approaches a hard
+maximum: one weight goes to one, the rest to zero, and the derivative goes to
+zero with them.  Measuring the Frobenius norm of the softmax Jacobian for
+logits drawn from <span class="math notranslate nohighlight">\(\mathcal{N}(0,c^{2})\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">scale</span>   <span class="nb">max</span> <span class="n">A</span>     <span class="n">entropy</span>    <span class="o">||</span><span class="n">d</span> <span class="n">softmax</span><span class="o">/</span><span class="n">d</span> <span class="n">s</span><span class="o">||</span><span class="n">_F</span>
+   <span class="mf">0.25</span>  <span class="mf">0.06851</span>    <span class="mf">3.4214</span>   <span class="mf">4.808e-02</span>
+   <span class="mf">1.00</span>  <span class="mf">0.37786</span>    <span class="mf">2.4937</span>   <span class="mf">1.029e-01</span>
+   <span class="mf">4.00</span>  <span class="mf">0.98926</span>    <span class="mf">0.0703</span>   <span class="mf">8.223e-03</span>
+  <span class="mf">16.00</span>  <span class="mf">1.00000</span>    <span class="mf">0.0000</span>   <span class="mf">1.745e-09</span>
+  <span class="mf">64.00</span>  <span class="mf">1.00000</span>    <span class="mf">0.0000</span>   <span class="mf">3.276e-36</span>
+</pre></div>
+</div>
+<p>Between <span class="math notranslate nohighlight">\(c=1\)</span> and <span class="math notranslate nohighlight">\(c=64\)</span> the gradient falls by <em>thirty-five orders of
+magnitude</em>.  A network whose attention weights sit in that regime receives no
+gradient through them at all and cannot learn what to attend to.  Since
+Proposition 13.4 says <span class="math notranslate nohighlight">\(c\)</span> grows as <span class="math notranslate nohighlight">\(\sqrt{d_k}\)</span>, a model with
+<span class="math notranslate nohighlight">\(d_k=64\)</span> and unscaled logits starts life at <span class="math notranslate nohighlight">\(c\approx8\)</span>, already well into the
+saturated region.  The <span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> is what keeps it at <span class="math notranslate nohighlight">\(c\approx1\)</span>.</p>
+<p><img alt="a Variance of the attention logits against head dimension.  The unscal" src="_images/attention_scaling.png" /></p>
+<p><em>Figure 13.1: (a) Variance of the attention logits against head dimension.  The unscaled dot product follows the prediction <span class="math notranslate nohighlight">\(d_k\)</span> of Proposition 13.4 exactly; dividing by <span class="math notranslate nohighlight">\(\sqrt{d_k}\)</span> flattens it to one.  (b) Frobenius norm of the softmax Jacobian against the scale of the logits: past a scale of about four the softmax saturates and the gradient collapses, reaching <span class="math notranslate nohighlight">\(10^{-36}\)</span> by scale <span class="math notranslate nohighlight">\(64\)</span>.  (c) An attention matrix <span class="math notranslate nohighlight">\(A_{ij}\)</span> for an untrained network: every row sums to one, by Proposition 13.1.</em></p>
+<div class="tip admonition">
+<p class="admonition-title">The same failure as Chapter 11, at a different place</p>
+<p>Section <em>Why long sequences are hard</em> showed gradients vanishing through a product of
+Jacobians along a sequence.  Here they vanish through a single saturated
+softmax.  Both are cured by keeping a quantity at scale one – the spectral
+radius there, the logit variance here – and in both cases the cure is a
+choice of scaling made before training rather than an adjustment made during it.
+This is the recurring lesson of Chapters 8 to 13:
+deep networks are trained by controlling scales.</p>
+</div>
+</section>
+</section>
+<section id="masking-and-position">
+<h2><span class="section-number">13.3. </span>Masking and position<a class="headerlink" href="#masking-and-position" title="Link to this heading">#</a></h2>
+<p><strong>Masks.</strong>
+Sometimes a position must not see another.  In autoregressive generation, the
+prediction at step <span class="math notranslate nohighlight">\(i\)</span> may depend only on steps <span class="math notranslate nohighlight">\(j\le i\)</span>, or the model would be
+allowed to read its own answer.  This is imposed by adding a <em>mask</em> to the
+scores before the softmax,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+s_{ij} \;\longleftarrow\; s_{ij} + M_{ij},
+  \qquad
+  M_{ij} = \begin{cases}0, &amp; j\le i,\\ -\infty, &amp; j&gt;i,\end{cases}\tag{13.8}
+\end{split}\]</div>
+<p>so that <span class="math notranslate nohighlight">\(\exp(s_{ij})=0\)</span> above the diagonal and <span class="math notranslate nohighlight">\(\bm{A}\)</span> becomes lower
+triangular.  The implementation adds <span class="math notranslate nohighlight">\(-\infty\)</span> rather than deleting entries so
+that the shape of the computation is unchanged.</p>
+<p>A mask destroys Theorem 13.2, and deliberately: the whole purpose
+is to make position <span class="math notranslate nohighlight">\(i\)</span> different from position <span class="math notranslate nohighlight">\(j\)</span>.  We verify both facts in
+Section <em>Implementation and verification</em>.</p>
+<p><strong>Positional encodings.</strong></p>
+<p>Theorem 13.2 says a transformer without further information cannot
+distinguish a sentence from an anagram of it.  The standard remedy is to add a
+position-dependent vector to each token before the first block.  The sinusoidal
+choice of the original architecture is</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{PE}(m,2r) = \sin\!\left(\frac{m}{10000^{2r/d}}\right),
+  \qquad
+  \mathrm{PE}(m,2r+1) = \cos\!\left(\frac{m}{10000^{2r/d}}\right),\tag{13.9}
+\]</div>
+<p>for position <span class="math notranslate nohighlight">\(m\)</span> and channel <span class="math notranslate nohighlight">\(r\)</span>, and <span class="math notranslate nohighlight">\(\bm{x}_m \leftarrow \bm{x}_m
++\mathrm{PE}(m,\cdot)\)</span>.  The construction is a bank of sinusoids at
+geometrically spaced frequencies, so that low channels vary slowly across the
+sequence and high channels vary fast – a positional analogue of the multiscale
+argument of Section <em>Pooling</em>.</p>
+<p>Its useful property is usually stated loosely – that the inner product
+<span class="math notranslate nohighlight">\(\mathrm{PE}(m)\cdot\mathrm{PE}(m')\)</span> depends mainly on <span class="math notranslate nohighlight">\(m-m'\)</span>.  It is in fact
+exact, and the exactness is the whole reason for choosing sinusoids rather than
+any other bank of position-dependent features.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 13.5 (The sinusoidal encoding is a relative code)</p>
+<p>Write <span class="math notranslate nohighlight">\(\omega_r=10000^{-2r/d}\)</span> for <span class="math notranslate nohighlight">\(r=0,\dots,d/2-1\)</span>.  For the encoding
+Eq. (13.9),</p>
+<ol class="arabic">
+<li><p><em>(shift is a fixed rotation)</em> for every offset <span class="math notranslate nohighlight">\(k\)</span> there is an
+orthogonal matrix <span class="math notranslate nohighlight">\(\bm{R}_k\)</span>, independent of <span class="math notranslate nohighlight">\(m\)</span>, with</p>
+<div class="math notranslate nohighlight">
+\[
+   \mathrm{PE}(m+k) = \bm{R}_k\,\mathrm{PE}(m)
+   \qquad\text{for all } m,\tag{13.10}
+   \]</div>
+<p>namely the block-diagonal matrix whose <span class="math notranslate nohighlight">\(r\)</span>th block is the plane rotation
+through <span class="math notranslate nohighlight">\(\omega_r k\)</span>;</p>
+</li>
+<li><p><em>(the kernel is exactly relative)</em></p>
+<div class="math notranslate nohighlight">
+\[
+   \mathrm{PE}(m)\cdot\mathrm{PE}(m')
+   = \sum_{r=0}^{d/2-1}\cos\!\left(\omega_r\left(m-m'\right)\right),\tag{13.11}
+   \]</div>
+<p>a function of <span class="math notranslate nohighlight">\(m-m'\)</span> alone, with maximum <span class="math notranslate nohighlight">\(d/2\)</span> at <span class="math notranslate nohighlight">\(m=m'\)</span>.</p>
+</li>
+</ol>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>For channel pair <span class="math notranslate nohighlight">\(r\)</span> the encoding is
+<span class="math notranslate nohighlight">\((\sin\omega_r m,\cos\omega_r m)\)</span>, a point on the unit circle at angle
+<span class="math notranslate nohighlight">\(\omega_r m\)</span> measured from the vertical.  The angle-addition formulae give</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{pmatrix}\sin\omega_r(m+k)\\ \cos\omega_r(m+k)\end{pmatrix}
+  =\begin{pmatrix}
+     \cos\omega_r k &amp; \sin\omega_r k\\
+     -\sin\omega_r k &amp; \cos\omega_r k
+   \end{pmatrix}
+   \begin{pmatrix}\sin\omega_r m\\ \cos\omega_r m\end{pmatrix},
+\end{split}\]</div>
+<p>whose matrix depends on <span class="math notranslate nohighlight">\(k\)</span> and not on <span class="math notranslate nohighlight">\(m\)</span>; stacking the blocks gives
+Eq. (13.10), and each block is a rotation so <span class="math notranslate nohighlight">\(\bm{R}_k\)</span> is
+orthogonal.  For (ii), the <span class="math notranslate nohighlight">\(r\)</span>th pair contributes
+<span class="math notranslate nohighlight">\(\sin\omega_r m\sin\omega_r m'+\cos\omega_r m\cos\omega_r m'
+=\cos(\omega_r(m-m'))\)</span>, and summing over <span class="math notranslate nohighlight">\(r\)</span> gives
+Eq. (13.11); each cosine is at most one, attained together only
+at <span class="math notranslate nohighlight">\(m=m'\)</span>.</p>
+</div>
+<p>Both parts matter.  Equation (13.11) says the encoding supplies
+the dot product of Eq. (13.4) with an exact function of relative
+distance, so a <em>relative</em> notion of position is available without ever
+being written down – Figure 13.2(c) is a plot of it.
+Equation (13.10) says something stronger and less often noted:
+because translation acts <em>linearly</em> on the encoding, a query matrix
+<span class="math notranslate nohighlight">\(\bm{W}_Q\)</span> can implement “attend to whatever is <span class="math notranslate nohighlight">\(k\)</span> places back” as a single
+linear map, valid at every position at once.  That is what makes the
+previous-token head of Section <em>What one attention layer cannot do</em> easy to learn, and it is
+exactly the property a learned positional embedding does not have.  Learned
+embeddings and explicit relative encodings are the two common alternatives, and
+the first of them pays for its freedom in Section <em>PyTorch and TensorFlow</em>.</p>
+<p><img alt="a An attention matrix under the causal mask of Eq. 13.8 the strict upp" src="_images/attention_masks.png" /></p>
+<p><em>Figure 13.2: (a) An attention matrix under the causal mask of Eq. (13.8): the strict upper triangle is exactly zero, measured to <span class="math notranslate nohighlight">\(0\)</span>.  (b) The sinusoidal positional encoding of Eq. (13.9), channels against position; low channels vary slowly, high channels fast. (c) The inner product of the encoding at position <span class="math notranslate nohighlight">\(32\)</span> with every other position: a similarity kernel peaked on the diagonal, which is how relative distance reaches the dot product of Eq. (13.4).</em></p>
+</section>
+<section id="multi-head-attention-and-the-transformer-block">
+<h2><span class="section-number">13.4. </span>Multi-head attention and the transformer block<a class="headerlink" href="#multi-head-attention-and-the-transformer-block" title="Link to this heading">#</a></h2>
+<p>One attention matrix imposes a single pattern of couplings.  Real problems have
+several – syntactic and semantic in language, local and long-range in a field.
+<em>Multi-head</em> attention runs <span class="math notranslate nohighlight">\(H\)</span> attentions in parallel with separate
+projections and mixes the results:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{head}_h = \mathrm{Attention}\!\left(
+    \bm{X}\bm{W}_Q^{(h)},\;\bm{X}\bm{W}_K^{(h)},\;\bm{X}\bm{W}_V^{(h)}\right),\tag{13.12}
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{MultiHead}(\bm{X})
+  = \mathrm{Concat}\!\left(\mathrm{head}_1,\dots,\mathrm{head}_H\right)\bm{W}_O.\tag{13.13}
+\]</div>
+<p>Taking <span class="math notranslate nohighlight">\(d_k=d_v=d/H\)</span> keeps the cost of <span class="math notranslate nohighlight">\(H\)</span> heads equal to that of one head of
+full width, so multiple heads are free.  Different heads reliably learn
+different patterns, and inspecting them is the beginning of interpretability
+work.</p>
+<p><strong>The block.</strong>
+Attention is one sublayer of a <em>transformer block</em>, which also contains a
+position-wise feed-forward network, residual connections and normalisation.  In
+the pre-norm arrangement now standard,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{split}
+    \bm{X} &amp;\;\longleftarrow\; \bm{X}
+      + \mathrm{MultiHead}\!\left(\mathrm{LN}(\bm{X})\right),\\
+    \bm{X} &amp;\;\longleftarrow\; \bm{X}
+      + \mathrm{MLP}\!\left(\mathrm{LN}(\bm{X})\right),
+  \end{split}\tag{13.14}
+\end{split}\]</div>
+<p>where the MLP is applied to each token separately,
+<span class="math notranslate nohighlight">\(\mathrm{MLP}(\bm{z})=\bm{W}_2\,\mathrm{GELU}(\bm{W}_1\bm{z}+\bm{b}_1)+\bm{b}_2\)</span>,
+with the GELU activation of Section <em>Activation functions</em>, and layer
+normalisation acts across the feature axis of each token,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{LN}(\bm{z}) = \bm{\gamma}\odot
+    \frac{\bm{z}-\mu(\bm{z})}{\sqrt{\sigma^{2}(\bm{z})+\epsilon}} + \bm{\beta},
+  \qquad
+  \mu(\bm{z})=\frac{1}{d}\sum_{r}z_r .\tag{13.15}
+\]</div>
+<p>Each ingredient earns its place.  The MLP supplies the non-linearity that
+Proposition 13.1 showed attention alone lacks, and it is where
+most of the parameters live.  The residual connections give the gradient an
+undamped path from the loss to every layer – precisely the additive path that
+Eq. (11.29) gave the LSTM cell state.  Layer normalisation keeps
+the scale of the activations fixed, which by Section <em>Why the \texorpdfstring{<span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span>}{1/sqrt(dk)}</em> is what
+the softmax needs.</p>
+<p>A transformer is a stack of these blocks.  Nothing in it is unfamiliar: it is
+attention, plus the multilayer perceptron of Chapter 8, plus
+residual connections and normalisation.</p>
+</section>
+<section id="implementation-and-verification">
+<h2><span class="section-number">13.5. </span>Implementation and verification<a class="headerlink" href="#implementation-and-verification" title="Link to this heading">#</a></h2>
+<p>We write attention with autograd rather than by hand, for the reason
+Section <em>Automatic differentiation</em> gave: differentiating a softmax nested inside two
+matrix products is exactly the error-prone drudgery automatic differentiation
+exists to remove.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">softmax_rows</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Row-wise softmax, shifted for stability.&quot;&quot;&quot;</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">S</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">E</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">attention</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Scaled dot-product attention, Eq. (13.attention).</span>
+
+<span class="sd">    Q is (n, d_k), K is (m, d_k), V is (m, d_v); the output is (n, d_v).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d_k</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">@</span> <span class="n">K</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d_k</span><span class="p">)</span>                 <span class="c1"># (n, m) scores</span>
+    <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">S</span> <span class="o">+</span> <span class="n">mask</span>                           <span class="c1"># -inf where attention is banned</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">softmax_rows</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>                        <span class="c1"># (n, m), rows sum to one</span>
+    <span class="k">return</span> <span class="n">A</span> <span class="o">@</span> <span class="n">V</span><span class="p">,</span> <span class="n">A</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Multi-head attention loops over heads, concatenates and mixes; the block adds
+the residuals and normalisation of Eq. (13.14).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">block</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pre-norm transformer block, Eq. (13.block).</span>
+
+<span class="sd">    X -&gt; X + MHA(LN(X)) -&gt; X + MLP(LN(X)).  The residual paths carry the</span>
+<span class="sd">    identity, which is what keeps deep stacks trainable (cf. Section 11.lstmwhy).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">Y</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="n">multihead</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">layernorm</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;g1&quot;</span><span class="p">],</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;be1&quot;</span><span class="p">]),</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">+</span> <span class="n">Y</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">layernorm</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;g2&quot;</span><span class="p">],</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;be2&quot;</span><span class="p">])</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X</span> <span class="o">+</span> <span class="n">gelu</span><span class="p">(</span><span class="n">Z</span> <span class="o">@</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;W1&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;b1&quot;</span><span class="p">])</span> <span class="o">@</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;W2&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">P</span><span class="p">[</span><span class="s2">&quot;b2&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">A</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The checks follow the propositions one by one.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rows</span> <span class="n">of</span> <span class="n">A</span> <span class="nb">sum</span> <span class="n">to</span> <span class="mi">1</span> <span class="p">:</span> <span class="mf">2.22e-16</span>
+<span class="n">A</span> <span class="o">&gt;=</span> <span class="mi">0</span>             <span class="p">:</span> <span class="kc">True</span>
+<span class="n">head</span> <span class="n">output</span> <span class="n">within</span> <span class="n">the</span> <span class="n">bounding</span> <span class="n">box</span> <span class="n">of</span> <span class="n">V</span> <span class="p">:</span> <span class="kc">True</span>
+
+<span class="o">===</span> <span class="n">permutation</span> <span class="n">equivariance</span><span class="p">:</span>  <span class="n">Att</span><span class="p">(</span><span class="n">PX</span><span class="p">)</span> <span class="o">=</span> <span class="n">P</span> <span class="n">Att</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">===</span>
+  <span class="n">trial</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">max</span><span class="o">|</span><span class="n">Att</span><span class="p">(</span><span class="n">PX</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span> <span class="n">Att</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">|</span> <span class="o">=</span> <span class="mf">1.67e-16</span>
+  <span class="n">trial</span> <span class="mi">1</span><span class="p">:</span> <span class="nb">max</span><span class="o">|</span><span class="n">Att</span><span class="p">(</span><span class="n">PX</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span> <span class="n">Att</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">|</span> <span class="o">=</span> <span class="mf">3.33e-16</span>
+  <span class="n">trial</span> <span class="mi">2</span><span class="p">:</span> <span class="nb">max</span><span class="o">|</span><span class="n">Att</span><span class="p">(</span><span class="n">PX</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span> <span class="n">Att</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">|</span> <span class="o">=</span> <span class="mf">2.22e-16</span>
+
+<span class="o">===</span> <span class="n">a</span> <span class="n">causal</span> <span class="n">mask</span> <span class="n">breaks</span> <span class="n">it</span> <span class="p">(</span><span class="k">as</span> <span class="n">it</span> <span class="n">must</span><span class="p">)</span> <span class="o">===</span>
+  <span class="nb">max</span><span class="o">|</span><span class="n">Att</span><span class="p">(</span><span class="n">PX</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span> <span class="n">Att</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">|</span> <span class="k">with</span> <span class="n">mask</span> <span class="o">=</span> <span class="mf">1.897e+00</span>
+  <span class="n">attention</span> <span class="n">matrix</span> <span class="n">upper</span> <span class="n">triangle</span> <span class="p">(</span><span class="n">should</span> <span class="n">be</span> <span class="mi">0</span><span class="p">):</span> <span class="mf">0.00e+00</span>
+</pre></div>
+</div>
+<p>Proposition 13.1 and Theorem 13.2 hold to machine
+precision, and the mask does exactly what Eq. (13.8) says: it
+zeroes the upper triangle exactly and destroys the equivariance completely.
+The batched implementation used for training agrees with the looped one to
+<span class="math notranslate nohighlight">\(8.9\times10^{-16}\)</span>.</p>
+</section>
+<section id="what-one-attention-layer-cannot-do">
+<h2><span class="section-number">13.6. </span>What one attention layer cannot do<a class="headerlink" href="#what-one-attention-layer-cannot-do" title="Link to this heading">#</a></h2>
+<p>Theorem 13.2 and Proposition 13.1 are statements
+about what attention <em>is</em>.  This section is about what a given depth of it
+can <em>compute</em>, and the answer is sharper than one might guess.</p>
+<p>Consider <em>associative recall</em>.  A sequence presents <span class="math notranslate nohighlight">\(L\)</span> key-value pairs
+<span class="math notranslate nohighlight">\(k_1v_1k_2v_2\cdots k_Lv_L\)</span> and then repeats one of the keys; the model must
+emit the value that followed it.  The task is trivial for a human, has an exact
+algorithm, and requires reaching a specific earlier position whose distance
+grows with <span class="math notranslate nohighlight">\(L\)</span>.  It is the cleanest test of global access there is.</p>
+<p>Now look at what one attention layer can do with it.  The query at the final
+position carries the repeated key, and the dot product of
+Eq. (13.4) can certainly make it match the earlier position
+holding the same key.  But matching that position retrieves <em>that
+position’s</em> value vector – the key – and what is wanted is the token
+<em>one place to the right</em>.  A single layer has no way to attend to one
+position and read from another.</p>
+<p>It needs two.  The first layer copies each token’s predecessor into its
+representation; the second matches the query against keys and now finds the
+value already attached.  This composition is known as an <em>induction head</em>,
+and it is a mechanism rather than a metaphor.  The informal argument above can
+be made into a statement with a proof.</p>
+<div class="important admonition">
+<p class="admonition-title">Proposition 13.6 (One content-matching layer cannot do associative recall)</p>
+<p>Consider a single attention layer in which the key and value at position <span class="math notranslate nohighlight">\(j\)</span>
+depend only on the symbol <span class="math notranslate nohighlight">\(s_j\)</span> there, <span class="math notranslate nohighlight">\(\bm{k}_j=K(s_j)\)</span> and <span class="math notranslate nohighlight">\(\bm{v}_j=V(s_j)\)</span>,
+the query at the final position depends only on <span class="math notranslate nohighlight">\(s_T\)</span>, and position enters the
+scores only through an additive bias <span class="math notranslate nohighlight">\(b_{Tj}\)</span> that does not depend on the
+symbols.  Let the recall task be as above, with the <span class="math notranslate nohighlight">\(L\)</span> keys distinct, the <span class="math notranslate nohighlight">\(L\)</span>
+values drawn independently and uniformly, and the query <span class="math notranslate nohighlight">\(s_T=s_{2q-1}\)</span> for a
+uniformly chosen <span class="math notranslate nohighlight">\(q\)</span>.  Then the layer cannot solve the task better than chance
+in the limit of large vocabulary.</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>The attention weight on position <span class="math notranslate nohighlight">\(j\)</span> is
+<span class="math notranslate nohighlight">\(\alpha_j\propto\exp\bigl(Q(s_T)\cdot K(s_j)+b_{Tj}\bigr)\)</span>, so it is a function
+of the pair <span class="math notranslate nohighlight">\((s_T,s_j)\)</span> and of <span class="math notranslate nohighlight">\(j\)</span>.  The answer required is <span class="math notranslate nohighlight">\(V(s_{2q})\)</span>, the
+value <em>following</em> the matched key, so the layer must place its mass on
+position <span class="math notranslate nohighlight">\(2q\)</span>.  But <span class="math notranslate nohighlight">\(s_{2q}\)</span> is drawn independently of <span class="math notranslate nohighlight">\(s_{2q-1}=s_T\)</span> and of
+every other symbol, so <span class="math notranslate nohighlight">\(Q(s_T)\cdot K(s_{2q})\)</span> carries no information about
+whether <span class="math notranslate nohighlight">\(2q\)</span> is the position wanted; and <span class="math notranslate nohighlight">\(b_{T,2q}\)</span> is the same for all
+instances with the same <span class="math notranslate nohighlight">\(q\)</span>, which is unknown to the layer.  Hence
+<span class="math notranslate nohighlight">\(\mathbb{E}[\alpha_{2q}]\)</span> is the same for every value position, the output is
+an average of <span class="math notranslate nohighlight">\(V\)</span> over value symbols independent of the query, and the readout
+can do no better than the marginal.  A vocabulary of size <span class="math notranslate nohighlight">\(M\)</span> makes that
+<span class="math notranslate nohighlight">\(1/M\)</span>.</p>
+</div>
+<p>Two layers escape the proposition by breaking its hypothesis.  A first layer
+whose attention pattern is positional rather than content-based – attend one
+place back, which by Eq. (13.10) is a <em>single linear map</em> on
+the encoding – writes <span class="math notranslate nohighlight">\(s_{j-1}\)</span> into position <span class="math notranslate nohighlight">\(j\)</span>.  After that the key at
+position <span class="math notranslate nohighlight">\(2q\)</span> is a function of <span class="math notranslate nohighlight">\(s_{2q-1}=s_T\)</span>, the hypothesis <span class="math notranslate nohighlight">\(\bm{k}_j=K(s_j)\)</span>
+no longer holds, and content matching at the second layer finds exactly the
+position wanted.</p>
+<p>So the prediction is sharp: one block fails and two succeed.  We test it, with a
+vocabulary of eight symbols, so that chance is <span class="math notranslate nohighlight">\(0.125\)</span>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>\noalign{} <span class="math notranslate nohighlight">\(L\)</span></p></th>
+<th class="head"><p>Model</p></th>
+<th class="head"><p>Parameters</p></th>
+<th class="head"><p>Test accuracy</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>\noalign{}\noalign{} <span class="math notranslate nohighlight">\(2\)</span></p></td>
+<td><p>transformer, 1 block</p></td>
+<td><p><span class="math notranslate nohighlight">\(8928\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.000\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(2\)</span></p></td>
+<td><p>RNN (Chapter 11)</p></td>
+<td><p><span class="math notranslate nohighlight">\(8858\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.000\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>\noalign{}\noalign{} <span class="math notranslate nohighlight">\(4\)</span></p></td>
+<td><p>transformer, 1 block</p></td>
+<td><p><span class="math notranslate nohighlight">\(8928\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.366\)</span> (<span class="math notranslate nohighlight">\(0.352\)</span>–<span class="math notranslate nohighlight">\(0.380\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><span class="math notranslate nohighlight">\(4\)</span></p></td>
+<td><p>RNN (Chapter 11)</p></td>
+<td><p><span class="math notranslate nohighlight">\(8858\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.351\)</span> (<span class="math notranslate nohighlight">\(0.333\)</span>–<span class="math notranslate nohighlight">\(0.370\)</span>)</p></td>
+</tr>
+<tr class="row-even"><td><p><span class="math notranslate nohighlight">\(4\)</span></p></td>
+<td><p>transformer, 2 blocks</p></td>
+<td><p><span class="math notranslate nohighlight">\(17344\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{0.993}\)</span> (<span class="math notranslate nohighlight">\(0.985\)</span>–<span class="math notranslate nohighlight">\(1.000\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>\noalign{}</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 13.1: Associative recall with <span class="math notranslate nohighlight">\(L\)</span> key-value pairs, so sequence length
+<span class="math notranslate nohighlight">\(T=2L+1\)</span>.  All models trained by Adam with <span class="math notranslate nohighlight">\(\eta=3\times10^{-3}\)</span> on freshly
+generated batches; accuracy on <span class="math notranslate nohighlight">\(400\)</span> unseen sequences, ranges over two seeds.
+Chance is <span class="math notranslate nohighlight">\(0.125\)</span>.</em></p>
+<p>At <span class="math notranslate nohighlight">\(L=2\)</span> the sequence is five tokens long and everything works.  At <span class="math notranslate nohighlight">\(L=4\)</span> both
+the one-block transformer and the recurrent network of Chapter 11
+sit at about <span class="math notranslate nohighlight">\(0.36\)</span>, well above chance but nowhere near the task, and they sit
+there for three thousand updates.  Adding a second block takes the same
+architecture to <span class="math notranslate nohighlight">\(0.993\)</span>.</p>
+<p>This is worth dwelling on, because it cuts against the usual way of describing
+transformers.  Global access is <em>not</em> sufficient.  The one-block model can
+already see every position – Proposition 13.3 charges it <span class="math notranslate nohighlight">\(n^{2}\)</span>
+for the privilege – and it still cannot solve a task that a two-line program
+solves, because the computation it needs is a composition of two retrievals and
+it has only one layer in which to do them.  Depth is not a way of adding
+capacity here; it is a way of adding <em>steps</em>.</p>
+<div class="tip admonition">
+<p class="admonition-title">An honest reading of the middle rows</p>
+<p>The one-block transformer does
+not beat the recurrent network on this task; the two are statistically
+indistinguishable at <span class="math notranslate nohighlight">\(0.366\)</span> against <span class="math notranslate nohighlight">\(0.351\)</span>.  A comparison stopped there would
+conclude that attention offers nothing.  The right conclusion is that the
+architecture was mismatched to the computation, and the fix was depth rather
+than width or attention span.  When a model plateaus well above chance, it is
+worth asking what algorithm it would need and how many sequential steps that
+algorithm takes.</p>
+</div>
+</section>
+<section id="comparisons-and-interpretations">
+<h2><span class="section-number">13.7. </span>Comparisons and interpretations<a class="headerlink" href="#comparisons-and-interpretations" title="Link to this heading">#</a></h2>
+<section id="against-the-other-architectures">
+<h3><span class="section-number">13.7.1. </span>Against the other architectures<a class="headerlink" href="#against-the-other-architectures" title="Link to this heading">#</a></h3>
+<p>The four architectures of Chapters 8 to 13 differ in
+exactly one respect: which elements interact, and how strongly.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>\noalign{} Architecture</p></th>
+<th class="head"><p>Coupling <span class="math notranslate nohighlight">\(y_i=\sum_j C_{ij}x_j\)</span></p></th>
+<th class="head"><p>Cost per layer</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>\noalign{}\noalign{} MLP</p></td>
+<td><p><span class="math notranslate nohighlight">\(C_{ij}=W_{ij}\)</span>, dense and fixed</p></td>
+<td><p><span class="math notranslate nohighlight">\(\bigO(n^{2}d^{2})\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>CNN</p></td>
+<td><p><span class="math notranslate nohighlight">\(C_{ij}=w_{i-j}\)</span>, local and fixed</p></td>
+<td><p><span class="math notranslate nohighlight">\(\bigO(nF d^{2})\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>RNN</p></td>
+<td><p><span class="math notranslate nohighlight">\(C\)</span> lower triangular, applied step by step</p></td>
+<td><p><span class="math notranslate nohighlight">\(\bigO(nd^{2})\)</span>, sequential</p></td>
+</tr>
+<tr class="row-odd"><td><p>Transformer</p></td>
+<td><p><span class="math notranslate nohighlight">\(C_{ij}=A_{ij}(\bm{X})\)</span>, dense and <em>adaptive</em></p></td>
+<td><p><span class="math notranslate nohighlight">\(\bigO(n^{2}d)\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>\noalign{}</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>An MLP has fixed weights <span class="math notranslate nohighlight">\(\bm{W}\)</span> that do not depend on the input.  A
+convolution is the special case in which those weights are local and shared, by
+Theorem 10.2.  A recurrent layer reaches distant positions only
+by composing many short steps, which is what
+Theorem 11.1 punishes.  Attention alone lets the coupling
+matrix be a <em>function of the data</em>:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{fixed couplings}\quad\longrightarrow\quad
+  \text{couplings }A_{ij}(\bm{X})\text{ computed at run time}.\tag{13.16}
+\]</div>
+<p>That is the whole of the innovation, and everything else in the architecture is
+scaffolding to make it trainable.</p>
+</section>
+<section id="a-statistical-mechanics-reading">
+<h3><span class="section-number">13.7.2. </span>A statistical-mechanics reading<a class="headerlink" href="#a-statistical-mechanics-reading" title="Link to this heading">#</a></h3>
+<p>Equation (13.4) will look familiar to anyone who has met a
+canonical ensemble.  Writing <span class="math notranslate nohighlight">\(E_{ij}=-s_{ij}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+A_{ij} = \frac{e^{-E_{ij}}}{\sum_{\ell}e^{-E_{i\ell}}}
+         = \frac{e^{-E_{ij}}}{Z_i},\tag{13.17}
+\]</div>
+<p>which is a Gibbs distribution over interaction partners at inverse temperature
+one, with <span class="math notranslate nohighlight">\(Z_i\)</span> a per-query partition function.  The scores are effective
+energies; the softmax is a local Boltzmann weighting; and the <span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> of
+Section <em>Why the \texorpdfstring{<span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span>}{1/sqrt(dk)}</em> is a choice of temperature, with saturation being the
+zero-temperature limit in which the distribution collapses onto its ground
+state.</p>
+<p>The aggregation step then reads</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{y}_i = \sum_j J_{ij}(\bm{X})\,\bm{v}_j,
+  \qquad J_{ij}\equiv A_{ij},\tag{13.18}
+\]</div>
+<p>which is a mean-field update with <em>state-dependent</em> couplings.  In an
+Ising or Hopfield model the <span class="math notranslate nohighlight">\(J_{ij}\)</span> are fixed by the Hamiltonian; here they are
+recomputed from the current configuration at every layer.  A transformer is,
+in this reading, a nonlinear adaptive mean-field model, and the analogy is close
+enough to have been productive: the connection between attention and modern
+Hopfield networks with exponential capacity is more than superficial.</p>
+</section>
+<section id="kernels-and-graphs">
+<h3><span class="section-number">13.7.3. </span>Kernels and graphs<a class="headerlink" href="#kernels-and-graphs" title="Link to this heading">#</a></h3>
+<p>Equation (13.2) also reads as a discretised integral operator,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{y}_i = \sum_j K(\bm{x}_i,\bm{x}_j)\,\bm{v}_j
+  \qquad\longleftrightarrow\qquad
+  (\mathcal{K}f)(x) = \int K(x,x')f(x')\,\mathrm{d}x',\tag{13.19}
+\]</div>
+<p>with the difference that <span class="math notranslate nohighlight">\(K\)</span> is learned rather than prescribed.  Compare the
+kernel methods of Chapter 6, where <span class="math notranslate nohighlight">\(K\)</span> was chosen in advance and
+the representer theorem then fixed everything: attention learns the kernel and
+gives up the theory.</p>
+<p>Viewed as a graph, attention defines a complete weighted graph on the tokens
+with edge weights <span class="math notranslate nohighlight">\(A_{ij}\)</span>, which makes a transformer a graph neural network
+whose graph is inferred rather than given.  A message-passing network on a fixed
+graph is the special case in which <span class="math notranslate nohighlight">\(A_{ij}\)</span> is constrained to the adjacency
+structure.</p>
+</section>
+<section id="why-this-matters-for-differential-equations">
+<h3><span class="section-number">13.7.4. </span>Why this matters for differential equations<a class="headerlink" href="#why-this-matters-for-differential-equations" title="Link to this heading">#</a></h3>
+<p>Chapters 9 and 10 both met the same obstacle from
+different sides.  A convolutional network handles local structure superbly and
+reaches distant parts of a domain only by stacking layers, at the rate given by
+Proposition 10.10.  But elliptic equations are <em>globally</em>
+coupled – change a boundary value and the solution changes everywhere at once
+– and so are nonlocal operators, multiscale dynamics and problems with global
+constraints.  Attention couples the whole domain in one layer.</p>
+<p>The natural framing is operator learning.  Rather than solving one problem, as
+in Chapter 9, one learns the solution operator</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{G}: a(x)\;\longmapsto\;u(x),
+  \qquad\text{or}\qquad
+  \mathcal{G}: u_0(x)\;\longmapsto\;u(x,t),\tag{13.20}
+\]</div>
+<p>mapping a coefficient field or an initial condition to a solution.  Discretise
+the field at points <span class="math notranslate nohighlight">\(x_1,\dots,x_n\)</span> and let each token carry what is known at
+that point,</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{x}_i^{\mathrm{token}}
+   = \bigl(x_i,\;u(x_i),\;a(x_i),\dots\bigr),\tag{13.21}
+\]</div>
+<p>and Eq. (13.19) becomes a learned Green’s function: <span class="math notranslate nohighlight">\(A_{ij}\)</span> is how
+much the solution at <span class="math notranslate nohighlight">\(x_i\)</span> depends on the data at <span class="math notranslate nohighlight">\(x_j\)</span>.  For the Poisson
+equation of Section <em>The one-dimensional Poisson equation</em> that dependence is the actual Green’s
+function, and a trained attention matrix can be compared against it directly –
+an unusually direct check on what such a model has learned, and one worth doing.</p>
+<p>The competitor is the Fourier neural operator, which achieves nonlocality by
+multiplication in the frequency domain, in the spirit of the notebox of
+Section <em>Toeplitz structure</em>.  Fourier methods are natural for translation-invariant
+problems on regular grids and cost <span class="math notranslate nohighlight">\(\bigO(n\log n)\)</span>; attention handles irregular
+domains and learns data-dependent kernels, and costs <span class="math notranslate nohighlight">\(\bigO(n^{2})\)</span>.  Which wins
+depends on whether the problem’s structure is known in advance – the same
+question that decided between hard and soft constraints in
+Section <em>Physics-informed neural networks</em>.</p>
+</section>
+</section>
+<section id="pytorch-and-tensorflow">
+<h2><span class="section-number">13.8. </span>PyTorch and TensorFlow<a class="headerlink" href="#pytorch-and-tensorflow" title="Link to this heading">#</a></h2>
+<p>PyTorch supplies attention at three levels.  The lowest is
+\verb!scaled_dot_product_attention!, which is Eq. (13.5) and
+nothing else; above it \verb!nn.MultiheadAttention! adds the projections of
+Eq. (13.13); above that \verb!nn.TransformerEncoderLayer! is the
+whole of Eq. (13.14).  Writing the block explicitly is more
+instructive:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+
+
+<span class="k">class</span> <span class="nc">Block</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Eq. (13.block), pre-norm, written out rather than assembled.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">d_ff</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ln1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>                  <span class="c1"># Eq. (13.layernorm)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MultiheadAttention</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+                                          <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ln2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_ff</span><span class="p">,</span> <span class="n">d</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ln1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attn</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">attn_mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">need_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">a</span>                                   <span class="c1"># residual: see Section 13.block</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ln2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">A</span>
+
+
+<span class="k">def</span> <span class="nf">causal_mask</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Eq. (13.mask): True where attention is forbidden.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Transformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_vocab</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">d_ff</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">n_blocks</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_ctx</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_vocab</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_ctx</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>   <span class="c1"># learned; or Eq. (13.posenc)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">Block</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_blocks</span><span class="p">)])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ln_f</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">n_vocab</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">causal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">causal_mask</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">if</span> <span class="n">causal</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">blk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">blk</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ln_f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Three details are worth flagging.  \verb!batch_first=True! is not the default
+and the alternative layout catches everyone once.  \verb!attn_mask! expects
+\verb!True! where attention is <em>forbidden</em>, the opposite of what the name
+suggests to many readers.  And the parameter count of a block is
+<span class="math notranslate nohighlight">\(4d^{2}\)</span> for the attention plus <span class="math notranslate nohighlight">\(2dd_{\mathrm{ff}}\)</span> for the MLP, so with the
+usual <span class="math notranslate nohighlight">\(d_{\mathrm{ff}}=4d\)</span> the feed-forward part holds two thirds of the
+parameters – attention is where the computation is, not where the parameters
+are.</p>
+<p>The same in Keras, where \verb!MultiHeadAttention! plays the same role:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
+
+
+<span class="k">class</span> <span class="nc">Block</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Eq. (13.block) in Keras; note key_dim is d_k, not d.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">d_ff</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ln1</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">LayerNormalization</span><span class="p">(</span><span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attn</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">MultiHeadAttention</span><span class="p">(</span><span class="n">num_heads</span><span class="o">=</span><span class="n">H</span><span class="p">,</span> <span class="n">key_dim</span><span class="o">=</span><span class="n">d</span> <span class="o">//</span> <span class="n">H</span><span class="p">,</span>
+                                              <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ln2</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">LayerNormalization</span><span class="p">(</span><span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">d_ff</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;gelu&quot;</span><span class="p">),</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">layers</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ln1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">attn</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">use_causal_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ln2</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">n_vocab</span><span class="p">,</span> <span class="n">n_ctx</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">H</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">d_ff</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">n_blocks</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_ctx</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int32&quot;</span><span class="p">)</span>
+    <span class="n">tok</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_vocab</span><span class="p">,</span> <span class="n">d</span><span class="p">)(</span><span class="n">inp</span><span class="p">)</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_ctx</span><span class="p">,</span> <span class="n">d</span><span class="p">)(</span><span class="n">tf</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="n">n_ctx</span><span class="p">))</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">tok</span> <span class="o">+</span> <span class="n">pos</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_blocks</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">Block</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">)(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">n_vocab</span><span class="p">)(</span><span class="n">layers</span><span class="o">.</span><span class="n">LayerNormalization</span><span class="p">(</span><span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="n">optimizer</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">3e-4</span><span class="p">),</span>
+        <span class="n">loss</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">SparseCategoricalCrossentropy</span><span class="p">(</span><span class="n">from_logits</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="do-the-three-implementations-agree">
+<h3><span class="section-number">13.8.1. </span>Do the three implementations agree?<a class="headerlink" href="#do-the-three-implementations-agree" title="Link to this heading">#</a></h3>
+<p>Attention has more places for a convention to differ than a convolution does,
+and the differences are all in how the heads are packed:</p>
+<ul class="simple">
+<li><p>\verb!nn.MultiheadAttention! stores the three projections in a single
+\verb!in_proj_weight! of shape <span class="math notranslate nohighlight">\((3d,d)\)</span>, stacked in the order <span class="math notranslate nohighlight">\(Q,K,V\)</span>, with
+every head concatenated inside each block and each block transposed relative
+to our <span class="math notranslate nohighlight">\((d,d_k)\)</span> convention.</p></li>
+<li><p>\verb!layers.MultiHeadAttention! keeps the head axis explicit: its query
+kernel is <span class="math notranslate nohighlight">\((d,H,d_k)\)</span>, which is our <span class="math notranslate nohighlight">\((H,d,d_k)\)</span> with the first two axes
+swapped, and its output kernel is <span class="math notranslate nohighlight">\((H,d_k,d)\)</span> against our <span class="math notranslate nohighlight">\((Hd_k,d)\)</span>.</p></li>
+<li><p>Both apply the <span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> of Eq. (13.5) internally,
+and both take the mask with the opposite polarity from the other.</p></li>
+</ul>
+<p>With those reconciled, one set of weights in all three, in double precision:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">1.</span> <span class="n">scaled</span> <span class="n">dot</span><span class="o">-</span><span class="n">product</span> <span class="n">attention</span><span class="p">,</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">13.</span><span class="n">attention</span><span class="p">)</span> <span class="o">===</span>
+  <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span>                 <span class="p">:</span> <span class="mf">2.220e-16</span>
+  <span class="n">attention</span> <span class="n">rows</span> <span class="nb">sum</span> <span class="n">to</span> <span class="n">one</span><span class="p">,</span> <span class="nb">max</span> <span class="n">dev</span> <span class="p">:</span> <span class="mf">2.220e-16</span>
+  <span class="n">causal</span> <span class="n">mask</span><span class="p">,</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">13.</span><span class="n">mask</span><span class="p">),</span> <span class="nb">max</span> <span class="n">diff</span><span class="p">:</span> <span class="mf">2.220e-16</span>
+  <span class="n">strictly</span><span class="o">-</span><span class="n">upper</span> <span class="n">attention</span> <span class="n">mass</span>       <span class="p">:</span> <span class="mf">0.000e+00</span>   <span class="p">(</span><span class="n">must</span> <span class="n">be</span> <span class="n">exactly</span> <span class="n">zero</span><span class="p">)</span>
+
+<span class="o">===</span> <span class="mf">2.</span> <span class="n">multi</span><span class="o">-</span><span class="n">head</span> <span class="n">attention</span><span class="p">,</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">13.</span><span class="n">multihead</span><span class="p">)</span> <span class="o">===</span>
+  <span class="n">output</span>   <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span>        <span class="p">:</span> <span class="mf">3.886e-16</span>
+  <span class="n">weights</span>  <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span>        <span class="p">:</span> <span class="mf">1.665e-16</span>
+  <span class="n">output</span>   <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">keras</span><span class="o">|</span>        <span class="p">:</span> <span class="mf">5.551e-16</span>
+  <span class="n">weights</span>  <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">keras</span><span class="o">|</span>        <span class="p">:</span> <span class="mf">2.220e-16</span>
+
+<span class="o">===</span> <span class="mf">3.</span> <span class="n">layer</span> <span class="n">normalisation</span><span class="p">,</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">13.</span><span class="n">layernorm</span><span class="p">)</span> <span class="o">===</span>
+  <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span> <span class="p">:</span> <span class="mf">1.776e-15</span>
+  <span class="nb">max</span> <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">keras</span><span class="o">|</span> <span class="p">:</span> <span class="mf">1.776e-15</span>
+</pre></div>
+</div>
+<p>and the gradient through a whole block of Eq. (13.14), which is the
+comparison that matters, since our gradients come from <code class="docutils literal notranslate"><span class="pre">autograd</span></code> on
+NumPy and PyTorch’s from an entirely separate implementation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">4.</span> <span class="n">the</span> <span class="n">gradient</span> <span class="n">through</span> <span class="n">a</span> <span class="n">transformer</span> <span class="n">block</span><span class="p">,</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">13.</span><span class="n">block</span><span class="p">)</span> <span class="o">===</span>
+  <span class="n">our</span> <span class="n">loss</span>   <span class="p">:</span> <span class="mf">2.675342504804</span>
+  <span class="n">torch</span> <span class="n">loss</span> <span class="p">:</span> <span class="mf">2.675342504804</span>
+   <span class="n">parameter</span>      <span class="n">shape</span>             <span class="o">|</span><span class="n">ours</span> <span class="o">-</span> <span class="n">torch</span><span class="o">|</span>
+   <span class="n">WQ</span>       <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>               <span class="mf">1.943e-16</span>
+   <span class="n">WK</span>       <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>               <span class="mf">1.388e-16</span>
+   <span class="n">WV</span>       <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>               <span class="mf">1.943e-16</span>
+   <span class="n">WO</span>       <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>                 <span class="mf">1.110e-16</span>
+   <span class="n">W1</span>       <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>                 <span class="mf">6.939e-17</span>
+   <span class="n">W2</span>       <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>                 <span class="mf">1.110e-16</span>
+   <span class="n">g1</span>       <span class="p">(</span><span class="mi">16</span><span class="p">,)</span>                    <span class="mf">1.388e-16</span>
+   <span class="n">g2</span>       <span class="p">(</span><span class="mi">16</span><span class="p">,)</span>                    <span class="mf">5.551e-17</span>
+  <span class="n">worst</span> <span class="n">disagreement</span><span class="p">:</span> <span class="mf">1.943e-16</span>
+</pre></div>
+</div>
+<p>Softmax, layer normalisation, the residual paths and the multi-head repacking
+all differentiate to the same numbers.</p>
+</section>
+<section id="the-scaling-in-the-library">
+<h3><span class="section-number">13.8.2. </span>The scaling, in the library<a class="headerlink" href="#the-scaling-in-the-library" title="Link to this heading">#</a></h3>
+<p>Section <em>Why the \texorpdfstring{<span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span>}{1/sqrt(dk)}</em> established Proposition 13.4 on our
+own softmax.  Repeating the measurement through PyTorch, over three decades of
+<span class="math notranslate nohighlight">\(d_k\)</span> and with the entropy and largest weight of the attention rows alongside
+the softmax Jacobian:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="n">d_k</span>   <span class="n">var</span><span class="p">(</span><span class="n">logit</span><span class="p">)</span>   <span class="n">entropy</span> <span class="n">scaled</span>   <span class="n">entropy</span> <span class="n">unscaled</span>   <span class="nb">max</span> <span class="n">weight</span> <span class="n">sc</span><span class="o">/</span><span class="n">unsc</span>   <span class="o">||</span><span class="n">dA</span><span class="o">/</span><span class="n">dS</span><span class="o">||</span> <span class="n">sc</span><span class="o">/</span><span class="n">unsc</span>
+      <span class="mi">4</span>         <span class="mf">4.22</span>           <span class="mf">3.6547</span>             <span class="mf">2.6957</span>       <span class="mf">0.123</span><span class="o">/</span><span class="mf">0.314</span>         <span class="mf">0.1847</span><span class="o">/</span><span class="mf">0.2516</span>
+     <span class="mi">16</span>        <span class="mf">16.92</span>           <span class="mf">3.6392</span>             <span class="mf">1.1623</span>       <span class="mf">0.125</span><span class="o">/</span><span class="mf">0.644</span>         <span class="mf">0.1902</span><span class="o">/</span><span class="mf">0.2664</span>
+     <span class="mi">64</span>        <span class="mf">64.91</span>           <span class="mf">3.6768</span>             <span class="mf">0.5191</span>       <span class="mf">0.111</span><span class="o">/</span><span class="mf">0.808</span>         <span class="mf">0.1849</span><span class="o">/</span><span class="mf">0.1939</span>
+    <span class="mi">256</span>       <span class="mf">258.73</span>           <span class="mf">3.6893</span>             <span class="mf">0.2479</span>       <span class="mf">0.106</span><span class="o">/</span><span class="mf">0.901</span>         <span class="mf">0.1827</span><span class="o">/</span><span class="mf">0.1170</span>
+   <span class="mi">1024</span>      <span class="mf">1050.61</span>           <span class="mf">3.6651</span>             <span class="mf">0.1024</span>       <span class="mf">0.109</span><span class="o">/</span><span class="mf">0.961</span>         <span class="mf">0.1860</span><span class="o">/</span><span class="mf">0.0565</span>
+</pre></div>
+</div>
+<p>The second column is Proposition 13.4 over a factor of <span class="math notranslate nohighlight">\(256\)</span>
+in <span class="math notranslate nohighlight">\(d_k\)</span>.  The rest is the consequence.  Scaled, the entropy stays at
+<span class="math notranslate nohighlight">\(3.66\)</span> – against <span class="math notranslate nohighlight">\(\log 64=4.159\)</span> for a uniform row – the largest weight stays
+near <span class="math notranslate nohighlight">\(0.11\)</span>, and the softmax Jacobian stays near <span class="math notranslate nohighlight">\(0.185\)</span>, all essentially
+independent of <span class="math notranslate nohighlight">\(d_k\)</span>.  Unscaled, the entropy falls by a factor of <span class="math notranslate nohighlight">\(26\)</span>, the
+largest weight climbs to <span class="math notranslate nohighlight">\(0.96\)</span>, and the Jacobian falls to <span class="math notranslate nohighlight">\(0.057\)</span>.  At
+<span class="math notranslate nohighlight">\(d_k=1024\)</span> an unscaled attention row is a hard maximum in all but name, and a
+hard maximum has no derivative.  The division by <span class="math notranslate nohighlight">\(\sqrt{d_k}\)</span> is not a
+normalisation convenience; it is what keeps the layer differentiable as it is
+made wider.</p>
+</section>
+<section id="permutation-equivariance-tested">
+<h3><span class="section-number">13.8.3. </span>Permutation equivariance, tested<a class="headerlink" href="#permutation-equivariance-tested" title="Link to this heading">#</a></h3>
+<p>Theorem 13.2 is easy to state and easy to get wrong in an
+implementation, since any leaked positional information breaks it silently.
+Permuting the tokens of a random input through \verb!nn.MultiheadAttention!:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">2.</span> <span class="n">Theorem</span> <span class="mf">13.</span><span class="n">perm</span><span class="p">,</span> <span class="n">tested</span> <span class="o">===</span>
+  <span class="nb">max</span> <span class="o">|</span><span class="n">MHA</span><span class="p">(</span><span class="n">PX</span><span class="p">)</span> <span class="o">-</span> <span class="n">P</span> <span class="n">MHA</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">|</span>                      <span class="p">:</span> <span class="mf">8.941e-08</span>
+  <span class="k">with</span> <span class="n">positional</span> <span class="n">encoding</span><span class="p">,</span> <span class="n">Eq</span><span class="o">.</span> <span class="p">(</span><span class="mf">13.</span><span class="n">posenc</span><span class="p">)</span>     <span class="p">:</span> <span class="mf">3.211e-01</span>
+</pre></div>
+</div>
+<p>The first line is zero to single-precision rounding and the second is not, which
+is the theorem and its remedy in two numbers.</p>
+</section>
+<section id="associative-recall-in-the-frameworks">
+<h3><span class="section-number">13.8.4. </span>Associative recall, in the frameworks<a class="headerlink" href="#associative-recall-in-the-frameworks" title="Link to this heading">#</a></h3>
+<p>Table 13.1 was produced by our own NumPy transformer.  Repeating
+it in PyTorch – with \verb!nn.TransformerEncoderLayer! rather than our block,
+and extending to <span class="math notranslate nohighlight">\(L=8\)</span>, the longest the task allows with eight distinct
+keys – gives Table 13.2.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>\noalign{} Model</p></th>
+<th class="head"><p>Parameters</p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(L=2\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(L=4\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(L=8\)</span></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>\noalign{}\noalign{} transformer, 1 block</p></td>
+<td><p><span class="math notranslate nohighlight">\(9128\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.988\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.367\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.285\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>transformer, 2 blocks</p></td>
+<td><p><span class="math notranslate nohighlight">\(17672\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.000\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{0.999}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbf{0.708}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>transformer, 2 blocks, learned pos.</p></td>
+<td><p><span class="math notranslate nohighlight">\(19720\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.557\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.382\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.286\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>LSTM (Chapter 11)</p></td>
+<td><p><span class="math notranslate nohighlight">\(16392\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.000\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.907\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.507\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>simple RNN (Chapter 11)</p></td>
+<td><p><span class="math notranslate nohighlight">\(4584\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.931\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.349\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(0.266\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>\noalign{}</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 13.2: Associative recall in PyTorch: <span class="math notranslate nohighlight">\(L\)</span> key-value pairs, sequence length
+<span class="math notranslate nohighlight">\(T=2L+1\)</span>, eight symbols so chance is <span class="math notranslate nohighlight">\(0.125\)</span>.  All models trained by Adam at
+<span class="math notranslate nohighlight">\(3\times10^{-3}\)</span> for <span class="math notranslate nohighlight">\(3000\)</span> updates on freshly generated batches; accuracy on
+<span class="math notranslate nohighlight">\(400\)</span> unseen sequences averaged over two seeds.  The last two rows are the
+recurrent networks of Chapter 11 on the same task.</em></p>
+<p>The first two rows reproduce Table 13.1 in a different
+implementation: one block reaches <span class="math notranslate nohighlight">\(0.367\)</span> at <span class="math notranslate nohighlight">\(L=4\)</span> against our <span class="math notranslate nohighlight">\(0.366\)</span>, two
+blocks <span class="math notranslate nohighlight">\(0.999\)</span> against <span class="math notranslate nohighlight">\(0.993\)</span>.  Proposition 13.6 is not an
+artefact of our code.  Extending to <span class="math notranslate nohighlight">\(L=8\)</span> shows the two-block model degrading
+too, to <span class="math notranslate nohighlight">\(0.708\)</span> – the induction head solves the mechanism but the model still
+has to find the right one of eight keys in a seventeen-token sequence with a
+<span class="math notranslate nohighlight">\(32\)</span>-dimensional state.</p>
+<p>The third row is the finding worth pausing on.  Replacing the sinusoidal
+encoding of Eq. (13.9) by a <em>learned</em> positional embedding,
+initialised small and trained alongside everything else, destroys the model:
+<span class="math notranslate nohighlight">\(0.557\)</span> at <span class="math notranslate nohighlight">\(L=2\)</span> where the sinusoidal version reaches <span class="math notranslate nohighlight">\(1.000\)</span>, and chance-level
+<span class="math notranslate nohighlight">\(0.286\)</span> at <span class="math notranslate nohighlight">\(L=8\)</span>.  Nothing else changed.  Proposition 13.5
+explains it.  The previous-token head that the induction mechanism needs is,
+under Eq. (13.10), a single linear map applied at every position
+at once, because translation acts linearly on the sinusoidal code.  A learned
+embedding has no such structure at initialisation, so the same head must be
+discovered separately for every position, and <span class="math notranslate nohighlight">\(3000\)</span> updates are not enough.
+Learned positional embeddings work at scale; they are a poor choice when data
+and compute are short, and this table is what that costs.</p>
+<p>Running the same experiment in TensorFlow, with the block assembled by hand
+from the Keras attention and normalisation layers rather than taken
+ready-made, gives</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="n">associative</span> <span class="n">recall</span> <span class="ow">in</span> <span class="n">TensorFlow</span><span class="p">,</span> <span class="n">Table</span> <span class="mf">13.</span><span class="n">recall</span> <span class="o">===</span>
+    <span class="n">L</span>    <span class="n">T</span>   <span class="n">model</span>                  <span class="n">params</span>   <span class="n">test</span> <span class="n">accuracy</span> <span class="p">(</span><span class="mi">2</span> <span class="n">seeds</span><span class="p">)</span>
+    <span class="mi">2</span>    <span class="mi">5</span>   <span class="n">transformer</span><span class="p">,</span> <span class="mi">1</span> <span class="n">block</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>      <span class="mi">9128</span>   <span class="mf">1.000</span>   <span class="p">(</span><span class="mi">35</span><span class="n">s</span><span class="p">)</span>
+    <span class="mi">2</span>    <span class="mi">5</span>   <span class="n">transformer</span><span class="p">,</span> <span class="mi">2</span> <span class="n">block</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>     <span class="mi">17672</span>   <span class="mf">1.000</span>   <span class="p">(</span><span class="mi">55</span><span class="n">s</span><span class="p">)</span>
+    <span class="mi">4</span>    <span class="mi">9</span>   <span class="n">transformer</span><span class="p">,</span> <span class="mi">1</span> <span class="n">block</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>      <span class="mi">9128</span>   <span class="mf">0.539</span>   <span class="p">(</span><span class="mi">38</span><span class="n">s</span><span class="p">)</span>
+    <span class="mi">4</span>    <span class="mi">9</span>   <span class="n">transformer</span><span class="p">,</span> <span class="mi">2</span> <span class="n">block</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>     <span class="mi">17672</span>   <span class="mf">1.000</span>   <span class="p">(</span><span class="mi">63</span><span class="n">s</span><span class="p">)</span>
+    <span class="mi">8</span>   <span class="mi">17</span>   <span class="n">transformer</span><span class="p">,</span> <span class="mi">1</span> <span class="n">block</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>      <span class="mi">9128</span>   <span class="mf">0.343</span>   <span class="p">(</span><span class="mi">45</span><span class="n">s</span><span class="p">)</span>
+    <span class="mi">8</span>   <span class="mi">17</span>   <span class="n">transformer</span><span class="p">,</span> <span class="mi">2</span> <span class="n">block</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>     <span class="mi">17672</span>   <span class="mf">0.359</span>   <span class="p">(</span><span class="mi">74</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The row that matters agrees: at <span class="math notranslate nohighlight">\(L=4\)</span>, one block reaches <span class="math notranslate nohighlight">\(0.539\)</span> and two reach
+<span class="math notranslate nohighlight">\(1.000\)</span>.  The parameter counts are identical to PyTorch’s, and
+Section <em>Do the three implementations agree?</em> has already established that the two compute the
+same function.  At <span class="math notranslate nohighlight">\(L=8\)</span> they part company – TensorFlow’s two-block model gets
+<span class="math notranslate nohighlight">\(0.359\)</span> where PyTorch’s got <span class="math notranslate nohighlight">\(0.708\)</span> – and the difference is initialisation and
+optimiser state, not architecture.  We report it rather than choosing the
+better number: at the edge of what <span class="math notranslate nohighlight">\(3000\)</span> updates can find, a task can be solved
+or not depending on where the search starts, and a single run of a single
+framework is not evidence about an architecture.  The <span class="math notranslate nohighlight">\(L=4\)</span> column, where both
+frameworks are decisive and agree, is.</p>
+<p>Finally, the recurrent baselines.  The LSTM is competitive at <span class="math notranslate nohighlight">\(L=2\)</span> and <span class="math notranslate nohighlight">\(L=4\)</span>
+and better than the one-block transformer everywhere, which is the honest
+reading already given in the notebox of Section <em>What one attention layer cannot do</em>: global
+access is not by itself an advantage.  What separates the architectures here is
+whether the model can compose two retrievals, and that is a question about
+depth, not about attention.</p>
+<p><img alt="a The entropy of an attention row against dk, with and without the 1sq" src="_images/attention_frameworks.png" /></p>
+<p><em>Figure 13.3: (a) The entropy of an attention row against <span class="math notranslate nohighlight">\(d_k\)</span>, with and without the <span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> of Eq. (13.5), measured in PyTorch; the dashed line is <span class="math notranslate nohighlight">\(\log 64\)</span>, the entropy of a uniform row.  (b) The largest weight in a row and the norm of the softmax Jacobian: unscaled, the row becomes a hard maximum and the derivative disappears with it.  (c) Associative recall, Table 13.2: one block fails where two succeed, and the learned positional encoding fails everywhere.  (d) The largest disagreement between our gradients through a whole block and PyTorch’s, against the double-precision unit roundoff.</em></p>
+</section>
+</section>
+<section id="strengths-weaknesses-and-what-to-remember">
+<h2><span class="section-number">13.9. </span>Strengths, weaknesses and what to remember<a class="headerlink" href="#strengths-weaknesses-and-what-to-remember" title="Link to this heading">#</a></h2>
+<p>A transformer replaces the fixed interaction patterns of the earlier
+architectures by couplings computed from the data, Eq. (13.16).
+Everything else – the multilayer perceptron, the residual connections, the
+normalisation – is machinery from earlier chapters, assembled to make that one
+idea trainable.</p>
+<p>The properties are sharp and we proved them.  Attention averages, so its output
+lies in the convex hull of its values (Proposition 13.1) and it
+cannot extrapolate without the feed-forward sublayer.  It is equivariant to
+<em>all</em> permutations (Theorem 13.2), a much larger symmetry group
+than the translations of Theorem 10.7, which is why position has to
+be added by hand.  It costs <span class="math notranslate nohighlight">\(\bigO(n^{2}d)\)</span> (Proposition 13.3),
+which is the price of global access and the reason for a large literature on
+approximating it.</p>
+<p>The <span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> is not cosmetic.  Proposition 13.4 predicts
+<span class="math notranslate nohighlight">\(\var(\bm{q}\cdot\bm{k})=d_k\)</span>, measured as <span class="math notranslate nohighlight">\(1011\)</span> at <span class="math notranslate nohighlight">\(d_k=1024\)</span>; and the softmax
+Jacobian falls by thirty-five orders of magnitude between logit scale <span class="math notranslate nohighlight">\(1\)</span> and
+scale <span class="math notranslate nohighlight">\(64\)</span>.  Without the scaling a wide head starts training with no usable
+gradient through its attention weights at all.</p>
+<p>The result to carry away is Section <em>What one attention layer cannot do</em>.  On associative recall
+at <span class="math notranslate nohighlight">\(L=4\)</span>, a one-block transformer reached <span class="math notranslate nohighlight">\(0.366\)</span> and a matched recurrent
+network <span class="math notranslate nohighlight">\(0.351\)</span> – indistinguishable, and both far from the task.  Two blocks
+reached <span class="math notranslate nohighlight">\(0.993\)</span>.  Seeing every position is not the same as being able to compose
+two retrievals, and depth here supplies <em>steps</em> of computation rather than
+capacity.  Global access is necessary and not sufficient.
+Proposition 13.6 turns that observation into a statement with
+a proof: if keys and values depend on the symbol at their own position, no
+content-based score can single out the position <em>after</em> the match, because
+the symbol there is independent of the query.  Repeating the whole table in
+PyTorch, Table 13.2, reproduces it to the third decimal –
+<span class="math notranslate nohighlight">\(0.367\)</span> against <span class="math notranslate nohighlight">\(0.366\)</span> for one block, <span class="math notranslate nohighlight">\(0.999\)</span> against <span class="math notranslate nohighlight">\(0.993\)</span> for two.</p>
+<p>Two further things came out of running the libraries rather than reading them.
+Proposition 13.5 shows the sinusoidal encoding to be an exactly
+relative code, with translation acting on it as a fixed rotation,
+Eq. (13.10); replacing it by a learned embedding and changing
+nothing else drops recall from <span class="math notranslate nohighlight">\(1.000\)</span> to <span class="math notranslate nohighlight">\(0.557\)</span> at <span class="math notranslate nohighlight">\(L=2\)</span> and to chance at
+<span class="math notranslate nohighlight">\(L=8\)</span>, because the previous-token head that the induction mechanism needs is one
+linear map on the sinusoidal code and a separate discovery at every position
+without it.  And our block, differentiated by <code class="docutils literal notranslate"><span class="pre">autograd</span></code> on NumPy, agrees
+with PyTorch’s implementation of the same block to <span class="math notranslate nohighlight">\(1.9\times10^{-16}\)</span> on every
+parameter array – softmax, layer normalisation and multi-head repacking
+included.</p>
+<p>Set against the strengths – global context, full parallelism across positions,
+excellent scaling with data and model size, a learned rather than assumed
+interaction structure – are real weaknesses: quadratic cost in sequence length,
+large data requirements, no inductive bias whatever about locality or order, and
+an interpretability that is better than a dense layer’s but far from complete.
+The architecture is a good default when the structure of the interactions is
+unknown and the data are plentiful.  When the structure <em>is</em> known –
+locality in an image, causality in a time series, translation invariance in a
+homogeneous medium – a convolution or a recurrence encodes it for free, and
+free structure beats learned structure whenever the structure is right.</p>
+<p>The programs are in the directory</p>
+<p><code class="docutils literal notranslate"><span class="pre">doc/BookML/BookPrograms/chapter13_transformers</span></code>.</p>
+<p>Every listing above appears there as a numbered file, and three modules run
+start to finish and reproduce the numbers quoted in the text:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">attention.py</span></code> – scaled dot-product attention, multi-head
+attention, layer normalisation, the block of
+Eq. (13.14), causal masks, sinusoidal positional
+encodings, and batched versions of all of them.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cross_check_attn.py</span></code> – the three-way comparison of
+Section <em>Do the three implementations agree?</em>, with the head-packing conversions for both
+libraries written out.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transformer_torch.py</span></code> – the scaling measurement of
+Section <em>The scaling, in the library</em>, the permutation test of
+Section <em>Permutation equivariance, tested</em> and the recall table of
+Section <em>Associative recall, in the frameworks</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transformer_tf.py</span></code> – the recall experiment in TensorFlow.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verify_attention.py</span></code> – row-stochasticity, the convex-hull
+property, permutation equivariance and its destruction by a mask, the
+logit-variance table, the softmax-saturation table, and the agreement
+between the looped and batched implementations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">recall.py</span></code> and <code class="docutils literal notranslate"><span class="pre">run_recall.py</span></code> – the associative-recall
+task of Table 13.1, with the one-block and two-block
+transformers and the Chapter 11 recurrent baseline.</p></li>
+</ul>
+<p>The figures are generated by <code class="docutils literal notranslate"><span class="pre">ch13_figures.py</span></code> in
+<code class="docutils literal notranslate"><span class="pre">doc/BookML/BookFigures</span></code>; neither is drawn by hand.</p>
+</section>
+<section id="exercises">
+<h2><span class="section-number">13.10. </span>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<section id="warm-up-exercises">
+<h3><span class="section-number">13.10.1. </span>Warm-up exercises<a class="headerlink" href="#warm-up-exercises" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Shapes and costs.</strong>
+With <span class="math notranslate nohighlight">\(n=512\)</span>, <span class="math notranslate nohighlight">\(d=768\)</span>, <span class="math notranslate nohighlight">\(H=12\)</span> and <span class="math notranslate nohighlight">\(d_k=d/H\)</span>:
+(a) what are the shapes of <span class="math notranslate nohighlight">\(\bm{Q}\)</span>, <span class="math notranslate nohighlight">\(\bm{K}\)</span>, <span class="math notranslate nohighlight">\(\bm{V}\)</span>, <span class="math notranslate nohighlight">\(\bm{A}\)</span> and the
+output of one head?
+(b) How many parameters has one block with <span class="math notranslate nohighlight">\(d_{\mathrm{ff}}=4d\)</span>, split
+between attention and the MLP?
+(c) How much memory does <span class="math notranslate nohighlight">\(\bm{A}\)</span> need in single precision, for all heads at
+once, and what happens at <span class="math notranslate nohighlight">\(n=8192\)</span>?</p></li>
+<li><p><strong>Permutation equivariance.</strong>
+Prove Theorem 13.2 for multi-head attention, and then show that
+adding the positional encoding of Eq. (13.9) destroys it.  Is
+the composition equivariant to any group at all?</p></li>
+<li><p><strong>The convex hull.</strong>
+Verify Proposition 13.1 numerically, then construct a target
+output that a single attention layer provably cannot produce, and confirm that
+adding the MLP of Eq. (13.14) makes it reachable.</p></li>
+<li><p><strong>Temperature.</strong>
+Replace <span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> by <span class="math notranslate nohighlight">\(\beta\)</span> in Eq. (13.4) and study the
+limits <span class="math notranslate nohighlight">\(\beta\to0\)</span> and <span class="math notranslate nohighlight">\(\beta\to\infty\)</span>.  Show that the first gives uniform
+averaging and the second a hard <span class="math notranslate nohighlight">\(\arg\max\)</span>, and relate both to
+Eq. (13.17).  What is the entropy of the attention distribution in
+each limit?</p></li>
+<li><p><strong>Positional encodings.</strong>
+(a) Prove Proposition 13.5: exhibit the rotation <span class="math notranslate nohighlight">\(\bm{R}_k\)</span> of
+Eq. (13.10) and derive Eq. (13.11).
+(b) Plot <span class="math notranslate nohighlight">\(\mathrm{PE}(m)\cdot\mathrm{PE}(m')\)</span> against <span class="math notranslate nohighlight">\(m-m'\)</span> for <span class="math notranslate nohighlight">\(d=64\)</span> and
+confirm that all curves collapse onto one, as part (ii) requires.
+(c) The kernel is exactly relative but not monotonic in <span class="math notranslate nohighlight">\(|m-m'|\)</span>.  Find the
+first local maximum away from the origin and explain where it comes from.
+(d) Show that a learned positional embedding satisfies neither part of the
+proposition, and connect that to the third row of
+Table 13.2.</p></li>
+<li><p><strong>One layer is not enough.</strong>
+(a) Work through Proposition 13.6 and state precisely which
+hypothesis a second layer breaks.
+(b) Construct, by hand, weights for a two-layer model that solve the recall
+task exactly: a first layer that shifts by one using
+Eq. (13.10), and a second that matches on content.
+(c) Does the argument still apply if the value map is allowed to depend on
+position as well as on the symbol?  If not, why does the one-block model in
+Table 13.2 still fail?</p></li>
+<li><p><strong>The scaling, empirically.</strong>
+Reproduce Section <em>The scaling, in the library</em>.
+(a) Confirm <span class="math notranslate nohighlight">\(\var(\bm{q}\cdot\bm{k})=d_k\)</span> over three decades.
+(b) Show that the softmax Jacobian <span class="math notranslate nohighlight">\(\operatorname{diag}(\bm{a})
+-\bm{a}\bm{a}^{\mathsf{T}}\)</span> has Frobenius norm tending to zero as
+<span class="math notranslate nohighlight">\(\bm{a}\)</span> tends to a one-hot vector, and bound its spectral norm by <span class="math notranslate nohighlight">\(1/4\)</span>.
+(c) Replace <span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> by <span class="math notranslate nohighlight">\(1/d_k\)</span> and by <span class="math notranslate nohighlight">\(1\)</span> and report the entropy at
+<span class="math notranslate nohighlight">\(d_k=1024\)</span> in each case.  Which of the three is right, and why is it not a
+matter of taste?</p></li>
+<li><p><strong>Masks.</strong>
+Write the mask for (a) causal attention, (b) attention restricted to a window
+of width <span class="math notranslate nohighlight">\(w\)</span>, (c) attention that ignores padding tokens.  For (b), show that
+the layer becomes a convolution with a data-dependent kernel, and relate this
+to Theorem 10.2.</p></li>
+</ol>
+</section>
+<section id="project-style-exercise-a-transformer-from-scratch">
+<h3><span class="section-number">13.10.2. </span>Project-style exercise: a transformer from scratch<a class="headerlink" href="#project-style-exercise-a-transformer-from-scratch" title="Link to this heading">#</a></h3>
+<p><strong>Part a: the machinery.</strong>
+Implement scaled dot-product attention, multi-head attention, layer
+normalisation and the block of Eq. (13.14).  Verify
+row-stochasticity, the convex-hull property and permutation equivariance to
+machine precision, and check every gradient against finite differences.
+Implement the batched version and verify it against the looped one.</p>
+<p><strong>Part b: the scaling.</strong>
+Reproduce Proposition 13.4 and the saturation table of
+Section <em>Why the \texorpdfstring{<span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span>}{1/sqrt(dk)}</em>.  Then train the same model with and without the
+<span class="math notranslate nohighlight">\(1/\sqrt{d_k}\)</span> at several values of <span class="math notranslate nohighlight">\(d_k\)</span>, and report at what <span class="math notranslate nohighlight">\(d_k\)</span> the unscaled
+version stops training at all.  Plot the entropy of the attention distribution
+during training in both cases.</p>
+<p><strong>Part c: depth versus width.</strong>
+Reproduce Table 13.1.  Then separate the two explanations for the
+one-block failure: is it depth, or capacity?  Train a one-block model with the
+width increased until its parameter count matches the two-block model, and
+report what happens.  Then extend the table to <span class="math notranslate nohighlight">\(L=8\)</span> and <span class="math notranslate nohighlight">\(L=16\)</span> and plot
+accuracy against <span class="math notranslate nohighlight">\(L\)</span> for one block, two blocks and the recurrent baseline.</p>
+<p><strong>Part d: reading the attention.</strong>
+For a trained two-block model, plot the attention matrices of both blocks on
+several test sequences.  Can you identify the mechanism described in
+Section <em>What one attention layer cannot do</em> – one head copying the predecessor, another
+matching the query?  Quantify it: measure how much of the first block’s
+attention mass sits on the diagonal offset by one.</p>
+<p><strong>Part e: against the alternatives.</strong>
+Compare the transformer, the convolutional network of Chapter 10 and
+the recurrent network of Chapter 11 on the same task at matched
+parameter counts, measuring accuracy, wall-clock time per update and memory.
+Then repeat on a task with genuinely local structure and report which
+architecture wins there.  The two answers should differ, and the discussion of
+why is the point of the exercise.</p>
+<p><strong>Part f: a learned Green’s function.</strong>
+Solve the one-dimensional Poisson equation of Section <em>The one-dimensional Poisson equation</em> for many
+right-hand sides, and train an attention model to map the discretised source
+<span class="math notranslate nohighlight">\(f(x_j)\)</span> to the solution <span class="math notranslate nohighlight">\(u(x_i)\)</span>, as in Eq. (13.21).  Compare
+the learned attention matrix against the exact Green’s function of the operator.
+How close is it, and does it get closer with more data or with more blocks?</p>
+<p><strong>Part g: the cost.</strong>
+Measure the wall-clock time and peak memory of your attention implementation as
+<span class="math notranslate nohighlight">\(n\)</span> grows, and confirm Proposition 13.3.  Then implement one
+approximation – a sliding window, a random sparse pattern, or a low-rank
+factorisation of <span class="math notranslate nohighlight">\(\bm{A}\)</span> – and report what it costs in accuracy on the recall
+task of part c.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter12.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">12. </span>Chapter 12: Autoencoders</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter14.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">14. </span>Chapter 14: Boltzmann Machines</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tokens">13.1. Tokens</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scaled-dot-product-attention">13.2. Scaled dot-product attention</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-attention-is">13.2.1. What attention is</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#masking-and-position">13.3. Masking and position</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-head-attention-and-the-transformer-block">13.4. Multi-head attention and the transformer block</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-and-verification">13.5. Implementation and verification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-one-attention-layer-cannot-do">13.6. What one attention layer cannot do</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparisons-and-interpretations">13.7. Comparisons and interpretations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#against-the-other-architectures">13.7.1. Against the other architectures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#a-statistical-mechanics-reading">13.7.2. A statistical-mechanics reading</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kernels-and-graphs">13.7.3. Kernels and graphs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-matters-for-differential-equations">13.7.4. Why this matters for differential equations</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytorch-and-tensorflow">13.8. PyTorch and TensorFlow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-the-three-implementations-agree">13.8.1. Do the three implementations agree?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-scaling-in-the-library">13.8.2. The scaling, in the library</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#permutation-equivariance-tested">13.8.3. Permutation equivariance, tested</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#associative-recall-in-the-frameworks">13.8.4. Associative recall, in the frameworks</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#strengths-weaknesses-and-what-to-remember">13.9. Strengths, weaknesses and what to remember</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">13.10. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">13.10.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-a-transformer-from-scratch">13.10.2. Project-style exercise: a transformer from scratch</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

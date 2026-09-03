@@ -1,0 +1,2113 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>6. Chapter 6: Support Vector Machines &#8212; Applied Data Analysis and Machine Learning</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'chapter6';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="7. Chapter 7: Ensemble methods; from simple decision trees to Gradient Boosting" href="chapter7.html" />
+    <link rel="prev" title="5. Chapter 5: Logistic Regression" href="chapter5.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Applied Data Analysis and Machine Learning - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Applied Data Analysis and Machine Learning - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Machine Learning and the Physical Sciences
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">About the course</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="schedule.html">Course setting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="teachers.html">Teachers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="textbooks.html">Textbooks</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Mathematical and statistical basis with essential computational elements</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter1.html">1. Chapter 1: Linear Algebra for Machine Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter2.html">2. Chapter 2: Elements of Probability Theory and Statistics</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Classical methods</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter3.html">3. Chapter 3: Linear Regression</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter4.html">4. Chapter 4: Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter5.html">5. Chapter 5: Logistic Regression</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">6. Chapter 6: Support Vector Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter7.html">7. Chapter 7: Ensemble methods; from simple decision trees to Gradient Boosting</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Deep Learning</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter8.html">8. Chapter 8: Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter9.html">9. Chapter 9: Neural Networks for Differential Equations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter10.html">10. Chapter 10: Convolutional Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter11.html">11. Chapter 11: Recurrent Neural Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter12.html">12. Chapter 12: Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter13.html">13. Chapter 13: Transformers</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Generative Methods</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="chapter14.html">14. Chapter 14: Boltzmann Machines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter15.html">15. Chapter 15: Variational Autoencoders</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter16.html">16. Chapter 16: Diffusion Models and Normalizing Flows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="chapter17.html">17. Chapter 17: Generative Adversarial Networks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Concluding remarks and perspectives</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="conclusions.html">18. Chapter 18: Concluding remarks and perspectives</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/chapter6.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Chapter 6: Support Vector Machines</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperplanes-and-the-margin">6.1. Hyperplanes and the margin</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-attempt-and-why-it-fails">6.2. A first attempt, and why it fails</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-maximum-margin-problem">6.3. The maximum-margin problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-reminder-on-lagrange-multipliers">6.4. A reminder on Lagrange multipliers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-dual-problem">6.5. The dual problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-soft-margin">6.6. The soft margin</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernels-and-non-linearity">6.7. Kernels and non-linearity</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-kernels-and-mercer-s-theorem">6.7.1. Common kernels and Mercer’s theorem</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-quadratic-programme">6.8. The quadratic programme</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sequential-minimal-optimisation">6.9. Sequential minimal optimisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">6.10. Implementation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-the-solver">6.11. Verifying the solver</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-primal-view-the-hinge-loss">6.12. The primal view: the hinge loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-penalty-three-losses">6.13. One penalty, three losses</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-common-problem">6.13.1. The common problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-three-measured-together">6.13.2. The three, measured together</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">6.14. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">6.15. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">6.15.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-building-a-support-vector-machine">6.15.2. Project-style exercise: building a support vector machine</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="chapter-6-support-vector-machines">
+<h1><span class="section-number">6. </span>Chapter 6: Support Vector Machines<a class="headerlink" href="#chapter-6-support-vector-machines" title="Link to this heading">#</a></h1>
+<!-- Macro definitions for MathJax, mirroring book.tex -->
+<div class="math notranslate nohighlight">
+\[
+\newcommand{\bm}[1]{\boldsymbol{#1}}
+\newcommand{\Det}[1]{|\boldsymbol{#1}|}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\var}{\mathrm{Var}}
+\newcommand{\cov}{\mathrm{Cov}}
+\newcommand{\Prob}{\mathrm{Prob}}
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\]</div>
+<p>Logistic regression, in Chapter 5, placed a decision boundary
+by maximising a likelihood.  Support vector machines place one by a different
+principle: among all boundaries that separate the classes, choose the one that
+stands as far as possible from the data.  This is the <em>maximum margin</em>
+idea, and it leads to a strikingly different mathematical apparatus –
+constrained optimisation, Lagrange duality, and the kernel trick that lets a
+linear method draw non-linear boundaries at almost no extra cost.</p>
+<p>The chapter is also where a promise made in Chapter 4 comes
+due.  There we developed unconstrained methods, gradient descent and its
+descendants.  The SVM problem is constrained, and no amount of gradient
+descent will respect an inequality.  We shall therefore derive the dual
+problem, see that it is a quadratic program, and – rather than reach for a
+library – construct a solver for it from scratch.  The algorithm we build,
+sequential minimal optimisation, is the one that made support vector machines
+practical, and it is simple enough to derive in full.</p>
+<section id="hyperplanes-and-the-margin">
+<h2><span class="section-number">6.1. </span>Hyperplanes and the margin<a class="headerlink" href="#hyperplanes-and-the-margin" title="Link to this heading">#</a></h2>
+<p>Consider two classes of points in a plane.  A linear classifier splits the
+feature space into two half-spaces by placing a hyperplane between them; all
+points on one side are assigned to one class and all points on the other side
+to the other.  The difficulty, immediately apparent from any picture of
+separable data, is that there are infinitely many such hyperplanes.  Which
+should we choose?</p>
+<p>The support vector machine answers: the one with the <em>maximum margin</em>,
+the largest distance to the nearest data points of either class.  Maximising
+the margin provides a reinforcement, so that future data points can be
+classified with more confidence: a boundary that passes close to a training
+point will misclassify a new point drawn slightly to the other side of it,
+while a boundary in the middle of a wide corridor has room to spare.</p>
+<p>Figure 6.1 shows the solution for two well-separated classes.
+The solid line is the decision boundary, the dashed lines are the margin
+hyperplanes <span class="math notranslate nohighlight">\(\bm{w}^{T}\bm{x}+b=\pm1\)</span>, and the circled points are those with
+<span class="math notranslate nohighlight">\(\lambda_i&gt;0\)</span>.  Two features are worth noticing in advance of the derivation.
+The circled points lie exactly on the dashed lines, which is the content of the
+complementary slackness condition (6.19); and there are only three of
+them out of sixty, so fifty-seven of the observations could be deleted without
+moving the boundary at all.</p>
+<p><img alt="The maximum-margin hyperplane for two separable classes.  Dashed lines" src="_images/max_margin_support_vectors.png" /></p>
+<p><em>Figure 6.1: The maximum-margin hyperplane for two separable classes.  Dashed lines are the margin hyperplanes <span class="math notranslate nohighlight">\(\bm{w}^{T}\bm{x}+b=\pm1\)</span>, separated by <span class="math notranslate nohighlight">\(2/\|\bm{w}\|\)</span>; circled points are the support vectors, the only observations entering Eq. (6.16).</em></p>
+<p><strong>The geometry.</strong>
+Following the conventions of Chapter 1, define the function</p>
+<div class="math notranslate nohighlight">
+\[
+f(\bm{x}) = \bm{w}^{T}\bm{x} + b = 0,\tag{6.1}
+\]</div>
+<p>whose zero set is the hyperplane <span class="math notranslate nohighlight">\(L\)</span> separating the classes.  Any two points
+<span class="math notranslate nohighlight">\(\bm{x}_1\)</span> and <span class="math notranslate nohighlight">\(\bm{x}_2\)</span> lying on <span class="math notranslate nohighlight">\(L\)</span> satisfy
+<span class="math notranslate nohighlight">\(\bm{w}^{T}(\bm{x}_1-\bm{x}_2)=0\)</span>, so <span class="math notranslate nohighlight">\(\bm{w}\)</span> is orthogonal to every
+direction within the hyperplane: <em><span class="math notranslate nohighlight">\(\bm{w}\)</span> is the normal vector</em>.</p>
+<p>The signed distance from an arbitrary point <span class="math notranslate nohighlight">\(\bm{x}\)</span> to <span class="math notranslate nohighlight">\(L\)</span> follows.  Writing
+<span class="math notranslate nohighlight">\(\bm{x}=\bm{x}_0+\delta\,\bm{w}/\|\bm{w}\|\)</span> with <span class="math notranslate nohighlight">\(\bm{x}_0\)</span> on <span class="math notranslate nohighlight">\(L\)</span>, so that
+<span class="math notranslate nohighlight">\(\delta\)</span> is the distance measured along the normal, and applying
+Eq. (6.1),</p>
+<div class="math notranslate nohighlight">
+\[
+\delta = \frac{1}{\|\bm{w}\|}\left(\bm{w}^{T}\bm{x}+b\right).\tag{6.2}
+\]</div>
+<p>The sign tells us which side of the boundary the point lies on and the
+magnitude how far away it is.  Throughout this chapter we label the classes
+<span class="math notranslate nohighlight">\(y_i\in\{-1,+1\}\)</span> rather than <span class="math notranslate nohighlight">\(\{0,1\}\)</span>, which is the convention that makes
+the algebra of margins clean: the product <span class="math notranslate nohighlight">\(y_i f(\bm{x}_i)\)</span> is then positive
+exactly when the point is correctly classified.</p>
+</section>
+<section id="a-first-attempt-and-why-it-fails">
+<h2><span class="section-number">6.2. </span>A first attempt, and why it fails<a class="headerlink" href="#a-first-attempt-and-why-it-fails" title="Link to this heading">#</a></h2>
+<p>Before constructing the margin, it is instructive to try the obvious thing.
+Define a cost function running over the set <span class="math notranslate nohighlight">\(M\)</span> of currently misclassified
+points,</p>
+<div class="math notranslate nohighlight">
+\[
+C(\bm{w},b) = -\sum_{i\in M} y_i\left(\bm{w}^{T}\bm{x}_i+b\right),\tag{6.3}
+\]</div>
+<p>where a point is counted as misclassified when <span class="math notranslate nohighlight">\(y_i=+1\)</span> but
+<span class="math notranslate nohighlight">\(\bm{w}^{T}\bm{x}_i+b&lt;0\)</span>, or the reverse.  Each term in the sum is positive
+for a misclassified point, so the cost measures the total extent of the
+errors.  Differentiating,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial C}{\partial b} = -\sum_{i\in M}y_i,
+  \qquad
+  \frac{\partial C}{\partial\bm{w}} = -\sum_{i\in M}y_i\bm{x}_i,\tag{6.4}
+\]</div>
+<p>and we may descend with any method of Chapter 4,</p>
+<div class="math notranslate nohighlight">
+\[
+b \leftarrow b + \eta\frac{\partial C}{\partial b},
+  \qquad
+  \bm{w} \leftarrow \bm{w} + \eta\frac{\partial C}{\partial\bm{w}},\tag{6.5}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\eta\)</span> the familiar learning rate.  This is the <em>perceptron</em>
+algorithm, and the framework is that of logistic regression in
+Chapter 5.</p>
+<p>It works, after a fashion, and its defects are instructive.  If the data are
+separable it converges to <em>some</em> separating hyperplane, but which one
+depends on the initialisation and the order of the updates – the algorithm
+stops as soon as <span class="math notranslate nohighlight">\(M\)</span> is empty, wherever that happens to be, so it will happily
+return a boundary grazing the data.  When the gap between the classes is small
+it may need very many iterations.  And if the data are <em>not</em> separable
+the set <span class="math notranslate nohighlight">\(M\)</span> never empties and the iteration does not converge at all.</p>
+<p>The maximum-margin formulation fixes all three defects at once: the solution
+is unique, it is characterised by a clean optimisation problem, and the soft
+version of Section <em>The soft margin</em> handles non-separable data gracefully.</p>
+</section>
+<section id="the-maximum-margin-problem">
+<h2><span class="section-number">6.3. </span>The maximum-margin problem<a class="headerlink" href="#the-maximum-margin-problem" title="Link to this heading">#</a></h2>
+<p>We seek a margin <span class="math notranslate nohighlight">\(M\)</span>, with <span class="math notranslate nohighlight">\(\bm{w}\)</span> normalised so that <span class="math notranslate nohighlight">\(\|\bm{w}\|=1\)</span>, subject
+to</p>
+<div class="math notranslate nohighlight">
+\[
+y_i\left(\bm{w}^{T}\bm{x}_i+b\right) \ge M
+  \qquad \forall\, i=1,2,\dots,n,\tag{6.6}
+\]</div>
+<p>which says that every point lies at signed distance at least <span class="math notranslate nohighlight">\(M\)</span> from the
+boundary, on the correct side.  Dropping the normalisation and using
+Eq. (6.2), the condition reads</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{\|\bm{w}\|}y_i\left(\bm{w}^{T}\bm{x}_i+b\right) \ge M
+  \qquad\text{or}\qquad
+  y_i\left(\bm{w}^{T}\bm{x}_i+b\right) \ge M\|\bm{w}\| .\tag{6.7}
+\]</div>
+<p>Now comes the step that makes the problem tractable.  Equation (6.1)
+is unchanged if <span class="math notranslate nohighlight">\(\bm{w}\)</span> and <span class="math notranslate nohighlight">\(b\)</span> are both multiplied by a positive constant, so
+the pair <span class="math notranslate nohighlight">\((\bm{w},b)\)</span> is determined only up to scale and we are free to fix
+that scale however we like.  Choosing <span class="math notranslate nohighlight">\(\|\bm{w}\|=1/M\)</span> turns the right-hand
+side of Eq. (6.7) into unity, and the problem becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \min_{\bm{w},b}\ \tfrac{1}{2}\bm{w}^{T}\bm{w}
+  \qquad\text{subject to}\qquad
+  y_i\left(\bm{w}^{T}\bm{x}_i+b\right)\ge 1 \quad\forall\, i . \;}\tag{6.8}
+\]</div>
+<p>The margin is now the inverse of the norm: since <span class="math notranslate nohighlight">\(M=1/\|\bm{w}\|\)</span> and the
+corridor extends by <span class="math notranslate nohighlight">\(M\)</span> on each side, the total width between the two classes
+is <span class="math notranslate nohighlight">\(2/\|\bm{w}\|\)</span>.  Maximising the margin is therefore minimising the norm,
+and the factor <span class="math notranslate nohighlight">\(\tfrac12\)</span> is inserted purely so that the derivative comes out
+clean.</p>
+<p>Equation (6.8) is a <em>convex</em> problem – a quadratic
+objective with linear inequality constraints – so by
+Section <em>Convexity</em> it has a unique global minimum.  But the methods
+of Chapter 4 cannot be applied directly, because they know
+nothing of constraints.  We need Lagrange multipliers.</p>
+</section>
+<section id="a-reminder-on-lagrange-multipliers">
+<h2><span class="section-number">6.4. </span>A reminder on Lagrange multipliers<a class="headerlink" href="#a-reminder-on-lagrange-multipliers" title="Link to this heading">#</a></h2>
+<p>Consider a function <span class="math notranslate nohighlight">\(f(x,y,z)\)</span> of three independent variables.  For <span class="math notranslate nohighlight">\(f\)</span> to be
+extremal we require <span class="math notranslate nohighlight">\(df=0\)</span>, and since</p>
+<div class="math notranslate nohighlight">
+\[
+df = \frac{\partial f}{\partial x}dx
+     + \frac{\partial f}{\partial y}dy
+     + \frac{\partial f}{\partial z}dz,\tag{6.9}
+\]</div>
+<p>a necessary and sufficient condition is that all three partial derivatives
+vanish.</p>
+<p>In many problems, however, the variables are subject to constraints and are no
+longer independent.  In principle one could use each constraint to eliminate a
+variable and proceed with a smaller independent set.  Lagrange’s method is the
+alternative when elimination is inconvenient or destroys the symmetry of the
+problem.</p>
+<p>Suppose the variables satisfy a constraint</p>
+<div class="math notranslate nohighlight">
+\[
+\phi(x,y,z) = 0,
+  \qquad\text{whence}\qquad
+  d\phi = \frac{\partial\phi}{\partial x}dx
+        + \frac{\partial\phi}{\partial y}dy
+        + \frac{\partial\phi}{\partial z}dz = 0 .\tag{6.10}
+\]</div>
+<p>We may no longer set the three partial derivatives of <span class="math notranslate nohighlight">\(f\)</span> separately to zero,
+because only two of the variables are independent: if <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> are chosen
+freely then <span class="math notranslate nohighlight">\(dz\)</span> is determined.  But since <span class="math notranslate nohighlight">\(d\phi=0\)</span>, we may add <span class="math notranslate nohighlight">\(\lambda\,d\phi\)</span>
+to <span class="math notranslate nohighlight">\(df\)</span> for any multiplier <span class="math notranslate nohighlight">\(\lambda\)</span> without changing anything,</p>
+<div class="math notranslate nohighlight">
+\[
+df + \lambda\,d\phi
+   = \left(\frac{\partial f}{\partial x}+\lambda\frac{\partial\phi}{\partial x}\right)dx
+   + \left(\frac{\partial f}{\partial y}+\lambda\frac{\partial\phi}{\partial y}\right)dy
+   + \left(\frac{\partial f}{\partial z}+\lambda\frac{\partial\phi}{\partial z}\right)dz = 0 .\tag{6.11}
+\]</div>
+<p>We now <em>choose</em> <span class="math notranslate nohighlight">\(\lambda\)</span> so that the coefficient of the dependent
+differential <span class="math notranslate nohighlight">\(dz\)</span> vanishes.  The remaining two differentials are independent
+and arbitrary, so their coefficients must vanish too, and we obtain the three
+symmetric conditions</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial}{\partial x}\left(f+\lambda\phi\right) =
+  \frac{\partial}{\partial y}\left(f+\lambda\phi\right) =
+  \frac{\partial}{\partial z}\left(f+\lambda\phi\right) = 0,\tag{6.12}
+\]</div>
+<p>together with the constraint <span class="math notranslate nohighlight">\(\phi=0\)</span> itself – four equations for the four
+unknowns <span class="math notranslate nohighlight">\(x,y,z,\lambda\)</span>.  Equivalently, we form the <em>Lagrangian</em>
+<span class="math notranslate nohighlight">\(\mathcal{L}=f+\lambda\phi\)</span> and treat all variables, the multiplier included,
+as independent.</p>
+<p>For <em>inequality</em> constraints of the form <span class="math notranslate nohighlight">\(\phi\ge0\)</span> the situation is
+richer, and the conditions that replace Eq. (6.12)
+are the Karush-Kuhn-Tucker conditions, which we shall meet in
+Eq. (6.19).  The essential addition is that a multiplier belonging
+to an inequality must be non-negative, and that it vanishes whenever its
+constraint is satisfied strictly – a constraint that is not binding exerts no
+force.</p>
+</section>
+<section id="the-dual-problem">
+<h2><span class="section-number">6.5. </span>The dual problem<a class="headerlink" href="#the-dual-problem" title="Link to this heading">#</a></h2>
+<p>We attach a multiplier <span class="math notranslate nohighlight">\(\lambda_i\ge0\)</span> to each of the <span class="math notranslate nohighlight">\(n\)</span> inequality
+constraints of Eq. (6.8) and form the Lagrangian</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}(\bm{\lambda},b,\bm{w})
+   = \frac{1}{2}\bm{w}^{T}\bm{w}
+   - \sum_{i=1}^{n}\lambda_i
+     \left[y_i\left(\bm{w}^{T}\bm{x}_i+b\right)-1\right].\tag{6.13}
+\]</div>
+<p>The sign is chosen so that violating a constraint – making the bracket
+negative – increases <span class="math notranslate nohighlight">\(\mathcal{L}\)</span>, which is what a penalty should do.</p>
+<p>Differentiating with respect to the primal variables, using
+Eqs. (1.25) and (1.28) from
+Section <em>Four worked examples</em>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\frac{\partial\mathcal{L}}{\partial b} &amp;= -\sum_{i}\lambda_iy_i = 0,
+  \\
+  \frac{\partial\mathcal{L}}{\partial\bm{w}}
+   &amp;= \bm{w} - \sum_{i}\lambda_iy_i\bm{x}_i = 0 .
+\end{align}
+\end{split}\]</div>
+<p>The second is worth pausing over.  It says</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;\bm{w} = \sum_{i}\lambda_iy_i\bm{x}_i,\;}\tag{6.16}
+\]</div>
+<p>that the optimal normal vector is a linear combination of the training points,
+with the labels supplying the signs and the multipliers the weights.  The
+solution lives in the span of the data, a fact which will make the kernel
+trick of Section <em>Kernels and non-linearity</em> possible.</p>
+<p><strong>Eliminating the primal variables.</strong>
+Substituting Eqs. (6.14) and (6.16) back into
+Eq. (6.13) removes <span class="math notranslate nohighlight">\(\bm{w}\)</span> and <span class="math notranslate nohighlight">\(b\)</span> entirely.  The quadratic
+term becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{2}\bm{w}^{T}\bm{w}
+   = \frac{1}{2}\sum_{i,j}\lambda_i\lambda_jy_iy_j\bm{x}_i^{T}\bm{x}_j,
+\]</div>
+<p>the term <span class="math notranslate nohighlight">\(\sum_i\lambda_iy_i\bm{w}^{T}\bm{x}_i\)</span> equals
+<span class="math notranslate nohighlight">\(\bm{w}^{T}\bm{w}\)</span> by the same substitution, the term in <span class="math notranslate nohighlight">\(b\)</span> vanishes by
+Eq. (6.14), and the remaining <span class="math notranslate nohighlight">\(\sum_i\lambda_i\)</span> survives.
+Collecting,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \mathcal{L}(\bm{\lambda}) = \sum_{i}\lambda_i
+   - \frac{1}{2}\sum_{i,j}^{n}\lambda_i\lambda_jy_iy_j\bm{x}_i^{T}\bm{x}_j, \;}\tag{6.17}
+\]</div>
+<p>to be <em>maximised</em> subject to</p>
+<div class="math notranslate nohighlight">
+\[
+\lambda_i\ge0
+  \qquad\text{and}\qquad
+  \sum_i\lambda_iy_i = 0 .\tag{6.18}
+\]</div>
+<p>This is the <em>dual problem</em>.  Two features are decisive.  The data enter
+only through the inner products <span class="math notranslate nohighlight">\(\bm{x}_i^{T}\bm{x}_j\)</span>, never individually –
+which is what Section <em>Kernels and non-linearity</em> will exploit.  And the number of
+variables is <span class="math notranslate nohighlight">\(n\)</span>, the number of <em>samples</em>, rather than <span class="math notranslate nohighlight">\(p\)</span>, the number of
+features; for a problem with few samples and very many features, or with
+infinitely many implicit features, this is an enormous saving.</p>
+<p><strong>The KKT conditions and support vectors.</strong>
+The solution must in addition satisfy the Karush-Kuhn-Tucker complementary
+slackness condition</p>
+<div class="math notranslate nohighlight">
+\[
+\lambda_i\left[y_i\left(\bm{w}^{T}\bm{x}_i+b\right)-1\right] = 0
+  \qquad \forall\, i,\tag{6.19}
+\]</div>
+<p>which says that for each <span class="math notranslate nohighlight">\(i\)</span> at least one of the two factors vanishes.  The
+consequences are the heart of the method:</p>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(\lambda_i&gt;0\)</span> then <span class="math notranslate nohighlight">\(y_i(\bm{w}^{T}\bm{x}_i+b)=1\)</span>: the point lies
+<em>exactly on</em> the margin boundary.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(y_i(\bm{w}^{T}\bm{x}_i+b)&gt;1\)</span>, the point lies strictly beyond the
+margin and we must have <span class="math notranslate nohighlight">\(\lambda_i=0\)</span>: it contributes nothing to
+Eq. (6.16).</p></li>
+</ul>
+<p>The points with <span class="math notranslate nohighlight">\(\lambda_i&gt;0\)</span> are the <em>support vectors</em>.  They are the
+points closest to the boundary, they alone define the margin, and they alone
+appear in the solution.  Every other point could be deleted from the training
+set without changing the answer – a property no other method in this book
+possesses, and the source of the name.</p>
+<p>The reader may recognise a foreshadowing.  In Section <em>Gradients, the Hessian and convexity</em>
+we observed that the logistic Hessian <span class="math notranslate nohighlight">\(\bm{X}^{T}\bm{W}\bm{X}\)</span> has weights
+<span class="math notranslate nohighlight">\(p_i(1-p_i)\)</span> which vanish for confidently classified points, so that the fit
+is controlled by points near the boundary.  The support vector machine takes
+that tendency to its limit: distant points are not merely down-weighted but
+discarded exactly.</p>
+<p><strong>Matrix form.</strong>
+Collecting <span class="math notranslate nohighlight">\(\bm{\lambda}=[\lambda_1,\dots,\lambda_n]\)</span> and
+<span class="math notranslate nohighlight">\(\bm{y}=[y_1,\dots,y_n]\)</span>, minimising the negative of
+Eq. (6.17) reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\frac{1}{2}\bm{\lambda}^{T}
+  \begin{bmatrix}
+    y_1y_1\bm{x}_1^{T}\bm{x}_1 &amp; y_1y_2\bm{x}_1^{T}\bm{x}_2 &amp; \cdots &amp;
+      y_1y_n\bm{x}_1^{T}\bm{x}_n\\
+    y_2y_1\bm{x}_2^{T}\bm{x}_1 &amp; y_2y_2\bm{x}_2^{T}\bm{x}_2 &amp; \cdots &amp;
+      y_2y_n\bm{x}_2^{T}\bm{x}_n\\
+    \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+    y_ny_1\bm{x}_n^{T}\bm{x}_1 &amp; y_ny_2\bm{x}_n^{T}\bm{x}_2 &amp; \cdots &amp;
+      y_ny_n\bm{x}_n^{T}\bm{x}_n
+  \end{bmatrix}
+  \bm{\lambda} - \mathbb{1}^{T}\bm{\lambda},\tag{6.20}
+\end{split}\]</div>
+<p>subject to <span class="math notranslate nohighlight">\(\bm{y}^{T}\bm{\lambda}=0\)</span> and <span class="math notranslate nohighlight">\(\bm{\lambda}\succeq\bm{0}\)</span>.  The
+matrix has entries <span class="math notranslate nohighlight">\(P_{ij}=y_iy_j\bm{x}_i^{T}\bm{x}_j\)</span> and is positive
+semi-definite, being of the form <span class="math notranslate nohighlight">\(\bm{Z}^{T}\bm{Z}\)</span> with
+<span class="math notranslate nohighlight">\(\bm{Z}=[y_1\bm{x}_1,\dots,y_n\bm{x}_n]\)</span>, so by
+Section <em>Special matrix types</em> the problem is convex.</p>
+<p><strong>Recovering the classifier.</strong>
+Solving Eq. (6.20) yields the <span class="math notranslate nohighlight">\(\lambda_i\)</span>.  The normal vector
+follows from Eq. (6.16), and the intercept from the
+condition that any support vector sits on the margin,
+<span class="math notranslate nohighlight">\(y_i(\bm{w}^{T}\bm{x}_i+b)=1\)</span>, whence <span class="math notranslate nohighlight">\(b=1/y_i-\bm{w}^{T}\bm{x}_i=y_i-\bm{w}^{T}\bm{x}_i\)</span>
+using <span class="math notranslate nohighlight">\(1/y_i=y_i\)</span>.  In floating point one averages over all <span class="math notranslate nohighlight">\(N_s\)</span> support
+vectors rather than trusting a single one,</p>
+<div class="math notranslate nohighlight">
+\[
+b = \frac{1}{N_s}\sum_{j\in N_s}
+      \left(y_j - \sum_{i=1}^{n}\lambda_iy_i\bm{x}_i^{T}\bm{x}_j\right).\tag{6.21}
+\]</div>
+<p>A new observation is then classified by</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{y} = \mathrm{sign}\left(\bm{w}^{T}\bm{x}+b\right)
+          = \mathrm{sign}\left(\sum_{i}\lambda_iy_i\bm{x}_i^{T}\bm{x}+b\right),\tag{6.22}
+\]</div>
+<p>where the second form – involving only inner products between the new point
+and the support vectors – is the one we shall generalise.</p>
+</section>
+<section id="the-soft-margin">
+<h2><span class="section-number">6.6. </span>The soft margin<a class="headerlink" href="#the-soft-margin" title="Link to this heading">#</a></h2>
+<p>Everything so far assumed the classes to be separable.  When they overlap, no
+<span class="math notranslate nohighlight">\(\bm{w}\)</span> satisfies all the constraints of Eq. (6.8) and the
+problem is infeasible.  The remedy is to allow some points to violate the
+margin, at a price.</p>
+<p>Introduce <em>slack</em> variables <span class="math notranslate nohighlight">\(\bm{\xi}=[\xi_1,\dots,\xi_n]\)</span> with
+<span class="math notranslate nohighlight">\(\xi_i\ge0\)</span> and relax the constraint to</p>
+<div class="math notranslate nohighlight">
+\[
+y_i\left(\bm{w}^{T}\bm{x}_i+b\right) \ge 1-\xi_i .\tag{6.23}
+\]</div>
+<p>The value <span class="math notranslate nohighlight">\(\xi_i\)</span> measures the amount by which point <span class="math notranslate nohighlight">\(i\)</span> falls on the wrong
+side of <em>its</em> margin.  A point with <span class="math notranslate nohighlight">\(\xi_i=0\)</span> is correctly placed; one
+with <span class="math notranslate nohighlight">\(0&lt;\xi_i&lt;1\)</span> is inside the margin but still correctly classified; and
+<span class="math notranslate nohighlight">\(\xi_i&gt;1\)</span> means an outright misclassification.  Bounding <span class="math notranslate nohighlight">\(\sum_i\xi_i\)</span>
+therefore bounds the total margin violation, and in particular bounds the
+number of misclassifications.</p>
+<p>The optimisation problem becomes: minimise</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L} = \frac{1}{2}\bm{w}^{T}\bm{w}
+   - \sum_{i=1}^{n}\lambda_i
+     \left[y_i\left(\bm{w}^{T}\bm{x}_i+b\right)-(1-\xi_i)\right]
+   + C\sum_{i=1}^{n}\xi_i
+   - \sum_{i=1}^{n}\gamma_i\xi_i,\tag{6.24}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(C\sum_i\xi_i\)</span> is the penalty for violation and the multipliers
+<span class="math notranslate nohighlight">\(\gamma_i\ge0\)</span> enforce <span class="math notranslate nohighlight">\(\xi_i\ge0\)</span>.  The constant <span class="math notranslate nohighlight">\(C\)</span> is a hyperparameter
+controlling the trade-off between a wide margin and few violations.</p>
+<p>Differentiating with respect to the three primal variables,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\partial\mathcal{L}}{\partial b} = -\sum_i\lambda_iy_i = 0,
+  \qquad
+  \frac{\partial\mathcal{L}}{\partial\bm{w}}
+   = \bm{w}-\sum_i\lambda_iy_i\bm{x}_i = 0,
+  \qquad
+  \frac{\partial\mathcal{L}}{\partial\xi_i} = C-\lambda_i-\gamma_i = 0 .\tag{6.25}
+\]</div>
+<p>The first two are unchanged from
+Eqs. (6.14) and (6.15).  The third gives
+<span class="math notranslate nohighlight">\(\lambda_i=C-\gamma_i\)</span>, and since <span class="math notranslate nohighlight">\(\gamma_i\ge0\)</span> this bounds
+<span class="math notranslate nohighlight">\(\lambda_i\le C\)</span>.</p>
+<p>Substituting back produces <em>exactly</em> the same dual
+objective (6.17) as before – the slack variables cancel
+completely – but with the constraints</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  0\le\lambda_i\le C
+  \qquad\text{and}\qquad
+  \sum_i\lambda_iy_i=0 . \;}\tag{6.26}
+\]</div>
+<p>The only change is that the multipliers now have a ceiling.  This is an
+unusually clean outcome: the entire effect of allowing misclassification is to
+replace the constraint <span class="math notranslate nohighlight">\(\lambda_i\ge0\)</span> by the <em>box</em> constraint
+<span class="math notranslate nohighlight">\(0\le\lambda_i\le C\)</span>.</p>
+<p>The KKT conditions become</p>
+<div class="math notranslate nohighlight">
+\[
+\lambda_i\left[y_i\left(\bm{w}^{T}\bm{x}_i+b\right)-(1-\xi_i)\right]=0,
+  \qquad
+  \gamma_i\xi_i=0,
+  \qquad
+  y_i\left(\bm{w}^{T}\bm{x}_i+b\right)-(1-\xi_i)\ge0 ,\tag{6.27}
+\]</div>
+<p>and combining them classifies every training point into exactly three cases,
+which is the most useful summary of the whole construction:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\lambda_i=0\)</span>: the point is strictly outside the margin,
+<span class="math notranslate nohighlight">\(y_if(\bm{x}_i)&gt;1\)</span>, and is irrelevant to the solution.</p></li>
+<li><p><span class="math notranslate nohighlight">\(0&lt;\lambda_i&lt;C\)</span>: then <span class="math notranslate nohighlight">\(\gamma_i&gt;0\)</span>, so <span class="math notranslate nohighlight">\(\xi_i=0\)</span>, and the point lies
+exactly on the margin, <span class="math notranslate nohighlight">\(y_if(\bm{x}_i)=1\)</span>.  These are the <em>free</em>
+support vectors, and Eq. (6.21) should use them.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\lambda_i=C\)</span>: then <span class="math notranslate nohighlight">\(\gamma_i=0\)</span> and <span class="math notranslate nohighlight">\(\xi_i\)</span> may be positive – the
+point is inside the margin or misclassified.  These are the
+<em>bound</em> support vectors.</p></li>
+</ul>
+<div class="tip admonition">
+<p class="admonition-title">Machine learning connection</p>
+<p>The parameter <span class="math notranslate nohighlight">\(C\)</span> plays the role that
+<span class="math notranslate nohighlight">\(1/\lambda\)</span> played in Ridge regression, and the correspondence is exact rather
+than analogical, as Section <em>The primal view: the hinge loss</em> will show.  A small <span class="math notranslate nohighlight">\(C\)</span> tolerates
+many violations and buys a wide margin – high bias, low variance in the
+language of Section <em>The bias-variance tradeoff</em> – while a large <span class="math notranslate nohighlight">\(C\)</span> insists on
+classifying the training data and produces a narrow margin that tracks
+individual points.  As always, <span class="math notranslate nohighlight">\(C\)</span> is chosen by the cross-validation of
+Section <em>Cross-validation</em> and never by looking at the test set.  One
+diagnostic is worth knowing: the fraction of training points that are support
+vectors is a rough upper bound on the leave-one-out error rate, since deleting
+a non-support vector provably changes nothing.  A model in which almost every
+point is a support vector is a model that has learned very little.</p>
+</div>
+<p>Figure 6.2 shows the effect of <span class="math notranslate nohighlight">\(C\)</span> on genuinely overlapping
+classes.  At <span class="math notranslate nohighlight">\(C=0.01\)</span> violations are cheap, the margin is wide, and a large
+fraction of the data lies inside it as bound support vectors; at <span class="math notranslate nohighlight">\(C=10\)</span> the
+margin is narrow and supported by fewer points.  The decision boundary itself
+barely moves, which is the usual finding: <span class="math notranslate nohighlight">\(C\)</span> controls the confidence with
+which the boundary is drawn far more than its location.</p>
+<p><img alt="Soft-margin solutions for three values of C on overlapping classes.  C" src="_images/soft_margin_C.png" /></p>
+<p><em>Figure 6.2: Soft-margin solutions for three values of <span class="math notranslate nohighlight">\(C\)</span> on overlapping classes.  Circled points are support vectors.  Decreasing <span class="math notranslate nohighlight">\(C\)</span> widens the margin and admits more violations, in accordance with the three KKT cases of Section <em>The soft margin</em>.</em></p>
+</section>
+<section id="kernels-and-non-linearity">
+<h2><span class="section-number">6.7. </span>Kernels and non-linearity<a class="headerlink" href="#kernels-and-non-linearity" title="Link to this heading">#</a></h2>
+<p>Everything so far produces a linear boundary.  As in
+Section <em>The linear model and the design matrix</em>, we can gain flexibility by expanding the
+features – replacing <span class="math notranslate nohighlight">\(\bm{x}\)</span> by <span class="math notranslate nohighlight">\(\bm{z}=\phi(\bm{x})\)</span> for some map <span class="math notranslate nohighlight">\(\phi\)</span>
+into a higher-dimensional space, and separating linearly there.  A boundary
+that is linear in <span class="math notranslate nohighlight">\(\bm{z}\)</span> is curved in <span class="math notranslate nohighlight">\(\bm{x}\)</span>.</p>
+<p>The simplest illustration is one-dimensional.  Take nine points on a line with
+the two outer groups in one class and the middle group in the other; no single
+threshold separates them.  Now map <span class="math notranslate nohighlight">\(x\mapsto(x,x^{2})\)</span> into the plane.  The
+points lie on a parabola, and a horizontal line at the right height separates
+them perfectly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">X1D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">X2D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">X1D</span><span class="p">,</span> <span class="n">X1D</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span>                     <span class="c1"># the map phi(x) = (x, x^2)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X1D</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="s2">&quot;bs&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X1D</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="s2">&quot;g^&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$x_1$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([]);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X2D</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X2D</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;bs&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X2D</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X2D</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;g^&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="o">-</span><span class="mf">4.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">6.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">],</span> <span class="s2">&quot;r--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>   <span class="c1"># the separating line</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$x_1$&quot;</span><span class="p">);</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$x_2$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>The problem with doing this literally.</strong>
+Suppose we work in two dimensions and choose the quadratic map</p>
+<div class="math notranslate nohighlight">
+\[
+\bm{z} = \phi(\bm{x}) = \left(x^{2},\,y^{2},\,\sqrt{2}\,xy\right),\tag{6.28}
+\]</div>
+<p>writing <span class="math notranslate nohighlight">\(\bm{x}=(x,y)\)</span> for a single sample.  The dual
+objective (6.17) becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L} = \sum_i\lambda_i
+   - \frac{1}{2}\sum_{i,j}\lambda_i\lambda_jy_iy_j\bm{z}_i^{T}\bm{z}_j,\tag{6.29}
+\]</div>
+<p>identical in form, with the constraints and the recovery of <span class="math notranslate nohighlight">\(b\)</span> unchanged.
+The only new work is computing <span class="math notranslate nohighlight">\(\bm{z}_i^{T}\bm{z}_j\)</span>.  Doing that literally
+means constructing every <span class="math notranslate nohighlight">\(\phi(\bm{x}_i)\)</span> and taking inner products in the
+larger space – feasible here, prohibitive for a map into a thousand
+dimensions, and impossible for one into infinitely many.</p>
+<p><strong>The kernel trick.</strong>
+Define the <em>kernel</em></p>
+<div class="math notranslate nohighlight">
+\[
+K(\bm{x}_i,\bm{x}_j) = \bm{z}_i^{T}\bm{z}_j
+   = \phi(\bm{x}_i)^{T}\phi(\bm{x}_j).\tag{6.30}
+\]</div>
+<p>For the map (6.28) we can evaluate it explicitly,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+K(\bm{x}_i,\bm{x}_j)
+   = \begin{bmatrix}x_i^{2}\\ y_i^{2}\\ \sqrt{2}x_iy_i\end{bmatrix}^{T}
+     \begin{bmatrix}x_j^{2}\\ y_j^{2}\\ \sqrt{2}x_jy_j\end{bmatrix}
+   = x_i^{2}x_j^{2} + 2x_ix_jy_iy_j + y_i^{2}y_j^{2}
+   = \left(\bm{x}_i^{T}\bm{x}_j\right)^{2},\tag{6.31}
+\end{split}\]</div>
+<p>the last step by recognising the expansion of a square.  This is the whole
+idea.  <em>The inner product in the three-dimensional feature space is a
+function of the inner product in the original two-dimensional space.</em>  We
+never construct <span class="math notranslate nohighlight">\(\phi\)</span>; we compute <span class="math notranslate nohighlight">\((\bm{x}_i^{T}\bm{x}_j)^{2}\)</span> directly, at
+the cost of a two-dimensional dot product and one multiplication.</p>
+<p>Replacing every inner product by a kernel, the dual becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L} = \sum_i\lambda_i
+   - \frac{1}{2}\sum_{i,j}\lambda_i\lambda_jy_iy_jK(\bm{x}_i,\bm{x}_j),\tag{6.32}
+\]</div>
+<p>with the same constraints (6.26), and the classifier
+Eq. (6.22) becomes</p>
+<div class="math notranslate nohighlight">
+\[
+\hat{y} = \mathrm{sign}\left(
+    \sum_{i}\lambda_iy_iK(\bm{x}_i,\bm{x})+b\right).\tag{6.33}
+\]</div>
+<p>Note what has <em>not</em> survived: <span class="math notranslate nohighlight">\(\bm{w}\)</span> itself.  It lives in the feature
+space and may be infinite-dimensional, so we never form it; the sum over
+support vectors in Eq. (6.33) is the only representation
+we have or need.  This is why the dual formulation was worth the effort.  The
+matrix in Eq. (6.20) simply acquires entries
+<span class="math notranslate nohighlight">\(P_{ij}=y_iy_jK(\bm{x}_i,\bm{x}_j)\)</span>.</p>
+<section id="common-kernels-and-mercer-s-theorem">
+<h3><span class="section-number">6.7.1. </span>Common kernels and Mercer’s theorem<a class="headerlink" href="#common-kernels-and-mercer-s-theorem" title="Link to this heading">#</a></h3>
+<p>Several kernels are in common use:</p>
+<ul class="simple">
+<li><p>Linear: <span class="math notranslate nohighlight">\(K(\bm{x},\bm{y})=\bm{x}^{T}\bm{y}\)</span>.</p></li>
+<li><p>Polynomial: <span class="math notranslate nohighlight">\(K(\bm{x},\bm{y})=(\gamma\,\bm{x}^{T}\bm{y}+r)^{d}\)</span>.</p></li>
+<li><p>Gaussian radial basis function:
+<span class="math notranslate nohighlight">\(K(\bm{x},\bm{y})=\exp\left(-\gamma\|\bm{x}-\bm{y}\|^{2}\right)\)</span>.</p></li>
+<li><p>Sigmoid: <span class="math notranslate nohighlight">\(K(\bm{x},\bm{y})=\tanh(\gamma\,\bm{x}^{T}\bm{y}+r)\)</span>.</p></li>
+</ul>
+<p>A natural worry is whether an arbitrary function of two arguments corresponds
+to any feature map at all.  <em>Mercer’s theorem</em> answers it: if <span class="math notranslate nohighlight">\(K\)</span> is
+symmetric, continuous, and such that the matrix with entries
+<span class="math notranslate nohighlight">\(K(\bm{x}_i,\bm{x}_j)\)</span> is positive semi-definite for every finite set of
+points, then there exists a map <span class="math notranslate nohighlight">\(\phi\)</span>, possibly into a space of very high or
+infinite dimension, with
+<span class="math notranslate nohighlight">\(K(\bm{x}_i,\bm{x}_j)=\phi(\bm{x}_i)^{T}\phi(\bm{x}_j)\)</span>.  We may therefore use
+<span class="math notranslate nohighlight">\(K\)</span> knowing that <span class="math notranslate nohighlight">\(\phi\)</span> exists, without ever knowing what it is.  Some
+frequently used kernels – the sigmoid among them – fail Mercer’s conditions
+for some parameter values and nevertheless work acceptably in practice.</p>
+<p>The Gaussian kernel deserves a remark, because it is the default choice and
+its feature map is infinite-dimensional.  Expanding the exponential in a power
+series produces terms of every polynomial degree, so the RBF kernel
+corresponds to a map into a space containing all monomials, with the
+higher-order ones progressively down-weighted.  The parameter <span class="math notranslate nohighlight">\(\gamma\)</span> sets
+the length scale over which two points are considered similar: a large
+<span class="math notranslate nohighlight">\(\gamma\)</span> makes <span class="math notranslate nohighlight">\(K\)</span> decay rapidly, so each support vector influences only its
+immediate neighbourhood and the boundary becomes highly flexible; a small
+<span class="math notranslate nohighlight">\(\gamma\)</span> makes the kernel nearly constant and the boundary nearly linear.
+Together with <span class="math notranslate nohighlight">\(C\)</span> this gives two hyperparameters, and they interact, so the
+cross-validated search of Section <em>Cross-validation</em> should be a
+two-dimensional grid.</p>
+<div class="tip admonition">
+<p class="admonition-title">Machine learning connection</p>
+<p>The kernel matrix
+<span class="math notranslate nohighlight">\(K_{ij}=K(\bm{x}_i,\bm{x}_j)\)</span> is the Gram matrix met in
+Section <em>The covariance matrix</em>, and its positive semi-definiteness is the same
+condition that made covariance matrices well behaved.  The same object
+underlies Gaussian process regression, where the Cholesky factorisation of
+Section <em>LU and Cholesky decompositions</em> is applied to <span class="math notranslate nohighlight">\(\bm{K}+\sigma^{2}\bm{I}\)</span>, and kernel ridge
+regression, which is Ridge regression with inner products replaced by kernels
+in exactly the manner of this section.  A word of caution about cost: the
+kernel matrix has <span class="math notranslate nohighlight">\(n^{2}\)</span> entries and most solvers need <span class="math notranslate nohighlight">\(\bigO(n^{2})\)</span> to
+<span class="math notranslate nohighlight">\(\bigO(n^{3})\)</span> operations, so kernel methods scale badly in the number of
+<em>samples</em> even while scaling beautifully in the number of features.  For
+<span class="math notranslate nohighlight">\(n\)</span> beyond a few tens of thousands one turns to linear SVMs solved in the
+primal, as in Section <em>The primal view: the hinge loss</em>, or to approximations of the kernel map.</p>
+</div>
+<p>Figure 6.3 shows the same data separated by three kernels.  The
+linear kernel cannot represent the crescent boundary and misclassifies a large
+fraction; the cubic polynomial and the Gaussian both succeed, the latter
+producing a boundary that follows the data closely.  Note the support vector
+counts printed above each panel: the polynomial kernel achieves the higher
+accuracy with twenty support vectors while the Gaussian needs more than twice
+as many, which by the argument of Section <em>The soft margin</em> suggests the
+polynomial model is the better matched of the two.</p>
+<p><img alt="Decision functions for three kernels on the moons data, all fitted wit" src="_images/kernel_decision_boundaries.png" /></p>
+<p><em>Figure 6.3: Decision functions for three kernels on the moons data, all fitted with the solver of Section <em>Implementation</em>.  Solid contour: the boundary; dashed: the <span class="math notranslate nohighlight">\(\pm1\)</span> margins; circles: support vectors.  Colour shows the value of Eq. (6.33) before the sign is taken.</em></p>
+</section>
+</section>
+<section id="the-quadratic-programme">
+<h2><span class="section-number">6.8. </span>The quadratic programme<a class="headerlink" href="#the-quadratic-programme" title="Link to this heading">#</a></h2>
+<p>Collecting the results, the problem we must solve is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+&amp;\min_{\bm{\lambda}}\quad
+    \frac{1}{2}\bm{\lambda}^{T}\bm{P}\bm{\lambda} + \bm{q}^{T}\bm{\lambda},
+    \nonumber\\
+  &amp;\text{subject to}\quad
+    \bm{G}\bm{\lambda}\preceq\bm{h}
+    \quad\wedge\quad
+    \bm{A}\bm{\lambda}=f,
+\end{align}
+\end{split}\]</div>
+<p>with <span class="math notranslate nohighlight">\(P_{ij}=y_iy_jK(\bm{x}_i,\bm{x}_j)\)</span>, <span class="math notranslate nohighlight">\(\bm{q}=-\mathbb{1}\)</span>,
+<span class="math notranslate nohighlight">\(\bm{A}=\bm{y}^{T}\)</span> and <span class="math notranslate nohighlight">\(f=0\)</span>.  The box
+constraints (6.26) split into <span class="math notranslate nohighlight">\(-\lambda_i\le0\)</span> and
+<span class="math notranslate nohighlight">\(\lambda_i\le C\)</span>, which stacked together give</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\bm{G} = \begin{bmatrix}-\bm{I}\\ \bm{I}\end{bmatrix},
+  \qquad
+  \bm{h} = \begin{bmatrix}\bm{0}\\ C\mathbb{1}\end{bmatrix} .\tag{6.35}
+\end{split}\]</div>
+<p>This is a <em>quadratic programme</em>: a convex quadratic objective with linear
+constraints, the class of problems treated at length by Boyd and
+Vandenberghe [boyd2004].</p>
+<p>One could hand Eq. (6.34) to a general-purpose quadratic
+programming package – <code class="docutils literal notranslate"><span class="pre">CVXOPT</span></code> is the usual choice in Python – and
+many treatments stop there.  We shall not, for two reasons.  A general solver
+treats <span class="math notranslate nohighlight">\(\bm{P}\)</span> as a dense <span class="math notranslate nohighlight">\(n\times n\)</span> matrix and costs <span class="math notranslate nohighlight">\(\bigO(n^{3})\)</span>, which
+is wasteful given the very special structure here.  And, more importantly, the
+algorithm that exploits that structure is simple enough to derive completely,
+which is worth more than a library call.</p>
+<p><strong>Why gradient descent will not do.</strong>
+It is worth being explicit about why Chapter 4 does not simply
+apply.  A gradient step moves <span class="math notranslate nohighlight">\(\bm{\lambda}\)</span> in an arbitrary direction and
+will in general violate both <span class="math notranslate nohighlight">\(0\le\lambda_i\le C\)</span> and
+<span class="math notranslate nohighlight">\(\sum_i\lambda_iy_i=0\)</span>.  One could project back onto the feasible set after
+each step – projected gradient descent – but the projection onto the
+intersection of a box and a hyperplane is itself a small optimisation problem.
+The algorithm below takes a cleverer route: it moves in directions that
+<em>preserve</em> feasibility by construction.</p>
+</section>
+<section id="sequential-minimal-optimisation">
+<h2><span class="section-number">6.9. </span>Sequential minimal optimisation<a class="headerlink" href="#sequential-minimal-optimisation" title="Link to this heading">#</a></h2>
+<p>The key observation is due to Platt.  The equality constraint
+<span class="math notranslate nohighlight">\(\sum_i\lambda_iy_i=0\)</span> couples all the multipliers, so we cannot change one
+alone without violating it.  But we can change <em>two</em> at once, adjusting
+the second to compensate the first.  Two is therefore the smallest possible
+working set, and the resulting subproblem – a quadratic in one effective
+variable – can be solved <em>analytically</em>.  No inner numerical
+optimisation is needed anywhere.  Hence the name: sequential minimal
+optimisation.</p>
+<p><strong>The subproblem.</strong>
+Fix all multipliers except <span class="math notranslate nohighlight">\(\lambda_1\)</span> and <span class="math notranslate nohighlight">\(\lambda_2\)</span>.  The equality
+constraint requires</p>
+<div class="math notranslate nohighlight">
+\[
+\lambda_1y_1+\lambda_2y_2 = -\sum_{i\ge3}\lambda_iy_i \equiv \zeta,\tag{6.36}
+\]</div>
+<p>a constant.  Multiplying by <span class="math notranslate nohighlight">\(y_1\)</span> and using <span class="math notranslate nohighlight">\(y_1^{2}=1\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\lambda_1 = \gamma - s\lambda_2,
+  \qquad s \equiv y_1y_2,
+  \qquad \gamma \equiv y_1\zeta,\tag{6.37}
+\]</div>
+<p>so the pair is confined to a line, and the problem has one free variable.</p>
+<p><strong>The bounds.</strong>
+Feasibility requires both multipliers to lie in <span class="math notranslate nohighlight">\([0,C]\)</span>, which restricts
+<span class="math notranslate nohighlight">\(\lambda_2\)</span> to an interval <span class="math notranslate nohighlight">\([L,H]\)</span> determined by the geometry of the line and
+the box.  Two cases arise.  If <span class="math notranslate nohighlight">\(y_1\ne y_2\)</span> then <span class="math notranslate nohighlight">\(s=-1\)</span> and
+Eq. (6.37) gives <span class="math notranslate nohighlight">\(\lambda_1-\lambda_2=\gamma\)</span>, a line of slope
+<span class="math notranslate nohighlight">\(+1\)</span>; requiring both coordinates to lie in <span class="math notranslate nohighlight">\([0,C]\)</span> gives</p>
+<div class="math notranslate nohighlight">
+\[
+L = \max\left(0,\ \lambda_2^{\mathrm{old}}-\lambda_1^{\mathrm{old}}\right),
+  \qquad
+  H = \min\left(C,\ C+\lambda_2^{\mathrm{old}}-\lambda_1^{\mathrm{old}}\right).\tag{6.38}
+\]</div>
+<p>If <span class="math notranslate nohighlight">\(y_1=y_2\)</span> then <span class="math notranslate nohighlight">\(s=+1\)</span> and <span class="math notranslate nohighlight">\(\lambda_1+\lambda_2=\gamma\)</span>, a line of slope
+<span class="math notranslate nohighlight">\(-1\)</span>, giving</p>
+<div class="math notranslate nohighlight">
+\[
+L = \max\left(0,\ \lambda_1^{\mathrm{old}}+\lambda_2^{\mathrm{old}}-C\right),
+  \qquad
+  H = \min\left(C,\ \lambda_1^{\mathrm{old}}+\lambda_2^{\mathrm{old}}\right).\tag{6.39}
+\]</div>
+<p>If <span class="math notranslate nohighlight">\(L=H\)</span> the line meets the box in a single point and there is nothing to do.</p>
+<p><strong>The analytic solution.</strong>
+Substituting Eq. (6.37) into the dual
+objective (6.32) gives a quadratic in <span class="math notranslate nohighlight">\(\lambda_2\)</span> alone.
+Writing <span class="math notranslate nohighlight">\(K_{ij}=K(\bm{x}_i,\bm{x}_j)\)</span>, its second derivative is</p>
+<div class="math notranslate nohighlight">
+\[
+\eta \equiv \frac{d^{2}\mathcal{L}}{d\lambda_2^{2}}
+   = 2K_{12}-K_{11}-K_{22},\tag{6.40}
+\]</div>
+<p>which is <span class="math notranslate nohighlight">\(\le0\)</span> because <span class="math notranslate nohighlight">\(K_{11}-2K_{12}+K_{22}=\|\phi(\bm{x}_1)-\phi(\bm{x}_2)\|^{2}\ge0\)</span>
+by Eq. (6.30).  The objective is therefore concave along the
+line and has a unique maximum.  Setting the first derivative to zero and
+expressing the result in terms of the prediction errors</p>
+<div class="math notranslate nohighlight">
+\[
+E_i = f(\bm{x}_i)-y_i,
+  \qquad
+  f(\bm{x}_i)=\sum_{j}\lambda_jy_jK_{ij}+b,\tag{6.41}
+\]</div>
+<p>the unconstrained maximiser is</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \lambda_2^{\mathrm{new}} = \lambda_2^{\mathrm{old}}
+    - \frac{y_2\left(E_1-E_2\right)}{\eta} . \;}\tag{6.42}
+\]</div>
+<p>Since <span class="math notranslate nohighlight">\(\eta&lt;0\)</span>, the step moves <span class="math notranslate nohighlight">\(\lambda_2\)</span> opposite to <span class="math notranslate nohighlight">\(y_2(E_1-E_2)\)</span>, which
+is the direction of increasing <span class="math notranslate nohighlight">\(\mathcal{L}\)</span>.  Clipping to the feasible
+interval,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\lambda_2^{\mathrm{clip}} =
+  \begin{cases}
+    H &amp; \lambda_2^{\mathrm{new}}&gt;H,\\
+    \lambda_2^{\mathrm{new}} &amp; L\le\lambda_2^{\mathrm{new}}\le H,\\
+    L &amp; \lambda_2^{\mathrm{new}}&lt;L,
+  \end{cases}\tag{6.43}
+\end{split}\]</div>
+<p>and recovering the partner from Eq. (6.37),</p>
+<div class="math notranslate nohighlight">
+\[
+\lambda_1^{\mathrm{new}} = \lambda_1^{\mathrm{old}}
+    + s\left(\lambda_2^{\mathrm{old}}-\lambda_2^{\mathrm{clip}}\right).\tag{6.44}
+\]</div>
+<p>The equality constraint is satisfied exactly, by construction, at every step.</p>
+<p><strong>Updating the intercept.</strong>
+After each step <span class="math notranslate nohighlight">\(b\)</span> must be recomputed so that the KKT
+conditions (6.27) hold for the two points just changed.  If
+<span class="math notranslate nohighlight">\(\lambda_1^{\mathrm{new}}\)</span> lies strictly inside <span class="math notranslate nohighlight">\((0,C)\)</span> then point <span class="math notranslate nohighlight">\(1\)</span> is a
+free support vector and must satisfy <span class="math notranslate nohighlight">\(y_1f(\bm{x}_1)=1\)</span>, which gives</p>
+<div class="math notranslate nohighlight">
+\[
+b_1 = b - E_1
+    - y_1\left(\lambda_1^{\mathrm{new}}-\lambda_1^{\mathrm{old}}\right)K_{11}
+    - y_2\left(\lambda_2^{\mathrm{clip}}-\lambda_2^{\mathrm{old}}\right)K_{12},\tag{6.45}
+\]</div>
+<p>and symmetrically for point <span class="math notranslate nohighlight">\(2\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+b_2 = b - E_2
+    - y_1\left(\lambda_1^{\mathrm{new}}-\lambda_1^{\mathrm{old}}\right)K_{12}
+    - y_2\left(\lambda_2^{\mathrm{clip}}-\lambda_2^{\mathrm{old}}\right)K_{22}.\tag{6.46}
+\]</div>
+<p>If both multipliers are free the two agree; if only one is free we use the
+corresponding value; if neither is free any value between them satisfies the
+conditions and we take the average.</p>
+<p><strong>Choosing the pair.</strong>
+What remains is a heuristic for selecting which two multipliers to optimise,
+and here we are guided by the KKT conditions rather than by the objective.
+Define <span class="math notranslate nohighlight">\(r_i=y_iE_i\)</span>.  The conditions of Section <em>The soft margin</em> are
+violated when</p>
+<div class="math notranslate nohighlight">
+\[
+r_i&lt;-\epsilon \ \text{ and } \ \lambda_i&lt;C,
+  \qquad\text{or}\qquad
+  r_i&gt;\epsilon \ \text{ and } \ \lambda_i&gt;0,\tag{6.47}
+\]</div>
+<p>for a tolerance <span class="math notranslate nohighlight">\(\epsilon\)</span>.  The outer loop alternates between sweeping all
+points and sweeping only the free support vectors – the latter being where
+the action is, since bound multipliers tend to stay bound – and terminates
+when a full sweep over all points produces no change, at which point the KKT
+conditions hold everywhere and we have the solution.  Given a violating <span class="math notranslate nohighlight">\(i\)</span>,
+the second index <span class="math notranslate nohighlight">\(j\)</span> is chosen to maximise <span class="math notranslate nohighlight">\(|E_i-E_j|\)</span>, since by
+Eq. (6.42) the step length is proportional to that difference.</p>
+</section>
+<section id="implementation">
+<h2><span class="section-number">6.10. </span>Implementation<a class="headerlink" href="#implementation" title="Link to this heading">#</a></h2>
+<p>We now write the solver.  It is short, it uses nothing beyond
+<code class="docutils literal notranslate"><span class="pre">numpy</span></code>, and every line corresponds to an equation above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">def</span> <span class="nf">linear_kernel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">X</span> <span class="o">@</span> <span class="n">Z</span><span class="o">.</span><span class="n">T</span>
+
+
+<span class="k">def</span> <span class="nf">polynomial_kernel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">coef0</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">Z</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="n">coef0</span><span class="p">)</span> <span class="o">**</span> <span class="n">degree</span>
+
+
+<span class="k">def</span> <span class="nf">rbf_kernel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gaussian kernel, computed through the identity</span>
+<span class="sd">    ||x - z||^2 = ||x||^2 + ||z||^2 - 2 x.z  (Section 1.vectors).&quot;&quot;&quot;</span>
+    <span class="n">d2</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">Z</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+          <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">Z</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">d2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The kernel matrix is computed once and cached, as are the errors <span class="math notranslate nohighlight">\(E_i\)</span>; both
+are the standard economies.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SVC</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Support vector classifier trained by sequential minimal optimisation.</span>
+
+<span class="sd">    Solves the dual (6.dualkernel) subject to the box constraints</span>
+<span class="sd">    (6.boxconstraints), using the analytic two-variable update (6.smoupdate).</span>
+<span class="sd">    Labels must be -1 and +1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">linear_kernel</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">=</span> <span class="n">C</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span>
+
+    <span class="c1"># ---------- the two-variable subproblem ----------</span>
+    <span class="k">def</span> <span class="nf">_take_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">C</span><span class="p">,</span> <span class="n">lam</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">E_</span>
+        <span class="n">li</span><span class="p">,</span> <span class="n">lj</span> <span class="o">=</span> <span class="n">lam</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lam</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="c1"># Bounds L and H, Eqs. (6.boundsdiff) and (6.boundssame)</span>
+        <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+            <span class="n">L</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lj</span> <span class="o">-</span> <span class="n">li</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">C</span> <span class="o">+</span> <span class="n">lj</span> <span class="o">-</span> <span class="n">li</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">L</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">li</span> <span class="o">+</span> <span class="n">lj</span> <span class="o">-</span> <span class="n">C</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">li</span> <span class="o">+</span> <span class="n">lj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">L</span> <span class="o">&gt;=</span> <span class="n">H</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">eta</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>        <span class="c1"># Eq. (6.eta)</span>
+        <span class="k">if</span> <span class="n">eta</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mf">1e-12</span><span class="p">:</span>                              <span class="c1"># degenerate, skip</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">lj_new</span> <span class="o">=</span> <span class="n">lj</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">E</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">/</span> <span class="n">eta</span>       <span class="c1"># Eq. (6.smoupdate)</span>
+        <span class="n">lj_new</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">lj_new</span><span class="p">))</span>                <span class="c1"># Eq. (6.clip)</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">lj_new</span> <span class="o">-</span> <span class="n">lj</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-10</span> <span class="o">*</span> <span class="p">(</span><span class="n">lj_new</span> <span class="o">+</span> <span class="n">lj</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">li_new</span> <span class="o">=</span> <span class="n">li</span> <span class="o">+</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">lj</span> <span class="o">-</span> <span class="n">lj_new</span><span class="p">)</span>      <span class="c1"># Eq. (6.smopartner)</span>
+
+        <span class="n">b1</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_</span> <span class="o">-</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">li_new</span> <span class="o">-</span> <span class="n">li</span><span class="p">)</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+              <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">lj_new</span> <span class="o">-</span> <span class="n">lj</span><span class="p">)</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>        <span class="c1"># Eq. (6.b1)</span>
+        <span class="n">b2</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b_</span> <span class="o">-</span> <span class="n">E</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">li_new</span> <span class="o">-</span> <span class="n">li</span><span class="p">)</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+              <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">lj_new</span> <span class="o">-</span> <span class="n">lj</span><span class="p">)</span> <span class="o">*</span> <span class="n">K</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>        <span class="c1"># Eq. (6.b2)</span>
+        <span class="k">if</span> <span class="mf">1e-8</span> <span class="o">&lt;</span> <span class="n">li_new</span> <span class="o">&lt;</span> <span class="n">C</span> <span class="o">-</span> <span class="mf">1e-8</span><span class="p">:</span>
+            <span class="n">b_new</span> <span class="o">=</span> <span class="n">b1</span>
+        <span class="k">elif</span> <span class="mf">1e-8</span> <span class="o">&lt;</span> <span class="n">lj_new</span> <span class="o">&lt;</span> <span class="n">C</span> <span class="o">-</span> <span class="mf">1e-8</span><span class="p">:</span>
+            <span class="n">b_new</span> <span class="o">=</span> <span class="n">b2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">b_new</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">b1</span> <span class="o">+</span> <span class="n">b2</span><span class="p">)</span>
+
+        <span class="n">lam</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lam</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">li_new</span><span class="p">,</span> <span class="n">lj_new</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_</span> <span class="o">=</span> <span class="n">b_new</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">E_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">K_</span> <span class="o">@</span> <span class="p">(</span><span class="n">lam</span> <span class="o">*</span> <span class="n">y</span><span class="p">))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_</span> <span class="o">-</span> <span class="n">y</span>   <span class="c1"># refresh the cache</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="c1"># ---------- choose the partner for a violating index ----------</span>
+    <span class="k">def</span> <span class="nf">_examine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">y</span><span class="p">,</span> <span class="n">lam</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">E_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">violates</span> <span class="o">=</span> <span class="p">((</span><span class="n">r</span> <span class="o">&lt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="ow">and</span> <span class="n">lam</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">C</span> <span class="o">-</span> <span class="mf">1e-12</span><span class="p">)</span> <span class="ow">or</span>
+                    <span class="p">(</span><span class="n">r</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="ow">and</span> <span class="n">lam</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1e-12</span><span class="p">))</span>   <span class="c1"># Eq. (6.kktviolation)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">violates</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">free</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">lam</span> <span class="o">&gt;</span> <span class="mf">1e-12</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lam</span> <span class="o">&lt;</span> <span class="n">C</span> <span class="o">-</span> <span class="mf">1e-12</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">free</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>                       <span class="c1"># heuristic: maximise |E_i - E_j|</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">free</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">E_</span><span class="p">[</span><span class="n">free</span><span class="p">]))]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_take_step</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">free</span><span class="p">):</span>   <span class="c1"># then any free multiplier</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_take_step</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)):</span>  <span class="c1"># then anything at all</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_take_step</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># ---------- the outer loop ----------</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_</span> <span class="o">=</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">K_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lam_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">E_</span> <span class="o">=</span> <span class="o">-</span><span class="n">y</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>                    <span class="c1"># since lambda = 0 and b = 0</span>
+
+        <span class="n">examine_all</span><span class="p">,</span> <span class="n">num_changed</span><span class="p">,</span> <span class="n">it</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">num_changed</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">examine_all</span><span class="p">)</span> <span class="ow">and</span> <span class="n">it</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">:</span>
+            <span class="n">num_changed</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">examine_all</span><span class="p">:</span>
+                <span class="n">index_set</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>                              <span class="c1"># only the free support vectors</span>
+                <span class="n">index_set</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">lam_</span> <span class="o">&gt;</span> <span class="mf">1e-12</span><span class="p">)</span>
+                                     <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lam_</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">C</span> <span class="o">-</span> <span class="mf">1e-12</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index_set</span><span class="p">:</span>
+                <span class="n">num_changed</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_examine</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">examine_all</span><span class="p">:</span>
+                <span class="n">examine_all</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">num_changed</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">examine_all</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">sv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam_</span> <span class="o">&gt;</span> <span class="mf">1e-8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sv_</span> <span class="o">=</span> <span class="n">sv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_sv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_sv</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam_sv</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">sv</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">sv</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">lam_</span><span class="p">[</span><span class="n">sv</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_iter_</span> <span class="o">=</span> <span class="n">it</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">decision_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Eq. (6.kernelclassify) without the sign.&quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_sv</span><span class="p">)</span> <span class="o">@</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lam_sv</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_sv</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_</span>
+
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that <span class="math notranslate nohighlight">\(\bm{w}\)</span> never appears.  For a linear kernel it can be recovered
+from Eq. (6.16) as <code class="docutils literal notranslate"><span class="pre">(lam_sv</span> <span class="pre">*</span> <span class="pre">y_sv)</span> <span class="pre">&#64;</span> <span class="pre">X_sv</span></code>, but
+for the RBF kernel it does not exist as a finite vector and the sum over
+support vectors in <code class="docutils literal notranslate"><span class="pre">decision_function</span></code> is the only representation
+available.</p>
+</section>
+<section id="verifying-the-solver">
+<h2><span class="section-number">6.11. </span>Verifying the solver<a class="headerlink" href="#verifying-the-solver" title="Link to this heading">#</a></h2>
+<p>A solver written from scratch must be checked, and the KKT conditions give us
+exactly the tests to apply.  Rather than merely comparing predictions against
+a library, we verify the mathematics.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_blobs</span><span class="p">,</span> <span class="n">make_moons</span>
+<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">SVC</span> <span class="k">as</span> <span class="n">SklearnSVC</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># --- a separable linear problem ---</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y01</span> <span class="o">=</span> <span class="n">make_blobs</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">centers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cluster_std</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y01</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">linear_kernel</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">lam_sv</span> <span class="o">*</span> <span class="n">model</span><span class="o">.</span><span class="n">y_sv</span><span class="p">)</span> <span class="o">@</span> <span class="n">model</span><span class="o">.</span><span class="n">X_sv</span>            <span class="c1"># Eq. (6.wfromlambda)</span>
+
+<span class="n">reference</span> <span class="o">=</span> <span class="n">SklearnSVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ours    w =&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">&quot; b =&quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">b_</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;sklearn w =&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">coef_</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="mi">5</span><span class="p">),</span>
+      <span class="s2">&quot; b =&quot;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">intercept_</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The two agree to about <span class="math notranslate nohighlight">\(3\times10^{-4}\)</span> in <span class="math notranslate nohighlight">\(\bm{w}\)</span> and <span class="math notranslate nohighlight">\(8\times10^{-4}\)</span> in
+<span class="math notranslate nohighlight">\(b\)</span>, the difference being the finite KKT tolerance.  More telling is the
+direct check of the conditions themselves.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y01</span> <span class="o">=</span> <span class="n">make_moons</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y01</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="n">gaussian</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">:</span> <span class="n">rbf_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">gaussian</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">margin</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">model</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>                 <span class="c1"># y_i f(x_i)</span>
+<span class="n">lam</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">lam_</span>
+<span class="n">free</span> <span class="o">=</span> <span class="p">(</span><span class="n">lam</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">lam</span> <span class="o">&lt;</span> <span class="n">model</span><span class="o">.</span><span class="n">C</span> <span class="o">-</span> <span class="mf">1e-6</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;free support vectors: |y f - 1| max = &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">margin</span><span class="p">[</span><span class="n">free</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>          <span class="c1"># must be 0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;lambda = 0 points:    min y f = </span><span class="si">{</span><span class="n">margin</span><span class="p">[</span><span class="n">lam</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mf">1e-8</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># &gt;= 1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;equality constraint:  sum lam y = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lam</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>          <span class="c1"># = 0</span>
+
+<span class="n">dual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">lam</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">model</span><span class="o">.</span><span class="n">K_</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dual objective: </span><span class="si">{</span><span class="n">dual</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The output is</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">free</span> <span class="n">support</span> <span class="n">vectors</span><span class="p">:</span> <span class="o">|</span><span class="n">y</span> <span class="n">f</span> <span class="o">-</span> <span class="mi">1</span><span class="o">|</span> <span class="nb">max</span> <span class="o">=</span> <span class="mf">8.95e-05</span>
+<span class="k">lambda</span> <span class="o">=</span> <span class="mi">0</span> <span class="n">points</span><span class="p">:</span>    <span class="nb">min</span> <span class="n">y</span> <span class="n">f</span> <span class="o">=</span> <span class="mf">1.0002</span>
+<span class="n">equality</span> <span class="n">constraint</span><span class="p">:</span>  <span class="nb">sum</span> <span class="n">lam</span> <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="mf">8.88e-16</span>
+<span class="n">dual</span> <span class="n">objective</span><span class="p">:</span> <span class="mf">27.790313</span>
+</pre></div>
+</div>
+<p>Every condition of Section <em>The soft margin</em> holds.  The free support
+vectors sit on the margin to five decimal places; the points with vanishing
+multipliers all satisfy <span class="math notranslate nohighlight">\(y_if(\bm{x}_i)\ge1\)</span>, so none has been wrongly
+excluded; and the equality constraint holds to machine precision, as it must,
+since Eq. (6.44) enforces it exactly at every step.  The dual
+objective agrees with the value <span class="math notranslate nohighlight">\(27.790310\)</span> obtained from
+<code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code>’s multipliers to six significant figures – our value
+being very slightly the larger, as it should be for a maximisation.  On this
+data set both classifiers reach <span class="math notranslate nohighlight">\(98\%\)</span> training accuracy and agree on every
+single prediction.</p>
+<p><strong>The soft margin in action.</strong>
+Repeating on deliberately overlapping classes shows what <span class="math notranslate nohighlight">\(C\)</span> controls.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y01</span> <span class="o">=</span> <span class="n">make_blobs</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">centers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">cluster_std</span><span class="o">=</span><span class="mf">2.6</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y01</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">C</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">linear_kernel</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">lam_sv</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">y_sv</span><span class="p">)</span> <span class="o">@</span> <span class="n">m</span><span class="o">.</span><span class="n">X_sv</span>
+    <span class="n">at_bound</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">lam_</span> <span class="o">&gt;</span> <span class="n">C</span> <span class="o">-</span> <span class="mf">1e-6</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;C=</span><span class="si">{</span><span class="n">C</span><span class="si">:</span><span class="s2">&lt;6</span><span class="si">}</span><span class="s2"> n_sv=</span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">sv_</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> (at bound </span><span class="si">{</span><span class="n">at_bound</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2">)  &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;margin=</span><span class="si">{</span><span class="mi">2</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="si">:</span><span class="s2">7.4f</span><span class="si">}</span><span class="s2">  &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;accuracy=</span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">C</span><span class="o">=</span><span class="mf">0.01</span>   <span class="n">n_sv</span><span class="o">=</span> <span class="mi">48</span> <span class="p">(</span><span class="n">at</span> <span class="n">bound</span>  <span class="mi">46</span><span class="p">)</span>  <span class="n">margin</span><span class="o">=</span> <span class="mf">5.0478</span>  <span class="n">accuracy</span><span class="o">=</span><span class="mf">0.8750</span>
+<span class="n">C</span><span class="o">=</span><span class="mf">0.1</span>    <span class="n">n_sv</span><span class="o">=</span> <span class="mi">32</span> <span class="p">(</span><span class="n">at</span> <span class="n">bound</span>  <span class="mi">29</span><span class="p">)</span>  <span class="n">margin</span><span class="o">=</span> <span class="mf">3.4275</span>  <span class="n">accuracy</span><span class="o">=</span><span class="mf">0.8833</span>
+<span class="n">C</span><span class="o">=</span><span class="mf">1.0</span>    <span class="n">n_sv</span><span class="o">=</span> <span class="mi">29</span> <span class="p">(</span><span class="n">at</span> <span class="n">bound</span>  <span class="mi">26</span><span class="p">)</span>  <span class="n">margin</span><span class="o">=</span> <span class="mf">3.0133</span>  <span class="n">accuracy</span><span class="o">=</span><span class="mf">0.8833</span>
+<span class="n">C</span><span class="o">=</span><span class="mf">10.0</span>   <span class="n">n_sv</span><span class="o">=</span> <span class="mi">28</span> <span class="p">(</span><span class="n">at</span> <span class="n">bound</span>  <span class="mi">25</span><span class="p">)</span>  <span class="n">margin</span><span class="o">=</span> <span class="mf">2.9851</span>  <span class="n">accuracy</span><span class="o">=</span><span class="mf">0.8833</span>
+</pre></div>
+</div>
+<p>The support vector counts match <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> exactly for every <span class="math notranslate nohighlight">\(C\)</span>.
+Reading the table, a small <span class="math notranslate nohighlight">\(C\)</span> makes violations cheap, so many points sit
+inside a wide margin and most multipliers are at the bound; increasing <span class="math notranslate nohighlight">\(C\)</span>
+raises the price of a violation, so the margin narrows and fewer points
+support it.  The training accuracy barely moves, because these classes
+genuinely overlap and no linear boundary can do better – which is the
+situation the soft margin was invented for.</p>
+<p>One caveat about reproducibility.  The partner-selection heuristic of
+Section <em>Sequential minimal optimisation</em> falls back on a random permutation when the free
+multipliers offer no improvement, so the iterate path – and hence the last
+few digits of the margin, and occasionally the count of bound multipliers by
+one – depends on the seed.  The solution itself does not: the dual objective
+and the predictions are reproducible, because the problem is convex and the
+optimum unique.  The table above was produced with <code class="docutils literal notranslate"><span class="pre">np.random.seed(0)</span></code>
+set immediately before the loop.</p>
+<p><strong>The kernel trick, verified.</strong>
+The identity (6.31) can be checked directly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">phi</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">@</span> <span class="n">phi</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="n">a</span> <span class="o">@</span> <span class="n">b</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>      <span class="c1"># 0.9148995105  0.9148995105</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On the moons data a cubic polynomial kernel with <span class="math notranslate nohighlight">\(C=5\)</span> reaches <span class="math notranslate nohighlight">\(99.5\%\)</span>
+training accuracy with only <span class="math notranslate nohighlight">\(20\)</span> support vectors, identical to
+<code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> in both figures – a more compact model than the RBF
+kernel needed, because the true boundary happens to be well matched by a
+low-order polynomial.</p>
+</section>
+<section id="the-primal-view-the-hinge-loss">
+<h2><span class="section-number">6.12. </span>The primal view: the hinge loss<a class="headerlink" href="#the-primal-view-the-hinge-loss" title="Link to this heading">#</a></h2>
+<p>The dual is not the only route, and the alternative reveals what a support
+vector machine has in common with everything else in this book.</p>
+<p>Return to the soft-margin problem.  For a given <span class="math notranslate nohighlight">\((\bm{w},b)\)</span> the optimal slack
+is as small as Eq. (6.23) permits, namely
+<span class="math notranslate nohighlight">\(\xi_i=\max\left(0,\,1-y_i(\bm{w}^{T}\bm{x}_i+b)\right)\)</span>.  Substituting this
+into the primal objective eliminates the slack variables and leaves an
+<em>unconstrained</em> problem,</p>
+<div class="math notranslate nohighlight">
+\[
+\boxed{\;
+  \min_{\bm{w},b}\ \ \frac{\lambda}{2}\|\bm{w}\|_2^{2}
+   + \frac{1}{n}\sum_{i=1}^{n}
+     \max\left(0,\ 1-y_i\left(\bm{w}^{T}\bm{x}_i+b\right)\right), \;}\tag{6.48}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\lambda\)</span> is proportional to <span class="math notranslate nohighlight">\(1/C\)</span>.  The function
+<span class="math notranslate nohighlight">\(\max(0,1-y f)\)</span> is the <em>hinge loss</em>: zero once the point is correctly
+classified with margin at least one, and growing linearly thereafter.</p>
+<p>Equation (6.48) should look familiar.  It is a loss plus
+an <span class="math notranslate nohighlight">\(\ell_2\)</span> penalty – precisely the structure of Ridge regression in
+Eq. (3.27) and of penalised logistic regression in
+Eq. (5.23).  The three methods differ <em>only in the loss</em>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Method</strong></p></th>
+<th class="head"><p><strong>Loss on one sample</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Ridge regression</p></td>
+<td><p><span class="math notranslate nohighlight">\(\left(y_i-f_i\right)^{2}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>Logistic regression</p></td>
+<td><p><span class="math notranslate nohighlight">\(\log\left(1+e^{-y_if_i}\right)\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>Support vector machine</p></td>
+<td><p><span class="math notranslate nohighlight">\(\max\left(0,\,1-y_if_i\right)\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>with <span class="math notranslate nohighlight">\(f_i=\bm{w}^{T}\bm{x}_i+b\)</span> throughout, and the labels <span class="math notranslate nohighlight">\(\pm1\)</span> in the last
+two rows.  Comparing the second and third explains the difference in
+behaviour.  The logistic loss is positive everywhere, however well a point is
+classified, so every point exerts some pull on the boundary – which is why
+logistic regression has no support vectors.  The hinge loss is exactly zero
+beyond the margin, so points that are comfortably correct exert none at all –
+which is why the SVM does.  This is the same fact we derived from the KKT
+conditions in Section <em>The dual problem</em>, now visible in the loss function itself.</p>
+<p>Figure 6.4 draws the three losses of the table together with the
+misclassification loss they are all trying to approximate.  All three are
+convex upper bounds on the step function, which is what makes them tractable
+surrogates.  They differ in two respects that matter.  Only the hinge loss is
+exactly zero for <span class="math notranslate nohighlight">\(yf&gt;1\)</span>, which produces the support vectors; and the squared
+loss is the only one that <em>increases</em> for large positive margin, penalising
+a point for being classified too well, which is why it is a poor choice for
+classification.</p>
+<p><img alt="The hinge, logistic and squared losses as functions of the margin yf, " src="_images/loss_functions.png" /></p>
+<p><em>Figure 6.4: The hinge, logistic and squared losses as functions of the margin <span class="math notranslate nohighlight">\(yf\)</span>, with the <span class="math notranslate nohighlight">\(0/1\)</span> misclassification loss they bound.  Only the hinge vanishes identically beyond <span class="math notranslate nohighlight">\(yf=1\)</span>; only the squared loss grows again for large positive margin.</em></p>
+<p><strong>Solving the primal directly.</strong>
+Because Eq. (6.48) is unconstrained, the methods of
+Chapter 4 apply after all.  The hinge is not differentiable at
+the kink, but it is convex and possesses a subgradient everywhere, which is
+enough.  The resulting algorithm, Pegasos, is stochastic gradient descent with
+the learning rate schedule <span class="math notranslate nohighlight">\(\eta_t=1/(\lambda t)\)</span> of
+Eq. (4.30).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">pegasos</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lmbda</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Primal SVM by stochastic subgradient descent on Eq. (6.hingeobjective).&quot;&quot;&quot;</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rng</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">w</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">eta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">lmbda</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>                  <span class="c1"># Eq. (4.timedecay)</span>
+            <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>            <span class="c1"># inside the margin</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">lmbda</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span> <span class="o">+</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">b</span> <span class="o">+=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>                                    <span class="c1"># outside: only the penalty</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">lmbda</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span>
+    <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>On the standardised overlapping blobs above with <span class="math notranslate nohighlight">\(\lambda=0.01\)</span>, Pegasos
+reaches an objective of <span class="math notranslate nohighlight">\(0.255097\)</span> against <span class="math notranslate nohighlight">\(0.255064\)</span> for the dual solution
+computed by <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> – agreement to four decimal places – with
+identical training accuracy.  The two formulations solve the same problem.</p>
+<p>Which to prefer is decided by the shape of the data, and the criterion is the
+one that has recurred throughout this book.  The dual has <span class="math notranslate nohighlight">\(n\)</span> variables and
+needs the <span class="math notranslate nohighlight">\(n\times n\)</span> kernel matrix, so it suits problems with few samples,
+many features, and a non-linear boundary.  The primal has <span class="math notranslate nohighlight">\(p+1\)</span> variables and
+touches one sample at a time, so it suits problems with very many samples and
+a linear boundary.  For text classification with a million documents and a
+million features, Pegasos is the practical choice and the kernel matrix is
+unthinkable.</p>
+<div class="tip admonition">
+<p class="admonition-title">Machine learning connection</p>
+<p>The table above is worth memorising,
+because it organises a large part of supervised learning.  Fix the model
+<span class="math notranslate nohighlight">\(f=\bm{w}^{T}\bm{x}+b\)</span> and the penalty <span class="math notranslate nohighlight">\(\|\bm{w}\|^{2}\)</span>, and the choice of loss
+selects the method: squared error gives Ridge, log loss gives logistic
+regression, hinge loss gives the SVM.  Change the penalty from <span class="math notranslate nohighlight">\(\ell_2\)</span> to
+<span class="math notranslate nohighlight">\(\ell_1\)</span> and each acquires a sparse variant, as in Section <em>The Lasso</em>.
+Replace the linear <span class="math notranslate nohighlight">\(f\)</span> by a neural network and the same losses reappear
+unchanged in the next chapters.  The apparent variety of methods is largely a
+small number of choices made independently, and recognising which choice a new
+method is making is usually the fastest way to understand it.</p>
+</div>
+</section>
+<section id="one-penalty-three-losses">
+<h2><span class="section-number">6.13. </span>One penalty, three losses<a class="headerlink" href="#one-penalty-three-losses" title="Link to this heading">#</a></h2>
+<p>Section <em>The primal view: the hinge loss</em> ended by placing the support vector machine in a family:
+Ridge regression, logistic regression and the support vector machine are one
+model with one penalty and three losses.  That remark was about linear models.
+It survives the kernel trick intact, and in the kernel setting it becomes
+sharper, because it explains the one property that distinguishes this chapter’s
+method from the other two – sparsity – and shows that the property is a
+consequence of the loss function alone.</p>
+<section id="the-common-problem">
+<h3><span class="section-number">6.13.1. </span>The common problem<a class="headerlink" href="#the-common-problem" title="Link to this heading">#</a></h3>
+<p>All three methods solve</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{f\in\mathcal{H}}\;
+    \sum_{i=1}^{n}L\!\left(y_i,f(\bm{x}_i)\right)
+    + \frac{\lambda}{2}\left\|f\right\|_{\mathcal{H}}^{2},\tag{6.49}
+\]</div>
+<p>over the reproducing kernel Hilbert space of
+Section <em>Why the same trick works for any loss: the representer theorem</em>, and differ only in <span class="math notranslate nohighlight">\(L\)</span>.  With labels
+<span class="math notranslate nohighlight">\(y_i\in\{-1,+1\}\)</span> as in this chapter:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+L_{\mathrm{sq}}(y,f)    &amp;= \tfrac12\left(y-f\right)^{2}
+    &amp;&amp; \text{kernel Ridge regression, Section~Kernel methods: regression without coordinates},
+  \\
+  L_{\mathrm{log}}(y,f)   &amp;= \ln\!\left(1+e^{-yf}\right)
+    &amp;&amp; \text{kernel logistic regression, Section~Kernel logistic regression},
+  \\
+  L_{\mathrm{hinge}}(y,f) &amp;= \max\left(0,\,1-yf\right)
+    &amp;&amp; \text{the support vector machine, Eq.~(6.48)}.
+\end{align}
+\end{split}\]</div>
+<p>By Theorem 3.9 all three minimisers have the form
+<span class="math notranslate nohighlight">\(f=\sum_j\alpha_jk(\bm{x}_j,\cdot)\)</span>, so all three produce a prediction rule of
+exactly the shape (6.33).  The only thing that can
+distinguish them is the vector <span class="math notranslate nohighlight">\(\bm{\alpha}\)</span>, and there is a single formula for
+it.</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 6.1 (The coefficients are minus the loss derivative)</p>
+<p>Let <span class="math notranslate nohighlight">\(f^{\star}\)</span> minimise Eq. (6.49) with <span class="math notranslate nohighlight">\(L\)</span> convex and
+differentiable in its second argument, and write
+<span class="math notranslate nohighlight">\(L'_i=\partial L(y_i,f)/\partial f\)</span> evaluated at <span class="math notranslate nohighlight">\(f=f^{\star}(\bm{x}_i)\)</span>.  Then</p>
+<div class="math notranslate nohighlight">
+\[
+f^{\star}(\cdot) = \sum_{i=1}^{n}\alpha_i\,k(\bm{x}_i,\cdot),
+  \qquad
+  \alpha_i = -\frac{L'_i}{\lambda} .\tag{6.53}
+\]</div>
+<p>If <span class="math notranslate nohighlight">\(L\)</span> is convex but not differentiable, the same holds with <span class="math notranslate nohighlight">\(L'_i\)</span> any element
+of the subdifferential <span class="math notranslate nohighlight">\(\partial L(y_i,f^{\star}(\bm{x}_i))\)</span>, in the sense of
+Eq. (3.49).</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>By the reproducing property, <span class="math notranslate nohighlight">\(f\mapsto f(\bm{x}_i)\)</span> has derivative
+<span class="math notranslate nohighlight">\(k(\bm{x}_i,\cdot)\)</span> as an element of <span class="math notranslate nohighlight">\(\mathcal{H}\)</span>: perturbing <span class="math notranslate nohighlight">\(f\)</span> by <span class="math notranslate nohighlight">\(\delta\)</span>
+changes <span class="math notranslate nohighlight">\(f(\bm{x}_i)\)</span> by <span class="math notranslate nohighlight">\(\langle\delta,k(\bm{x}_i,\cdot)\rangle\)</span>.  The
+derivative of <span class="math notranslate nohighlight">\(\tfrac{\lambda}{2}\|f\|^{2}\)</span> is <span class="math notranslate nohighlight">\(\lambda f\)</span>.  Stationarity of
+Eq. (6.49) in <span class="math notranslate nohighlight">\(\mathcal{H}\)</span> is therefore</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{i=1}^{n}L'_i\,k(\bm{x}_i,\cdot) + \lambda f^{\star} = 0,\tag{6.54}
+\]</div>
+<p>which rearranges to Eq. (6.53).  For non-differentiable <span class="math notranslate nohighlight">\(L\)</span>
+the same argument applies with the subdifferential, <span class="math notranslate nohighlight">\(0\)</span> belonging to the sum of
+the subdifferential of the loss and the gradient of the penalty.
+\qed</p>
+</div>
+<p>Equation (6.53) is short and it settles everything.  The
+weight a training point receives in the final predictor is the derivative of
+the loss at that point, divided by the penalty.  A point on which the loss is
+locally flat receives no weight at all.  Applying it in turn:</p>
+<p><strong>Squared loss.</strong>
+<span class="math notranslate nohighlight">\(L'=f-y\)</span>, so <span class="math notranslate nohighlight">\(\alpha_i=(y_i-f_i)/\lambda\)</span>: the coefficient is the residual.
+Substituting into <span class="math notranslate nohighlight">\(\bm{f}=\bm{K}\bm{\alpha}\)</span> gives
+<span class="math notranslate nohighlight">\(\bm{K}\bm{\alpha}=\bm{y}-\lambda\bm{\alpha}\)</span>, that is
+<span class="math notranslate nohighlight">\((\bm{K}+\lambda\bm{I})\bm{\alpha}=\bm{y}\)</span>, which is
+Eq. (3.68) – the theorem contains kernel ridge regression as a
+special case.</p>
+<p><strong>Logistic loss.</strong>
+<span class="math notranslate nohighlight">\(L'=-y\,\sigma(-yf)\)</span>, so <span class="math notranslate nohighlight">\(\alpha_i=y_i\sigma(-y_if_i)/\lambda\)</span>.  For labels in
+<span class="math notranslate nohighlight">\(\{0,1\}\)</span> this is Proposition 5.1, <span class="math notranslate nohighlight">\(\alpha_i=(y_i-p_i)/\lambda\)</span>,
+in the other notation.  The logistic function is strictly positive everywhere,
+so <em>no</em> coefficient vanishes.</p>
+<p><strong>Hinge loss.</strong>
+<span class="math notranslate nohighlight">\(L'=-y\)</span> where <span class="math notranslate nohighlight">\(yf&lt;1\)</span> and <span class="math notranslate nohighlight">\(L'=0\)</span> where <span class="math notranslate nohighlight">\(yf&gt;1\)</span>, so</p>
+<div class="math notranslate nohighlight">
+\[
+\alpha_i = \frac{y_i}{\lambda}\ \text{ if }y_if_i&lt;1,
+  \qquad
+  \alpha_i = 0\ \text{ if }y_if_i&gt;1,
+  \qquad
+  y_i\alpha_i \in \left[0,\tfrac{1}{\lambda}\right]\ \text{ if }y_if_i=1 .\tag{6.55}
+\]</div>
+<p>The hinge loss is the only one of the three that is exactly zero on an open
+set, so its derivative is exactly zero there, so its coefficients are exactly
+zero there.  <em>That is the entire origin of the support vectors.</em>  The
+points with <span class="math notranslate nohighlight">\(\alpha_i\neq0\)</span> are precisely those with <span class="math notranslate nohighlight">\(y_if_i\le1\)</span> – inside the
+margin or misclassified – which is the characterisation
+Section <em>The dual problem</em> obtained from the Karush-Kuhn-Tucker conditions, and the
+bound <span class="math notranslate nohighlight">\(y_i\alpha_i\le1/\lambda\)</span> is the box constraint <span class="math notranslate nohighlight">\(\lambda_i\le C\)</span> of
+Eq. (6.26) with <span class="math notranslate nohighlight">\(C=1/\lambda\)</span>.</p>
+</section>
+<section id="the-three-measured-together">
+<h3><span class="section-number">6.13.2. </span>The three, measured together<a class="headerlink" href="#the-three-measured-together" title="Link to this heading">#</a></h3>
+<p>The program \verb!three_losses.py! fits all three to the same eighty points
+with the same Gaussian kernel and the same <span class="math notranslate nohighlight">\(\lambda=1\)</span>, and checks
+Eq. (6.53) directly.  The hinge problem is solved as the
+box-constrained quadratic programme obtained by writing
+<span class="math notranslate nohighlight">\(\alpha_i=y_i\beta_i/\lambda\)</span>, which is the dual of
+Section <em>The dual problem</em> without the equality constraint, since
+Eq. (6.49) carries no unpenalised intercept; the solver
+certifies itself by the duality gap:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">primal</span> <span class="n">value</span>  <span class="mf">26.4874425949</span>
+  <span class="n">dual</span> <span class="n">value</span>    <span class="mf">26.4874425949</span>
+  <span class="n">duality</span> <span class="n">gap</span>   <span class="mf">1.528e-13</span>
+</pre></div>
+</div>
+<p>The theorem then holds to machine precision for all three:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="n">loss</span>          <span class="n">L</span><span class="s1">&#39;(y,f)                      predicted alpha        max |alpha - predicted|</span>
+   <span class="n">squared</span>       <span class="n">f</span> <span class="o">-</span> <span class="n">y</span>                        <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="k">lambda</span>        <span class="mf">1.332e-15</span>
+   <span class="n">logistic</span>      <span class="o">-</span><span class="n">y</span> <span class="n">sigma</span><span class="p">(</span><span class="o">-</span><span class="n">y</span> <span class="n">f</span><span class="p">)</span>               <span class="n">y</span> <span class="n">sigma</span><span class="p">(</span><span class="o">-</span><span class="n">y</span> <span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="k">lambda</span>  <span class="mf">1.468e-13</span>
+   <span class="n">hinge</span>         <span class="o">-</span><span class="n">y</span> <span class="k">if</span> <span class="n">yf</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">yf</span><span class="o">&gt;</span><span class="mi">1</span>        <span class="n">y</span><span class="o">/</span><span class="k">lambda</span> <span class="ow">or</span> <span class="mi">0</span>         <span class="mf">0.000e+00</span>
+</pre></div>
+</div>
+<p>The hinge row excludes the fifteen points lying exactly on the margin, where
+<span class="math notranslate nohighlight">\(L\)</span> is not differentiable and Eq. (6.55) permits any value
+between <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(y_i/\lambda\)</span>.  Those points are not an inconvenience of the
+measurement; they are the reason the subdifferential appears in the statement
+of the theorem.</p>
+<p>And here is the consequence the theorem predicts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="n">method</span>                    <span class="n">non</span><span class="o">-</span><span class="n">zero</span> <span class="n">alpha</span>   <span class="o">|</span><span class="n">alpha</span><span class="o">|</span><span class="n">_max</span>   <span class="nb">sum</span> <span class="n">L</span><span class="p">(</span><span class="n">y_i</span><span class="p">,</span><span class="n">f_i</span><span class="p">)</span>   <span class="p">(</span><span class="k">lambda</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">||</span><span class="n">f</span><span class="o">||^</span><span class="mi">2</span>   <span class="n">objective</span>
+   <span class="n">kernel</span> <span class="n">ridge</span>                         <span class="mi">80</span>        <span class="mf">1.9253</span>        <span class="mf">10.738297</span>            <span class="mf">4.251415</span>   <span class="mf">14.989712</span>
+   <span class="n">kernel</span> <span class="n">logistic</span>                      <span class="mi">80</span>        <span class="mf">0.8013</span>        <span class="mf">29.757767</span>            <span class="mf">7.832128</span>   <span class="mf">37.589895</span>
+   <span class="n">support</span> <span class="n">vector</span> <span class="n">machine</span>               <span class="mi">44</span>        <span class="mf">1.0000</span>        <span class="mf">17.979270</span>            <span class="mf">8.508173</span>   <span class="mf">26.487443</span>
+</pre></div>
+</div>
+<p>Eighty of eighty for the two smooth losses, forty-four of eighty for the hinge.
+The largest coefficient of the support vector machine is exactly
+<span class="math notranslate nohighlight">\(1.0000=1/\lambda\)</span>, which is the upper bound in
+Eq. (6.55) attained at the misclassified points, and no such
+bound constrains the other two.  Varying the penalty:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="k">lambda</span>    <span class="n">SVM</span> <span class="n">non</span><span class="o">-</span><span class="n">zeros</span>   <span class="n">ridge</span> <span class="n">non</span><span class="o">-</span><span class="n">zeros</span>   <span class="n">logistic</span> <span class="n">non</span><span class="o">-</span><span class="n">zeros</span>
+       <span class="mf">0.10</span>              <span class="mi">24</span>                  <span class="mi">80</span>                     <span class="mi">80</span>
+       <span class="mf">1.00</span>              <span class="mi">44</span>                  <span class="mi">80</span>                     <span class="mi">80</span>
+      <span class="mf">10.00</span>              <span class="mi">79</span>                  <span class="mi">80</span>                     <span class="mi">80</span>
+     <span class="mf">100.00</span>              <span class="mi">80</span>                  <span class="mi">80</span>                     <span class="mi">80</span>
+</pre></div>
+</div>
+<p>The sparsity of the support vector machine is not fixed but bought: a large
+penalty flattens <span class="math notranslate nohighlight">\(f\)</span>, more points fall inside the margin <span class="math notranslate nohighlight">\(y_if_i\le1\)</span>, and more
+coefficients switch on.  In the limit of a very heavy penalty every point is a
+support vector and the advantage disappears entirely.  The other two are dense
+at every penalty, as Theorem 6.1 says they must be.</p>
+<p>Finally, the three fitted functions are not very different:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="n">method</span>                    <span class="n">test</span> <span class="n">accuracy</span>   <span class="n">agreement</span> <span class="k">with</span> <span class="n">SVM</span>
+   <span class="n">kernel</span> <span class="n">ridge</span>                      <span class="mf">0.9025</span>               <span class="mf">0.9800</span>
+   <span class="n">kernel</span> <span class="n">logistic</span>                   <span class="mf">0.8760</span>               <span class="mf">0.9635</span>
+   <span class="n">support</span> <span class="n">vector</span> <span class="n">machine</span>            <span class="mf">0.8825</span>               <span class="mf">1.0000</span>
+</pre></div>
+</div>
+<p>Three methods, three losses, one penalty, one representation, decision
+boundaries agreeing on the large majority of the plane – and one of them
+built from a little over half the data.  The choice among them is a choice of
+what to pay for: a closed form and a single linear solve (squared error), a
+calibrated probability (logistic), or a sparse predictor (hinge).</p>
+<div class="tip admonition">
+<p class="admonition-title">Machine learning connection</p>
+<p>Theorem 6.1 is a
+good example of a result that is worth more than the sum of its applications.
+It says that in a kernel method the loss function does not merely decide
+<em>how well</em> the fit tolerates an error; it decides <em>which observations
+appear in the answer at all</em>.  A loss that is flat somewhere yields a sparse
+representation, and one that is not, does not.  That principle generalises
+beyond the three cases here – <span class="math notranslate nohighlight">\(\epsilon\)</span>-insensitive regression is flat in a
+band around zero and gives sparse support vectors for a regression problem, for
+exactly this reason – and it is a useful thing to know when reading a proposal
+for a new loss function.  Ask where it is flat.</p>
+</div>
+</section>
+</section>
+<section id="summary-and-the-programs">
+<h2><span class="section-number">6.14. </span>Summary and the programs<a class="headerlink" href="#summary-and-the-programs" title="Link to this heading">#</a></h2>
+<p>The support vector machine begins from a geometric principle rather than a
+statistical one: among the separating hyperplanes, choose the one standing
+furthest from the data.  Fixing the scale so that the nearest points satisfy
+<span class="math notranslate nohighlight">\(y_i(\bm{w}^{T}\bm{x}_i+b)=1\)</span> turns maximising the margin into minimising
+<span class="math notranslate nohighlight">\(\tfrac12\|\bm{w}\|^{2}\)</span> under linear inequality constraints,
+Eq. (6.8).</p>
+<p>Lagrange duality then does something remarkable.  Eliminating the primal
+variables produces Eq. (6.17), in which the data appear
+only through inner products, the number of variables is the number of samples,
+and the KKT conditions show that most multipliers vanish.  The surviving
+points – the support vectors – are the only ones that matter; every other
+point could be deleted without changing the answer.  Slack variables extend
+this to overlapping classes and, remarkably, change nothing in the dual but
+the addition of a ceiling <span class="math notranslate nohighlight">\(\lambda_i\le C\)</span>.</p>
+<p>Because only inner products appear, they can be replaced by a kernel, and
+Mercer’s theorem guarantees that any symmetric positive semi-definite kernel
+corresponds to some feature map.  We thereby separate data linearly in a space
+we never construct, possibly of infinite dimension, at the cost of evaluating
+a function of two arguments.</p>
+<p>The dual is a quadratic programme, and rather than call a library we derived
+and built a solver.  Sequential minimal optimisation exploits the fact that
+the equality constraint forces multipliers to be changed in pairs, so the
+smallest possible subproblem has two variables, one of them eliminated by the
+constraint – and a one-dimensional concave quadratic can be maximised in
+closed form, Eq. (6.42).  The whole algorithm is analytic
+updates plus a selection heuristic, it never needs a matrix factorisation, and
+the implementation of Section <em>Implementation</em> reproduces
+<code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> to six significant figures in the dual objective while
+satisfying every KKT condition to five decimal places.</p>
+<p>Finally, eliminating the slack variables in the primal revealed the hinge
+loss and placed the SVM in a family: Ridge regression, logistic regression and
+the support vector machine are one model with one penalty and three losses.
+The hinge loss is the only one of the three that is exactly zero for
+well-classified points, which is the entire origin of sparsity in the support
+vectors.</p>
+<p>Section <em>One penalty, three losses</em> turned that remark into
+Theorem 6.1, which holds for the kernel forms of all three
+methods and gives the coefficients of any of them in one line,
+<span class="math notranslate nohighlight">\(\alpha_i=-L'_i/\lambda\)</span>.  The weight a training point carries is the
+derivative of the loss at that point.  A loss that is flat on an open set has
+zero derivative there and therefore zero coefficients; the hinge is the only
+one of the three that is, and the support vectors follow.  Measured on eighty
+points with the same kernel and the same penalty, the formula holds to between
+<span class="math notranslate nohighlight">\(10^{-13}\)</span> and machine zero for all three losses, the support vector machine
+retains forty-four coefficients and the other two retain all eighty, and the
+three decision boundaries agree on more than ninety-six per cent of the plane.</p>
+<p>The complete programs are collected in <code class="docutils literal notranslate"><span class="pre">doc/BookML/BookPrograms</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">three_losses.py</span></code> – kernel ridge regression, kernel logistic
+regression and the support vector machine fitted to the same data with
+the same kernel, the hinge problem solved as a box-constrained
+quadratic programme and certified by its duality gap, and
+Theorem 6.1 checked for all three.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">svm_smo.py</span></code> – the <code class="docutils literal notranslate"><span class="pre">SVC</span></code> class of
+Section <em>Implementation</em> with the linear, polynomial and Gaussian
+kernels, and the KKT verification of Section <em>Verifying the solver</em>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">svm_examples.py</span></code> – the separable blobs, the effect of <span class="math notranslate nohighlight">\(C\)</span> on
+overlapping classes, the moons data with polynomial and RBF kernels,
+and the decision-boundary plots.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">svm_pegasos.py</span></code> – the primal subgradient solver of
+Section <em>The primal view: the hinge loss</em>, with the comparison of the primal and dual
+objectives.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">losses.py</span></code> – the squared, logistic and hinge losses plotted
+together, reproducing the table of Section <em>The primal view: the hinge loss</em>.</p></li>
+</ul>
+<p>Each file runs as a script and reproduces the numbers quoted in this chapter.</p>
+</section>
+<section id="exercises">
+<h2><span class="section-number">6.15. </span>Exercises<a class="headerlink" href="#exercises" title="Link to this heading">#</a></h2>
+<section id="warm-up-exercises">
+<h3><span class="section-number">6.15.1. </span>Warm-up exercises<a class="headerlink" href="#warm-up-exercises" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Geometry of the hyperplane.</strong>
+(a) Show that <span class="math notranslate nohighlight">\(\bm{w}\)</span> is orthogonal to the hyperplane
+<span class="math notranslate nohighlight">\(\bm{w}^{T}\bm{x}+b=0\)</span>.
+(b) Derive the signed distance (6.2).
+(c) Show that the distance between the two margin hyperplanes
+<span class="math notranslate nohighlight">\(\bm{w}^{T}\bm{x}+b=\pm1\)</span> is <span class="math notranslate nohighlight">\(2/\|\bm{w}\|\)</span>.</p></li>
+<li><p><strong>Scale invariance.</strong>
+Show that multiplying <span class="math notranslate nohighlight">\((\bm{w},b)\)</span> by any <span class="math notranslate nohighlight">\(\alpha&gt;0\)</span> leaves the decision
+boundary unchanged, and explain why this licenses the normalisation used to
+obtain Eq. (6.8).</p></li>
+<li><p><strong>The dual, by hand.</strong>
+(a) Derive Eqs. (6.14) and (6.15) from the
+Lagrangian (6.13).
+(b) Substitute back and obtain the dual (6.17), being
+explicit about how the term in <span class="math notranslate nohighlight">\(b\)</span> disappears.
+(c) Show that the matrix <span class="math notranslate nohighlight">\(P_{ij}=y_iy_j\bm{x}_i^{T}\bm{x}_j\)</span> is positive
+semi-definite, and hence that the dual is convex.</p></li>
+<li><p><strong>A two-point problem.</strong>
+Take <span class="math notranslate nohighlight">\(\bm{x}_1=(0,0)\)</span> with <span class="math notranslate nohighlight">\(y_1=-1\)</span> and <span class="math notranslate nohighlight">\(\bm{x}_2=(2,0)\)</span> with <span class="math notranslate nohighlight">\(y_2=+1\)</span>.
+(a) Write out the dual and solve it by hand for <span class="math notranslate nohighlight">\(\lambda_1\)</span> and <span class="math notranslate nohighlight">\(\lambda_2\)</span>.
+(b) Recover <span class="math notranslate nohighlight">\(\bm{w}\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, and verify that the margin is <span class="math notranslate nohighlight">\(2/\|\bm{w}\|\)</span>
+and equals the distance between the points.
+(c) Confirm your answer with the code of Section <em>Implementation</em>.</p></li>
+<li><p><strong>The three KKT cases.</strong>
+For the soft-margin problem, derive the classification of points into
+<span class="math notranslate nohighlight">\(\lambda_i=0\)</span>, <span class="math notranslate nohighlight">\(0&lt;\lambda_i&lt;C\)</span> and <span class="math notranslate nohighlight">\(\lambda_i=C\)</span> given at the end of
+Section <em>The soft margin</em>, starting from
+Eqs. (6.27) and <span class="math notranslate nohighlight">\(\lambda_i=C-\gamma_i\)</span>.</p></li>
+<li><p><strong>The SMO bounds.</strong>
+(a) Derive Eqs. (6.38) and (6.39) by
+drawing the box <span class="math notranslate nohighlight">\([0,C]^{2}\)</span> and the line
+<span class="math notranslate nohighlight">\(\lambda_1=\gamma-s\lambda_2\)</span> for both signs of <span class="math notranslate nohighlight">\(s\)</span>.
+(b) Show that <span class="math notranslate nohighlight">\(\eta=2K_{12}-K_{11}-K_{22}\le0\)</span> for any valid kernel, and
+identify the case in which it vanishes.
+(c) What should the algorithm do when <span class="math notranslate nohighlight">\(L=H\)</span>, and why?</p></li>
+<li><p><strong>The kernel trick.</strong>
+(a) Verify Eq. (6.31) algebraically.
+(b) Find the feature map corresponding to
+<span class="math notranslate nohighlight">\(K(\bm{x},\bm{z})=(\bm{x}^{T}\bm{z}+1)^{2}\)</span> in two dimensions, and count
+its dimensions.
+(c) Show that if <span class="math notranslate nohighlight">\(K_1\)</span> and <span class="math notranslate nohighlight">\(K_2\)</span> are valid kernels then so are <span class="math notranslate nohighlight">\(K_1+K_2\)</span> and
+<span class="math notranslate nohighlight">\(K_1K_2\)</span>.
+(d) Show that the Gaussian kernel can be written as
+<span class="math notranslate nohighlight">\(\exp(-\gamma\|\bm{x}\|^{2})\exp(-\gamma\|\bm{z}\|^{2})
+\exp(2\gamma\bm{x}^{T}\bm{z})\)</span> and, by expanding the last factor,
+argue that its feature space is infinite-dimensional.</p></li>
+<li><p><strong>Implementing SMO (numerical).</strong>
+Starting from the code of Section <em>Implementation</em>:
+(a) reproduce the KKT checks of Section <em>Verifying the solver</em>;
+(b) replace the max-<span class="math notranslate nohighlight">\(|E_i-E_j|\)</span> heuristic by a random choice of <span class="math notranslate nohighlight">\(j\)</span> and
+compare the number of iterations to convergence;
+(c) remove the alternation between sweeping all points and sweeping only the
+free multipliers, and report what happens to the dual objective.</p></li>
+<li><p><strong>Hyperparameters (numerical).</strong>
+On the moons data, perform a two-dimensional cross-validated grid search
+over <span class="math notranslate nohighlight">\(C\)</span> and the RBF <span class="math notranslate nohighlight">\(\gamma\)</span>.
+(a) Plot the validation accuracy as a heat map.
+(b) Plot the number of support vectors over the same grid, and comment on
+the relation between that number and the generalisation error.
+(c) Show the decision boundary for a badly chosen and a well chosen pair.</p></li>
+<li><p><strong>The three losses.</strong>
+Plot the squared, logistic and hinge losses of Section <em>The primal view: the hinge loss</em>
+against the margin <span class="math notranslate nohighlight">\(yf\)</span> on the same axes.
+(a) Which are zero for large positive margin?
+(b) Which grow fastest for large negative margin, and what does that imply
+about sensitivity to outliers and mislabelled points?
+(c) Relate your answer to the notebox on the squared error in
+Section <em>Maximum likelihood and the cross-entropy</em>.</p></li>
+</ol>
+</section>
+<section id="project-style-exercise-building-a-support-vector-machine">
+<h3><span class="section-number">6.15.2. </span>Project-style exercise: building a support vector machine<a class="headerlink" href="#project-style-exercise-building-a-support-vector-machine" title="Link to this heading">#</a></h3>
+<p><strong>Part a: the linear separable case.</strong>
+Implement the hard-margin SVM by writing the dual and solving it with your own
+SMO, taking <span class="math notranslate nohighlight">\(C\)</span> very large.  Test on two well-separated Gaussian blobs.  Plot
+the decision boundary, both margin hyperplanes, and the support vectors
+circled.  Verify that exactly the circled points have <span class="math notranslate nohighlight">\(\lambda_i&gt;0\)</span>, and that
+deleting any other point leaves the solution unchanged – this last check is
+the definition of a support vector and is worth performing explicitly.</p>
+<p><strong>Part b: the soft margin.</strong>
+Move the blobs together until they overlap.  Sweep <span class="math notranslate nohighlight">\(C\)</span> over several orders of
+magnitude and, for each, record the margin, the number of free and bound
+support vectors and the training accuracy.  Explain the trends using the three
+KKT cases of Section <em>The soft margin</em>.</p>
+<p><strong>Part c: kernels.</strong>
+Add the polynomial and Gaussian kernels and apply them to the moons data and
+to a set of concentric circles.  For the circles, find analytically a feature
+map making the problem linearly separable, and check that a polynomial kernel
+of the corresponding degree succeeds.</p>
+<p><strong>Part d: model selection.</strong>
+Cross-validate over <span class="math notranslate nohighlight">\(C\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> as in
+Section <em>Cross-validation</em>, using a proper training, validation and
+test split.  Report the confusion matrix and the metrics of
+Section <em>Measuring the quality of a classifier</em> on a test set used once.</p>
+<p><strong>Part e: comparison.</strong>
+On the Wisconsin breast cancer data of Section <em>The Wisconsin breast cancer data</em>, compare
+your SVM against the logistic regression of Chapter 5.
+Compare accuracy, AUC, the number of support vectors, and the training time.
+Which would you deploy, and why?  Note that the SVM produces no probabilities;
+discuss what is lost thereby and what could be done about it.</p>
+<p><strong>Part f: primal against dual.</strong>
+Implement Pegasos as in Section <em>The primal view: the hinge loss</em> and verify that it reaches the
+same objective as your dual solver on a linear problem.  Then time both as the
+number of samples grows from <span class="math notranslate nohighlight">\(10^{2}\)</span> to <span class="math notranslate nohighlight">\(10^{5}\)</span>, and as the number of
+features grows over the same range.  Plot the two scalings and identify the
+regime in which each formulation should be preferred.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="chapter5.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title"><span class="section-number">5. </span>Chapter 5: Logistic Regression</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="chapter7.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">7. </span>Chapter 7: Ensemble methods; from simple decision trees to Gradient Boosting</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hyperplanes-and-the-margin">6.1. Hyperplanes and the margin</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-first-attempt-and-why-it-fails">6.2. A first attempt, and why it fails</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-maximum-margin-problem">6.3. The maximum-margin problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-reminder-on-lagrange-multipliers">6.4. A reminder on Lagrange multipliers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-dual-problem">6.5. The dual problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-soft-margin">6.6. The soft margin</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernels-and-non-linearity">6.7. Kernels and non-linearity</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-kernels-and-mercer-s-theorem">6.7.1. Common kernels and Mercer’s theorem</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-quadratic-programme">6.8. The quadratic programme</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sequential-minimal-optimisation">6.9. Sequential minimal optimisation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">6.10. Implementation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-the-solver">6.11. Verifying the solver</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-primal-view-the-hinge-loss">6.12. The primal view: the hinge loss</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-penalty-three-losses">6.13. One penalty, three losses</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-common-problem">6.13.1. The common problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-three-measured-together">6.13.2. The three, measured together</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-the-programs">6.14. Summary and the programs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">6.15. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#warm-up-exercises">6.15.1. Warm-up exercises</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-style-exercise-building-a-support-vector-machine">6.15.2. Project-style exercise: building a support vector machine</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Morten Hjorth-Jensen
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
