@@ -48,8 +48,16 @@ improvements? Total number of possible points: 10*
 Mark and comments:
 
 
+## LLM declaration
+*Here you should Declare how you have used Large Language Models in Project Reports, see 
+https://github.com/EducationalMaterialUiO/MachineLearningUiO/blob/main/LLM_Usage_Declaration_Guidelines.md. Total number of possible points: 5*
+
+Mark and comments:
+
+
+
 ## Overall presentation:
-*Clarity of figures, tables, algorithms  and overall presentation. Too much or too little? Total number of possible points: 10*
+*Clarity of figures, tables, algorithms  and overall presentation. Too much or too little? Total number of possible points: 5*
 
 Mark and comments:
 
