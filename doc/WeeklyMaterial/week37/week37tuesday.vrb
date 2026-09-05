@@ -1,0 +1,28 @@
+\frametitle{Case \arabic {case}: momentum and the automatic gradient on the Runge function}
+\textbf{Goal:} parts e) and f) of Project 1 in miniature (notebook, Case 2).
+Data $f(x)=1/(1+25x^2)$ on $[-1,1]$, $n=100$, $\sigma=0.1$, degree 6,
+standardised columns, centred $\bm{y}$.
+\begin{enumerate}
+  \item \textbf{The gradient without deriving it:} write the OLS and Ridge
+        costs as ordinary functions of $\bm{\theta}$, obtain
+        \texttt{jax.grad} of each, and compare with your \texttt{gradient}
+        from Case 1 at a random $\bm{\theta}$.  Agreement to $10^{-15}$ --
+        and only to $10^{-6}$ if you forget \texttt{jax\_enable\_x64}.
+  \item \textbf{Finite differences against AD:} the error of the central
+        difference of one component against $h$ from $10^{-13}$ to $10^{-1}$
+        (reproduce panel (b) of \texttt{week37\_ad\_check.pdf}).  Then the
+        same for $f(x)=\sin(2\pi x+x^2)$ at $x=1$ (panel (a)).  Why do the
+        two panels differ on the right?
+  \item \textbf{Momentum:} add \texttt{momentum\_descent}, Eq.~(4.23) -- one
+        line more than Case 1.  At $\eta=0.9\cdot2/\lambda_{\max}$ run
+        $\gamma\in\{0,0.5,0.9\}$ and count the iterations to
+        $\|\bm{\theta}_k-\hat{\bm{\theta}}\|<10^{-6}$.  Reproduce
+        \texttt{week37\_momentum.pdf}.
+  \item \textbf{Sensitivity to $\eta$:} repeat step 3 at $\eta_{\max}/4$ and
+        at $1.5\,\eta_{\max}$.  Does momentum change where the iteration
+        diverges?  (Section 4.6: stable iff $\eta\lambda_{\max}<2(1+\gamma)$.)
+  \item \textbf{Swap the gradient:} run momentum with the JAX gradient
+        instead of the analytical one -- the update rule does not care.
+        Then \textbf{degree 10}: what is $\kappa$, and does anything converge?
+\end{enumerate}
+\beamerclosesubstitutedenvironement {case}
