@@ -30,7 +30,7 @@ def network(P, X, activation="tanh"):
         a=f(z) if l<len(P)-1 else z
     return a[:,0]
 
-def adam_minimise(cost, P, n_iter=2000, eta=1e-2, b1=0.9, b2=0.999, eps=1e-8,
+def adam_minimise(cost, P, n_iter=2000, gamma=1e-2, b1=0.9, b2=0.999, eps=1e-8,
                   verbose=False, every=200):
     g=elementwise_grad(cost) if False else None
     from autograd import grad as _grad
@@ -45,16 +45,16 @@ def adam_minimise(cost, P, n_iter=2000, eta=1e-2, b1=0.9, b2=0.999, eps=1e-8,
                 m[l][j]=b1*m[l][j]+(1-b1)*G[l][j]
                 v[l][j]=b2*v[l][j]+(1-b2)*G[l][j]**2
                 mh=m[l][j]/(1-b1**it); vh=v[l][j]/(1-b2**it)
-                P[l][j]=P[l][j]-eta*mh/(np.sqrt(vh)+eps)
+                P[l][j]=P[l][j]-gamma*mh/(np.sqrt(vh)+eps)
         if it%every==0 or it==1:
             c=cost(P); hist.append((it,c))
             if verbose: print(f"  it {it:5d}  cost {c:.4e}")
     return P, hist
 
-def solve_de(residual, layer_sizes, X, activation="tanh", n_iter=2000, eta=1e-2, rng=None):
+def solve_de(residual, layer_sizes, X, activation="tanh", n_iter=2000, gamma=1e-2, rng=None):
     P = init_parameters(layer_sizes, activation, rng)
     def cost(P): return np.mean(residual(P, X) ** 2)
-    return adam_minimise(cost, P, n_iter=n_iter, eta=eta)
+    return adam_minimise(cost, P, n_iter=n_iter, gamma=gamma)
 
 def d_dxk(fun, k):
     def wrapped(P, X):

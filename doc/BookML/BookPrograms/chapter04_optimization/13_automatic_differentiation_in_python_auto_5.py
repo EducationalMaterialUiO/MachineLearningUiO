@@ -8,7 +8,7 @@ def ridge_cost(theta, X, y, lmbda):        # Eq. (4.ridgecost)
 
 lmbda = 0.001
 theta = jnp.asarray(rng.normal(size=(2, 1)))
-step = jit(lambda th: th - eta * grad(ridge_cost)(th, Xj, yj, lmbda))
+step = jit(lambda th: th - gamma * grad(ridge_cost)(th, Xj, yj, lmbda))
 for k in range(1000):
     theta = step(theta)
 

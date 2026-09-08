@@ -79,13 +79,13 @@ def kernel_irls(K, y, lam, n_iter=100, tol=1e-13, ridge=1e-12):
     return a, hist
 
 
-def kernel_gradient(K, y, lam, eta=0.5, n_iter=200000, tol=1e-12):
+def kernel_gradient(K, y, lam, gamma=0.5, n_iter=200000, tol=1e-12):
     """The same objective by plain gradient descent, for comparison.
     grad C = K[(p - y) + lambda alpha], Eq. (5.kgradient)."""
     a = np.zeros(len(y))
     for _ in range(n_iter):
         g = K @ (sigmoid(K @ a) - y + lam * a)
-        a_new = a - eta * g / len(y)
+        a_new = a - gamma * g / len(y)
         if norm(a_new - a) < tol:
             a = a_new
             break

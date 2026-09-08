@@ -29,5 +29,5 @@ def r_hi(P, X):                                 # c(hi, tau) = hi - exp(-r tau)
 terms = [("pde", 1.0, r_pde, X_col), ("term", 10.0, r_term, X_term),
          ("lo", 10.0, r_lo, X_lo),   ("hi", 10.0, r_hi, X_hi)]
 
-P, history = pinn_solve(terms, [2, 40, 40, 1], "tanh", n_iter=4000, eta=5e-3,
+P, history = pinn_solve(terms, [2, 40, 40, 1], "tanh", n_iter=4000, gamma=5e-3,
                         rng=np.random.default_rng(1))

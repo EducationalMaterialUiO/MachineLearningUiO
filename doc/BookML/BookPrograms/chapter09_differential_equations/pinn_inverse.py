@@ -3,7 +3,7 @@ from autograd import grad
 from autograd.misc import flatten
 from nn_de import network, init_parameters, d_dxk
 
-def adam_general(cost, params, n_iter=2000, eta=1e-2, b1=0.9, b2=0.999, eps=1e-8,
+def adam_general(cost, params, n_iter=2000, gamma=1e-2, b1=0.9, b2=0.999, eps=1e-8,
                  every=500, verbose=False):
     """Adam on any nested list of arrays -- here the weights plus the unknown D."""
     flat, unflatten = flatten(params)
@@ -13,7 +13,7 @@ def adam_general(cost, params, n_iter=2000, eta=1e-2, b1=0.9, b2=0.999, eps=1e-8
         g = gfun(flat)
         m = b1 * m + (1 - b1) * g
         v = b2 * v + (1 - b2) * g ** 2
-        flat = flat - eta * (m / (1 - b1**it)) / (np.sqrt(v / (1 - b2**it)) + eps)
+        flat = flat - gamma * (m / (1 - b1**it)) / (np.sqrt(v / (1 - b2**it)) + eps)
         if verbose and (it % every == 0 or it == 1):
             print(f"  it {it:5d}  cost {cost(unflatten(flat)):.4e}  "
                   f"D {unflatten(flat)[1][0]:.6f}")
@@ -40,7 +40,7 @@ def run(n_obs=40, noise=0.01, seed=3, n_iter=3000, D0=2.0, verbose=False):
         r_dat=u_net(P,X_obs)-y_obs
         return np.mean(r_pde**2)+10.0*np.mean(r_dat**2)
     P=[init_parameters([2,30,30,1],"tanh",np.random.default_rng(1)), np.array([D0])]
-    P=adam_general(cost,P,n_iter=n_iter,eta=1e-2,verbose=verbose)
+    P=adam_general(cost,P,n_iter=n_iter,gamma=1e-2,verbose=verbose)
     return P[1][0], X_obs, y_obs
 
 if __name__=="__main__":

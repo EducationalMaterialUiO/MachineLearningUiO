@@ -1011,13 +1011,13 @@ gradient,</p>
 <div class="math notranslate nohighlight">
 \[
 \bm{\theta}_{k+1} = \bm{\theta}_k
-    + \eta\,\bm{X}^{T}\left(\bm{y}-\bm{p}(\bm{\theta}_k)\right),\tag{5.31}
+    + \gamma\,\bm{X}^{T}\left(\bm{y}-\bm{p}(\bm{\theta}_k)\right),\tag{5.31}
 \]</div>
 <p>noting the plus sign, which comes from the minus in
 Eq. (5.17).  The stability
 bound (4.20) applies with <span class="math notranslate nohighlight">\(\lambda_{\max}\)</span> the largest
 eigenvalue of <span class="math notranslate nohighlight">\(\bm{X}^{T}\bm{W}\bm{X}\)</span>; since <span class="math notranslate nohighlight">\(W_{ii}\le\tfrac14\)</span>, a safe
-choice is <span class="math notranslate nohighlight">\(\eta&lt;8/\lambda_{\max}(\bm{X}^{T}\bm{X})\)</span>.  For large data sets one
+choice is <span class="math notranslate nohighlight">\(\gamma&lt;8/\lambda_{\max}(\bm{X}^{T}\bm{X})\)</span>.  For large data sets one
 uses the minibatch stochastic version of Section <em>Stochastic gradient descent</em>, and in
 practice one of the adaptive methods of Sections <em>AdaGrad</em> to
 <em>Adam</em>.</p>
@@ -1217,7 +1217,7 @@ formula it implements.</p>
 </div>
 <p>Note that the gradients carry a factor <span class="math notranslate nohighlight">\(1/n\)</span> absent from
 Eq. (5.17).  This merely rescales the learning rate and is the
-usual convention, since it makes a sensible <span class="math notranslate nohighlight">\(\eta\)</span> independent of the size of
+usual convention, since it makes a sensible <span class="math notranslate nohighlight">\(\gamma\)</span> independent of the size of
 the data set; but it is one more of the bookkeeping factors that must be
 matched when comparing implementations.</p>
 <p><strong>Synthetic data.</strong>
@@ -1413,8 +1413,8 @@ model’s output can be read as a probability.</p>
 <p>For <span class="math notranslate nohighlight">\(0&lt;\eta&lt;1\)</span> the minimiser of Eq. (5.37) is</p>
 <div class="math notranslate nohighlight">
 \[\]</div>
-<div class="amsmath math notranslate nohighlight" id="equation-d29dfc62-b4d4-401e-ab80-6d5a7edc663e">
-<span class="eqno">(5.1)<a class="headerlink" href="#equation-d29dfc62-b4d4-401e-ab80-6d5a7edc663e" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-491e46e0-4a9a-41bf-9b2b-df967a3acc99">
+<span class="eqno">(5.1)<a class="headerlink" href="#equation-491e46e0-4a9a-41bf-9b2b-df967a3acc99" title="Permalink to this equation">#</a></span>\[\begin{align}
 \text{logistic:}  
     &amp;t^{*}=\log\frac{\eta}{1-\eta},
     &amp;&amp;\sigma(t^{*})=\eta;
@@ -1541,10 +1541,10 @@ we wrote.  Trying a new loss means writing one line.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Mean loss over the data plus an l2 penalty that spares the intercept.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss</span><span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">theta</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span> <span class="o">+</span> <span class="n">lmbda</span> <span class="o">*</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">lmbda</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">lmbda</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gradient descent, Eq. (5.gd), with the gradient supplied by JAX.&quot;&quot;&quot;</span>
     <span class="n">c</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">th</span><span class="p">:</span> <span class="n">cost</span><span class="p">(</span><span class="n">th</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">)</span>
-    <span class="n">step</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">th</span><span class="p">:</span> <span class="n">th</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">c</span><span class="p">)(</span><span class="n">th</span><span class="p">))</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">th</span><span class="p">:</span> <span class="n">th</span> <span class="o">-</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">c</span><span class="p">)(</span><span class="n">th</span><span class="p">))</span>
     <span class="n">theta</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
         <span class="n">theta</span> <span class="o">=</span> <span class="n">step</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
@@ -1951,7 +1951,7 @@ fit across six decades:</p>
 fitted function falling by five orders of magnitude across the range.  At
 <span class="math notranslate nohighlight">\(\lambda=10^{-3}\)</span> the model is reproducing the five per cent of deliberately
 flipped labels and pays for it on the test set; at <span class="math notranslate nohighlight">\(\lambda=100\)</span> it has been
-flattened towards a constant.  This is Eq. (2.47) once
+flattened towards a constant.  This is Eq. (2.52) once
 more, and it is why the kernel and the penalty must be chosen together by the
 cross-validation of Section <em>Cross-validation</em> and never by the
 training error.</p>

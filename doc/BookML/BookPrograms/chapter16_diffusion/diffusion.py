@@ -74,7 +74,7 @@ def loss(P, x0, t, eps, abar, T):
     return np.mean(np.sum((eps - eps_net(P, xt, t, T)) ** 2, axis=1))
 
 
-def train(P, X, abar, T, n_iter=3000, batch=128, eta=2e-3, rng=None):
+def train(P, X, abar, T, n_iter=3000, batch=128, gamma=2e-3, rng=None):
     rng = np.random.default_rng(0) if rng is None else rng
     flat, unflatten = flatten(P)
     g = grad(lambda f, x0, t, e: loss(unflatten(f), x0, t, e, abar, T))
@@ -86,7 +86,7 @@ def train(P, X, abar, T, n_iter=3000, batch=128, eta=2e-3, rng=None):
         gg = g(flat, X[idx], t, e)
         m = 0.9 * m + 0.1 * gg
         v = 0.999 * v + 0.001 * gg ** 2
-        flat = flat - eta * (m / (1 - 0.9**it)) / (np.sqrt(v / (1 - 0.999**it)) + 1e-8)
+        flat = flat - gamma * (m / (1 - 0.9**it)) / (np.sqrt(v / (1 - 0.999**it)) + 1e-8)
         if it % 100 == 0:
             hist.append((it, float(loss(unflatten(flat), X[idx], t, e, abar, T))))
     return unflatten(flat), hist

@@ -10,12 +10,12 @@ out=open("cmp.txt","w",buffering=1)
 T=200; beta,alpha,abar=D.linear_schedule(T)
 P=D.init_eps_net(2,rng=np.random.default_rng(0))
 t0=time.time()
-P,hd=D.train(P,X,abar,T,n_iter=3000,batch=128,eta=2e-3,rng=np.random.default_rng(1))
+P,hd=D.train(P,X,abar,T,n_iter=3000,batch=128,gamma=2e-3,rng=np.random.default_rng(1))
 out.write(f"diffusion: trained in {time.time()-t0:.1f}s, final L_simple {hd[-1][1]:.4f}\n")
 
 L=flows.init_coupling(2,hidden=64,n_layers=6,rng=np.random.default_rng(0))
 t0=time.time()
-L,hf=flows.train(L,X,n_iter=3000,batch=128,eta=3e-3,rng=np.random.default_rng(1))
+L,hf=flows.train(L,X,n_iter=3000,batch=128,gamma=3e-3,rng=np.random.default_rng(1))
 out.write(f"flow: trained in {time.time()-t0:.1f}s, exact log-likelihood {hf[-1][1]:.4f} nats\n\n")
 
 def energy_dist(A,B,n=1500,seed=0):

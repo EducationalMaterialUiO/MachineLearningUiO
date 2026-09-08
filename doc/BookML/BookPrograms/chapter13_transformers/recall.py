@@ -76,7 +76,7 @@ def n_params(P):
     return sum(np.asarray(v).size for v in P.values())
 
 
-def train(P, logit_fn, L, d, n_iter=600, batch=64, eta=3e-3, seed=0, PE=None):
+def train(P, logit_fn, L, d, n_iter=600, batch=64, gamma=3e-3, seed=0, PE=None):
     rng = np.random.default_rng(seed)
     flat, unflatten = flatten(P)
     def loss(f, X, y):
@@ -88,7 +88,7 @@ def train(P, logit_fn, L, d, n_iter=600, batch=64, eta=3e-3, seed=0, PE=None):
         gg = g(flat, X, y)
         m = 0.9 * m + 0.1 * gg
         v = 0.999 * v + 0.001 * gg ** 2
-        flat = flat - eta * (m / (1 - 0.9**it)) / (np.sqrt(v / (1 - 0.999**it)) + 1e-8)
+        flat = flat - gamma * (m / (1 - 0.9**it)) / (np.sqrt(v / (1 - 0.999**it)) + 1e-8)
     P = unflatten(flat)
     Xt, yt = make_batch(400, L, np.random.default_rng(seed + 999))
     acc = float(np.mean(np.argmax(logit_fn(P, Xt, PE), axis=1) == yt))

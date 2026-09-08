@@ -755,7 +755,7 @@ train.</p>
 <div class="important admonition">
 <p class="admonition-title">Theorem 11.1 (Vanishing and exploding gradients)</p>
 <p>Let <span class="math notranslate nohighlight">\(\bm{h}^{(t)}=\sigma_h(\bm{U}\bm{x}^{(t)}+\bm{W}\bm{h}^{(t-1)}+\bm{b})\)</span> and
-suppose <span class="math notranslate nohighlight">\(|\sigma_h'(z)|\le\gamma\)</span> for all <span class="math notranslate nohighlight">\(z\)</span>.  Then for any <span class="math notranslate nohighlight">\(t&lt;T\)</span></p>
+suppose <span class="math notranslate nohighlight">\(|\sigma_h'(z)|\le\mu\)</span> for all <span class="math notranslate nohighlight">\(z\)</span>.  Then for any <span class="math notranslate nohighlight">\(t&lt;T\)</span></p>
 <div class="math notranslate nohighlight">
 \[
 \frac{\partial\bm{h}^{(T)}}{\partial\bm{h}^{(t)}}
@@ -766,11 +766,11 @@ suppose <span class="math notranslate nohighlight">\(|\sigma_h'(z)|\le\gamma\)</
 <div class="math notranslate nohighlight">
 \[
 \left\|\frac{\partial\bm{h}^{(T)}}{\partial\bm{h}^{(t)}}\right\|_2
-  \;\le\; \left(\gamma\,\sigma_{\max}(\bm{W})\right)^{T-t},\tag{11.20}
+  \;\le\; \left(\mu\,\sigma_{\max}(\bm{W})\right)^{T-t},\tag{11.20}
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\sigma_{\max}(\bm{W})\)</span> is the largest singular value.  Consequently, if
-<span class="math notranslate nohighlight">\(\gamma\,\sigma_{\max}(\bm{W})&lt;1\)</span> the gradient contribution from step <span class="math notranslate nohighlight">\(t\)</span> decays
-<em>exponentially</em> in the lag <span class="math notranslate nohighlight">\(T-t\)</span>.  If <span class="math notranslate nohighlight">\(\gamma\,\sigma_{\max}(\bm{W})&gt;1\)</span> it
+<span class="math notranslate nohighlight">\(\mu\,\sigma_{\max}(\bm{W})&lt;1\)</span> the gradient contribution from step <span class="math notranslate nohighlight">\(t\)</span> decays
+<em>exponentially</em> in the lag <span class="math notranslate nohighlight">\(T-t\)</span>.  If <span class="math notranslate nohighlight">\(\mu\,\sigma_{\max}(\bm{W})&gt;1\)</span> it
 may grow exponentially.</p>
 </div>
 <div class="note admonition">
@@ -784,24 +784,24 @@ submultiplicative, so the norm of the product is at most the product of the
 norms.  Each factor satisfies
 <span class="math notranslate nohighlight">\(\|\operatorname{diag}(\sigma_h'(\bm{a}^{(k)}))\bm{W}\|_2
 \le\|\operatorname{diag}(\sigma_h'(\bm{a}^{(k)}))\|_2\|\bm{W}\|_2
-\le\gamma\,\sigma_{\max}(\bm{W})\)</span>,
+\le\mu\,\sigma_{\max}(\bm{W})\)</span>,
 since the spectral norm of a diagonal matrix is the largest absolute entry and
 that of <span class="math notranslate nohighlight">\(\bm{W}\)</span> is <span class="math notranslate nohighlight">\(\sigma_{\max}(\bm{W})\)</span>.  Multiplying <span class="math notranslate nohighlight">\(T-t\)</span> such bounds
 gives Eq. (11.20).</p>
 </div>
-<p>For <span class="math notranslate nohighlight">\(\tanh\)</span> we have <span class="math notranslate nohighlight">\(\gamma=1\)</span>, attained only at the origin, and for the logistic
-function <span class="math notranslate nohighlight">\(\gamma=1/4\)</span>, which is why <span class="math notranslate nohighlight">\(\tanh\)</span> is preferred: the logistic activation
+<p>For <span class="math notranslate nohighlight">\(\tanh\)</span> we have <span class="math notranslate nohighlight">\(\mu=1\)</span>, attained only at the origin, and for the logistic
+function <span class="math notranslate nohighlight">\(\mu=1/4\)</span>, which is why <span class="math notranslate nohighlight">\(\tanh\)</span> is preferred: the logistic activation
 guarantees decay by a factor of at least four per step regardless of the weights.
-For ReLU, <span class="math notranslate nohighlight">\(\gamma=1\)</span> as well, but the derivative is <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span> rather than a
+For ReLU, <span class="math notranslate nohighlight">\(\mu=1\)</span> as well, but the derivative is <span class="math notranslate nohighlight">\(0\)</span> or <span class="math notranslate nohighlight">\(1\)</span> rather than a
 number smoothly approaching <span class="math notranslate nohighlight">\(1\)</span>, and a ReLU recurrent network is prone to
 explosion instead; this is why the rectified family, dominant everywhere else in
 this book, is largely absent from recurrent architectures.</p>
 <div class="important admonition">
 <p class="admonition-title">Corollary 11.2 (Memory horizon)</p>
-<p>If <span class="math notranslate nohighlight">\(\gamma\,\sigma_{\max}(\bm{W})&lt;1\)</span>, define</p>
+<p>If <span class="math notranslate nohighlight">\(\mu\,\sigma_{\max}(\bm{W})&lt;1\)</span>, define</p>
 <div class="math notranslate nohighlight">
 \[
-\tau = \frac{-1}{\log\!\left(\gamma\,\sigma_{\max}(\bm{W})\right)} &gt; 0 .\tag{11.21}
+\tau = \frac{-1}{\log\!\left(\mu\,\sigma_{\max}(\bm{W})\right)} &gt; 0 .\tag{11.21}
 \]</div>
 <p>Then Eq. (11.20) reads
 <span class="math notranslate nohighlight">\(\|\partial\bm{h}^{(T)}/\partial\bm{h}^{(t)}\|_2\le e^{-(T-t)/\tau}\)</span>: the
@@ -811,7 +811,7 @@ steps, and falls below a tolerance <span class="math notranslate nohighlight">\(
 </div>
 <div class="note admonition">
 <p class="admonition-title">Proof</p>
-<p>Write <span class="math notranslate nohighlight">\((\gamma\sigma_{\max})^{T-t}=e^{(T-t)\log(\gamma\sigma_{\max})}\)</span> and
+<p>Write <span class="math notranslate nohighlight">\((\mu\sigma_{\max})^{T-t}=e^{(T-t)\log(\mu\sigma_{\max})}\)</span> and
 substitute Eq. (11.21).</p>
 </div>
 <p>The number <span class="math notranslate nohighlight">\(\tau\)</span> deserves a name and a measurement, because it converts
@@ -825,8 +825,8 @@ smaller than one expects.</p>
 radius <span class="math notranslate nohighlight">\(\rho(\bm{W})\)</span>, and the two can differ substantially for non-normal
 <span class="math notranslate nohighlight">\(\bm{W}\)</span> – in the experiment below, <span class="math notranslate nohighlight">\(\rho=0.5\)</span> corresponds to
 <span class="math notranslate nohighlight">\(\sigma_{\max}=0.85\)</span> and <span class="math notranslate nohighlight">\(\rho=1.5\)</span> to <span class="math notranslate nohighlight">\(\sigma_{\max}=2.56\)</span>.  Since
-<span class="math notranslate nohighlight">\(\rho(\bm{W})\le\sigma_{\max}(\bm{W})\)</span> always, <span class="math notranslate nohighlight">\(\gamma\sigma_{\max}&lt;1\)</span> is a
-sufficient condition for the gradient to vanish, while <span class="math notranslate nohighlight">\(\rho&gt;1/\gamma\)</span> is
+<span class="math notranslate nohighlight">\(\rho(\bm{W})\le\sigma_{\max}(\bm{W})\)</span> always, <span class="math notranslate nohighlight">\(\mu\sigma_{\max}&lt;1\)</span> is a
+sufficient condition for the gradient to vanish, while <span class="math notranslate nohighlight">\(\rho&gt;1/\mu\)</span> is
 necessary for sustained growth.  Between the two lies a regime in which
 transient growth is possible even though the asymptotic behaviour is decay, and
 this is where carefully initialised recurrent networks actually operate.</p>
@@ -932,8 +932,8 @@ whenever <span class="math notranslate nohighlight">\(\bm{g}\neq\bm{0}\)</span> 
     \quad\text{scaled to}\quad \|\bm{u}\|=\min(\|\bm{g}\|,\theta),\tag{11.24}
 \]</div>
 <p>that is, the Euclidean projection of <span class="math notranslate nohighlight">\(\bm{g}\)</span> onto the ball of radius <span class="math notranslate nohighlight">\(\theta\)</span>;
-so a step of size <span class="math notranslate nohighlight">\(\eta\)</span> on the clipped gradient never moves the parameters
-further than <span class="math notranslate nohighlight">\(\eta\theta\)</span>.</p>
+so a step of size <span class="math notranslate nohighlight">\(\gamma\)</span> on the clipped gradient never moves the parameters
+further than <span class="math notranslate nohighlight">\(\gamma\theta\)</span>.</p>
 </div>
 <div class="note admonition">
 <p class="admonition-title">Proof</p>
@@ -946,7 +946,7 @@ at <span class="math notranslate nohighlight">\(r=\min(\|\bm{g}\|,\theta)\)</spa
 </div>
 <p>The two statements are why clipping is not a hack.  Property (i) says the
 optimiser is still doing gradient descent, on a rescaled gradient; property (ii)
-says the effective step length is bounded by <span class="math notranslate nohighlight">\(\eta\theta\)</span> regardless of what the
+says the effective step length is bounded by <span class="math notranslate nohighlight">\(\gamma\theta\)</span> regardless of what the
 loss surface does, which is exactly the guarantee a trust-region method
 provides.  What is lost is scale information: near a genuine cliff the clipped
 step is far shorter than the true gradient suggests, so progress is slow rather

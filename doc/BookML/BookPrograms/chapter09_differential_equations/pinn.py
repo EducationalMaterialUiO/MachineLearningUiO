@@ -2,7 +2,7 @@ import autograd.numpy as np
 from autograd import grad
 from nn_de import ACT, init_parameters, network, d_dxk
 
-def pinn_solve(terms, layer_sizes, activation="tanh", n_iter=2000, eta=1e-2,
+def pinn_solve(terms, layer_sizes, activation="tanh", n_iter=2000, gamma=1e-2,
                rng=None, every=200, verbose=False):
     """terms: list of (name, weight, residual_fn, X). Cost = sum_k w_k * MSE_k."""
     P = init_parameters(layer_sizes, activation, rng)
@@ -22,7 +22,7 @@ def pinn_solve(terms, layer_sizes, activation="tanh", n_iter=2000, eta=1e-2,
             for j in range(2):
                 m[l][j]=b1*m[l][j]+(1-b1)*G[l][j]
                 v[l][j]=b2*v[l][j]+(1-b2)*G[l][j]**2
-                P[l][j]=P[l][j]-eta*(m[l][j]/(1-b1**it))/(np.sqrt(v[l][j]/(1-b2**it))+eps)
+                P[l][j]=P[l][j]-gamma*(m[l][j]/(1-b1**it))/(np.sqrt(v[l][j]/(1-b2**it))+eps)
         if it % every == 0 or it == 1:
             parts = {n: float(np.mean(r(P,Xk)**2)) for n,w,r,Xk in terms}
             hist.append((it, float(cost(P)), parts))
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     for w, ni in [(1.0, 800), (10.0, 800), (100.0, 800), (10.0, 4000)]:
         terms = [("pde", 1.0, r_pde, X_col), ("ic", w, r_ic, X_ic),
                  ("bcL", w, r_bc, X_l), ("bcR", w, r_bc, X_r)]
-        P, _ = pinn_solve(terms, [2, 30, 30, 1], "tanh", n_iter=ni, eta=1e-2,
+        P, _ = pinn_solve(terms, [2, 30, 30, 1], "tanh", n_iter=ni, gamma=1e-2,
                           rng=np.random.default_rng(1))
         report(u_net(P, X_eval), exact_d, f"diffusion soft, lam={w:g}, {ni} it")
 
@@ -80,6 +80,6 @@ if __name__ == "__main__":
         terms = [("pde", 1.0, w_pde, X_col), ("ic", w, r_ic, X_ic),
                  ("iv", w, r_iv, X_ic),
                  ("bcL", w, r_bc, X_l), ("bcR", w, r_bc, X_r)]
-        P, _ = pinn_solve(terms, [2, 30, 30, 1], "tanh", n_iter=ni, eta=1e-2,
+        P, _ = pinn_solve(terms, [2, 30, 30, 1], "tanh", n_iter=ni, gamma=1e-2,
                           rng=np.random.default_rng(1))
         report(u_net(P, X_eval), exact_w, f"wave soft, lam={w:g}, {ni} it")

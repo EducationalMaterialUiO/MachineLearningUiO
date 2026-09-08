@@ -86,7 +86,7 @@ def clip(g, theta):
 # 4.  Adam, as in Chapter 4
 # ---------------------------------------------------------------------------
 
-def train(p, seqs, targets, n_epoch=200, eta=5e-3, theta=None, rng=None,
+def train(p, seqs, targets, n_epoch=200, gamma=5e-3, theta=None, rng=None,
           verbose=False, every=50):
     rng = np.random.default_rng(0) if rng is None else rng
     m = {k: np.zeros_like(v) for k, v in p.items()}
@@ -105,7 +105,7 @@ def train(p, seqs, targets, n_epoch=200, eta=5e-3, theta=None, rng=None,
             for k in p:
                 m[k] = b1 * m[k] + (1 - b1) * g[k]
                 v[k] = b2 * v[k] + (1 - b2) * g[k] ** 2
-                p[k] -= eta * (m[k] / (1 - b1**it)) / (np.sqrt(v[k] / (1 - b2**it)) + eps)
+                p[k] -= gamma * (m[k] / (1 - b1**it)) / (np.sqrt(v[k] / (1 - b2**it)) + eps)
         hist.append((ep, tot / len(seqs)))
         if verbose and (ep % every == 0 or ep == 1):
             print(f"  epoch {ep:4d}  loss {tot/len(seqs):.6f}")

@@ -15,4 +15,4 @@ def residual_logistic(P, X):
     return dg_t - alpha * g_t * (A - g_t)
 
 P, history = solve_de(residual_logistic, [1, 40, 40, 1], T, "tanh",
-                      n_iter=3000, eta=2e-2, rng=np.random.default_rng(1))
+                      n_iter=3000, gamma=2e-2, rng=np.random.default_rng(1))

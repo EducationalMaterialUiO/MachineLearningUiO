@@ -13,7 +13,7 @@ out.write("  d_h   test ELBO   active units (KL_j > 0.01)   mean KL per unit\n")
 res={}
 for dh in [2,5,10,20]:
     P=vae.init_vae(X.shape[1],dh,hidden=64,rng=np.random.default_rng(0))
-    P,h=vae.train_vae(P,Xtr,n_iter=4000,batch=64,eta=2e-3,
+    P,h=vae.train_vae(P,Xtr,n_iter=4000,batch=64,gamma=2e-3,
                       rng=np.random.default_rng(1),every=200)
     e=np.random.default_rng(7).normal(size=(len(Xte),dh))
     te=float(vae.elbo(P,Xte,e))

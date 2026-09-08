@@ -73,7 +73,7 @@ def elbo(P, X, eps):
     return np.mean(rec - kl_gaussian(mu, logvar))
 
 
-def train_vae(P, X, n_iter=2000, batch=64, eta=2e-3, rng=None, every=500,
+def train_vae(P, X, n_iter=2000, batch=64, gamma=2e-3, rng=None, every=500,
               verbose=False):
     rng = np.random.default_rng(0) if rng is None else rng
     flat, unflatten = flatten(P)
@@ -87,7 +87,7 @@ def train_vae(P, X, n_iter=2000, batch=64, eta=2e-3, rng=None, every=500,
         gg = g(flat, xb, e)
         m = 0.9 * m + 0.1 * gg
         v = 0.999 * v + 0.001 * gg ** 2
-        flat = flat - eta * (m / (1 - 0.9**it)) / (np.sqrt(v / (1 - 0.999**it)) + 1e-8)
+        flat = flat - gamma * (m / (1 - 0.9**it)) / (np.sqrt(v / (1 - 0.999**it)) + 1e-8)
         if it % every == 0 or it == 1:
             Pc = unflatten(flat)
             e2 = rng.normal(size=(len(X), latent_dim(P)))

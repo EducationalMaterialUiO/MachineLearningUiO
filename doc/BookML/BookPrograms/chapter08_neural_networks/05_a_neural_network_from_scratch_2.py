@@ -13,11 +13,11 @@ class NeuralNetwork:
     """
 
     def __init__(self, layer_sizes, hidden_activation="sigmoid",
-                 task="classification", eta=0.1, lmbd=0.0, epochs=100,
+                 task="classification", gamma=0.1, lmbd=0.0, epochs=100,
                  batch_size=32, rng=None):
         self.sizes, self.task = layer_sizes, task
         self.f, self.fp = ACT[hidden_activation]
-        self.eta, self.lmbd = eta, lmbd
+        self.gamma, self.lmbd = gamma, lmbd
         self.epochs, self.batch = epochs, batch_size
         self.rng = np.random.default_rng(0) if rng is None else rng
         self._init_parameters(hidden_activation)
@@ -79,8 +79,8 @@ class NeuralNetwork:
                 b = order[s:s + self.batch]
                 gW, gb = self._backward(X[b], Y[b])
                 for l in range(len(self.W)):                  # Eq. (8.update)
-                    self.W[l] -= self.eta * gW[l]
-                    self.b[l] -= self.eta * gb[l]
+                    self.W[l] -= self.gamma * gW[l]
+                    self.b[l] -= self.gamma * gb[l]
             self.loss_.append(self.cost(X, Y))
         return self
 

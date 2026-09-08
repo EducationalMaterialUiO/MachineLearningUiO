@@ -762,8 +762,8 @@ and at that point <span class="math notranslate nohighlight">\(D^{*}\equiv\tfrac
 <p>Substituting Eq. (17.6) into Eq. (17.5),</p>
 <div class="math notranslate nohighlight">
 \[\]</div>
-<div class="amsmath math notranslate nohighlight" id="equation-fc71d91f-32a7-4945-80f3-d057b55f45f8">
-<span class="eqno">(17.1)<a class="headerlink" href="#equation-fc71d91f-32a7-4945-80f3-d057b55f45f8" title="Permalink to this equation">#</a></span>\[\begin{align}
+<div class="amsmath math notranslate nohighlight" id="equation-79a5b9e2-ab23-4560-8a4b-e0aa2b9e466a">
+<span class="eqno">(17.1)<a class="headerlink" href="#equation-79a5b9e2-ab23-4560-8a4b-e0aa2b9e466a" title="Permalink to this equation">#</a></span>\[\begin{align}
 V(G,D^{*})
   &amp;= \int p_r\log\frac{p_r}{p_r+p_g} \ud{\bm{x}}
    + \int p_g\log\frac{p_g}{p_r+p_g} \ud{\bm{x}}
@@ -845,7 +845,7 @@ the discriminator,</p>
 <div class="math notranslate nohighlight">
 \[
    \bm{\theta}^{(d)} \leftarrow \bm{\theta}^{(d)}
-   + \eta_d\,\nabla_{\bm{\theta}^{(d)}}V(G,D),\tag{17.15}
+   + \gamma_d\,\nabla_{\bm{\theta}^{(d)}}V(G,D),\tag{17.15}
    \]</div>
 <p>where <span class="math notranslate nohighlight">\(V\)</span> is estimated on a minibatch of real data and a minibatch of
 generated data.  The generated batch is <em>detached</em> from the
@@ -855,7 +855,7 @@ computational graph, so that no gradient reaches <span class="math notranslate n
 <div class="math notranslate nohighlight">
 \[
    \bm{\theta}^{(g)} \leftarrow \bm{\theta}^{(g)}
-   - \eta_g\,\nabla_{\bm{\theta}^{(g)}}\mathcal{L}_G .\tag{17.16}
+   - \gamma_g\,\nabla_{\bm{\theta}^{(g)}}\mathcal{L}_G .\tag{17.16}
    \]</div>
 </li>
 </ol>
@@ -1066,30 +1066,30 @@ origin.  Simultaneous gradient updates give</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{pmatrix}x_{t+1}\\y_{t+1}\end{pmatrix}
-   = \begin{pmatrix}1 &amp; -\eta\\ \eta &amp; 1\end{pmatrix}
+   = \begin{pmatrix}1 &amp; -\gamma\\ \gamma &amp; 1\end{pmatrix}
      \begin{pmatrix}x_{t}\\y_{t}\end{pmatrix},\tag{17.23}
 \end{split}\]</div>
-<p>whose matrix has eigenvalues <span class="math notranslate nohighlight">\(1\pm i\eta\)</span> of modulus <span class="math notranslate nohighlight">\(\sqrt{1+\eta^{2}}&gt;1\)</span>.
+<p>whose matrix has eigenvalues <span class="math notranslate nohighlight">\(1\pm i\gamma\)</span> of modulus <span class="math notranslate nohighlight">\(\sqrt{1+\gamma^{2}}&gt;1\)</span>.
 The iteration therefore <em>spirals outward</em>, and does so exactly:</p>
 <div class="math notranslate nohighlight">
 \[
-x_t^{2}+y_t^{2} = (1+\eta^{2})^{t}\,\bigl(x_0^{2}+y_0^{2}\bigr).\tag{17.24}
+x_t^{2}+y_t^{2} = (1+\gamma^{2})^{t}\,\bigl(x_0^{2}+y_0^{2}\bigr).\tag{17.24}
 \]</div>
-<p>No step size helps; smaller <span class="math notranslate nohighlight">\(\eta\)</span> only slows the divergence.</p>
+<p>No step size helps; smaller <span class="math notranslate nohighlight">\(\gamma\)</span> only slows the divergence.</p>
 <p>Now alternate, using the updated <span class="math notranslate nohighlight">\(x\)</span> in the <span class="math notranslate nohighlight">\(y\)</span> update as every practical
 implementation does:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{pmatrix}x_{t+1}\\y_{t+1}\end{pmatrix}
-   = \begin{pmatrix}1 &amp; -\eta\\ \eta &amp; 1-\eta^{2}\end{pmatrix}
+   = \begin{pmatrix}1 &amp; -\gamma\\ \gamma &amp; 1-\gamma^{2}\end{pmatrix}
      \begin{pmatrix}x_{t}\\y_{t}\end{pmatrix}.\tag{17.25}
 \end{split}\]</div>
-<p>The determinant is <span class="math notranslate nohighlight">\(1-\eta^{2}+\eta^{2}=1\)</span> and the trace is <span class="math notranslate nohighlight">\(2-\eta^{2}\)</span>, so
-for <span class="math notranslate nohighlight">\(\eta&lt;2\)</span> the eigenvalues are complex conjugates on the unit circle: the
+<p>The determinant is <span class="math notranslate nohighlight">\(1-\gamma^{2}+\gamma^{2}=1\)</span> and the trace is <span class="math notranslate nohighlight">\(2-\gamma^{2}\)</span>, so
+for <span class="math notranslate nohighlight">\(\gamma&lt;2\)</span> the eigenvalues are complex conjugates on the unit circle: the
 orbit neither converges nor diverges but circulates forever at constant radius.
 Both statements are exact and both are checked:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===</span> <span class="mf">7.</span> <span class="n">the</span> <span class="n">bilinear</span> <span class="n">game</span> <span class="n">V</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">xy</span><span class="p">,</span> <span class="n">unique</span> <span class="n">Nash</span> <span class="n">at</span> <span class="n">the</span> <span class="n">origin</span> <span class="o">===</span>
-    <span class="n">eta</span>   <span class="n">steps</span>    <span class="o">||</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="o">||</span> <span class="n">simultaneous</span>   <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">eta</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="p">(</span><span class="n">T</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>    <span class="o">||</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="o">||</span> <span class="n">alternating</span>
+  <span class="n">gamma</span>   <span class="n">steps</span>    <span class="o">||</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="o">||</span> <span class="n">simultaneous</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">gamma</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="p">(</span><span class="n">T</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>    <span class="o">||</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="o">||</span> <span class="n">alternating</span>
    <span class="mf">0.10</span>    <span class="mi">1000</span>             <span class="mf">2.0474e+02</span>         <span class="mf">2.0474e+02</span>             <span class="mf">1.399261</span>
    <span class="mf">0.05</span>    <span class="mi">1000</span>             <span class="mf">4.9284e+00</span>         <span class="mf">4.9284e+00</span>             <span class="mf">1.411927</span>
    <span class="mf">0.01</span>    <span class="mi">1000</span>             <span class="mf">1.4867e+00</span>         <span class="mf">1.4867e+00</span>             <span class="mf">1.412129</span>
@@ -1097,14 +1097,14 @@ Both statements are exact and both are checked:</p>
 </div>
 <p>The starting point has <span class="math notranslate nohighlight">\(\|(x_0,y_0)\|=\sqrt2=1.41421\)</span>, and the alternating
 iteration is still within <span class="math notranslate nohighlight">\(1.1\%\)</span> of it after a thousand steps, while the
-simultaneous one at <span class="math notranslate nohighlight">\(\eta=0.1\)</span> has grown by a factor of <span class="math notranslate nohighlight">\(145\)</span>.  This single
+simultaneous one at <span class="math notranslate nohighlight">\(\gamma=0.1\)</span> has grown by a factor of <span class="math notranslate nohighlight">\(145\)</span>.  This single
 <span class="math notranslate nohighlight">\(2\times2\)</span> example explains two facts about GAN practice at once: why the
 updates are alternated rather than simultaneous, and why even then the loss
 curves oscillate instead of descending.  A GAN is not minimising anything; it
 is orbiting.</p>
 <p>The standard stabilisers all attack this.  Setting Adam’s <span class="math notranslate nohighlight">\(\beta_1=0.5\)</span> instead
 of <span class="math notranslate nohighlight">\(0.9\)</span> reduces the momentum that turns a circulating orbit into an expanding
-one.  Two-time-scale updates [heusel2017] (<span class="math notranslate nohighlight">\(\eta_d&gt;\eta_g\)</span>) keep the discriminator closer to
+one.  Two-time-scale updates [heusel2017] (<span class="math notranslate nohighlight">\(\gamma_d&gt;\gamma_g\)</span>) keep the discriminator closer to
 its optimum, which is where the theory of Section <em>The objective is a Jensen-Shannon divergence</em> lives.
 Spectral normalisation bounds the Lipschitz constant of <span class="math notranslate nohighlight">\(D\)</span> [miyato2018],
 damping the feedback.  None of them makes the game convex.</p>
@@ -1241,8 +1241,8 @@ gradient is gone.</p>
 moved rather than how much the densities disagree:</p>
 <div class="math notranslate nohighlight">
 \[
-W(p_r,p_g) = \inf_{\gamma\in\Pi(p_r,p_g)}
-    \mathbb{E}_{(\bm{x},\bm{y})\sim\gamma}\bigl[\|\bm{x}-\bm{y}\|\bigr],\tag{17.27}
+W(p_r,p_g) = \inf_{\pi\in\Pi(p_r,p_g)}
+    \mathbb{E}_{(\bm{x},\bm{y})\sim\pi}\bigl[\|\bm{x}-\bm{y}\|\bigr],\tag{17.27}
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\Pi(p_r,p_g)\)</span> is the set of joint distributions – transport plans –
 with the prescribed marginals.  The infimum over plans is intractable, but the
@@ -1421,7 +1421,7 @@ provides plenty of opportunity for units to die.</p></li>
 verdict on one sample depend on the rest of the batch, which is both a leak
 of information and a source of instability; in <span class="math notranslate nohighlight">\(G\)</span> it keeps activations
 scaled while the target distribution moves.</p></li>
-<li><p><strong>Adam with <span class="math notranslate nohighlight">\(\beta_1=0.5\)</span></strong> and <span class="math notranslate nohighlight">\(\eta=2\times10^{-4}\)</span>.  The reduced
+<li><p><strong>Adam with <span class="math notranslate nohighlight">\(\beta_1=0.5\)</span></strong> and <span class="math notranslate nohighlight">\(\gamma=2\times10^{-4}\)</span>.  The reduced
 momentum is the practical response to Eq. (17.23).</p></li>
 </ul>
 </section>
@@ -1754,7 +1754,7 @@ of Eq. (17.20) fixes it without moving the fixed point.  Label
 smoothing caps the discriminator at <span class="math notranslate nohighlight">\(s\)</span>, Proposition 17.4, and
 was measured holding <span class="math notranslate nohighlight">\(D(\bm{x})\)</span> down to <span class="math notranslate nohighlight">\(0.86\)</span> instead of <span class="math notranslate nohighlight">\(0.97\)</span>.  Alternating
 gradient updates do not converge to a Nash equilibrium: on the bilinear game
-the simultaneous iteration diverges exactly as <span class="math notranslate nohighlight">\((1+\eta^{2})^{t/2}\)</span> and the
+the simultaneous iteration diverges exactly as <span class="math notranslate nohighlight">\((1+\gamma^{2})^{t/2}\)</span> and the
 alternating one circulates forever, both confirmed to five figures, which is
 why our trained GAN sat at <span class="math notranslate nohighlight">\(V=-1.275\)</span> rather than <span class="math notranslate nohighlight">\(-1.386\)</span> and why the loss
 curves of any GAN oscillate.</p>
@@ -1871,7 +1871,7 @@ the eight-Gaussian problem of Section <em>What convergence looks like</em>?</p>
 <p><strong>Part c: the equilibrium.</strong>
 Train on the eight-Gaussian mixture and monitor <span class="math notranslate nohighlight">\(D(\bm{x})\)</span>, <span class="math notranslate nohighlight">\(D(G(\bm{z}))\)</span> and
 <span class="math notranslate nohighlight">\(V\)</span>.  Do they approach the values of Theorem 17.3?  Vary the
-learning-rate ratio <span class="math notranslate nohighlight">\(\eta_d/\eta_g\)</span> and <span class="math notranslate nohighlight">\(n_{\mathrm{critic}}\)</span>, and report how
+learning-rate ratio <span class="math notranslate nohighlight">\(\gamma_d/\gamma_g\)</span> and <span class="math notranslate nohighlight">\(n_{\mathrm{critic}}\)</span>, and report how
 close to <span class="math notranslate nohighlight">\(-2\log2\)</span> you can get.  Then add Adam momentum <span class="math notranslate nohighlight">\(\beta_1=0.9\)</span> and
 describe what happens in the light of Eq. (17.23).</p>
 <p><strong>Part d: mode collapse.</strong>

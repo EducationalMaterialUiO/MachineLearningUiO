@@ -69,7 +69,7 @@ def gibbs(W, a, b, V, k, g):
     return V
 
 
-def train(mode, k, eta=0.05, momentum=0.5):
+def train(mode, k, gamma=0.05, momentum=0.5):
     """`mode` is "cd" for CD-k started at the data, "pcd" for a persistent chain."""
     g = torch.Generator().manual_seed(SEED)
     W = 0.01 * torch.randn(M, N, generator=g)
@@ -93,9 +93,9 @@ def train(mode, k, eta=0.05, momentum=0.5):
             dW = X.T @ ph_pos / len(X) - V.T @ ph_neg / len(V)
             da = X.mean(0) - V.mean(0)
             db = ph_pos.mean(0) - ph_neg.mean(0)
-            vW = momentum * vW + eta * dW                    # Eq. (14.cdk)
-            va = momentum * va + eta * da
-            vb = momentum * vb + eta * db
+            vW = momentum * vW + gamma * dW                    # Eq. (14.cdk)
+            va = momentum * va + gamma * da
+            vb = momentum * vb + gamma * db
             W, a, b = W + vW, a + va, b + vb
         pl = pseudo_likelihood(W, a, b, Xte[:2000],
                                torch.Generator().manual_seed(99))

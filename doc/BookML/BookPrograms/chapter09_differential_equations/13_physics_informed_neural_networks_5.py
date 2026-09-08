@@ -20,4 +20,4 @@ def cost(P):
 
 P = [init_parameters([2, 30, 30, 1], "tanh", np.random.default_rng(1)),
      np.array([2.0])]                                 # initial guess D_0 = 2
-P = adam_general(cost, P, n_iter=3000, eta=1e-2)
+P = adam_general(cost, P, n_iter=3000, gamma=1e-2)

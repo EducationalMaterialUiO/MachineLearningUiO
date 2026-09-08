@@ -13,10 +13,10 @@ def pegasos(X, y, lmbda=0.01, epochs=300, rng=None):
     for _ in range(epochs):
         for i in rng.permutation(n):
             t += 1
-            eta = 1.0 / (lmbda * t)                  # Eq. (4.timedecay)
+            gamma = 1.0 / (lmbda * t)                  # Eq. (4.timedecay)
             if y[i] * (w @ X[i] + b) < 1:            # inside the margin
-                w = (1 - eta * lmbda) * w + eta * y[i] * X[i]
-                b += eta * y[i]
+                w = (1 - gamma * lmbda) * w + gamma * y[i] * X[i]
+                b += gamma * y[i]
             else:                                    # outside: only the penalty
-                w = (1 - eta * lmbda) * w
+                w = (1 - gamma * lmbda) * w
     return w, b

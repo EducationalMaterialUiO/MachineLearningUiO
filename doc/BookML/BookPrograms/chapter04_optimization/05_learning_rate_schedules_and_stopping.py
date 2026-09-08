@@ -16,6 +16,6 @@ for epoch in range(1, n_epochs + 1):
     for i in range(m):
         k = np.random.randint(m)
         t = epoch * m + i
-        eta = step_length(t, t0, t1)
+        gamma = step_length(t, t0, t1)
         # compute the minibatch gradient and update theta
-print(f"eta after {n_epochs} epochs: {step_length(n_epochs*m, t0, t1):g}")
+print(f"gamma after {n_epochs} epochs: {step_length(n_epochs*m, t0, t1):g}")

@@ -16,8 +16,8 @@ def init_parameters(layer_sizes, activation="tanh", rng=None):
 
 
 def solve_de(residual, layer_sizes, X, activation="tanh", n_iter=2000,
-             eta=1e-2, rng=None):
+             gamma=1e-2, rng=None):
     """Minimise the mean squared residual, Eq. (9.cost), with Adam."""
     P = init_parameters(layer_sizes, activation, rng)
     cost = lambda P: np.mean(residual(P, X)**2)
-    return adam_minimise(cost, P, n_iter=n_iter, eta=eta)
+    return adam_minimise(cost, P, n_iter=n_iter, gamma=gamma)

@@ -618,7 +618,7 @@ inputs, two hidden nodes and two outputs learns all three gates perfectly:</p>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">&quot;XOR&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="p">(</span><span class="s2">&quot;OR&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="p">(</span><span class="s2">&quot;AND&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])]:</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">net</span> <span class="o">=</span> <span class="n">NeuralNetwork</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span>
-                        <span class="n">eta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                        <span class="n">gamma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
                         <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">7</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: accuracy </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
           <span class="sa">f</span><span class="s2">&quot;predictions </span><span class="si">{</span><span class="n">net</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -791,12 +791,12 @@ the separation can be proved in half a page.</p>
 <p>A useful way to hold the theorem in mind
 is to compare it with what we know about polynomials from
 Chapter 3.  Polynomials are universal too, yet
-Figure 3.4 showed a degree-fourteen polynomial fit
+Figure 3.7 showed a degree-fourteen polynomial fit
 failing catastrophically – not because the function was unrepresentable but
 because the coefficients could not be <em>estimated</em> from a hundred noisy
 points.  Universality is a statement about the model class; generalisation is a
 statement about the model class, the data and the estimator together, and it is
-governed by Eq. (2.47) rather than by any approximation
+governed by Eq. (2.52) rather than by any approximation
 theorem.  A network large enough to approximate anything is also large enough
 to overfit anything, which is why Section <em>Regularisation and hyperparameters</em> exists.</p>
 </div>
@@ -1703,7 +1703,7 @@ layer, exactly as the forward pass does.  The whole gradient with respect to
 of the number of parameters.  This is precisely the claim made for reverse-mode
 automatic differentiation in Section <em>Automatic differentiation</em>, and backpropagation is
 that algorithm specialised to a layered network.  Computing the same gradient
-by finite differences, Eq. (4.43), would require one forward
+by finite differences, Eq. (4.63), would require one forward
 pass per parameter; for a network with <span class="math notranslate nohighlight">\(10^{6}\)</span> weights the difference is
 between a second and a fortnight.</p>
 </section>
@@ -1736,12 +1736,12 @@ natural pairings.</p></li>
 <li><p><em>Gradients.</em>  Form
 <span class="math notranslate nohighlight">\(\partial C/\partial w_{ij}^{l}=\delta_j^{l}a_i^{l-1}\)</span> and
 <span class="math notranslate nohighlight">\(\partial C/\partial b_j^{l}=\delta_j^{l}\)</span>.</p></li>
-<li><p><em>Update.</em>  With plain gradient descent and learning rate <span class="math notranslate nohighlight">\(\eta\)</span>,</p>
+<li><p><em>Update.</em>  With plain gradient descent and learning rate <span class="math notranslate nohighlight">\(\gamma\)</span>,</p>
 <div class="math notranslate nohighlight">
 \[
-   w_{ij}^{l}\leftarrow w_{ij}^{l}-\eta\,\delta_j^{l}a_i^{l-1},
+   w_{ij}^{l}\leftarrow w_{ij}^{l}-\gamma\,\delta_j^{l}a_i^{l-1},
    \qquad
-   b_j^{l}\leftarrow b_j^{l}-\eta\,\delta_j^{l},\tag{8.46}
+   b_j^{l}\leftarrow b_j^{l}-\gamma\,\delta_j^{l},\tag{8.46}
    \]</div>
 <p>or substitute any of the schemes of Chapter 4.</p>
 </li>
@@ -1753,7 +1753,7 @@ as in Section <em>Stochastic gradient descent</em>, and one pass over all miniba
 <p>Always verify a hand-written
 backpropagation implementation against finite differences before trusting it.
 Perturb one weight by <span class="math notranslate nohighlight">\(h\approx10^{-6}\)</span>, evaluate the cost twice, and compare
-the central difference (4.43) with the analytical gradient; the
+the central difference (4.63) with the analytical gradient; the
 relative discrepancy should be around <span class="math notranslate nohighlight">\(10^{-6}\)</span> or smaller.  A wrong gradient
 does not usually announce itself – the network still trains, just to the wrong
 place, or trains slightly worse than it should – and this check takes minutes
@@ -2029,11 +2029,11 @@ Eqs. (8.41)–(8.44) transcribed.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_sizes</span><span class="p">,</span> <span class="n">hidden_activation</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>
-                 <span class="n">task</span><span class="o">=</span><span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lmbd</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">task</span><span class="o">=</span><span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lmbd</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                  <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sizes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">layer_sizes</span><span class="p">,</span> <span class="n">task</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">ACT</span><span class="p">[</span><span class="n">hidden_activation</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbd</span> <span class="o">=</span> <span class="n">eta</span><span class="p">,</span> <span class="n">lmbd</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lmbd</span> <span class="o">=</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">lmbd</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span> <span class="o">=</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">batch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rng</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="p">(</span><span class="n">hidden_activation</span><span class="p">)</span>
@@ -2095,8 +2095,8 @@ Eqs. (8.41)–(8.44) transcribed.</p>
                 <span class="n">b</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">s</span><span class="p">:</span><span class="n">s</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch</span><span class="p">]</span>
                 <span class="n">gW</span><span class="p">,</span> <span class="n">gb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backward</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">b</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">b</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">)):</span>                  <span class="c1"># Eq. (8.update)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">gW</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">*</span> <span class="n">gb</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">W</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">gW</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">gb</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loss_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cost</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -2181,7 +2181,7 @@ and train a network with a single hidden layer of <span class="math notranslate 
 
 <span class="k">for</span> <span class="n">activation</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span> <span class="s2">&quot;relu&quot;</span><span class="p">]:</span>
     <span class="n">net</span> <span class="o">=</span> <span class="n">NeuralNetwork</span><span class="p">([</span><span class="mi">64</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">activation</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span>
-                        <span class="n">eta</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lmbd</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                        <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">lmbd</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
                         <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2024</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">activation</span><span class="si">:</span><span class="s2">8s</span><span class="si">}</span><span class="s2">: train </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">y_train</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  &quot;</span>
           <span class="sa">f</span><span class="s2">&quot;test </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">y_test</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  &quot;</span>
@@ -2214,7 +2214,7 @@ one another, which is the reminder that a lower training loss is not the
 objective.  On the right, accuracy against the number of hidden units shows the
 familiar shape: rapid improvement up to about twenty units, then a plateau on
 the test set while the training accuracy continues to unity.  The gap between
-the two curves is the variance term of Eq. (2.47).</p>
+the two curves is the variance term of Eq. (2.52).</p>
 <p><img alt="Left training cross entropy against epoch for three hidden activations" src="_images/digits_training.png" /></p>
 <p><em>Figure 8.12: Left: training cross entropy against epoch for three hidden activations on the digits data, with the resulting test accuracies.  Right: training and test accuracy against the width of the single hidden layer.</em></p>
 <p><strong>Using established libraries.</strong>

@@ -175,20 +175,20 @@ out.write(f"  JS -> log 2 = {np.log(2):.6f} while W grows without bound\n")
 # 7.  the bilinear game: simultaneous against alternating updates
 # ---------------------------------------------------------------------------
 out.write("=== 7. the bilinear game V(x,y) = xy, unique Nash at the origin ===\n")
-out.write("    eta   steps    ||(x,y)|| simultaneous   (1+eta^2)^(T/2)"
+out.write("    gamma   steps    ||(x,y)|| simultaneous   (1+gamma^2)^(T/2)"
           "    ||(x,y)|| alternating\n")
-for eta in [0.1, 0.05, 0.01]:
+for gamma in [0.1, 0.05, 0.01]:
     T = 1000
     xs, ys = 1.0, 1.0                      # simultaneous
     xa, ya = 1.0, 1.0                      # alternating
     for _ in range(T):
-        xs, ys = xs - eta * ys, ys + eta * xs
-        xa = xa - eta * ya
-        ya = ya + eta * xa                 # uses the *updated* x
-    out.write(f"  {eta:5.2f}  {T:6d}   {np.hypot(xs,ys):20.4e}   "
-              f"{np.sqrt(2)*(1+eta**2)**(T/2):16.4e}   {np.hypot(xa,ya):18.6f}\n")
+        xs, ys = xs - gamma * ys, ys + gamma * xs
+        xa = xa - gamma * ya
+        ya = ya + gamma * xa                 # uses the *updated* x
+    out.write(f"  {gamma:5.2f}  {T:6d}   {np.hypot(xs,ys):20.4e}   "
+              f"{np.sqrt(2)*(1+gamma**2)**(T/2):16.4e}   {np.hypot(xa,ya):18.6f}\n")
 out.write("  the simultaneous iteration multiplies the distance to the Nash\n"
-          "  equilibrium by sqrt(1+eta^2) at every step, exactly; the alternating\n"
+          "  equilibrium by sqrt(1+gamma^2) at every step, exactly; the alternating\n"
           "  iteration has both eigenvalues on the unit circle and stays bounded\n\n")
 
 # ---------------------------------------------------------------------------

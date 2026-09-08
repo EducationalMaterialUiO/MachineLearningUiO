@@ -72,7 +72,7 @@ def main(n_iter=4000):
         terms = [("pde", 1.0, r_pde, X_col), ("term", 10.0, r_term, X_term),
                  ("lo", 10.0, r_lo, X_lo),   ("hi", 10.0, r_hi, X_hi)]
         t0 = time.time()
-        P, h = pinn_solve(terms, [2, 40, 40, 1], "tanh", n_iter=n_iter, eta=5e-3,
+        P, h = pinn_solve(terms, [2, 40, 40, 1], "tanh", n_iter=n_iter, gamma=5e-3,
                           rng=np.random.default_rng(1), every=n_iter)
         pred, ex, Sg, Tg = evaluate(C_net, P, scaled)
         e = np.abs(pred - ex)

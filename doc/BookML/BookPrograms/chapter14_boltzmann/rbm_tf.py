@@ -55,7 +55,7 @@ def gibbs(W, a, b, V, k, gen):
     return V
 
 
-def train(mode, k, eta=0.05, momentum=0.5):
+def train(mode, k, gamma=0.05, momentum=0.5):
     gen = tf.random.Generator.from_seed(SEED)
     W = tf.Variable(0.01 * gen.normal((M, N)))
     a = tf.Variable(tf.zeros(M))
@@ -80,9 +80,9 @@ def train(mode, k, eta=0.05, momentum=0.5):
                   - tf.transpose(V) @ ph_neg / BATCH)
             da = tf.reduce_mean(X, 0) - tf.reduce_mean(V, 0)
             db = tf.reduce_mean(ph_pos, 0) - tf.reduce_mean(ph_neg, 0)
-            vW.assign(momentum * vW + eta * dW)
-            va.assign(momentum * va + eta * da)
-            vb.assign(momentum * vb + eta * db)
+            vW.assign(momentum * vW + gamma * dW)
+            va.assign(momentum * va + gamma * da)
+            vb.assign(momentum * vb + gamma * db)
             W.assign_add(vW)
             a.assign_add(va)
             b.assign_add(vb)

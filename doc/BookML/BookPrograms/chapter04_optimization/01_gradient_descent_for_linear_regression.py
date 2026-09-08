@@ -17,10 +17,10 @@ print("analytical:", theta_exact.ravel())
 
 # Gradient descent, Eq. (4.gditeration)
 theta = rng.normal(size=(2, 1))
-eta = 0.1
+gamma = 0.1
 for k in range(1000):
     gradient = (2.0 / n) * X.T @ (X @ theta - y)
-    theta -= eta * gradient
+    theta -= gamma * gradient
     if np.linalg.norm(gradient) < 1.0e-8:
         break
 print(f"gradient descent after {k+1} iterations:", theta.ravel())

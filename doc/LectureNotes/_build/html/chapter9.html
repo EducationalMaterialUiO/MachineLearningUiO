@@ -645,11 +645,11 @@ over unchanged.</p>
 
 
 <span class="k">def</span> <span class="nf">solve_de</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="n">layer_sizes</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
-             <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+             <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimise the mean squared residual, Eq. (9.cost), with Adam.&quot;&quot;&quot;</span>
     <span class="n">P</span> <span class="o">=</span> <span class="n">init_parameters</span><span class="p">(</span><span class="n">layer_sizes</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
     <span class="n">cost</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">P</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">residual</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">adam_minimise</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">adam_minimise</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -668,15 +668,15 @@ situation automatic differentiation exists for.</p>
 decay of a quantity <span class="math notranslate nohighlight">\(g(x)\)</span> is described by</p>
 <div class="math notranslate nohighlight">
 \[
-g'(x) = -\gamma\,g(x),
+g'(x) = -\kappa\,g(x),
   \qquad g(0) = g_0,\tag{9.7}
 \]</div>
 <p>with analytical solution</p>
 <div class="math notranslate nohighlight">
 \[
-g(x) = g_0\exp(-\gamma x).\tag{9.8}
+g(x) = g_0\exp(-\kappa x).\tag{9.8}
 \]</div>
-<p>We take <span class="math notranslate nohighlight">\(\gamma=2\)</span> and <span class="math notranslate nohighlight">\(g_0=10\)</span>.</p>
+<p>We take <span class="math notranslate nohighlight">\(\kappa=2\)</span> and <span class="math notranslate nohighlight">\(g_0=10\)</span>.</p>
 <p><strong>The trial solution.</strong>
 The single condition is <span class="math notranslate nohighlight">\(g(0)=g_0\)</span>.  Choosing <span class="math notranslate nohighlight">\(h_1(x)=g_0\)</span> and
 <span class="math notranslate nohighlight">\(h_2(x,N)=x\,N(x,P)\)</span> in Eq. (9.2) gives</p>
@@ -695,13 +695,13 @@ Substituting both into Eq. (9.7) gives the residual whose mean
 square is the cost,</p>
 <div class="math notranslate nohighlight">
 \[
-r(x,P) = g_t'(x,P) + \gamma\,g_t(x,P)
-   = N + x\frac{\partial N}{\partial x} + \gamma\left(g_0+xN\right).\tag{9.11}
+r(x,P) = g_t'(x,P) + \kappa\,g_t(x,P)
+   = N + x\frac{\partial N}{\partial x} + \kappa\left(g_0+xN\right).\tag{9.11}
 \]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="n">gamma</span><span class="p">,</span> <span class="n">g0</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">10.0</span>
+<span class="n">kappa</span><span class="p">,</span> <span class="n">g0</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">10.0</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>          <span class="c1"># collocation points</span>
 
 <span class="k">def</span> <span class="nf">residual_decay</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
@@ -710,14 +710,14 @@ r(x,P) = g_t'(x,P) + \gamma\,g_t(x,P)
     <span class="n">x</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">g_t</span>  <span class="o">=</span> <span class="n">g0</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">N</span>                              <span class="c1"># Eq. (9.trialode)</span>
     <span class="n">dg_t</span> <span class="o">=</span> <span class="n">N</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">dN</span>                              <span class="c1"># Eq. (9.dtrialode)</span>
-    <span class="k">return</span> <span class="n">dg_t</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">g_t</span>
+    <span class="k">return</span> <span class="n">dg_t</span> <span class="o">+</span> <span class="n">kappa</span> <span class="o">*</span> <span class="n">g_t</span>
 
 <span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">solve_de</span><span class="p">(</span><span class="n">residual_decay</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span>
-                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">2e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">2e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 
 <span class="n">N</span><span class="p">,</span> <span class="n">dN</span> <span class="o">=</span> <span class="n">network_derivs</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">g_network</span> <span class="o">=</span> <span class="n">g0</span> <span class="o">+</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
-<span class="n">g_exact</span> <span class="o">=</span> <span class="n">g0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">g_exact</span> <span class="o">=</span> <span class="n">g0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">kappa</span> <span class="o">*</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;max relative error </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">g_network</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">g_exact</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">g0</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -785,7 +785,7 @@ r(t,P) = g_t'(t,P) - \alpha\,g_t(t,P)\left(A-g_t(t,P)\right).\tag{9.14}
     <span class="k">return</span> <span class="n">dg_t</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">g_t</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">g_t</span><span class="p">)</span>
 
 <span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">solve_de</span><span class="p">(</span><span class="n">residual_logistic</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">T</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span>
-                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">2e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">2e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -859,7 +859,7 @@ network.</p>
     <span class="k">return</span> <span class="o">-</span><span class="n">d2g_t</span> <span class="o">-</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 <span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">solve_de</span><span class="p">(</span><span class="n">residual_poisson</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span>
-                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1045,7 +1045,7 @@ network while <span class="math notranslate nohighlight">\(u(0)=u(1)=0\)</span> 
     <span class="k">return</span> <span class="n">u_t</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="n">u_xx</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>                   <span class="c1"># Eq. (9.diffusion)</span>
 
 <span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">solve_de</span><span class="p">(</span><span class="n">residual_diffusion</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span>
-                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1123,7 +1123,7 @@ derivative at <span class="math notranslate nohighlight">\(t=0\)</span> and noth
     <span class="k">return</span> <span class="n">w_tt</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">w_xx</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>           <span class="c1"># Eq. (9.wave)</span>
 
 <span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">solve_de</span><span class="p">(</span><span class="n">residual_wave</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span>
-                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                      <span class="n">n_iter</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1278,7 +1278,7 @@ new element is that the cost sums several mean-squared residuals, each
 evaluated on its own set of points.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pinn_solve</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="n">layer_sizes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pinn_solve</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="n">layer_sizes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
                <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">every</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;terms: list of (name, weight, residual_fn, points), Eq. (9.pinntotal).</span>
 
@@ -1293,7 +1293,7 @@ evaluated on its own set of points.</p>
             <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">w</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">residual</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">Xk</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">total</span>
 
-    <span class="k">return</span> <span class="n">adam_minimise</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">adam_minimise</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1307,7 +1307,7 @@ We solve exactly the problem of Section <em>The diffusion equation</em> –
 Eq. (9.26) with the conditions (9.27) and
 <span class="math notranslate nohighlight">\(u(x)=\sin\pi x\)</span> – so that the two formulations can be compared on identical
 ground.  The architecture is the same <span class="math notranslate nohighlight">\([2,30,30,1]\)</span> network with <span class="math notranslate nohighlight">\(\tanh\)</span>
-activation, and Adam with <span class="math notranslate nohighlight">\(\eta=10^{-2}\)</span>.</p>
+activation, and Adam with <span class="math notranslate nohighlight">\(\gamma=10^{-2}\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nx</span><span class="p">,</span> <span class="n">nt</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span>
@@ -1332,7 +1332,7 @@ activation, and Adam with <span class="math notranslate nohighlight">\(\eta=10^{
 <span class="n">terms</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;pde&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">r_pde</span><span class="p">,</span> <span class="n">X_col</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;ic&quot;</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_ic</span><span class="p">,</span> <span class="n">X_ic</span><span class="p">),</span>
          <span class="p">(</span><span class="s2">&quot;bcL&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_bc</span><span class="p">,</span> <span class="n">X_l</span><span class="p">),</span>   <span class="p">(</span><span class="s2">&quot;bcR&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_bc</span><span class="p">,</span> <span class="n">X_r</span><span class="p">)]</span>
 
-<span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">pinn_solve</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+<span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">pinn_solve</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
                         <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -1465,7 +1465,7 @@ from any other residual:</p>
          <span class="p">(</span><span class="s2">&quot;iv&quot;</span><span class="p">,</span>  <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_iv</span><span class="p">,</span>  <span class="n">X_ic</span><span class="p">),</span>                 <span class="c1"># the initial velocity</span>
          <span class="p">(</span><span class="s2">&quot;bcL&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_bc</span><span class="p">,</span>  <span class="n">X_l</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;bcR&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_bc</span><span class="p">,</span> <span class="n">X_r</span><span class="p">)]</span>
 
-<span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">pinn_solve</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+<span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">pinn_solve</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
                         <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -1526,7 +1526,7 @@ general parameter object.  Flattening is the tidy way to arrange this:</p>
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">autograd.misc</span> <span class="kn">import</span> <span class="n">flatten</span>
 
-<span class="k">def</span> <span class="nf">adam_general</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">adam_general</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adam on any nested list of arrays -- here the weights and the scalar D.&quot;&quot;&quot;</span>
     <span class="n">flat</span><span class="p">,</span> <span class="n">unflatten</span> <span class="o">=</span> <span class="n">flatten</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
     <span class="n">gradient</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">cost</span><span class="p">(</span><span class="n">unflatten</span><span class="p">(</span><span class="n">f</span><span class="p">)))</span>
@@ -1536,7 +1536,7 @@ general parameter object.  Flattening is the tidy way to arrange this:</p>
         <span class="n">g</span> <span class="o">=</span> <span class="n">gradient</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">b1</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">*</span> <span class="n">g</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b2</span><span class="p">)</span> <span class="o">*</span> <span class="n">g</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="n">flat</span> <span class="o">=</span> <span class="n">flat</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b1</span><span class="o">**</span><span class="n">it</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b2</span><span class="o">**</span><span class="n">it</span><span class="p">))</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+        <span class="n">flat</span> <span class="o">=</span> <span class="n">flat</span> <span class="o">-</span> <span class="n">gamma</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b1</span><span class="o">**</span><span class="n">it</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b2</span><span class="o">**</span><span class="n">it</span><span class="p">))</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">unflatten</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1565,7 +1565,7 @@ too large.</p>
 
 <span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="n">init_parameters</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
      <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">])]</span>                                 <span class="c1"># initial guess D_0 = 2</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">adam_general</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">adam_general</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1857,7 +1857,7 @@ the same seed; they differ only in the choice of variables.</p>
 </div>
 <p><em>Table 9.2: The Black-Scholes equation with <span class="math notranslate nohighlight">\(K=5\)</span>, <span class="math notranslate nohighlight">\(T=1\)</span>, <span class="math notranslate nohighlight">\(r=0.05\)</span>, <span class="math notranslate nohighlight">\(\sigma=0.3\)</span>
 and <span class="math notranslate nohighlight">\(S_{\max}=20\)</span>, solved by a <span class="math notranslate nohighlight">\([2,40,40,1]\)</span> network with <span class="math notranslate nohighlight">\(\tanh\)</span> activation,
-Adam with <span class="math notranslate nohighlight">\(\eta=5\times10^{-3}\)</span>, <span class="math notranslate nohighlight">\(\lambda=10\)</span> and <span class="math notranslate nohighlight">\(4000\)</span> iterations.  Errors are
+Adam with <span class="math notranslate nohighlight">\(\gamma=5\times10^{-3}\)</span>, <span class="math notranslate nohighlight">\(\lambda=10\)</span> and <span class="math notranslate nohighlight">\(4000\)</span> iterations.  Errors are
 in units of the option price and measured on a <span class="math notranslate nohighlight">\(120\times120\)</span> grid against
 Eq. (9.49); the largest option value on the grid is about <span class="math notranslate nohighlight">\(15\)</span>.</em></p>
 <p>Non-dimensionalising improves the root-mean-square error by a factor of
@@ -1898,7 +1898,7 @@ residual are of order one.</p>
 <span class="n">terms</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;pde&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">r_pde</span><span class="p">,</span> <span class="n">X_col</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;term&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_term</span><span class="p">,</span> <span class="n">X_term</span><span class="p">),</span>
          <span class="p">(</span><span class="s2">&quot;lo&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_lo</span><span class="p">,</span> <span class="n">X_lo</span><span class="p">),</span>   <span class="p">(</span><span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">r_hi</span><span class="p">,</span> <span class="n">X_hi</span><span class="p">)]</span>
 
-<span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">pinn_solve</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span>
+<span class="n">P</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">pinn_solve</span><span class="p">(</span><span class="n">terms</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span>
                         <span class="n">rng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -2132,7 +2132,7 @@ For the Poisson problem, vary the number of collocation points from <span class=
 (c) Try randomly sampled rather than uniformly spaced points, and comment.</p></li>
 <li><p><strong>Reproducing the local minimum.</strong>
 Reproduce the failure described in Section <em>Exponential decay</em>: two hidden
-layers of twenty units, <span class="math notranslate nohighlight">\(\eta=10^{-2}\)</span>.
+layers of twenty units, <span class="math notranslate nohighlight">\(\gamma=10^{-2}\)</span>.
 (a) Confirm that the cost stalls near <span class="math notranslate nohighlight">\(31.9\)</span> and does not move.
 (b) Plot the solution it returns against the exact one.
 (c) Find the smallest change – in width, learning rate or seed – that

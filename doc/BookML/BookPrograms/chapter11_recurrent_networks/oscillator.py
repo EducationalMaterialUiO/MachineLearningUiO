@@ -37,7 +37,7 @@ if __name__ == "__main__":
     res = {}
     for seed in range(3):
         p = rnn.init_rnn(1, 24, 1, np.random.default_rng(seed))
-        p, hist = rnn.train(p, tr_s, tr_t, n_epoch=300, eta=5e-3, theta=1.0,
+        p, hist = rnn.train(p, tr_s, tr_t, n_epoch=300, gamma=5e-3, theta=1.0,
                             rng=np.random.default_rng(seed),
                             verbose=(seed == 0), every=100)
         e1 = np.mean([rnn.mse(rnn.forward(p, a)[0], b) for a, b in zip(te1_s, te1_t)])

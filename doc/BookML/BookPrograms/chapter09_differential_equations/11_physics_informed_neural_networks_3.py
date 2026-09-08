@@ -16,5 +16,5 @@ terms = [("pde", 1.0, r_pde, X_col), ("ic", 10.0, r_ic, X_ic),
          ("iv",  10.0, r_iv,  X_ic),                 # the initial velocity
          ("bcL", 10.0, r_bc,  X_l), ("bcR", 10.0, r_bc, X_r)]
 
-P, history = pinn_solve(terms, [2, 30, 30, 1], "tanh", n_iter=4000, eta=1e-2,
+P, history = pinn_solve(terms, [2, 30, 30, 1], "tanh", n_iter=4000, gamma=1e-2,
                         rng=np.random.default_rng(1))

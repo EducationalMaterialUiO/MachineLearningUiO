@@ -41,10 +41,10 @@ def cost(theta, X, y, loss, lmbda=0.0):
     """Mean loss over the data plus an l2 penalty that spares the intercept."""
     return jnp.mean(loss(X @ theta, y)) + lmbda * jnp.sum(theta[1:]**2)
 
-def fit(loss, X, y, eta=0.5, epochs=3000, lmbda=0.0):
+def fit(loss, X, y, gamma=0.5, epochs=3000, lmbda=0.0):
     """Gradient descent, Eq. (5.gd), with the gradient supplied by JAX."""
     c = lambda th: cost(th, X, y, loss, lmbda)
-    step = jit(lambda th: th - eta * grad(c)(th))
+    step = jit(lambda th: th - gamma * grad(c)(th))
     theta = jnp.zeros(X.shape[1])
     for _ in range(epochs):
         theta = step(theta)

@@ -78,7 +78,7 @@ def cost(Xhat, X):
     return 0.5 * mse(Xhat, X)
 
 
-def train_ae(P, X, acts, n_epoch=400, batch=32, eta=1e-2, rng=None,
+def train_ae(P, X, acts, n_epoch=400, batch=32, gamma=1e-2, rng=None,
              verbose=False, every=100, Xval=None):
     rng = np.random.default_rng(0) if rng is None else rng
     m = [[np.zeros_like(W), np.zeros_like(b)] for W, b in P]
@@ -96,7 +96,7 @@ def train_ae(P, X, acts, n_epoch=400, batch=32, eta=1e-2, rng=None,
                 for j in range(2):
                     m[l][j] = b1 * m[l][j] + (1 - b1) * g[l][j]
                     v[l][j] = b2 * v[l][j] + (1 - b2) * g[l][j] ** 2
-                    P[l][j] -= eta * (m[l][j] / (1 - b1**it)) / \
+                    P[l][j] -= gamma * (m[l][j] / (1 - b1**it)) / \
                         (np.sqrt(v[l][j] / (1 - b2**it)) + eps)
         tr = mse(ae_forward(P, X, acts)[0], X)
         va = mse(ae_forward(P, Xval, acts)[0], Xval) if Xval is not None else np.nan

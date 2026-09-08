@@ -28,7 +28,7 @@ np.save("data8.npy", X8)
 np.save("centres8.npy", C8)
 
 t0 = time.time()
-P8, Q8, h8 = gan.train(X8, mode="nonsat", n_iter=4000, n_critic=1, eta=2e-3,
+P8, Q8, h8 = gan.train(X8, mode="nonsat", n_iter=4000, n_critic=1, gamma=2e-3,
                        rng=np.random.default_rng(1))
 dt8 = time.time() - t0
 h8 = np.array(h8)
@@ -119,12 +119,12 @@ np.save("data25.npy", X25)
 np.save("centres25.npy", C25)
 
 runs = [("non-saturating", "nonsat",
-         dict(mode="nonsat", n_iter=8000, n_critic=1, eta=2e-3)),
+         dict(mode="nonsat", n_iter=8000, n_critic=1, gamma=2e-3)),
         ("strong discriminator", "strongd",
-         dict(mode="nonsat", n_iter=2000, n_critic=3, eta=2e-3, eta_d=4e-3,
+         dict(mode="nonsat", n_iter=2000, n_critic=3, gamma=2e-3, eta_d=4e-3,
               hidden_d=(128, 128))),
         ("WGAN-GP", "wgangp",
-         dict(mode="wgan", n_iter=6000, n_critic=5, eta=1e-3))]
+         dict(mode="wgan", n_iter=6000, n_critic=5, gamma=1e-3))]
 
 out.write("=== 3. mode collapse: a 5x5 grid of narrow modes ===\n")
 out.write("  objective              time   modes  in-mode   energy dist  "

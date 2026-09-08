@@ -17,4 +17,4 @@ def residual_wave(P, X):
     return w_tt(P, X) - c**2 * w_xx(P, X)           # Eq. (9.wave)
 
 P, history = solve_de(residual_wave, [2, 30, 30, 1], X, "tanh",
-                      n_iter=800, eta=1e-2, rng=np.random.default_rng(1))
+                      n_iter=800, gamma=1e-2, rng=np.random.default_rng(1))

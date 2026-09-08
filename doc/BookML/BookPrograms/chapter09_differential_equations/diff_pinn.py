@@ -41,7 +41,7 @@ if __name__=="__main__":
     for w in [1.0, 10.0, 100.0]:
         terms=[("pde",1.0,r_pde,X_col),("ic",w,r_ic,X_ic),
                ("bcL",w,r_bc,X_l),("bcR",w,r_bc,X_r)]
-        P,h=pinn_solve(terms,[2,30,30,1],"tanh",n_iter=800,eta=1e-2,
+        P,h=pinn_solve(terms,[2,30,30,1],"tanh",n_iter=800,gamma=1e-2,
                        rng=np.random.default_rng(1))
         report(P,f"PINN w={w:g}, 800 it")
         print("   final parts:",{k:f"{v:.2e}" for k,v in h[-1][2].items()})
@@ -50,7 +50,7 @@ def longrun():
     print("\n--- longer training, w=10 ---")
     terms=[("pde",1.0,r_pde,X_col),("ic",10.0,r_ic,X_ic),
            ("bcL",10.0,r_bc,X_l),("bcR",10.0,r_bc,X_r)]
-    P,h=pinn_solve(terms,[2,30,30,1],"tanh",n_iter=4000,eta=1e-2,
+    P,h=pinn_solve(terms,[2,30,30,1],"tanh",n_iter=4000,gamma=1e-2,
                    rng=np.random.default_rng(1),every=500,verbose=True)
     report(P,"PINN w=10, 4000 it")
     return P,h

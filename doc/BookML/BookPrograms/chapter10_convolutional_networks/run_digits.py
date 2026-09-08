@@ -10,7 +10,7 @@ accs=[]
 for seed in range(5):
     p=cnn.init_cnn(flat=64,rng=np.random.default_rng(seed))
     t0=time.time()
-    p,hist=cnn.train(p,Xtr,Ytr,Xte,yte,epochs=20,batch=32,eta=3e-3,
+    p,hist=cnn.train(p,Xtr,Ytr,Xte,yte,epochs=20,batch=32,gamma=3e-3,
                      rng=np.random.default_rng(seed),verbose=(seed==0))
     accs.append(hist[-1][2])
     if seed==0:

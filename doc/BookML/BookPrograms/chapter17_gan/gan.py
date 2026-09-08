@@ -123,7 +123,7 @@ def adam_state(P):
            [(np.zeros_like(W), np.zeros_like(b)) for W, b in P], [0]
 
 
-def adam_step(P, G, M, V, t, eta, b1=0.5, b2=0.999, eps=1e-8):
+def adam_step(P, G, M, V, t, gamma, b1=0.5, b2=0.999, eps=1e-8):
     """Adam with beta_1 = 0.5, the DCGAN convention (Section 17.stability)."""
     t[0] += 1
     out = []
@@ -136,12 +136,12 @@ def adam_step(P, G, M, V, t, eta, b1=0.5, b2=0.999, eps=1e-8):
         V[i] = (vW, vb)
         c1 = 1 - b1 ** t[0]
         c2 = 1 - b2 ** t[0]
-        out.append((W - eta * (mW / c1) / (np.sqrt(vW / c2) + eps),
-                    b - eta * (mb / c1) / (np.sqrt(vb / c2) + eps)))
+        out.append((W - gamma * (mW / c1) / (np.sqrt(vW / c2) + eps),
+                    b - gamma * (mb / c1) / (np.sqrt(vb / c2) + eps)))
     return out
 
 
-def train(X, k_z=2, hidden=(64, 64), n_iter=4000, batch=128, eta=2e-3,
+def train(X, k_z=2, hidden=(64, 64), n_iter=4000, batch=128, gamma=2e-3,
           eta_d=None, mode="nonsat", smooth=1.0, n_critic=1, lam=10.0,
           rng=None, record_every=100, hidden_d=None):
     """Alternate: one (or `n_critic`) discriminator steps, then one generator step.
@@ -154,7 +154,7 @@ def train(X, k_z=2, hidden=(64, 64), n_iter=4000, batch=128, eta=2e-3,
     the strong-discriminator experiments are set up.
     """
     rng = rng or np.random.default_rng(0)
-    eta_d = eta if eta_d is None else eta_d
+    eta_d = gamma if eta_d is None else eta_d
     hidden_d = hidden if hidden_d is None else hidden
     d = X.shape[1]
     P = init_mlp((k_z,) + tuple(hidden) + (d,), rng)
@@ -182,7 +182,7 @@ def train(X, k_z=2, hidden=(64, 64), n_iter=4000, batch=128, eta=2e-3,
 
         zb = rng.normal(size=(batch, k_z))
         gP = gg(P, Q, zb)
-        P = adam_step(P, gP, MP, VP, tP, eta)
+        P = adam_step(P, gP, MP, VP, tP, gamma)
 
         if it % record_every == 0 or it == 1:
             gnorm = np.sqrt(sum(np.sum(gW ** 2) + np.sum(gb ** 2)

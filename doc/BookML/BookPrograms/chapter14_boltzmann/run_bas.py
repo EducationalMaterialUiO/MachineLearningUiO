@@ -13,14 +13,14 @@ def bars_and_stripes(L=3):
 D=bars_and_stripes(3); M=D.shape[1]
 X=D[np.random.default_rng(0).integers(0,len(D),400)]
 
-def train(mode,k,n_iter=3000,eta=0.05,seed=0,N=8):
+def train(mode,k,n_iter=3000,gamma=0.05,seed=0,N=8):
     rng=np.random.default_rng(seed)
     P=rbm.init_rbm(M,N,np.random.default_rng(seed),scale=0.1)
     hist=[]
     for it in range(1,n_iter+1):
         idx=rng.integers(0,len(X),32); xb=X[idx]
         g = rbm.exact_gradient(P,xb) if mode=="exact" else rbm.cd_gradient(P,xb,k=k,rng=rng)
-        for kk in P: P[kk]+=eta*g[kk]
+        for kk in P: P[kk]+=gamma*g[kk]
         if it%100==0: hist.append((it,rbm.log_likelihood(P,X)))
     return P,hist
 

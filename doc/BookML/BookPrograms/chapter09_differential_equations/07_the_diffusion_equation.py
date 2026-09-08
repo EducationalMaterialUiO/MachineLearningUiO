@@ -21,4 +21,4 @@ def residual_diffusion(P, X):
     return u_t(P, X) - u_xx(P, X)                   # Eq. (9.diffusion)
 
 P, history = solve_de(residual_diffusion, [2, 30, 30, 1], X, "tanh",
-                      n_iter=800, eta=1e-2, rng=np.random.default_rng(1))
+                      n_iter=800, gamma=1e-2, rng=np.random.default_rng(1))

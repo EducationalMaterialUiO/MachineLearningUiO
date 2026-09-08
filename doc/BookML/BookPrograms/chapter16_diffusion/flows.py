@@ -57,7 +57,7 @@ def log_prob(L, x):
     return lp0 + logdet_inv
 
 
-def train(L, X, n_iter=3000, batch=128, eta=3e-3, rng=None):
+def train(L, X, n_iter=3000, batch=128, gamma=3e-3, rng=None):
     rng = np.random.default_rng(0) if rng is None else rng
     flat, unflatten = flatten(L)
     g = grad(lambda f, xb: -np.mean(log_prob(unflatten(f), xb)))
@@ -67,7 +67,7 @@ def train(L, X, n_iter=3000, batch=128, eta=3e-3, rng=None):
         gg = g(flat, xb)
         m = 0.9 * m + 0.1 * gg
         v = 0.999 * v + 0.001 * gg ** 2
-        flat = flat - eta * (m / (1 - 0.9**it)) / (np.sqrt(v / (1 - 0.999**it)) + 1e-8)
+        flat = flat - gamma * (m / (1 - 0.9**it)) / (np.sqrt(v / (1 - 0.999**it)) + 1e-8)
         if it % 100 == 0:
             hist.append((it, float(np.mean(log_prob(unflatten(flat), X)))))
     return unflatten(flat), hist

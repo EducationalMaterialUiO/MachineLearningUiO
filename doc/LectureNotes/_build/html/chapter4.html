@@ -518,7 +518,7 @@ OLS problem is convex and the normal equations (1.39)
 deliver the global minimum.  Adding the Ridge penalty makes the Hessian
 <span class="math notranslate nohighlight">\(\bm{X}^{T}\bm{X}+\lambda\bm{I}\)</span>, positive definite for <span class="math notranslate nohighlight">\(\lambda&gt;0\)</span>, so the
 Ridge problem is <em>strictly</em> convex and its minimum is unique.  The Lasso
-cost of Eq. (3.41) is convex but not differentiable, which
+cost of Eq. (3.57) is convex but not differentiable, which
 is why Section <em>The Lasso</em> needed coordinate descent rather than a
 gradient.</p>
 <p>The bad news is that the cost functions of the later chapters are not convex.
@@ -632,8 +632,9 @@ one moves from <span class="math notranslate nohighlight">\(\bm{x}\)</span> in t
 move towards smaller function values.  Iterating Eq. (4.10) from an
 initial guess <span class="math notranslate nohighlight">\(\bm{x}_0\)</span> is the method of <em>steepest descent</em>, or simply
 <em>gradient descent</em> (GD).  The parameter <span class="math notranslate nohighlight">\(\gamma_k\)</span> is the step length, or
-in machine learning the <em>learning rate</em>, and we shall usually call it
-<span class="math notranslate nohighlight">\(\eta\)</span>.</p>
+in machine learning the <em>learning rate</em>.  We use the symbol <span class="math notranslate nohighlight">\(\gamma\)</span>
+for it throughout this book, with a subscript when it changes from one
+iteration to the next.</p>
 <p>Ideally the sequence converges to a global minimum.  In general we do not know
 whether a minimum we reach is global or local; but by
 Section <em>Convexity</em>, if <span class="math notranslate nohighlight">\(F\)</span> is convex the question does not arise.  The
@@ -645,10 +646,10 @@ functions with many local minima.  Gradient descent is deterministic, so
 unless the initial guess is good it will descend into whichever local minimum
 it happens to face, and the result is sensitive to that initial condition.
 The gradient is a function of all <span class="math notranslate nohighlight">\(p\)</span> parameters and can be expensive to
-evaluate.  And the method is delicate in its dependence on <span class="math notranslate nohighlight">\(\eta\)</span>: we are
+evaluate.  And the method is delicate in its dependence on <span class="math notranslate nohighlight">\(\gamma\)</span>: we are
 guaranteed <span class="math notranslate nohighlight">\(F(\bm{x}_{k+1})\le F(\bm{x}_k)\)</span> only for sufficiently small steps,
 so too large a value produces erratic behaviour or divergence while too small
-a value converges intolerably slowly.  Determining a good <span class="math notranslate nohighlight">\(\eta\)</span> is the
+a value converges intolerably slowly.  Determining a good <span class="math notranslate nohighlight">\(\gamma\)</span> is the
 central practical difficulty, and Sections <em>AdaGrad</em> to
 <em>Adam</em> are devoted to removing the need to do so by hand.</p>
 <p>Many of these shortcomings can be alleviated by introducing randomness, which
@@ -713,7 +714,7 @@ The Hessian is</p>
 <p>The gradient descent iteration is</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{\theta}_{k+1} = \bm{\theta}_k - \eta\,\nabla_{\bm{\theta}}C(\bm{\theta}_k),
+\bm{\theta}_{k+1} = \bm{\theta}_k - \gamma\,\nabla_{\bm{\theta}}C(\bm{\theta}_k),
   \qquad k=0,1,\dots\tag{4.15}
 \]</div>
 <p>started from a random <span class="math notranslate nohighlight">\(\bm{\theta}_0\)</span> and stopped when
@@ -734,10 +735,10 @@ The Hessian is</p>
 
 <span class="c1"># Gradient descent, Eq. (4.gditeration)</span>
 <span class="n">theta</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
     <span class="n">gradient</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">theta</span> <span class="o">-=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">gradient</span>
+    <span class="n">theta</span> <span class="o">-=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">gradient</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">gradient</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1.0e-8</span><span class="p">:</span>
         <span class="k">break</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gradient descent after </span><span class="si">{</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> iterations:&quot;</span><span class="p">,</span> <span class="n">theta</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
@@ -745,14 +746,14 @@ The Hessian is</p>
 </div>
 </div>
 </div>
-<p>With <span class="math notranslate nohighlight">\(\eta=0.1\)</span> the iteration reproduces the analytical answer to five decimal
-places within a few hundred steps.  With <span class="math notranslate nohighlight">\(\eta=0.001\)</span>, the value used in the
+<p>With <span class="math notranslate nohighlight">\(\gamma=0.1\)</span> the iteration reproduces the analytical answer to five decimal
+places within a few hundred steps.  With <span class="math notranslate nohighlight">\(\gamma=0.001\)</span>, the value used in the
 lecture notes, a thousand iterations are not nearly enough; with
-<span class="math notranslate nohighlight">\(\eta\)</span> too large it diverges.  The next section explains exactly where the
+<span class="math notranslate nohighlight">\(\gamma\)</span> too large it diverges.  The next section explains exactly where the
 boundary lies.</p>
 <section id="gradient-descent-for-ridge-regression">
 <h3><span class="section-number">4.4.1. </span>Gradient descent for Ridge regression<a class="headerlink" href="#gradient-descent-for-ridge-regression" title="Link to this heading">#</a></h3>
-<p>The same treatment applies to the Ridge cost of Eq. (3.27).
+<p>The same treatment applies to the Ridge cost of Eq. (3.43).
 Writing it as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -770,7 +771,7 @@ Eqs. (1.25) and (1.28),</p>
   \bm{H} = \frac{2}{n}\bm{X}^{T}\bm{X} + 2\lambda\bm{I} .\tag{4.17}
 \]</div>
 <p>Setting the gradient to zero returns the closed
-form (3.28), as it must.  The Hessian is now positive
+form (3.44), as it must.  The Hessian is now positive
 definite for every <span class="math notranslate nohighlight">\(\lambda&gt;0\)</span>, so the problem is strictly convex.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -778,10 +779,10 @@ definite for every <span class="math notranslate nohighlight">\(\lambda&gt;0\)</
 
 <span class="n">lmbda</span> <span class="o">=</span> <span class="mf">0.001</span>
 <span class="n">theta</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
     <span class="n">gradient</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span> <span class="o">+</span> <span class="n">lmbda</span> <span class="o">*</span> <span class="n">theta</span><span class="p">)</span>
-    <span class="n">theta</span> <span class="o">-=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">gradient</span>
+    <span class="n">theta</span> <span class="o">-=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">gradient</span>
 
 <span class="c1"># Compare with the closed form of Chapter 3</span>
 <span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -794,7 +795,7 @@ definite for every <span class="math notranslate nohighlight">\(\lambda&gt;0\)</
 </div>
 <p>Note the factor <span class="math notranslate nohighlight">\(n\)</span> in the closed form.  Our cost (4.16)
 carries <span class="math notranslate nohighlight">\(1/n\)</span> on the data term but not on the penalty, whereas
-Eq. (3.28) was derived with neither; the two agree only if
+Eq. (3.44) was derived with neither; the two agree only if
 <span class="math notranslate nohighlight">\(\lambda\)</span> is scaled accordingly.  This is precisely the class of bookkeeping
 error warned against in Section <em>Scaling, centring and the intercept</em>, and it is worth
 tracking carefully whenever a penalised gradient is implemented.</p>
@@ -802,7 +803,7 @@ tracking carefully whenever a penalised gradient is implemented.</p>
 </section>
 <section id="the-learning-rate-and-the-condition-number">
 <h2><span class="section-number">4.5. </span>The learning rate and the condition number<a class="headerlink" href="#the-learning-rate-and-the-condition-number" title="Link to this heading">#</a></h2>
-<p>We can now answer the question of how large <span class="math notranslate nohighlight">\(\eta\)</span> may be, and in doing so
+<p>We can now answer the question of how large <span class="math notranslate nohighlight">\(\gamma\)</span> may be, and in doing so
 identify the quantity that governs everything in the rest of this chapter.</p>
 <p>Consider a quadratic cost with symmetric positive definite Hessian <span class="math notranslate nohighlight">\(\bm{H}\)</span>,
 which by Eq. (4.14) is the case for least squares.  Write the
@@ -811,8 +812,8 @@ error at step <span class="math notranslate nohighlight">\(k\)</span> as <span c
 a quadratic, the iteration (4.15) gives</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{e}_{k+1} = \bm{e}_k - \eta\bm{H}\bm{e}_k
-               = \left(\bm{I}-\eta\bm{H}\right)\bm{e}_k .\tag{4.18}
+\bm{e}_{k+1} = \bm{e}_k - \gamma\bm{H}\bm{e}_k
+               = \left(\bm{I}-\gamma\bm{H}\right)\bm{e}_k .\tag{4.18}
 \]</div>
 <p>Now diagonalise.  By the spectral decomposition (1.54),
 <span class="math notranslate nohighlight">\(\bm{H}=\bm{Q}\bm{\Lambda}\bm{Q}^{T}\)</span> with orthonormal eigenvectors and
@@ -820,19 +821,19 @@ eigenvalues <span class="math notranslate nohighlight">\(\lambda_i&gt;0\)</span>
 <span class="math notranslate nohighlight">\(\tilde{\bm{e}}=\bm{Q}^{T}\bm{e}\)</span>, the recursion <em>decouples completely</em>:</p>
 <div class="math notranslate nohighlight">
 \[
-\tilde{e}_{k+1,i} = \left(1-\eta\lambda_i\right)\tilde{e}_{k,i},
+\tilde{e}_{k+1,i} = \left(1-\gamma\lambda_i\right)\tilde{e}_{k,i},
   \qquad\text{so}\qquad
-  \tilde{e}_{k,i} = \left(1-\eta\lambda_i\right)^{k}\tilde{e}_{0,i} .\tag{4.19}
+  \tilde{e}_{k,i} = \left(1-\gamma\lambda_i\right)^{k}\tilde{e}_{0,i} .\tag{4.19}
 \]</div>
-<p>Each eigendirection contracts by its own factor <span class="math notranslate nohighlight">\(|1-\eta\lambda_i|\)</span> at every
+<p>Each eigendirection contracts by its own factor <span class="math notranslate nohighlight">\(|1-\gamma\lambda_i|\)</span> at every
 step, and this single equation contains everything.</p>
 <p><strong>Stability.</strong>
 The iteration converges along direction <span class="math notranslate nohighlight">\(i\)</span> only if
-<span class="math notranslate nohighlight">\(|1-\eta\lambda_i|&lt;1\)</span>, that is <span class="math notranslate nohighlight">\(0&lt;\eta&lt;2/\lambda_i\)</span>.  For <em>all</em>
+<span class="math notranslate nohighlight">\(|1-\gamma\lambda_i|&lt;1\)</span>, that is <span class="math notranslate nohighlight">\(0&lt;\gamma&lt;2/\lambda_i\)</span>.  For <em>all</em>
 directions to converge we need</p>
 <div class="math notranslate nohighlight">
 \[
-\boxed{\;0 &lt; \eta &lt; \frac{2}{\lambda_{\max}} \;}\tag{4.20}
+\boxed{\;0 &lt; \gamma &lt; \frac{2}{\lambda_{\max}} \;}\tag{4.20}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(\lambda_{\max}\)</span> the largest eigenvalue of the Hessian.  Exceed it and
 the component along the steepest direction grows geometrically: this is the
@@ -840,9 +841,9 @@ divergence one observes when the learning rate is set too high.  The bound is
 set by the <em>steepest</em> direction, whatever the others are doing.</p>
 <p><strong>Speed.</strong>
 The slowest direction is the one with the smallest eigenvalue
-<span class="math notranslate nohighlight">\(\lambda_{\min}\)</span>, contracting by <span class="math notranslate nohighlight">\(|1-\eta\lambda_{\min}|\)</span> per step.  Choosing
-<span class="math notranslate nohighlight">\(\eta\)</span> to make the worst contraction factor as small as possible gives the
-optimal value <span class="math notranslate nohighlight">\(\eta^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span> and a contraction
+<span class="math notranslate nohighlight">\(\lambda_{\min}\)</span>, contracting by <span class="math notranslate nohighlight">\(|1-\gamma\lambda_{\min}|\)</span> per step.  Choosing
+<span class="math notranslate nohighlight">\(\gamma\)</span> to make the worst contraction factor as small as possible gives the
+optimal value <span class="math notranslate nohighlight">\(\gamma^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span> and a contraction
 rate</p>
 <div class="math notranslate nohighlight">
 \[
@@ -855,17 +856,17 @@ rate</p>
 Eq. (1.77).  The number of iterations needed to reduce the error
 by a fixed factor is therefore proportional to <span class="math notranslate nohighlight">\(\kappa\)</span>.</p>
 <p>Figure 4.1 confirms both statements numerically.  The
-iteration count falls as <span class="math notranslate nohighlight">\(\eta\)</span> increases, reaches its minimum at the predicted
-<span class="math notranslate nohighlight">\(\eta^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span>, rises again, and diverges
+iteration count falls as <span class="math notranslate nohighlight">\(\gamma\)</span> increases, reaches its minimum at the predicted
+<span class="math notranslate nohighlight">\(\gamma^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span>, rises again, and diverges
 exactly at <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span>.  There is no margin of safety at the right-hand
 edge: the transition from the fastest convergence available to outright
-divergence occupies a factor of two in <span class="math notranslate nohighlight">\(\eta\)</span>.</p>
+divergence occupies a factor of two in <span class="math notranslate nohighlight">\(\gamma\)</span>.</p>
 <p><img alt="Iterations required to reach an error of 10-6 against the learning rat" src="_images/learning_rate_bound.png" /></p>
-<p><em>Figure 4.1: Iterations required to reach an error of <span class="math notranslate nohighlight">\(10^{-6}\)</span> against the learning rate, for a quadratic with eigenvalues <span class="math notranslate nohighlight">\(\{0.05,1,5\}\)</span>.  The optimum lies at <span class="math notranslate nohighlight">\(\eta^{*}\)</span> and the method diverges beyond <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span>, as predicted by Eqs. (4.20) and (4.21).</em></p>
+<p><em>Figure 4.1: Iterations required to reach an error of <span class="math notranslate nohighlight">\(10^{-6}\)</span> against the learning rate, for a quadratic with eigenvalues <span class="math notranslate nohighlight">\(\{0.05,1,5\}\)</span>.  The optimum lies at <span class="math notranslate nohighlight">\(\gamma^{*}\)</span> and the method diverges beyond <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span>, as predicted by Eqs. (4.20) and (4.21).</em></p>
 <p>This is the central result of the chapter, and it deserves to be read slowly.
 Gradient descent is not slow because gradients are a bad idea.  It is slow
-because it applies <em>the same</em> <span class="math notranslate nohighlight">\(\eta\)</span> to every eigendirection, while
-stability forces that single <span class="math notranslate nohighlight">\(\eta\)</span> to be dictated by the steepest direction.
+because it applies <em>the same</em> <span class="math notranslate nohighlight">\(\gamma\)</span> to every eigendirection, while
+stability forces that single <span class="math notranslate nohighlight">\(\gamma\)</span> to be dictated by the steepest direction.
 In a problem where <span class="math notranslate nohighlight">\(\lambda_{\max}/\lambda_{\min}=1000\)</span>, the step that is
 barely stable along the steep direction is a thousand times too small along
 the flat one, and the flat direction is where the remaining error lives.  The
@@ -909,7 +910,7 @@ progress along it; and momentum, at the same learning rate, damps the
 oscillation and accelerates the drift, arriving in a fraction of the steps.
 The three panels are the whole of this section and the next in pictures.</p>
 <p><img alt="Gradient descent on a quadratic with kappa12.  Left too small a step. " src="_images/gd_paths_conditioning.png" /></p>
-<p><em>Figure 4.2: Gradient descent on a quadratic with <span class="math notranslate nohighlight">\(\kappa=12\)</span>.  Left: too small a step.  Centre: a step near the stability bound <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span>, oscillating across the narrow direction.  Right: the same step with momentum <span class="math notranslate nohighlight">\(\gamma=0.85\)</span>, which cancels the oscillation and accumulates along the flat direction.</em></p>
+<p><em>Figure 4.2: Gradient descent on a quadratic with <span class="math notranslate nohighlight">\(\kappa=12\)</span>.  Left: too small a step.  Centre: a step near the stability bound <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span>, oscillating across the narrow direction.  Right: the same step with momentum <span class="math notranslate nohighlight">\(\beta=0.85\)</span>, which cancels the oscillation and accumulates along the flat direction.</em></p>
 </section>
 <section id="momentum">
 <h2><span class="section-number">4.6. </span>Momentum<a class="headerlink" href="#momentum" title="Link to this heading">#</a></h2>
@@ -917,18 +918,20 @@ The three panels are the whole of this section and the next in pictures.</p>
 Momentum-based gradient descent replaces Eq. (4.10) by</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{v}_{k+1} = \gamma\bm{v}_k + \eta\nabla C(\bm{\theta}_k),
+\bm{v}_{k+1} = \beta\bm{v}_k + \gamma\nabla C(\bm{\theta}_k),
   \qquad
   \bm{\theta}_{k+1} = \bm{\theta}_k - \bm{v}_{k+1},\tag{4.23}
 \]</div>
-<p>with <span class="math notranslate nohighlight">\(\gamma\in[0,1)\)</span> the <em>momentum parameter</em>, typically <span class="math notranslate nohighlight">\(0.9\)</span>.  The
+<p>with <span class="math notranslate nohighlight">\(\beta\in[0,1)\)</span> the <em>momentum parameter</em>, typically <span class="math notranslate nohighlight">\(0.9\)</span> (it plays
+the same role as, and is deliberately given the same letter as, the <span class="math notranslate nohighlight">\(\beta_1\)</span>
+of the Adam method in Section <em>Adam</em>).  The
 update is no longer the current gradient but an exponentially weighted sum of
 all gradients seen so far,</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{v}_{k+1} = \eta\sum_{j=0}^{k}\gamma^{\,k-j}\nabla C(\bm{\theta}_j),\tag{4.24}
+\bm{v}_{k+1} = \gamma\sum_{j=0}^{k}\beta^{\,k-j}\nabla C(\bm{\theta}_j),\tag{4.24}
 \]</div>
-<p>with older gradients discounted geometrically.  Setting <span class="math notranslate nohighlight">\(\gamma=0\)</span> recovers
+<p>with older gradients discounted geometrically.  Setting <span class="math notranslate nohighlight">\(\beta=0\)</span> recovers
 plain gradient descent.</p>
 <p><strong>Why it works.</strong>
 Return to the decoupled recursion (4.19).  Along an
@@ -936,15 +939,15 @@ eigendirection with eigenvalue <span class="math notranslate nohighlight">\(\lam
 <span class="math notranslate nohighlight">\(\lambda_i\tilde{e}_i\)</span> and the momentum iteration becomes a two-term
 recurrence in <span class="math notranslate nohighlight">\(\tilde{e}\)</span> rather than a one-term one.  Its behaviour splits
 into two regimes, and the split is exactly what we want.</p>
-<p>In a <em>flat</em> direction, <span class="math notranslate nohighlight">\(\eta\lambda_i\ll1\)</span>, successive gradients point
+<p>In a <em>flat</em> direction, <span class="math notranslate nohighlight">\(\gamma\lambda_i\ll1\)</span>, successive gradients point
 the same way and Eq. (4.24) adds them up.  A constant
 gradient <span class="math notranslate nohighlight">\(g\)</span> accumulates to</p>
 <div class="math notranslate nohighlight">
 \[
-v_\infty = \eta g \sum_{j=0}^{\infty}\gamma^{\,j} = \frac{\eta g}{1-\gamma},\tag{4.25}
+v_\infty = \gamma g \sum_{j=0}^{\infty}\beta^{\,j} = \frac{\gamma g}{1-\beta},\tag{4.25}
 \]</div>
-<p>so the effective step is multiplied by <span class="math notranslate nohighlight">\(1/(1-\gamma)\)</span> – a factor of ten for
-<span class="math notranslate nohighlight">\(\gamma=0.9\)</span>.  The method accelerates precisely where plain gradient descent
+<p>so the effective step is multiplied by <span class="math notranslate nohighlight">\(1/(1-\beta)\)</span> – a factor of ten for
+<span class="math notranslate nohighlight">\(\beta=0.9\)</span>.  The method accelerates precisely where plain gradient descent
 crawls.</p>
 <p>In a <em>steep</em> direction, the iterate overshoots and the gradient reverses
 sign at every step.  Successive terms in Eq. (4.24) then
@@ -954,7 +957,7 @@ valley is damped.</p>
 <p>Momentum thus amplifies the consistent and cancels the oscillatory, which is
 the right treatment for the ill-conditioned landscape diagnosed in
 Section <em>The learning rate and the condition number</em>.  A careful analysis of the two-term recurrence
-shows that with optimally chosen <span class="math notranslate nohighlight">\(\eta\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> the contraction rate
+shows that with optimally chosen <span class="math notranslate nohighlight">\(\gamma\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> the contraction rate
 improves from Eq. (4.21) to</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1027,7 +1030,7 @@ differ, which is the case for every realistic problem.</p>
 <p>A widely used variant is
 <em>Nesterov</em> momentum, which evaluates the gradient not at
 <span class="math notranslate nohighlight">\(\bm{\theta}_k\)</span> but at the point the momentum term is about to carry it to,
-<span class="math notranslate nohighlight">\(\bm{\theta}_k-\gamma\bm{v}_k\)</span>.  The intuition is that of looking ahead before
+<span class="math notranslate nohighlight">\(\bm{\theta}_k-\beta\bm{v}_k\)</span>.  The intuition is that of looking ahead before
 stepping: if the accumulated velocity is about to overshoot, the gradient at
 the extrapolated point already points backwards and corrects the step early.
 For convex problems this improves the constant in
@@ -1070,7 +1073,7 @@ descent; taking <span class="math notranslate nohighlight">\(M=1\)</span> gives 
 <div class="math notranslate nohighlight">
 \[
 \bm{\theta}_{j+1} = \bm{\theta}_j
-    - \eta_j\sum_{i\in B_k}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta}),\tag{4.29}
+    - \gamma_j\sum_{i\in B_k}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta}),\tag{4.29}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(k\)</span> drawn at random with equal probability from <span class="math notranslate nohighlight">\([1,n/M]\)</span>.  One pass
 through all the minibatches is called an <em>epoch</em>, and one typically
@@ -1140,18 +1143,18 @@ batches are not automatically better.</p>
 <h3><span class="section-number">4.7.1. </span>Learning rate schedules and stopping<a class="headerlink" href="#learning-rate-schedules-and-stopping" title="Link to this heading">#</a></h3>
 <p>Because the gradient noise does not decay, a constant learning rate leaves the
 iterate bouncing around the minimum forever.  The standard remedy is to let
-<span class="math notranslate nohighlight">\(\eta\)</span> decay with time.  Let <span class="math notranslate nohighlight">\(e=0,1,2,\dots\)</span> index the epoch, let <span class="math notranslate nohighlight">\(m\)</span> be the
+<span class="math notranslate nohighlight">\(\gamma\)</span> decay with time.  Let <span class="math notranslate nohighlight">\(e=0,1,2,\dots\)</span> index the epoch, let <span class="math notranslate nohighlight">\(m\)</span> be the
 number of minibatches, and set <span class="math notranslate nohighlight">\(t=e\cdot m+i\)</span> with <span class="math notranslate nohighlight">\(i=0,\dots,m-1\)</span>.  A common
 choice is</p>
 <div class="math notranslate nohighlight">
 \[
-\eta_j(t;t_0,t_1) = \frac{t_0}{t+t_1},\tag{4.30}
+\gamma_j(t;t_0,t_1) = \frac{t_0}{t+t_1},\tag{4.30}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(t_0,t_1&gt;0\)</span> fixed.  The learning rate starts at <span class="math notranslate nohighlight">\(t_0/t_1\)</span> and decays
 towards zero, so that the iterate eventually stops moving.  The classical
 conditions for convergence, due to Robbins and Monro, are that
-<span class="math notranslate nohighlight">\(\sum_t\eta_t=\infty\)</span> – so that the iterate can still reach the minimum from
-any starting point – while <span class="math notranslate nohighlight">\(\sum_t\eta_t^{2}&lt;\infty\)</span>, so that the accumulated
+<span class="math notranslate nohighlight">\(\sum_t\gamma_t=\infty\)</span> – so that the iterate can still reach the minimum from
+any starting point – while <span class="math notranslate nohighlight">\(\sum_t\gamma_t^{2}&lt;\infty\)</span>, so that the accumulated
 noise is finite.  Equation (4.30) satisfies both.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1168,9 +1171,9 @@ noise is finite.  Equation (4.30) satisfies both.</p>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
         <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">epoch</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="n">i</span>
-        <span class="n">eta</span> <span class="o">=</span> <span class="n">step_length</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">step_length</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
         <span class="c1"># compute the minibatch gradient and update theta</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;eta after </span><span class="si">{</span><span class="n">n_epochs</span><span class="si">}</span><span class="s2"> epochs: </span><span class="si">{</span><span class="n">step_length</span><span class="p">(</span><span class="n">n_epochs</span><span class="o">*</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">t0</span><span class="p">,</span><span class="w"> </span><span class="n">t1</span><span class="p">)</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gamma after </span><span class="si">{</span><span class="n">n_epochs</span><span class="si">}</span><span class="s2"> epochs: </span><span class="si">{</span><span class="n">step_length</span><span class="p">(</span><span class="n">n_epochs</span><span class="o">*</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">t0</span><span class="p">,</span><span class="w"> </span><span class="n">t1</span><span class="p">)</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1189,7 +1192,7 @@ all.  As advised in Section <em>Training error, test error and generalisation</e
 a held-out validation set and stops when it begins to <em>rise</em> while the
 training cost is still falling.  This is <em>early stopping</em>, and it is a
 regularisation method as much as a termination rule: halting before the
-variance term of Eq. (2.47) has grown is another way of
+variance term of Eq. (2.52) has grown is another way of
 trading a little bias for a lot of variance, in the same spirit as the Ridge
 penalty of Section <em>Ridge regression</em>.</p>
 </section>
@@ -1197,10 +1200,10 @@ penalty of Section <em>Ridge regression</em>.</p>
 <section id="why-adapt-the-step-size-at-all">
 <h2><span class="section-number">4.8. </span>Why adapt the step size at all<a class="headerlink" href="#why-adapt-the-step-size-at-all" title="Link to this heading">#</a></h2>
 <p>In stochastic gradient descent, with or without momentum, we still have to
-specify a schedule for the learning rate <span class="math notranslate nohighlight">\(\eta_t\)</span>.  Section <em>The learning rate and the condition number</em>
+specify a schedule for the learning rate <span class="math notranslate nohighlight">\(\gamma_t\)</span>.  Section <em>The learning rate and the condition number</em>
 showed exactly why this is awkward, and it is worth restating the diagnosis in
 the form that motivates what follows.</p>
-<p>A fixed <span class="math notranslate nohighlight">\(\eta\)</span> is hard to get right.  If it is too large the updates overshoot
+<p>A fixed <span class="math notranslate nohighlight">\(\gamma\)</span> is hard to get right.  If it is too large the updates overshoot
 and the iteration oscillates or diverges, by Eq. (4.20); if it
 is too small, convergence takes forever, by Eq. (4.21).  But the
 deeper problem is not the choice of a number: it is that <em>no single
@@ -1226,8 +1229,8 @@ gradients themselves – and they restrict the approximation to a
 <em>second moment</em> of the gradient.  The family includes AdaGrad, AdaDelta,
 RMSProp and Adam, and we develop the three named in the chapter title.</p>
 <p><strong>The idea in one paragraph.</strong>
-Suppose we replace the scalar <span class="math notranslate nohighlight">\(\eta\)</span> by a diagonal matrix, so that coordinate
-<span class="math notranslate nohighlight">\(j\)</span> has its own step size <span class="math notranslate nohighlight">\(\eta/\sqrt{r_j}\)</span>.  What should <span class="math notranslate nohighlight">\(r_j\)</span> be?  Near a
+Suppose we replace the scalar <span class="math notranslate nohighlight">\(\gamma\)</span> by a diagonal matrix, so that coordinate
+<span class="math notranslate nohighlight">\(j\)</span> has its own step size <span class="math notranslate nohighlight">\(\gamma/\sqrt{r_j}\)</span>.  What should <span class="math notranslate nohighlight">\(r_j\)</span> be?  Near a
 minimum the gradient along direction <span class="math notranslate nohighlight">\(j\)</span> behaves as <span class="math notranslate nohighlight">\(g_j\approx\lambda_j e_j\)</span>,
 so a large curvature <span class="math notranslate nohighlight">\(\lambda_j\)</span> produces large gradients and a small
 curvature produces small ones.  <em>The typical magnitude of the gradient in
@@ -1254,13 +1257,13 @@ gradients, with <span class="math notranslate nohighlight">\(\bm{H}_0=\bm{0}\)</
 <p>The update scales the gradient by the inverse square root of this matrix,</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{\theta}_{t+1} = \bm{\theta}_t - \eta\,\bm{H}_t^{-1/2}\bm{g}_t,\tag{4.32}
+\bm{\theta}_{t+1} = \bm{\theta}_t - \gamma\,\bm{H}_t^{-1/2}\bm{g}_t,\tag{4.32}
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\bm{H}_t^{-1/2}\)</span> is diagonal with entries <span class="math notranslate nohighlight">\(r_{t,j}^{-1/2}\)</span>.  In
 coordinates each parameter has its own step size,</p>
 <div class="math notranslate nohighlight">
 \[
-\theta_{t+1,j} = \theta_{t,j} - \frac{\eta}{\sqrt{r_{t,j}}}\,g_{t,j},\tag{4.33}
+\theta_{t+1,j} = \theta_{t,j} - \frac{\gamma}{\sqrt{r_{t,j}}}\,g_{t,j},\tag{4.33}
 \]</div>
 <p>and in practice a small constant <span class="math notranslate nohighlight">\(\epsilon\)</span> is added to the denominator for
 numerical stability,</p>
@@ -1268,10 +1271,10 @@ numerical stability,</p>
 \[
 \boxed{\;
   \theta_{t+1,j} = \theta_{t,j}
-    - \frac{\eta}{\sqrt{\epsilon + r_{t,j}}}\,g_{t,j} . \;}\tag{4.34}
+    - \frac{\gamma}{\sqrt{\epsilon + r_{t,j}}}\,g_{t,j} . \;}\tag{4.34}
 \]</div>
 <p>The effective learning rate for parameter <span class="math notranslate nohighlight">\(j\)</span> at time <span class="math notranslate nohighlight">\(t\)</span> is
-<span class="math notranslate nohighlight">\(\alpha_{t,j}=\eta/\sqrt{\epsilon+r_{t,j}}\)</span>, which decreases as <span class="math notranslate nohighlight">\(r_{t,j}\)</span>
+<span class="math notranslate nohighlight">\(\alpha_{t,j}=\gamma/\sqrt{\epsilon+r_{t,j}}\)</span>, which decreases as <span class="math notranslate nohighlight">\(r_{t,j}\)</span>
 grows.</p>
 <p>Note the resemblance between Eq. (4.32) and Newton’s
 step (4.8): both premultiply the gradient by an inverse
@@ -1284,7 +1287,7 @@ AdaGrad tunes the step size for each parameter automatically.  Parameters with
 large or volatile gradients receive smaller steps; those with small or
 infrequent gradients receive relatively larger ones.  No manual schedule is
 needed: because <span class="math notranslate nohighlight">\(\bm{r}_t\)</span> never decreases, the step sizes
-<span class="math notranslate nohighlight">\(\eta/\sqrt{r_{t,j}}\)</span> are non-increasing, which has an effect similar to a
+<span class="math notranslate nohighlight">\(\gamma/\sqrt{r_{t,j}}\)</span> are non-increasing, which has an effect similar to a
 decaying learning rate but individualised per coordinate.</p>
 <p>The benefit for sparse data is worth spelling out, since it is the setting for
 which AdaGrad was designed.  Consider a rare feature – a word appearing in
@@ -1296,7 +1299,7 @@ Frequently active features, conversely, accumulate large <span class="math notra
 learning rates fall automatically.</p>
 <p>In convex optimisation AdaGrad achieves a convergence rate comparable to the
 best fixed learning rate tuned in hindsight for the problem, which is a strong
-guarantee and effectively removes the need to tune <span class="math notranslate nohighlight">\(\eta\)</span> by hand.</p>
+guarantee and effectively removes the need to tune <span class="math notranslate nohighlight">\(\gamma\)</span> by hand.</p>
 <p><strong>The limitation.</strong>
 Because <span class="math notranslate nohighlight">\(\bm{r}_t\)</span> accumulates without bound, the learning rates decay
 monotonically and can become vanishingly small long before the minimum is
@@ -1321,7 +1324,7 @@ update is</p>
 \[
 \boxed{\;
   \bm{\theta}_{t+1} = \bm{\theta}_t
-    - \frac{\eta}{\sqrt{\bm{v}_t+\epsilon}}\,\nabla C(\bm{\theta}_t) , \;}\tag{4.36}
+    - \frac{\gamma}{\sqrt{\bm{v}_t+\epsilon}}\,\nabla C(\bm{\theta}_t) , \;}\tag{4.36}
 \]</div>
 <p>with the division element-wise.  The method was proposed by Geoffrey Hinton in
 lecture notes in 2012 and never formally published, which has not prevented it
@@ -1392,7 +1395,7 @@ exactly the factor <span class="math notranslate nohighlight">\(1-\beta_2^{t}\)<
 <span class="math notranslate nohighlight">\(\bm{m}_t\)</span> with <span class="math notranslate nohighlight">\(\beta_1\)</span>.  The bias is severe at the start: with
 <span class="math notranslate nohighlight">\(\beta_2=0.999\)</span> the factor is <span class="math notranslate nohighlight">\(10^{-3}\)</span> at <span class="math notranslate nohighlight">\(t=1\)</span>, so the raw <span class="math notranslate nohighlight">\(v_1\)</span> underestimates
 the true second moment by three orders of magnitude, and the step
-<span class="math notranslate nohighlight">\(\eta/\sqrt{v}\)</span> would be enormous.  Dividing by the known factor removes the
+<span class="math notranslate nohighlight">\(\gamma/\sqrt{v}\)</span> would be enormous.  Dividing by the known factor removes the
 bias exactly,</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1477,7 +1480,7 @@ Section <em>Gradient descent for linear regression</em> so that they may be comp
 
 
 <span class="k">def</span> <span class="nf">sgd_adaptive</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;adam&quot;</span><span class="p">,</span> <span class="n">n_epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                 <span class="n">eta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
+                 <span class="n">gamma</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
                  <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Stochastic gradient descent with the optimisers of this chapter.</span>
 
@@ -1499,22 +1502,22 @@ Section <em>Gradient descent for linear regression</em> so that they may be comp
             <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">))</span> <span class="o">*</span> <span class="n">Xb</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">Xb</span> <span class="o">@</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">yb</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;plain&quot;</span><span class="p">:</span>
-                <span class="n">update</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g</span>
+                <span class="n">update</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">g</span>
             <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;momentum&quot;</span><span class="p">:</span>
-                <span class="n">change</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">change</span>
+                <span class="n">change</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">g</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">change</span>
                 <span class="n">update</span> <span class="o">=</span> <span class="n">change</span>
             <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;adagrad&quot;</span><span class="p">:</span>
                 <span class="n">r</span> <span class="o">+=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">g</span>                                   <span class="c1"># Eq. (4.adagradaccum)</span>
-                <span class="n">update</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>        <span class="c1"># Eq. (4.adagrad)</span>
+                <span class="n">update</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">g</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>        <span class="c1"># Eq. (4.adagrad)</span>
             <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;rmsprop&quot;</span><span class="p">:</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="p">)</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">g</span>              <span class="c1"># Eq. (4.rmspropaccum)</span>
-                <span class="n">update</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">g</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>        <span class="c1"># Eq. (4.rmsprop)</span>
+                <span class="n">update</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">g</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>        <span class="c1"># Eq. (4.rmsprop)</span>
             <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;adam&quot;</span><span class="p">:</span>
                 <span class="n">m</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">g</span>              <span class="c1"># Eq. (4.adamfirst)</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">g</span>          <span class="c1"># Eq. (4.adamsecond)</span>
                 <span class="n">m_hat</span> <span class="o">=</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="o">**</span><span class="n">t</span><span class="p">)</span>                   <span class="c1"># Eq. (4.adambias)</span>
                 <span class="n">r_hat</span> <span class="o">=</span> <span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="o">**</span><span class="n">t</span><span class="p">)</span>
-                <span class="n">update</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">m_hat</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+                <span class="n">update</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">m_hat</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown method </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -1533,9 +1536,9 @@ Eq. (3.8) is <span class="math notranslate nohighlight">\(\hat{\bm{\theta}}=(4.0
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Method</strong></p></th>
-<th class="head"><p><span class="math notranslate nohighlight">\(\eta=0.01\)</span></p></th>
-<th class="head"><p><span class="math notranslate nohighlight">\(\eta=0.1\)</span></p></th>
-<th class="head"><p><span class="math notranslate nohighlight">\(\eta=0.5\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\gamma=0.01\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\gamma=0.1\)</span></p></th>
+<th class="head"><p><span class="math notranslate nohighlight">\(\gamma=0.5\)</span></p></th>
 </tr>
 </thead>
 <tbody>
@@ -1570,29 +1573,29 @@ Eq. (3.8) is <span class="math notranslate nohighlight">\(\hat{\bm{\theta}}=(4.0
 <p><em>Table 4.1: Final value of the cost function (4.12) after <span class="math notranslate nohighlight">\(100\)</span>
 epochs of stochastic gradient descent on the data of
 Section <em>Gradient descent for linear regression</em>, for each optimiser and three learning rates.  The
-analytical minimum is <span class="math notranslate nohighlight">\(1.14947\)</span>.  Note that no row is best at the same <span class="math notranslate nohighlight">\(\eta\)</span>
+analytical minimum is <span class="math notranslate nohighlight">\(1.14947\)</span>.  Note that no row is best at the same <span class="math notranslate nohighlight">\(\gamma\)</span>
 as any other.</em></p>
 <p>The table repays study, and not because it flatters the adaptive methods.</p>
 <p>The first observation is that on this problem the sophisticated methods are
-not better.  With <span class="math notranslate nohighlight">\(\eta=0.01\)</span> plain SGD reaches <span class="math notranslate nohighlight">\(1.1499\)</span>, within <span class="math notranslate nohighlight">\(0.04\%\)</span> of
+not better.  With <span class="math notranslate nohighlight">\(\gamma=0.01\)</span> plain SGD reaches <span class="math notranslate nohighlight">\(1.1499\)</span>, within <span class="math notranslate nohighlight">\(0.04\%\)</span> of
 the optimum, while Adam manages only <span class="math notranslate nohighlight">\(1.2185\)</span> and AdaGrad is catastrophic at
 <span class="math notranslate nohighlight">\(28.05\)</span> – it has not arrived anywhere near the minimum.  This is exactly what
 Section <em>AdaGrad</em> predicted: the accumulated <span class="math notranslate nohighlight">\(\bm{r}_t\)</span> drives the
-effective step <span class="math notranslate nohighlight">\(\eta/\sqrt{r_t}\)</span> towards zero, and with <span class="math notranslate nohighlight">\(\eta\)</span> already small
+effective step <span class="math notranslate nohighlight">\(\gamma/\sqrt{r_t}\)</span> towards zero, and with <span class="math notranslate nohighlight">\(\gamma\)</span> already small
 the iterate stalls long before reaching the solution.  Nothing is wrong with
 the implementation; the method is behaving as designed, and the design is
 wrong for this problem.</p>
 <p>The second observation explains the first.  Look along the rows rather than
-down the columns.  AdaGrad is worst at <span class="math notranslate nohighlight">\(\eta=0.01\)</span> and <em>best of all five</em>
-at <span class="math notranslate nohighlight">\(\eta=0.5\)</span>, where it essentially attains the analytical minimum.  Plain SGD
-and momentum move the other way, degrading as <span class="math notranslate nohighlight">\(\eta\)</span> grows.  The reason is
-that these methods do not use <span class="math notranslate nohighlight">\(\eta\)</span> to mean the same thing.  Plain gradient
-descent multiplies <span class="math notranslate nohighlight">\(\eta\)</span> by the raw gradient, so the stability
+down the columns.  AdaGrad is worst at <span class="math notranslate nohighlight">\(\gamma=0.01\)</span> and <em>best of all five</em>
+at <span class="math notranslate nohighlight">\(\gamma=0.5\)</span>, where it essentially attains the analytical minimum.  Plain SGD
+and momentum move the other way, degrading as <span class="math notranslate nohighlight">\(\gamma\)</span> grows.  The reason is
+that these methods do not use <span class="math notranslate nohighlight">\(\gamma\)</span> to mean the same thing.  Plain gradient
+descent multiplies <span class="math notranslate nohighlight">\(\gamma\)</span> by the raw gradient, so the stability
 bound (4.20) applies directly.  The adaptive methods divide by
 <span class="math notranslate nohighlight">\(\sqrt{v_j}\)</span> first, which renormalises the gradient to something of order
-unity, so their <span class="math notranslate nohighlight">\(\eta\)</span> sets a step length in parameter space rather than a
+unity, so their <span class="math notranslate nohighlight">\(\gamma\)</span> sets a step length in parameter space rather than a
 multiple of the gradient.  <em>A learning rate is not comparable across
-optimisers</em>, and a comparison at a single fixed <span class="math notranslate nohighlight">\(\eta\)</span> – which is what one
+optimisers</em>, and a comparison at a single fixed <span class="math notranslate nohighlight">\(\gamma\)</span> – which is what one
 sees most often – says more about which method happens to suit that number
 than about the methods.</p>
 <p>The third observation is the one to carry forward.  This problem has <span class="math notranslate nohighlight">\(p=2\)</span>,
@@ -1607,10 +1610,10 @@ here.  Demonstrating a method on a problem it was not designed for is a good
 way to understand what it actually does.</p>
 <p>Figure 4.4 plots the same comparison as a function of the
 epoch rather than as a final number, and it makes the second lesson of the
-table unmistakable.  At <span class="math notranslate nohighlight">\(\eta=0.01\)</span> the adaptive methods are slower than plain
-stochastic gradient descent and AdaGrad has effectively stopped; at <span class="math notranslate nohighlight">\(\eta=0.5\)</span>
+table unmistakable.  At <span class="math notranslate nohighlight">\(\gamma=0.01\)</span> the adaptive methods are slower than plain
+stochastic gradient descent and AdaGrad has effectively stopped; at <span class="math notranslate nohighlight">\(\gamma=0.5\)</span>
 the ordering is reversed and AdaGrad is the best of the five.  Nothing about
-the methods has changed between the panels.  Only the number <span class="math notranslate nohighlight">\(\eta\)</span> has, and it
+the methods has changed between the panels.  Only the number <span class="math notranslate nohighlight">\(\gamma\)</span> has, and it
 means something different to each of them.</p>
 <p><img alt="Excess cost against epoch for the five optimisers of Section Implement" src="_images/optimiser_comparison.png" /></p>
 <p><em>Figure 4.4: Excess cost against epoch for the five optimisers of Section <em>Implementations</em> at two learning rates.  The vertical axis is <span class="math notranslate nohighlight">\(C(\bm{\theta})\)</span> minus its value at the analytical minimum.  The ranking of the methods reverses between the panels.</em></p>
@@ -2244,10 +2247,10 @@ run the gradient descent iteration (4.15) with it.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;max |AD - hand| =&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">g_ad</span><span class="p">)</span> <span class="o">-</span> <span class="n">g_hand</span><span class="p">)))</span>
 
 <span class="c1"># Gradient descent, Eq. (4.gditeration), with the automatic gradient</span>
-<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="nd">@jit</span>
 <span class="k">def</span> <span class="nf">gd_step</span><span class="p">(</span><span class="n">theta</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">cost</span><span class="p">)(</span><span class="n">theta</span><span class="p">,</span> <span class="n">Xj</span><span class="p">,</span> <span class="n">yj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">theta</span> <span class="o">-</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">cost</span><span class="p">)(</span><span class="n">theta</span><span class="p">,</span> <span class="n">Xj</span><span class="p">,</span> <span class="n">yj</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
     <span class="n">theta</span> <span class="o">=</span> <span class="n">gd_step</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
@@ -2275,7 +2278,7 @@ one might want when tuning hyperparameters by gradient methods.</p>
 
 <span class="n">lmbda</span> <span class="o">=</span> <span class="mf">0.001</span>
 <span class="n">theta</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
-<span class="n">step</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">th</span><span class="p">:</span> <span class="n">th</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">ridge_cost</span><span class="p">)(</span><span class="n">th</span><span class="p">,</span> <span class="n">Xj</span><span class="p">,</span> <span class="n">yj</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">))</span>
+<span class="n">step</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">th</span><span class="p">:</span> <span class="n">th</span> <span class="o">-</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">grad</span><span class="p">(</span><span class="n">ridge_cost</span><span class="p">)(</span><span class="n">th</span><span class="p">,</span> <span class="n">Xj</span><span class="p">,</span> <span class="n">yj</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
     <span class="n">theta</span> <span class="o">=</span> <span class="n">step</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 
@@ -2365,21 +2368,21 @@ supplied by JAX, all four methods are a few lines each.</p>
             <span class="k">return</span> <span class="n">t</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">gd</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>                     <span class="c1"># Eq. (4.gd)</span>
-    <span class="k">return</span> <span class="n">p</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">rgrad</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">state</span>
+<span class="k">def</span> <span class="nf">gd</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>                     <span class="c1"># Eq. (4.gd)</span>
+    <span class="k">return</span> <span class="n">p</span> <span class="o">-</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">rgrad</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">state</span>
 
-<span class="k">def</span> <span class="nf">momentum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>    <span class="c1"># Eq. (4.momentum)</span>
+<span class="k">def</span> <span class="nf">momentum</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>    <span class="c1"># Eq. (4.momentum)</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">state</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">rgrad</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">v</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">rgrad</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">p</span> <span class="o">-</span> <span class="n">v</span><span class="p">,</span> <span class="n">v</span>
 
-<span class="k">def</span> <span class="nf">adam</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>   <span class="c1"># Eq. (4.adam)</span>
+<span class="k">def</span> <span class="nf">adam</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">b1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>   <span class="c1"># Eq. (4.adam)</span>
     <span class="n">m</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">state</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">rgrad</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">b1</span> <span class="o">*</span> <span class="n">m</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b1</span><span class="p">)</span> <span class="o">*</span> <span class="n">g</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b2</span><span class="p">)</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">g</span>
     <span class="n">m_hat</span><span class="p">,</span> <span class="n">r_hat</span> <span class="o">=</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b1</span><span class="o">**</span><span class="n">t</span><span class="p">),</span> <span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b2</span><span class="o">**</span><span class="n">t</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">p</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">m_hat</span> <span class="o">/</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">),</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span> <span class="o">-</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">m_hat</span> <span class="o">/</span> <span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">r_hat</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">),</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">newton</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>                           <span class="c1"># Eq. (4.newtonopt)</span>
     <span class="k">return</span> <span class="n">p</span> <span class="o">-</span> <span class="n">jnp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rhess</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">rgrad</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="n">state</span>
@@ -2400,13 +2403,13 @@ supplied by JAX, all four methods are a few lines each.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Gradient descent, <span class="math notranslate nohighlight">\(\eta=10^{-3}\)</span></p></td>
+<tr class="row-even"><td><p>Gradient descent, <span class="math notranslate nohighlight">\(\gamma=10^{-3}\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(27\,206\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p>Momentum, <span class="math notranslate nohighlight">\(\eta=10^{-3}\)</span>, <span class="math notranslate nohighlight">\(\gamma=0.9\)</span></p></td>
+<tr class="row-odd"><td><p>Momentum, <span class="math notranslate nohighlight">\(\gamma=10^{-3}\)</span>, <span class="math notranslate nohighlight">\(\beta=0.9\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(2\,591\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p>Adam, <span class="math notranslate nohighlight">\(\eta=0.02\)</span></p></td>
+<tr class="row-even"><td><p>Adam, <span class="math notranslate nohighlight">\(\gamma=0.02\)</span></p></td>
 <td><p><span class="math notranslate nohighlight">\(2\,934\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p>Newton</p></td>
@@ -2418,10 +2421,10 @@ supplied by JAX, all four methods are a few lines each.</p>
 <p>iterations, and every argument of the chapter is visible in the four numbers.
 Gradient descent is limited by the largest curvature – the Hessian at the
 starting point has <span class="math notranslate nohighlight">\(\lambda_{\max}\approx2100\)</span>, so by
-Eq. (4.20) <span class="math notranslate nohighlight">\(\eta\)</span> must be below about <span class="math notranslate nohighlight">\(10^{-3}\)</span> – and then
+Eq. (4.20) <span class="math notranslate nohighlight">\(\gamma\)</span> must be below about <span class="math notranslate nohighlight">\(10^{-3}\)</span> – and then
 crawls along the valley floor at the rate set by <span class="math notranslate nohighlight">\(\lambda_{\min}\)</span>.  Momentum
 improves the count by a factor <span class="math notranslate nohighlight">\(10.5\)</span>, in line with the <span class="math notranslate nohighlight">\(\sqrt{\kappa}\)</span> of
-Eq. (4.26); Adam, with no tuning beyond <span class="math notranslate nohighlight">\(\eta\)</span>, does about
+Eq. (4.26); Adam, with no tuning beyond <span class="math notranslate nohighlight">\(\gamma\)</span>, does about
 as well; and Newton’s method, using the curvature that JAX supplies at the
 cost of a few gradient evaluations, converges quadratically in six steps.
 None of the derivative code was written by hand, and replacing
@@ -2526,7 +2529,7 @@ analytical expression against a central finite difference,</p>
 given a wrong gradient does not usually crash; it quietly converges to the
 wrong answer, which is far harder to detect.</p>
 <p><strong>Do not compare learning rates across optimisers.</strong>
-Table 4.1 made the point: the same <span class="math notranslate nohighlight">\(\eta\)</span> means different
+Table 4.1 made the point: the same <span class="math notranslate nohighlight">\(\gamma\)</span> means different
 things to plain SGD and to Adam, because the latter has already normalised the
 gradient.  Each method must be tuned on its own scale before any comparison is
 meaningful.</p>
@@ -2556,7 +2559,7 @@ penalty improve all three at once.</p>
 <p>The remedies then form a sequence, each recovering a little more of what
 Newton’s method has and gradient descent lacks.  Momentum accumulates a
 discounted history of gradients, amplifying consistent directions by
-<span class="math notranslate nohighlight">\(1/(1-\gamma)\)</span> and cancelling oscillatory ones, which improves the rate from
+<span class="math notranslate nohighlight">\(1/(1-\beta)\)</span> and cancelling oscillatory ones, which improves the rate from
 <span class="math notranslate nohighlight">\(\kappa\)</span> to <span class="math notranslate nohighlight">\(\sqrt{\kappa}\)</span>.  Stochastic gradients replace the full sum by a
 minibatch, trading a worse rate per iteration for a far better rate per unit
 of computation, and adding noise that helps escape poor local minima.  The
@@ -2568,7 +2571,7 @@ RMSProp with momentum and correcting the initialisation bias with the factors
 <p>The demonstration of Table 4.1 was deliberately
 unflattering, and its two lessons should be kept.  A learning rate is not
 comparable across optimisers, because the adaptive methods have already
-normalised the gradient before <span class="math notranslate nohighlight">\(\eta\)</span> multiplies it.  And on a small, convex,
+normalised the gradient before <span class="math notranslate nohighlight">\(\gamma\)</span> multiplies it.  And on a small, convex,
 well-conditioned problem the adaptive machinery buys nothing and can cost a
 great deal: these methods exist for large, ill-conditioned, non-convex
 landscapes, which is where we shall meet them from Chapter 5 onwards.</p>
@@ -2640,11 +2643,11 @@ convex.</p></li>
 For the least-squares problem of Section <em>Gradient descent for linear regression</em>:
 (a) compute the eigenvalues of the Hessian (4.14) and hence
 <span class="math notranslate nohighlight">\(\lambda_{\max}\)</span>, <span class="math notranslate nohighlight">\(\lambda_{\min}\)</span> and <span class="math notranslate nohighlight">\(\kappa\)</span>;
-(b) run gradient descent for <span class="math notranslate nohighlight">\(\eta\)</span> just below and just above
+(b) run gradient descent for <span class="math notranslate nohighlight">\(\gamma\)</span> just below and just above
 <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span> and confirm Eq. (4.20);
 (c) measure the number of iterations needed to reach a fixed accuracy for
-several <span class="math notranslate nohighlight">\(\eta\)</span>, and check that the minimum occurs near
-<span class="math notranslate nohighlight">\(\eta^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span>.</p></li>
+several <span class="math notranslate nohighlight">\(\gamma\)</span>, and check that the minimum occurs near
+<span class="math notranslate nohighlight">\(\gamma^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span>.</p></li>
 <li><p><strong>Conditioning and convergence (numerical).</strong>
 Construct design matrices with condition numbers
 <span class="math notranslate nohighlight">\(\kappa_2(\bm{X})=10,10^{2},10^{3}\)</span>, for instance by rescaling the columns.
@@ -2658,7 +2661,7 @@ Eq. (4.26).
 Consider the one-dimensional quadratic <span class="math notranslate nohighlight">\(C(\theta)=\tfrac{1}{2}\lambda\theta^{2}\)</span>.
 (a) Write the momentum update (4.23) as a two-term recurrence
 in <span class="math notranslate nohighlight">\(\theta\)</span>.
-(b) Find the values of <span class="math notranslate nohighlight">\(\eta\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> for which the recurrence has
+(b) Find the values of <span class="math notranslate nohighlight">\(\gamma\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> for which the recurrence has
 complex roots, and interpret them as oscillation.
 (c) Verify Eq. (4.25) numerically by applying momentum to
 a constant gradient.</p></li>
@@ -2669,8 +2672,8 @@ components.  Verify the <span class="math notranslate nohighlight">\(1/\sqrt{M}\
 Section <em>The central limit theorem</em>, and discuss what it implies about the cost of
 reducing gradient noise.</p></li>
 <li><p><strong>AdaGrad stalls (numerical).</strong>
-Reproduce the <span class="math notranslate nohighlight">\(\eta=0.01\)</span> column of Table 4.1.
-(a) Plot the effective learning rate <span class="math notranslate nohighlight">\(\eta/\sqrt{r_{t,j}}\)</span> against <span class="math notranslate nohighlight">\(t\)</span> for
+Reproduce the <span class="math notranslate nohighlight">\(\gamma=0.01\)</span> column of Table 4.1.
+(a) Plot the effective learning rate <span class="math notranslate nohighlight">\(\gamma/\sqrt{r_{t,j}}\)</span> against <span class="math notranslate nohighlight">\(t\)</span> for
 each coordinate and show that it decays towards zero.
 (b) Estimate the total distance the iterate can still travel after <span class="math notranslate nohighlight">\(t\)</span>
 steps, and compare with the distance remaining to the minimum.
@@ -2748,19 +2751,19 @@ standardised and compare the two condition numbers.</p>
 <p><strong>Part b: plain gradient descent.</strong>
 Implement gradient descent with the analytical
 gradient (4.13).  Determine empirically the largest stable
-<span class="math notranslate nohighlight">\(\eta\)</span> and compare with Eq. (4.20).  Plot the cost against
-iteration for several <span class="math notranslate nohighlight">\(\eta\)</span> on both the raw and the standardised problem.</p>
+<span class="math notranslate nohighlight">\(\gamma\)</span> and compare with Eq. (4.20).  Plot the cost against
+iteration for several <span class="math notranslate nohighlight">\(\gamma\)</span> on both the raw and the standardised problem.</p>
 <p><strong>Part c: momentum and stochasticity.</strong>
 Add momentum and confirm the improvement in iteration count.  Then implement
 minibatch SGD with the time-decay schedule (4.30), and compare
 convergence per iteration and per gradient evaluation.  Which comparison is
 the fair one, and why?</p>
 <p><strong>Part d: the adaptive methods.</strong>
-Implement AdaGrad, RMSProp and Adam.  For each, sweep <span class="math notranslate nohighlight">\(\eta\)</span> over several
+Implement AdaGrad, RMSProp and Adam.  For each, sweep <span class="math notranslate nohighlight">\(\gamma\)</span> over several
 orders of magnitude and record the best result; present the outcome as a table
 like Table 4.1.  Discuss which methods are sensitive to
-<span class="math notranslate nohighlight">\(\eta\)</span> and which are not, and relate your finding to whether the method
-normalises the gradient before applying <span class="math notranslate nohighlight">\(\eta\)</span>.</p>
+<span class="math notranslate nohighlight">\(\gamma\)</span> and which are not, and relate your finding to whether the method
+normalises the gradient before applying <span class="math notranslate nohighlight">\(\gamma\)</span>.</p>
 <p><strong>Part e: the diagonal approximation and its limits.</strong>
 Construct two problems with the same condition number, one whose Hessian is
 diagonal and one whose narrow valley runs at <span class="math notranslate nohighlight">\(45\)</span> degrees to the coordinate

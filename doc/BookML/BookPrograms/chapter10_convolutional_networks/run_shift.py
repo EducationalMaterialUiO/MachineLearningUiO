@@ -43,7 +43,7 @@ for out,hid,flat in [(8,25,64),(12,44,144)]:
         Xtr=place(itr,rng,out) if out>8 else itr[:,None]
         Xte=place(ite,rng,out) if out>8 else ite[:,None]
         p=cnn.init_cnn(flat=16*(out//4)**2,rng=np.random.default_rng(seed))
-        p,h=cnn.train(p,Xtr,Ytr,Xte,yte,epochs=20,batch=32,eta=3e-3,
+        p,h=cnn.train(p,Xtr,Ytr,Xte,yte,epochs=20,batch=32,gamma=3e-3,
                       rng=np.random.default_rng(seed),verbose=False)
         ca.append(h[-1][2]); npar_c=cnn.n_params(p)
         a,npar_d=dense(Xtr,Ytr,Xte,yte,hid,seed); da.append(a)

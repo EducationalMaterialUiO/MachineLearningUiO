@@ -7,10 +7,10 @@ import numpy as np
 
 lmbda = 0.001
 theta = rng.normal(size=(2, 1))
-eta = 0.1
+gamma = 0.1
 for k in range(1000):
     gradient = 2.0 * (X.T @ (X @ theta - y) / n + lmbda * theta)
-    theta -= eta * gradient
+    theta -= gamma * gradient
 
 # Compare with the closed form of Chapter 3
 I = np.eye(X.shape[1])

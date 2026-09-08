@@ -12,7 +12,7 @@ for L in [2,4,8]:
         npar=recall.n_params(P)
         t0=time.time()
         P,a=recall.train(P,recall.transformer_logits,L,d,n_iter=3000,batch=64,
-                         eta=3e-3,seed=seed,PE=PE)
+                         gamma=3e-3,seed=seed,PE=PE)
         accs.append(a)
     res[("tr",L)]=accs
     out.write(f"  {L}   {T:2d}   transformer   {npar:6d}   "
@@ -22,7 +22,7 @@ for L in [2,4,8]:
         Q=recall.init_rnn(86,np.random.default_rng(seed))
         npar2=recall.n_params(Q)
         Q,a=recall.train(Q,recall.rnn_logits,L,86,n_iter=3000,batch=64,
-                         eta=3e-3,seed=seed)
+                         gamma=3e-3,seed=seed)
         accs.append(a)
     res[("rnn",L)]=accs
     out.write(f"  {L}   {T:2d}   RNN           {npar2:6d}   "

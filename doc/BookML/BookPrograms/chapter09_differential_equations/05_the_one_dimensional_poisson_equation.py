@@ -14,4 +14,4 @@ def residual_poisson(P, X):
     return -d2g_t - f(x)
 
 P, history = solve_de(residual_poisson, [1, 30, 30, 1], X, "tanh",
-                      n_iter=4000, eta=1e-2, rng=np.random.default_rng(2))
+                      n_iter=4000, gamma=1e-2, rng=np.random.default_rng(2))

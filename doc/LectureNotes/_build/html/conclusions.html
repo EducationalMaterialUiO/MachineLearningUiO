@@ -545,7 +545,7 @@ something that will outlast every architecture in it.</p>
 <p>The single most useful habit this book has tried to instil is to stop treating
 the loss function as a design decision.  Specify what the target is assumed to
 be, and the loss follows.</p>
-<p>Gaussian noise gives the squared error, Eq. (3.21).  Bernoulli
+<p>Gaussian noise gives the squared error, Eq. (3.27).  Bernoulli
 observations give the cross entropy, Eq. (5.13); the notebox
 in Section <em>Deriving least squares from a probability distribution</em> predicted this before
 Chapter 5 confirmed it.  A categorical target gives the
@@ -581,7 +581,7 @@ is a network whose failures nobody will be able to explain.</p>
 </section>
 <section id="bias-variance-and-the-two-ways-to-trade-them">
 <h3><span class="section-number">18.2.3. </span>Bias, variance, and the two ways to trade them<a class="headerlink" href="#bias-variance-and-the-two-ways-to-trade-them" title="Link to this heading">#</a></h3>
-<p>Equation (2.47) is the most-used result in the book.  It says
+<p>Equation (2.52) is the most-used result in the book.  It says
 that expected test error decomposes into a bias term, a variance term and an
 irreducible noise floor, and that the first two move in opposite directions as
 model complexity grows.</p>
@@ -590,7 +590,7 @@ it, and they are worth holding apart.  The first is <em>regularisation</em>: kee
 one model and constrain it.  Ridge shrinks each singular direction by
 <span class="math notranslate nohighlight">\(\sigma_i^{2}/(\sigma_i^{2}+\lambda)\)</span>, hardest in exactly those directions in
 which the data are least informative; the Lasso replaces proportional shrinkage
-by the soft thresholding of Eq. (3.47) and thereby sets
+by the soft thresholding of Eq. (3.63) and thereby sets
 coefficients to zero; dropout, weight decay and early stopping do the same job
 for networks in Section <em>Regularisation and hyperparameters</em>; and the bottleneck,
 sparsity, contraction and denoising penalties of Section <em>Regularised autoencoders</em> are
@@ -731,7 +731,7 @@ discriminator is a density ratio in disguise, and Theorem 17.3
 that the generator is then minimising a Jensen-Shannon divergence.  The price is
 that the training problem is a game rather than a minimisation, and games need
 not converge: the chapter measures a simultaneous iteration diverging exactly as
-<span class="math notranslate nohighlight">\((1+\eta^{2})^{t/2}\)</span> on a bilinear problem, and an alternating one circulating
+<span class="math notranslate nohighlight">\((1+\gamma^{2})^{t/2}\)</span> on a bilinear problem, and an alternating one circulating
 forever.</p>
 <p>Four evasions, four different prices.  A reader who understands the obstruction
 will be able to place the next generative model to appear – flow matching,
@@ -751,7 +751,7 @@ Section <em>Representability is not learnability</em> runs the two side by side 
 finds that training falls further behind the constructed network as the width
 grows – a factor of <span class="math notranslate nohighlight">\(5.3\)</span> at <span class="math notranslate nohighlight">\(N=64\)</span> – and that a poor initialisation is a
 larger handicap than the optimisation itself.  <em>And will the result
-generalise?</em>  That is Eq. (2.47), and it is a statement about
+generalise?</em>  That is Eq. (2.52), and it is a statement about
 the model class, the data and the estimator together, which no approximation
 theorem addresses.</p>
 <p>The same three-way distinction organises the honest reading of the rest of the
@@ -1200,7 +1200,7 @@ is exactly correct about its likelihood and worthless as a generative model.
 Ask what property of an estimate the algorithm actually uses.</p>
 <p><strong>Games are not minimisations.</strong>
 Chapter 17 measures a simultaneous gradient iteration diverging as
-<span class="math notranslate nohighlight">\((1+\eta^{2})^{t/2}\)</span> on a bilinear game, and an alternating one circulating
+<span class="math notranslate nohighlight">\((1+\gamma^{2})^{t/2}\)</span> on a bilinear game, and an alternating one circulating
 forever.  Loss curves that oscillate are not a sign of a bad learning rate but
 the expected behaviour of the dynamics, and “the loss went down” is not evidence
 of progress in an adversarial setting.</p>

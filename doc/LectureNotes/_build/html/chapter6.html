@@ -507,11 +507,11 @@ errors.  Differentiating,</p>
 <p>and we may descend with any method of Chapter 4,</p>
 <div class="math notranslate nohighlight">
 \[
-b \leftarrow b + \eta\frac{\partial C}{\partial b},
+b \leftarrow b + \gamma\frac{\partial C}{\partial b},
   \qquad
-  \bm{w} \leftarrow \bm{w} + \eta\frac{\partial C}{\partial\bm{w}},\tag{6.5}
+  \bm{w} \leftarrow \bm{w} + \gamma\frac{\partial C}{\partial\bm{w}},\tag{6.5}
 \]</div>
-<p>with <span class="math notranslate nohighlight">\(\eta\)</span> the familiar learning rate.  This is the <em>perceptron</em>
+<p>with <span class="math notranslate nohighlight">\(\gamma\)</span> the familiar learning rate.  This is the <em>perceptron</em>
 algorithm, and the framework is that of logistic regression in
 Chapter 5.</p>
 <p>It works, after a fashion, and its defects are instructive.  If the data are
@@ -1504,7 +1504,7 @@ into the primal objective eliminates the slack variables and leaves an
 classified with margin at least one, and growing linearly thereafter.</p>
 <p>Equation (6.48) should look familiar.  It is a loss plus
 an <span class="math notranslate nohighlight">\(\ell_2\)</span> penalty – precisely the structure of Ridge regression in
-Eq. (3.27) and of penalised logistic regression in
+Eq. (3.43) and of penalised logistic regression in
 Eq. (5.23).  The three methods differ <em>only in the loss</em>:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -1548,7 +1548,7 @@ Because Eq. (6.48) is unconstrained, the methods of
 Chapter 4 apply after all.  The hinge is not differentiable at
 the kink, but it is convex and possesses a subgradient everywhere, which is
 enough.  The resulting algorithm, Pegasos, is stochastic gradient descent with
-the learning rate schedule <span class="math notranslate nohighlight">\(\eta_t=1/(\lambda t)\)</span> of
+the learning rate schedule <span class="math notranslate nohighlight">\(\gamma_t=1/(\lambda t)\)</span> of
 Eq. (4.30).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1562,12 +1562,12 @@ Eq. (4.30).</p>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
             <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">eta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">lmbda</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>                  <span class="c1"># Eq. (4.timedecay)</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">lmbda</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>                  <span class="c1"># Eq. (4.timedecay)</span>
             <span class="k">if</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">@</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>            <span class="c1"># inside the margin</span>
-                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">lmbda</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span> <span class="o">+</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">b</span> <span class="o">+=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">lmbda</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">b</span> <span class="o">+=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>                                    <span class="c1"># outside: only the penalty</span>
-                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">lmbda</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">lmbda</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span>
     <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">b</span>
 </pre></div>
 </div>
@@ -1633,7 +1633,7 @@ L_{\mathrm{sq}}(y,f)    &amp;= \tfrac12\left(y-f\right)^{2}
     &amp;&amp; \text{the support vector machine, Eq.~(6.48)}.
 \end{align}
 \end{split}\]</div>
-<p>By Theorem 3.9 all three minimisers have the form
+<p>By Theorem 3.12 all three minimisers have the form
 <span class="math notranslate nohighlight">\(f=\sum_j\alpha_jk(\bm{x}_j,\cdot)\)</span>, so all three produce a prediction rule of
 exactly the shape (6.33).  The only thing that can
 distinguish them is the vector <span class="math notranslate nohighlight">\(\bm{\alpha}\)</span>, and there is a single formula for
@@ -1651,7 +1651,7 @@ f^{\star}(\cdot) = \sum_{i=1}^{n}\alpha_i\,k(\bm{x}_i,\cdot),
 \]</div>
 <p>If <span class="math notranslate nohighlight">\(L\)</span> is convex but not differentiable, the same holds with <span class="math notranslate nohighlight">\(L'_i\)</span> any element
 of the subdifferential <span class="math notranslate nohighlight">\(\partial L(y_i,f^{\star}(\bm{x}_i))\)</span>, in the sense of
-Eq. (3.49).</p>
+Eq. (3.65).</p>
 </div>
 <div class="note admonition">
 <p class="admonition-title">Proof</p>
@@ -1678,11 +1678,11 @@ locally flat receives no weight at all.  Applying it in turn:</p>
 Substituting into <span class="math notranslate nohighlight">\(\bm{f}=\bm{K}\bm{\alpha}\)</span> gives
 <span class="math notranslate nohighlight">\(\bm{K}\bm{\alpha}=\bm{y}-\lambda\bm{\alpha}\)</span>, that is
 <span class="math notranslate nohighlight">\((\bm{K}+\lambda\bm{I})\bm{\alpha}=\bm{y}\)</span>, which is
-Eq. (3.68) – the theorem contains kernel ridge regression as a
+Eq. (3.84) – the theorem contains kernel ridge regression as a
 special case.</p>
 <p><strong>Logistic loss.</strong>
 <span class="math notranslate nohighlight">\(L'=-y\,\sigma(-yf)\)</span>, so <span class="math notranslate nohighlight">\(\alpha_i=y_i\sigma(-y_if_i)/\lambda\)</span>.  For labels in
-<span class="math notranslate nohighlight">\(\{0,1\}\)</span> this is Proposition 5.1, <span class="math notranslate nohighlight">\(\alpha_i=(y_i-p_i)/\lambda\)</span>,
+<span class="math notranslate nohighlight">\(\{0,1\}\)</span> this is Proposition 5.2, <span class="math notranslate nohighlight">\(\alpha_i=(y_i-p_i)/\lambda\)</span>,
 in the other notation.  The logistic function is strictly positive everywhere,
 so <em>no</em> coefficient vanishes.</p>
 <p><strong>Hinge loss.</strong>

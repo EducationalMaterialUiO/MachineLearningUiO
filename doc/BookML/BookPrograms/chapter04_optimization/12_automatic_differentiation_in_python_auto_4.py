@@ -29,10 +29,10 @@ g_hand = (2.0 / n) * X.T @ (X @ np.asarray(theta) - y)
 print("max |AD - hand| =", np.max(np.abs(np.asarray(g_ad) - g_hand)))
 
 # Gradient descent, Eq. (4.gditeration), with the automatic gradient
-eta = 0.1
+gamma = 0.1
 @jit
 def gd_step(theta):
-    return theta - eta * grad(cost)(theta, Xj, yj)
+    return theta - gamma * grad(cost)(theta, Xj, yj)
 
 for k in range(1000):
     theta = gd_step(theta)

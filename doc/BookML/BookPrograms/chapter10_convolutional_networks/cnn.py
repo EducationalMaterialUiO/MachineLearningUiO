@@ -169,7 +169,7 @@ def backward(p, cache, probs, Y):
     return g
 
 
-def train(p, Xtr, Ytr, Xte, yte, epochs=20, batch=32, eta=3e-3, rng=None,
+def train(p, Xtr, Ytr, Xte, yte, epochs=20, batch=32, gamma=3e-3, rng=None,
           verbose=True):
     """Adam, Eq. (4.adam), on mini-batches."""
     rng = np.random.default_rng(0) if rng is None else rng
@@ -189,7 +189,7 @@ def train(p, Xtr, Ytr, Xte, yte, epochs=20, batch=32, eta=3e-3, rng=None,
             for k in p:
                 m[k] = b1 * m[k] + (1 - b1) * g[k]
                 v[k] = b2 * v[k] + (1 - b2) * g[k] ** 2
-                p[k] -= eta * (m[k] / (1 - b1**t)) / (np.sqrt(v[k] / (1 - b2**t)) + eps)
+                p[k] -= gamma * (m[k] / (1 - b1**t)) / (np.sqrt(v[k] / (1 - b2**t)) + eps)
         acc = accuracy(p, Xte, yte)
         hist.append((ep, tot / len(Xtr), acc))
         if verbose:

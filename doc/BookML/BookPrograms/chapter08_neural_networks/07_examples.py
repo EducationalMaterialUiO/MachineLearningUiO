@@ -15,7 +15,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, digits.target,
 
 for activation in ["sigmoid", "relu"]:
     net = NeuralNetwork([64, 50, 10], activation, "classification",
-                        eta=0.1, lmbd=1e-4, epochs=60, batch_size=32,
+                        gamma=0.1, lmbd=1e-4, epochs=60, batch_size=32,
                         rng=np.random.default_rng(2024)).fit(X_train, y_train)
     print(f"{activation:8s}: train {np.mean(net.predict(X_train) == y_train):.4f}  "
           f"test {np.mean(net.predict(X_test) == y_test):.4f}  "

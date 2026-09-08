@@ -22,7 +22,7 @@ for p in [1,2]:
     errs=[]
     for seed in range(3):
         P = ae.init_ae([3,16,p,16,3], acts, np.random.default_rng(seed))
-        P,h = ae.train_ae(P,X,acts,n_epoch=600,batch=32,eta=5e-3,
+        P,h = ae.train_ae(P,X,acts,n_epoch=600,batch=32,gamma=5e-3,
                           rng=np.random.default_rng(seed),Xval=Xte)
         errs.append((ae.mse(ae.ae_forward(P,X,acts)[0],X),
                      ae.mse(ae.ae_forward(P,Xte,acts)[0],Xte)))
