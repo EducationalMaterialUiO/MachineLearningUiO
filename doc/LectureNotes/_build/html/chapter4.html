@@ -565,13 +565,13 @@ For a system <span class="math notranslate nohighlight">\(f_1(x_1,x_2)=0\)</span
 \]</div>
 <p>and collecting the partial derivatives into the Jacobian
 matrix (1.16),</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{J} = \begin{pmatrix}
     \partial f_1/\partial x_1 &amp; \partial f_1/\partial x_2\\
     \partial f_2/\partial x_1 &amp; \partial f_2/\partial x_2
   \end{pmatrix},\tag{4.6}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>the update becomes <span class="math notranslate nohighlight">\(\bm{x}^{n+1}=\bm{x}^{n}+\bm{h}^{n}\)</span> with</p>
 <div class="math notranslate nohighlight">
 \[
@@ -669,15 +669,15 @@ y_i = 4 + 3x_i + \varepsilon_i,
   \qquad \varepsilon_i\sim\mathcal{N}(0,1),
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(n=100\)</span> points, and the design matrix including an intercept column,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{X} = \begin{bmatrix}
     1 &amp; x_0\\ \vdots &amp; \vdots\\ 1 &amp; x_{n-1}
   \end{bmatrix}
   \in\mathbb{R}^{n\times2},
   \qquad
   \bm{\theta}=\begin{pmatrix}\theta_0\\\theta_1\end{pmatrix}.\tag{4.11}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>The cost function is</p>
 <div class="math notranslate nohighlight">
 \[
@@ -688,19 +688,19 @@ C(\bm{\theta}) = \frac{1}{n}\left\|\bm{X}\bm{\theta}-\bm{y}\right\|_2^{2}
 \]</div>
 <p>Computing <span class="math notranslate nohighlight">\(\partial C/\partial\theta_0\)</span> and <span class="math notranslate nohighlight">\(\partial C/\partial\theta_1\)</span>
 separately and reassembling,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \nabla_{\bm{\theta}}C(\bm{\theta})
    = \frac{2}{n}\begin{bmatrix}
        \sum_i\left(\theta_0+\theta_1x_i-y_i\right)\\
        \sum_i\left(x_i(\theta_0+\theta_1x_i)-y_ix_i\right)
      \end{bmatrix}
    = \frac{2}{n}\bm{X}^{T}\left(\bm{X}\bm{\theta}-\bm{y}\right),\tag{4.13}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>which is Eq. (1.38) written out coordinate by coordinate.
 The Hessian is</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{H} = \begin{bmatrix}
     \dfrac{\partial^{2}C}{\partial\theta_0^{2}} &amp;
     \dfrac{\partial^{2}C}{\partial\theta_0\partial\theta_1}\\[8pt]
@@ -708,7 +708,7 @@ The Hessian is</p>
     \dfrac{\partial^{2}C}{\partial\theta_1^{2}}
   \end{bmatrix}
    = \frac{2}{n}\bm{X}^{T}\bm{X},\tag{4.14}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>in agreement with Eq. (1.44), and positive semi-definite, so
 <span class="math notranslate nohighlight">\(C\)</span> is convex and any stationary point is the global minimum.</p>
 <p>The gradient descent iteration is</p>
@@ -818,7 +818,17 @@ a quadratic, the iteration (4.15) gives</p>
 <p>Now diagonalise.  By the spectral decomposition (1.54),
 <span class="math notranslate nohighlight">\(\bm{H}=\bm{Q}\bm{\Lambda}\bm{Q}^{T}\)</span> with orthonormal eigenvectors and
 eigenvalues <span class="math notranslate nohighlight">\(\lambda_i&gt;0\)</span>.  Expressing the error in the eigenbasis,
-<span class="math notranslate nohighlight">\(\tilde{\bm{e}}=\bm{Q}^{T}\bm{e}\)</span>, the recursion <em>decouples completely</em>:</p>
+<span class="math notranslate nohighlight">\(\tilde{\bm{e}}=\bm{Q}^{T}\bm{e}\)</span>, and multiplying
+Eq. (4.18) from the left by <span class="math notranslate nohighlight">\(\bm{Q}^{T}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde{\bm{e}}_{k+1}
+   = \bm{Q}^{T}\left(\bm{I}-\gamma\bm{H}\right)\bm{Q}\,\tilde{\bm{e}}_k
+   = \left(\bm{I}-\gamma\bm{\Lambda}\right)\tilde{\bm{e}}_k ,
+\]</div>
+<p>because <span class="math notranslate nohighlight">\(\bm{Q}^{T}\bm{Q}=\bm{I}\)</span> and <span class="math notranslate nohighlight">\(\bm{Q}^{T}\bm{H}\bm{Q}=\bm{\Lambda}\)</span>.
+The matrix on the right is diagonal, so the recursion <em>decouples
+completely</em> into <span class="math notranslate nohighlight">\(p\)</span> independent scalar recursions:</p>
 <div class="math notranslate nohighlight">
 \[
 \tilde{e}_{k+1,i} = \left(1-\gamma\lambda_i\right)\tilde{e}_{k,i},
@@ -827,34 +837,209 @@ eigenvalues <span class="math notranslate nohighlight">\(\lambda_i&gt;0\)</span>
 \]</div>
 <p>Each eigendirection contracts by its own factor <span class="math notranslate nohighlight">\(|1-\gamma\lambda_i|\)</span> at every
 step, and this single equation contains everything.</p>
-<p><strong>Stability.</strong>
-The iteration converges along direction <span class="math notranslate nohighlight">\(i\)</span> only if
-<span class="math notranslate nohighlight">\(|1-\gamma\lambda_i|&lt;1\)</span>, that is <span class="math notranslate nohighlight">\(0&lt;\gamma&lt;2/\lambda_i\)</span>.  For <em>all</em>
-directions to converge we need</p>
+<p><strong>Stability.</strong></p>
+<p>We can now state and prove the condition on the learning rate.</p>
+<div class="important admonition">
+<p class="admonition-title">Theorem 4.1 (Stability of gradient descent on a quadratic)</p>
+<p>Let <span class="math notranslate nohighlight">\(\bm{H}\)</span> be symmetric positive definite with eigenvalues
+<span class="math notranslate nohighlight">\(0&lt;\lambda_{\min}\le\lambda_i\le\lambda_{\max}\)</span>.  The gradient descent
+iteration (4.15) with fixed learning rate <span class="math notranslate nohighlight">\(\gamma\)</span> converges
+to <span class="math notranslate nohighlight">\(\bm{\theta}^{*}\)</span> from every starting point <span class="math notranslate nohighlight">\(\bm{\theta}_0\)</span> if and only if</p>
 <div class="math notranslate nohighlight">
 \[
 \boxed{\;0 &lt; \gamma &lt; \frac{2}{\lambda_{\max}} \;}\tag{4.20}
 \]</div>
-<p>with <span class="math notranslate nohighlight">\(\lambda_{\max}\)</span> the largest eigenvalue of the Hessian.  Exceed it and
-the component along the steepest direction grows geometrically: this is the
-divergence one observes when the learning rate is set too high.  The bound is
-set by the <em>steepest</em> direction, whatever the others are doing.</p>
+<p>Equivalently, the spectral radius of the iteration matrix satisfies</p>
+<div class="math notranslate nohighlight">
+\[
+\rho\!\left(\bm{I}-\gamma\bm{H}\right)
+   = \max_i\left|1-\gamma\lambda_i\right| &lt; 1 .\tag{4.21}
+\]</div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Proof</p>
+<p>By Eq. (4.19) the <span class="math notranslate nohighlight">\(i\)</span>-th component of the error in the
+eigenbasis is <span class="math notranslate nohighlight">\(\tilde{e}_{k,i}=(1-\gamma\lambda_i)^{k}\tilde{e}_{0,i}\)</span>, a
+geometric sequence with ratio <span class="math notranslate nohighlight">\(1-\gamma\lambda_i\)</span>.  It tends to zero for
+every <span class="math notranslate nohighlight">\(\tilde{e}_{0,i}\)</span> precisely when <span class="math notranslate nohighlight">\(|1-\gamma\lambda_i|&lt;1\)</span>.  Since
+<span class="math notranslate nohighlight">\(\lambda_i&gt;0\)</span> we may unpack the absolute value:</p>
+<div class="math notranslate nohighlight">
+\[
+-1 &lt; 1-\gamma\lambda_i &lt; 1
+  \quad\Longleftrightarrow\quad
+  -2 &lt; -\gamma\lambda_i &lt; 0
+  \quad\Longleftrightarrow\quad
+  0 &lt; \gamma &lt; \frac{2}{\lambda_i} .
+\]</div>
+<p>Because <span class="math notranslate nohighlight">\(\bm{Q}\)</span> is orthogonal, <span class="math notranslate nohighlight">\(\|\bm{e}_k\|=\|\tilde{\bm{e}}_k\|\)</span>, so
+<span class="math notranslate nohighlight">\(\bm{e}_k\to\bm{0}\)</span> for every <span class="math notranslate nohighlight">\(\bm{e}_0\)</span> if and only if every component
+converges, that is</p>
+<div class="math notranslate nohighlight">
+\[
+0 &lt; \gamma &lt; \min_i\frac{2}{\lambda_i} = \frac{2}{\lambda_{\max}} ,
+\]</div>
+<p>since <span class="math notranslate nohighlight">\(2/\lambda_i\)</span> is smallest for the largest eigenvalue.  This is
+Eq. (4.20).  For the converse, suppose
+<span class="math notranslate nohighlight">\(\gamma\ge2/\lambda_{\max}\)</span> and take <span class="math notranslate nohighlight">\(\bm{e}_0\)</span> with a non-zero component along
+the eigenvector of <span class="math notranslate nohighlight">\(\lambda_{\max}\)</span>; that component has
+<span class="math notranslate nohighlight">\(|1-\gamma\lambda_{\max}|\ge1\)</span> and does not decay, so the iteration fails to
+converge from this <span class="math notranslate nohighlight">\(\bm{\theta}_0\)</span>.  Finally, the eigenvalues of
+<span class="math notranslate nohighlight">\(\bm{I}-\gamma\bm{H}\)</span> are <span class="math notranslate nohighlight">\(1-\gamma\lambda_i\)</span> (the eigenvectors are those of
+<span class="math notranslate nohighlight">\(\bm{H}\)</span>), so its spectral radius is <span class="math notranslate nohighlight">\(\max_i|1-\gamma\lambda_i|\)</span>, and the
+condition just derived is exactly Eq. (4.21).</p>
+</div>
+<p>The bound is set by the <em>steepest</em> direction, whatever the others are
+doing: the direction of greatest curvature is the one along which a gradient
+step changes the parameters most, and it is therefore the first to become
+unstable.  Exceed the bound and the component along that direction grows
+geometrically; this is the divergence one observes when the learning rate is
+set too high.</p>
+<p><strong>At and beyond the bound.</strong>
+It is worth reading off from Eq. (4.19) exactly what the
+stiffest mode does as <span class="math notranslate nohighlight">\(\gamma\)</span> increases.  Its multiplier is
+<span class="math notranslate nohighlight">\(1-\gamma\lambda_{\max}\)</span>, so for <span class="math notranslate nohighlight">\(0&lt;\gamma&lt;1/\lambda_{\max}\)</span> the mode decays
+monotonically without changing sign; for
+<span class="math notranslate nohighlight">\(1/\lambda_{\max}&lt;\gamma&lt;2/\lambda_{\max}\)</span> the multiplier is negative and the
+mode alternates in sign at every step while its magnitude still decreases –
+this is the zig-zag across the valley in the centre panel of
+Figure 4.2; at <span class="math notranslate nohighlight">\(\gamma=2/\lambda_{\max}\)</span> the multiplier is
+exactly <span class="math notranslate nohighlight">\(-1\)</span> and the mode oscillates forever without decaying; and for
+<span class="math notranslate nohighlight">\(\gamma&gt;2/\lambda_{\max}\)</span> the multiplier has magnitude greater than one and
+the mode diverges.  The strict inequality in Eq. (4.20) is
+therefore essential: at the boundary itself nothing blows up, but nothing
+converges either.</p>
+<p><strong>Decrease of the cost.</strong>
+The same calculation shows that, inside the stable range, the cost itself
+decreases at every step and not only the error.  For a quadratic with
+Hessian <span class="math notranslate nohighlight">\(\bm{H}\)</span> the excess cost is
+<span class="math notranslate nohighlight">\(C(\bm{\theta})-C(\bm{\theta}^{*})=\tfrac12\bm{e}^{T}\bm{H}\bm{e}\)</span>, which
+in the eigenbasis reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+C(\bm{\theta}_k)-C(\bm{\theta}^{*})
+   &amp;= \frac12\sum_{i=1}^{p}\lambda_i\,\tilde{e}_{k,i}^{2},
+  \nonumber\\
+  C(\bm{\theta}_{k+1})-C(\bm{\theta}^{*})
+   &amp;= \frac12\sum_{i=1}^{p}\lambda_i\left(1-\gamma\lambda_i\right)^{2}
+     \tilde{e}_{k,i}^{2} .
+\end{align}
+\end{split}\]</div>
+<p>Every non-zero term shrinks when <span class="math notranslate nohighlight">\((1-\gamma\lambda_i)^{2}&lt;1\)</span>, which is the
+condition of the theorem once more.  Hence Eq. (4.20)
+guarantees a strict reduction of the cost at every iterate that is not
+already the minimum.  (For least squares <span class="math notranslate nohighlight">\(\bm{H}=2\bm{X}^{T}\bm{X}/n\)</span>, and
+one checks directly that
+<span class="math notranslate nohighlight">\(C(\bm{\theta})-C(\bm{\theta}^{*})=\|\bm{X}\bm{e}\|^{2}/n
+=\tfrac12\bm{e}^{T}\bm{H}\bm{e}\)</span>.)</p>
+<p><strong>Beyond quadratics.</strong></p>
+<p>Nothing in the argument used that the cost was a quadratic <em>globally</em>.
+Near a minimum <span class="math notranslate nohighlight">\(\bm{\theta}^{*}\)</span> of any twice differentiable cost,
+<span class="math notranslate nohighlight">\(\nabla C(\bm{\theta}^{*})=\bm{0}\)</span> and Taylor expansion gives
+<span class="math notranslate nohighlight">\(\nabla C(\bm{\theta})=\bm{H}^{*}\bm{e}+\mathcal{O}(\|\bm{e}\|^{2})\)</span> with
+<span class="math notranslate nohighlight">\(\bm{H}^{*}=\nabla^{2}C(\bm{\theta}^{*})\)</span>, so the recursion
+(4.18) describes the local dynamics and the theorem
+gives the local stability condition, with <span class="math notranslate nohighlight">\(\lambda_{\max}\)</span> the largest
+eigenvalue of the Hessian <em>at the minimum</em>.  A global statement needs a
+global bound on the curvature.  Suppose the gradient is Lipschitz continuous
+with constant <span class="math notranslate nohighlight">\(L\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\left\|\nabla C(\bm{\theta})-\nabla C(\bm{\theta}')\right\|
+   \le L\left\|\bm{\theta}-\bm{\theta}'\right\|
+  \qquad\text{for all }\bm{\theta},\bm{\theta}' ,\tag{4.23}
+\]</div>
+<p>which for a twice differentiable cost means that all Hessian eigenvalues lie
+in <span class="math notranslate nohighlight">\([-L,L]\)</span> everywhere.  Then the <em>descent lemma</em> holds: for any
+<span class="math notranslate nohighlight">\(\bm{\theta}\)</span> and any step <span class="math notranslate nohighlight">\(\bm{d}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+C(\bm{\theta}+\bm{d})
+   \le C(\bm{\theta})+\nabla C(\bm{\theta})^{T}\bm{d}+\frac{L}{2}\|\bm{d}\|^{2}.\tag{4.24}
+\]</div>
+<p>To see this, write the change in the cost as an integral along the segment
+from <span class="math notranslate nohighlight">\(\bm{\theta}\)</span> to <span class="math notranslate nohighlight">\(\bm{\theta}+\bm{d}\)</span> and subtract and add
+<span class="math notranslate nohighlight">\(\nabla C(\bm{\theta})^{T}\bm{d}\)</span> under the integral sign,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+C(\bm{\theta}+\bm{d})-C(\bm{\theta})
+   &amp;= \int_0^1\nabla C(\bm{\theta}+t\bm{d})^{T}\bm{d}\,dt\\
+   &amp;= \nabla C(\bm{\theta})^{T}\bm{d}
+     +\int_0^1\left[\nabla C(\bm{\theta}+t\bm{d})-\nabla C(\bm{\theta})\right]^{T}
+      \bm{d}\,dt ;
+\end{align*}
+\end{split}\]</div>
+<p>the Cauchy–Schwarz inequality and Eq. (4.23) bound the
+integrand by <span class="math notranslate nohighlight">\(Lt\|\bm{d}\|^{2}\)</span>, and <span class="math notranslate nohighlight">\(\int_0^1 Lt\,dt=L/2\)</span>.  Taking the
+gradient step <span class="math notranslate nohighlight">\(\bm{d}=-\gamma\bm{g}_k\)</span> with <span class="math notranslate nohighlight">\(\bm{g}_k=\nabla C(\bm{\theta}_k)\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+C(\bm{\theta}_{k+1})
+   &amp;\le C(\bm{\theta}_k)-\gamma\|\bm{g}_k\|^{2}
+       +\frac{L\gamma^{2}}{2}\|\bm{g}_k\|^{2}
+  \nonumber\\
+   &amp;= C(\bm{\theta}_k)-\gamma\left(1-\frac{L\gamma}{2}\right)\|\bm{g}_k\|^{2},
+\end{align}
+\end{split}\]</div>
+<p>so the cost decreases strictly, wherever the gradient is non-zero, whenever</p>
+<div class="math notranslate nohighlight">
+\[
+0&lt;\gamma&lt;\frac{2}{L}.
+\]</div>
+<p>This is the “sufficiently small step” promised in
+Section <em>Gradient descent</em>, now made quantitative.  For a quadratic the
+Lipschitz constant of the gradient is <span class="math notranslate nohighlight">\(L=\lambda_{\max}(\bm{H})\)</span>, and the
+descent lemma reproduces the stability bound (4.20) exactly.</p>
+<p><strong>Qualifications.</strong>
+Four remarks delimit what has been proved.  Positive definiteness matters:
+if <span class="math notranslate nohighlight">\(\bm{H}\)</span> has a negative eigenvalue, the corresponding multiplier
+<span class="math notranslate nohighlight">\(1-\gamma\lambda_i\)</span> exceeds one for every <span class="math notranslate nohighlight">\(\gamma&gt;0\)</span> and no fixed positive
+learning rate contracts that direction – gradient descent moves away from a
+saddle point or a maximum, which is what one wants, but the analysis above no
+longer describes convergence.  If <span class="math notranslate nohighlight">\(\bm{H}\)</span> has zero eigenvalues, the
+multiplier along the corresponding flat directions is exactly one and the
+quadratic model predicts no contraction at all; for least squares this is the
+rank-deficient case of Section <em>Ridge regression through the singular value decomposition</em>, and the remedy is the
+Ridge penalty discussed below.  For a non-quadratic cost the eigenvalues vary
+with <span class="math notranslate nohighlight">\(\bm{\theta}\)</span>: the local bound uses the Hessian at the minimum, whereas a
+global guarantee needs a Lipschitz constant <span class="math notranslate nohighlight">\(L\)</span> valid over the whole region
+visited by the iterates, which is typically much larger and makes the
+permitted step correspondingly smaller.  And stochastic gradients, the
+subject of Section <em>Stochastic gradient descent</em>, add noise to every step, so the
+deterministic bound is a guide to stability rather than a complete
+convergence theory.</p>
 <p><strong>Speed.</strong>
-The slowest direction is the one with the smallest eigenvalue
-<span class="math notranslate nohighlight">\(\lambda_{\min}\)</span>, contracting by <span class="math notranslate nohighlight">\(|1-\gamma\lambda_{\min}|\)</span> per step.  Choosing
-<span class="math notranslate nohighlight">\(\gamma\)</span> to make the worst contraction factor as small as possible gives the
-optimal value <span class="math notranslate nohighlight">\(\gamma^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span> and a contraction
-rate</p>
+Inside the stable range the question becomes how fast the error contracts,
+and the answer is set by the two extreme eigenvalues.  The worst-case
+contraction factor per step is</p>
+<div class="math notranslate nohighlight">
+\[
+r(\gamma)=\max_i\left|1-\gamma\lambda_i\right|
+          =\max\left\{\,\left|1-\gamma\lambda_{\min}\right|,\;
+                        \left|1-\gamma\lambda_{\max}\right|\,\right\},
+\]</div>
+<p>because <span class="math notranslate nohighlight">\(|1-\gamma\lambda|\)</span> is largest at one end or the other of the
+spectrum.  For <span class="math notranslate nohighlight">\(\gamma\le1/\lambda_{\max}\)</span> the first term dominates and
+<span class="math notranslate nohighlight">\(r\)</span> decreases with <span class="math notranslate nohighlight">\(\gamma\)</span>; for larger <span class="math notranslate nohighlight">\(\gamma\)</span> the second term
+<span class="math notranslate nohighlight">\(\gamma\lambda_{\max}-1\)</span> grows.  The minimum lies where the two are equal,
+<span class="math notranslate nohighlight">\(1-\gamma\lambda_{\min}=\gamma\lambda_{\max}-1\)</span>, which gives the optimal
+learning rate <span class="math notranslate nohighlight">\(\gamma^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span> and the
+contraction rate</p>
 <div class="math notranslate nohighlight">
 \[
 \left|\frac{\lambda_{\max}-\lambda_{\min}}{\lambda_{\max}+\lambda_{\min}}\right|
    = \frac{\kappa-1}{\kappa+1},
   \qquad
-  \kappa = \frac{\lambda_{\max}}{\lambda_{\min}} = \kappa_2(\bm{H}),\tag{4.21}
+  \kappa = \frac{\lambda_{\max}}{\lambda_{\min}} = \kappa_2(\bm{H}),\tag{4.26}
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\kappa\)</span> is the condition number of the Hessian in the sense of
-Eq. (1.77).  The number of iterations needed to reduce the error
-by a fixed factor is therefore proportional to <span class="math notranslate nohighlight">\(\kappa\)</span>.</p>
+Eq. (1.77).  Since <span class="math notranslate nohighlight">\((\kappa-1)/(\kappa+1)\approx1-2/\kappa\)</span> for
+large <span class="math notranslate nohighlight">\(\kappa\)</span>, the number of iterations needed to reduce the error by a fixed
+factor is proportional to <span class="math notranslate nohighlight">\(\kappa\)</span>: a large condition number produces slow
+convergence even when the learning rate is perfectly stable and optimally
+chosen.</p>
 <p>Figure 4.1 confirms both statements numerically.  The
 iteration count falls as <span class="math notranslate nohighlight">\(\gamma\)</span> increases, reaches its minimum at the predicted
 <span class="math notranslate nohighlight">\(\gamma^{*}=2/(\lambda_{\max}+\lambda_{\min})\)</span>, rises again, and diverges
@@ -862,7 +1047,7 @@ exactly at <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span
 edge: the transition from the fastest convergence available to outright
 divergence occupies a factor of two in <span class="math notranslate nohighlight">\(\gamma\)</span>.</p>
 <p><img alt="Iterations required to reach an error of 10-6 against the learning rat" src="_images/learning_rate_bound.png" /></p>
-<p><em>Figure 4.1: Iterations required to reach an error of <span class="math notranslate nohighlight">\(10^{-6}\)</span> against the learning rate, for a quadratic with eigenvalues <span class="math notranslate nohighlight">\(\{0.05,1,5\}\)</span>.  The optimum lies at <span class="math notranslate nohighlight">\(\gamma^{*}\)</span> and the method diverges beyond <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span>, as predicted by Eqs. (4.20) and (4.21).</em></p>
+<p><em>Figure 4.1: Iterations required to reach an error of <span class="math notranslate nohighlight">\(10^{-6}\)</span> against the learning rate, for a quadratic with eigenvalues <span class="math notranslate nohighlight">\(\{0.05,1,5\}\)</span>.  The optimum lies at <span class="math notranslate nohighlight">\(\gamma^{*}\)</span> and the method diverges beyond <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span>, as predicted by Eqs. (4.20) and (4.26).</em></p>
 <p>This is the central result of the chapter, and it deserves to be read slowly.
 Gradient descent is not slow because gradients are a bad idea.  It is slow
 because it applies <em>the same</em> <span class="math notranslate nohighlight">\(\gamma\)</span> to every eigendirection, while
@@ -877,7 +1062,7 @@ Eq. (1.118)</p>
 <div class="math notranslate nohighlight">
 \[
 \kappa(\bm{H}) = \kappa_2\left(\bm{X}^{T}\bm{X}\right)
-                 = \kappa_2(\bm{X})^{2} ,\tag{4.22}
+                 = \kappa_2(\bm{X})^{2} ,\tag{4.27}
 \]</div>
 <p>and the iteration count scales with the <em>square</em> of the condition number
 of the design matrix.  Three consequences follow, each connecting to earlier
@@ -920,7 +1105,7 @@ Momentum-based gradient descent replaces Eq. (4.10) by</p>
 \[
 \bm{v}_{k+1} = \beta\bm{v}_k + \gamma\nabla C(\bm{\theta}_k),
   \qquad
-  \bm{\theta}_{k+1} = \bm{\theta}_k - \bm{v}_{k+1},\tag{4.23}
+  \bm{\theta}_{k+1} = \bm{\theta}_k - \bm{v}_{k+1},\tag{4.28}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(\beta\in[0,1)\)</span> the <em>momentum parameter</em>, typically <span class="math notranslate nohighlight">\(0.9\)</span> (it plays
 the same role as, and is deliberately given the same letter as, the <span class="math notranslate nohighlight">\(\beta_1\)</span>
@@ -929,7 +1114,7 @@ update is no longer the current gradient but an exponentially weighted sum of
 all gradients seen so far,</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{v}_{k+1} = \gamma\sum_{j=0}^{k}\beta^{\,k-j}\nabla C(\bm{\theta}_j),\tag{4.24}
+\bm{v}_{k+1} = \gamma\sum_{j=0}^{k}\beta^{\,k-j}\nabla C(\bm{\theta}_j),\tag{4.29}
 \]</div>
 <p>with older gradients discounted geometrically.  Setting <span class="math notranslate nohighlight">\(\beta=0\)</span> recovers
 plain gradient descent.</p>
@@ -940,17 +1125,17 @@ eigendirection with eigenvalue <span class="math notranslate nohighlight">\(\lam
 recurrence in <span class="math notranslate nohighlight">\(\tilde{e}\)</span> rather than a one-term one.  Its behaviour splits
 into two regimes, and the split is exactly what we want.</p>
 <p>In a <em>flat</em> direction, <span class="math notranslate nohighlight">\(\gamma\lambda_i\ll1\)</span>, successive gradients point
-the same way and Eq. (4.24) adds them up.  A constant
+the same way and Eq. (4.29) adds them up.  A constant
 gradient <span class="math notranslate nohighlight">\(g\)</span> accumulates to</p>
 <div class="math notranslate nohighlight">
 \[
-v_\infty = \gamma g \sum_{j=0}^{\infty}\beta^{\,j} = \frac{\gamma g}{1-\beta},\tag{4.25}
+v_\infty = \gamma g \sum_{j=0}^{\infty}\beta^{\,j} = \frac{\gamma g}{1-\beta},\tag{4.30}
 \]</div>
 <p>so the effective step is multiplied by <span class="math notranslate nohighlight">\(1/(1-\beta)\)</span> – a factor of ten for
 <span class="math notranslate nohighlight">\(\beta=0.9\)</span>.  The method accelerates precisely where plain gradient descent
 crawls.</p>
 <p>In a <em>steep</em> direction, the iterate overshoots and the gradient reverses
-sign at every step.  Successive terms in Eq. (4.24) then
+sign at every step.  Successive terms in Eq. (4.29) then
 alternate in sign and largely cancel, so the accumulated step is
 <em>smaller</em> than the bare gradient.  The oscillation across the narrow
 valley is damped.</p>
@@ -958,10 +1143,10 @@ valley is damped.</p>
 the right treatment for the ill-conditioned landscape diagnosed in
 Section <em>The learning rate and the condition number</em>.  A careful analysis of the two-term recurrence
 shows that with optimally chosen <span class="math notranslate nohighlight">\(\gamma\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> the contraction rate
-improves from Eq. (4.21) to</p>
+improves from Eq. (4.26) to</p>
 <div class="math notranslate nohighlight">
 \[
-\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1},\tag{4.26}
+\frac{\sqrt{\kappa}-1}{\sqrt{\kappa}+1},\tag{4.31}
 \]</div>
 <p>so the iteration count scales with <span class="math notranslate nohighlight">\(\sqrt{\kappa}\)</span> instead of <span class="math notranslate nohighlight">\(\kappa\)</span>.  For
 <span class="math notranslate nohighlight">\(\kappa=10^{4}\)</span> that is a hundredfold reduction.  The reader will notice that
@@ -977,11 +1162,11 @@ known.</p>
 <p>Figure 4.3 shows what the improvement from <span class="math notranslate nohighlight">\(\kappa\)</span> to
 <span class="math notranslate nohighlight">\(\sqrt{\kappa}\)</span> is worth.  At <span class="math notranslate nohighlight">\(\kappa=10^{2}\)</span> momentum saves an order of
 magnitude in iterations; at <span class="math notranslate nohighlight">\(\kappa=10^{4}\)</span>, two.  Since
-Eq. (4.22) tells us that the least-squares Hessian has the
+Eq. (4.27) tells us that the least-squares Hessian has the
 condition number of the design matrix <em>squared</em>, condition numbers in
 this range are entirely ordinary, and the saving is not academic.</p>
 <p><img alt="Iterations to fixed accuracy against the condition number, for gradien" src="_images/momentum_rate.png" /></p>
-<p><em>Figure 4.3: Iterations to fixed accuracy against the condition number, for gradient descent and for momentum with optimal parameters, from the rates (4.21) and (4.26).</em></p>
+<p><em>Figure 4.3: Iterations to fixed accuracy against the condition number, for gradient descent and for momentum with optimal parameters, from the rates (4.26) and (4.31).</em></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1023,7 +1208,7 @@ this range are entirely ordinary, and the saving is not academic.</p>
 </div>
 <p>For this one-dimensional problem <span class="math notranslate nohighlight">\(\kappa=1\)</span> and there is nothing to fix, yet
 momentum still helps by increasing the effective step through
-Eq. (4.25).  The dramatic gains appear when the eigenvalues
+Eq. (4.30).  The dramatic gains appear when the eigenvalues
 differ, which is the case for every realistic problem.</p>
 <div class="tip admonition">
 <p class="admonition-title">Machine learning connection</p>
@@ -1034,7 +1219,7 @@ differ, which is the case for every realistic problem.</p>
 stepping: if the accumulated velocity is about to overshoot, the gradient at
 the extrapolated point already points backwards and corrects the step early.
 For convex problems this improves the constant in
-Eq. (4.26), and in deep learning frameworks it is usually
+Eq. (4.31), and in deep learning frameworks it is usually
 available as a flag on the standard momentum optimiser.</p>
 </div>
 </section>
@@ -1048,7 +1233,7 @@ Almost every cost function in machine learning is a sum over data points,</p>
 C(\bm{\theta}) = \sum_{i=1}^{n} c_i(\bm{x}_i,\bm{\theta}),
   \qquad
   \nabla_{\bm{\theta}}C(\bm{\theta})
-   = \sum_{i=1}^{n}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta}) .\tag{4.27}
+   = \sum_{i=1}^{n}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta}) .\tag{4.32}
 \]</div>
 <p>Computing the full gradient therefore costs one pass over the entire data set
 for a single parameter update.  In large-scale applications – the ImageNet
@@ -1067,13 +1252,13 @@ descent; taking <span class="math notranslate nohighlight">\(M=1\)</span> gives 
 \nabla_{\bm{\theta}}C(\bm{\theta})
    = \sum_{i=1}^{n}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta})
    \;\longrightarrow\;
-   \sum_{i\in B_k}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta}),\tag{4.28}
+   \sum_{i\in B_k}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta}),\tag{4.33}
 \]</div>
 <p>and the update becomes</p>
 <div class="math notranslate nohighlight">
 \[
 \bm{\theta}_{j+1} = \bm{\theta}_j
-    - \gamma_j\sum_{i\in B_k}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta}),\tag{4.29}
+    - \gamma_j\sum_{i\in B_k}\nabla_{\bm{\theta}}c_i(\bm{x}_i,\bm{\theta}),\tag{4.34}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(k\)</span> drawn at random with equal probability from <span class="math notranslate nohighlight">\([1,n/M]\)</span>.  One pass
 through all the minibatches is called an <em>epoch</em>, and one typically
@@ -1123,7 +1308,7 @@ It is worth being precise about the trade-off, because the folk statement that
 “SGD converges faster” conflates two different things.  Per <em>iteration</em>,
 full-batch gradient descent makes more progress: it uses the exact gradient
 and, for a strongly convex problem, converges geometrically at the rate of
-Eq. (4.21).  Stochastic gradient descent, with a decaying
+Eq. (4.26).  Stochastic gradient descent, with a decaying
 learning rate, converges at the far slower rate <span class="math notranslate nohighlight">\(\bigO(1/k)\)</span> for strongly
 convex problems and <span class="math notranslate nohighlight">\(\bigO(1/\sqrt{k})\)</span> in general, because the gradient noise
 does not vanish.  Per <em>unit of computation</em>, however, SGD is
@@ -1148,14 +1333,14 @@ number of minibatches, and set <span class="math notranslate nohighlight">\(t=e\
 choice is</p>
 <div class="math notranslate nohighlight">
 \[
-\gamma_j(t;t_0,t_1) = \frac{t_0}{t+t_1},\tag{4.30}
+\gamma_j(t;t_0,t_1) = \frac{t_0}{t+t_1},\tag{4.35}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(t_0,t_1&gt;0\)</span> fixed.  The learning rate starts at <span class="math notranslate nohighlight">\(t_0/t_1\)</span> and decays
 towards zero, so that the iterate eventually stops moving.  The classical
 conditions for convergence, due to Robbins and Monro, are that
 <span class="math notranslate nohighlight">\(\sum_t\gamma_t=\infty\)</span> – so that the iterate can still reach the minimum from
 any starting point – while <span class="math notranslate nohighlight">\(\sum_t\gamma_t^{2}&lt;\infty\)</span>, so that the accumulated
-noise is finite.  Equation (4.30) satisfies both.</p>
+noise is finite.  Equation (4.35) satisfies both.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1205,7 +1390,7 @@ showed exactly why this is awkward, and it is worth restating the diagnosis in
 the form that motivates what follows.</p>
 <p>A fixed <span class="math notranslate nohighlight">\(\gamma\)</span> is hard to get right.  If it is too large the updates overshoot
 and the iteration oscillates or diverges, by Eq. (4.20); if it
-is too small, convergence takes forever, by Eq. (4.21).  But the
+is too small, convergence takes forever, by Eq. (4.26).  But the
 deeper problem is not the choice of a number: it is that <em>no single
 number is right for all directions</em>.  The stability bound is set by
 <span class="math notranslate nohighlight">\(\lambda_{\max}\)</span> and the convergence rate by <span class="math notranslate nohighlight">\(\lambda_{\min}\)</span>, and when these
@@ -1248,7 +1433,7 @@ from a minibatch, and initialise <span class="math notranslate nohighlight">\(\b
 accumulate</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{r}_t = \bm{r}_{t-1} + \bm{g}_t\circ\bm{g}_t,\tag{4.31}
+\bm{r}_t = \bm{r}_{t-1} + \bm{g}_t\circ\bm{g}_t,\tag{4.36}
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\circ\)</span> is the Hadamard product of Section <em>Vectors</em>, so that
 <span class="math notranslate nohighlight">\(r_{t,j}=r_{t-1,j}+g_{t,j}^{2}\)</span> for every coordinate <span class="math notranslate nohighlight">\(j\)</span>.  We may regard
@@ -1257,13 +1442,13 @@ gradients, with <span class="math notranslate nohighlight">\(\bm{H}_0=\bm{0}\)</
 <p>The update scales the gradient by the inverse square root of this matrix,</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{\theta}_{t+1} = \bm{\theta}_t - \gamma\,\bm{H}_t^{-1/2}\bm{g}_t,\tag{4.32}
+\bm{\theta}_{t+1} = \bm{\theta}_t - \gamma\,\bm{H}_t^{-1/2}\bm{g}_t,\tag{4.37}
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(\bm{H}_t^{-1/2}\)</span> is diagonal with entries <span class="math notranslate nohighlight">\(r_{t,j}^{-1/2}\)</span>.  In
 coordinates each parameter has its own step size,</p>
 <div class="math notranslate nohighlight">
 \[
-\theta_{t+1,j} = \theta_{t,j} - \frac{\gamma}{\sqrt{r_{t,j}}}\,g_{t,j},\tag{4.33}
+\theta_{t+1,j} = \theta_{t,j} - \frac{\gamma}{\sqrt{r_{t,j}}}\,g_{t,j},\tag{4.38}
 \]</div>
 <p>and in practice a small constant <span class="math notranslate nohighlight">\(\epsilon\)</span> is added to the denominator for
 numerical stability,</p>
@@ -1271,12 +1456,12 @@ numerical stability,</p>
 \[
 \boxed{\;
   \theta_{t+1,j} = \theta_{t,j}
-    - \frac{\gamma}{\sqrt{\epsilon + r_{t,j}}}\,g_{t,j} . \;}\tag{4.34}
+    - \frac{\gamma}{\sqrt{\epsilon + r_{t,j}}}\,g_{t,j} . \;}\tag{4.39}
 \]</div>
 <p>The effective learning rate for parameter <span class="math notranslate nohighlight">\(j\)</span> at time <span class="math notranslate nohighlight">\(t\)</span> is
 <span class="math notranslate nohighlight">\(\alpha_{t,j}=\gamma/\sqrt{\epsilon+r_{t,j}}\)</span>, which decreases as <span class="math notranslate nohighlight">\(r_{t,j}\)</span>
 grows.</p>
-<p>Note the resemblance between Eq. (4.32) and Newton’s
+<p>Note the resemblance between Eq. (4.37) and Newton’s
 step (4.8): both premultiply the gradient by an inverse
 matrix built from curvature information.  AdaGrad differs in using
 <span class="math notranslate nohighlight">\(\bm{H}^{-1/2}\)</span> rather than <span class="math notranslate nohighlight">\(\bm{H}^{-1}\)</span>, in restricting <span class="math notranslate nohighlight">\(\bm{H}\)</span> to be
@@ -1312,11 +1497,11 @@ left long ago.  RMSProp and Adam repair exactly this.</p>
 </section>
 <section id="rmsprop">
 <h2><span class="section-number">4.10. </span>RMSProp<a class="headerlink" href="#rmsprop" title="Link to this heading">#</a></h2>
-<p>RMSProp replaces the cumulative sum (4.31) by an
+<p>RMSProp replaces the cumulative sum (4.36) by an
 exponentially decaying average,</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{v}_t = \rho\,\bm{v}_{t-1} + (1-\rho)\left(\nabla C(\bm{\theta}_t)\right)^{2},\tag{4.35}
+\bm{v}_t = \rho\,\bm{v}_{t-1} + (1-\rho)\left(\nabla C(\bm{\theta}_t)\right)^{2},\tag{4.40}
 \]</div>
 <p>with the square taken element-wise and <span class="math notranslate nohighlight">\(\rho\)</span> typically <span class="math notranslate nohighlight">\(0.9\)</span> or <span class="math notranslate nohighlight">\(0.99\)</span>.  The
 update is</p>
@@ -1324,16 +1509,16 @@ update is</p>
 \[
 \boxed{\;
   \bm{\theta}_{t+1} = \bm{\theta}_t
-    - \frac{\gamma}{\sqrt{\bm{v}_t+\epsilon}}\,\nabla C(\bm{\theta}_t) , \;}\tag{4.36}
+    - \frac{\gamma}{\sqrt{\bm{v}_t+\epsilon}}\,\nabla C(\bm{\theta}_t) , \;}\tag{4.41}
 \]</div>
 <p>with the division element-wise.  The method was proposed by Geoffrey Hinton in
 lecture notes in 2012 and never formally published, which has not prevented it
 from becoming standard.</p>
 <p><strong>Why the change matters.</strong>
-Expanding Eq. (4.35) shows what has happened,</p>
+Expanding Eq. (4.40) shows what has happened,</p>
 <div class="math notranslate nohighlight">
 \[
-\bm{v}_t = (1-\rho)\sum_{j=0}^{t}\rho^{\,t-j}\bm{g}_j^{2},\tag{4.37}
+\bm{v}_t = (1-\rho)\sum_{j=0}^{t}\rho^{\,t-j}\bm{g}_j^{2},\tag{4.42}
 \]</div>
 <p>which is a weighted average with weights summing to nearly one, rather than an
 unbounded sum.  Gradients older than roughly <span class="math notranslate nohighlight">\(1/(1-\rho)\)</span> steps – ten steps
@@ -1344,7 +1529,7 @@ iterate moves through a changing landscape.  And because it does not grow
 without bound, the effective learning rate does not decay to zero: AdaGrad’s
 infinite memory problem is gone.</p>
 <p>RMSProp is thus the same idea as AdaGrad with a finite memory, and the
-resemblance to the momentum update (4.23) is not accidental.
+resemblance to the momentum update (4.28) is not accidental.
 Both are exponential moving averages; momentum averages the gradient, RMSProp
 averages its square.  It is natural to ask what happens if one does both.</p>
 </section>
@@ -1359,7 +1544,7 @@ most deep learning frameworks.</p>
 <p><strong>Why combine momentum and RMSProp?.</strong>
 The two mechanisms address different defects and do not overlap.  Momentum
 gives fast convergence by smoothing the gradient, accelerating along the
-consistent long-term direction as in Eq. (4.25) and damping
+consistent long-term direction as in Eq. (4.30) and damping
 oscillations across narrow valleys.  RMSProp gives per-dimension scaling for
 stability, handling features of different scales and sparse gradients.  Using
 both means the direction of the step is chosen by an averaged gradient while
@@ -1383,12 +1568,12 @@ Adam maintains, at each step <span class="math notranslate nohighlight">\(t\)</s
 Those initialisations cause a problem which is worth deriving, because it
 explains a step that otherwise looks arbitrary.  Suppose the gradient is
 stationary with true second moment <span class="math notranslate nohighlight">\(\mathbb{E}[g^{2}]\)</span>.  Unrolling
-Eq. (4.39) as in Eq. (4.37) and taking the
+Eq. (4.44) as in Eq. (4.42) and taking the
 expectation,</p>
 <div class="math notranslate nohighlight">
 \[
 \mathbb{E}[v_t] = (1-\beta_2)\sum_{j=1}^{t}\beta_2^{\,t-j}\,\mathbb{E}[g^{2}]
-   = \mathbb{E}[g^{2}]\left(1-\beta_2^{\,t}\right),\tag{4.40}
+   = \mathbb{E}[g^{2}]\left(1-\beta_2^{\,t}\right),\tag{4.45}
 \]</div>
 <p>using the finite geometric sum.  The estimate is therefore too small by
 exactly the factor <span class="math notranslate nohighlight">\(1-\beta_2^{t}\)</span>, and the same argument applies to
@@ -1401,7 +1586,7 @@ bias exactly,</p>
 \[
 \hat{\bm{m}}_t = \frac{\bm{m}_t}{1-\beta_1^{\,t}},
   \qquad
-  \hat{\bm{v}}_t = \frac{\bm{v}_t}{1-\beta_2^{\,t}} .\tag{4.41}
+  \hat{\bm{v}}_t = \frac{\bm{v}_t}{1-\beta_2^{\,t}} .\tag{4.46}
 \]</div>
 <p>For small <span class="math notranslate nohighlight">\(t\)</span> the correction is large, compensating for the initial zero; as
 <span class="math notranslate nohighlight">\(t\)</span> grows, <span class="math notranslate nohighlight">\(1-\beta_i^{t}\to1\)</span> and the corrected moments converge to the raw
@@ -1413,12 +1598,12 @@ Finally,</p>
 \[
 \boxed{\;
   \bm{\theta}_{t+1} = \bm{\theta}_t
-    - \frac{\alpha}{\sqrt{\hat{\bm{v}}_t}+\epsilon}\,\hat{\bm{m}}_t , \;}\tag{4.42}
+    - \frac{\alpha}{\sqrt{\hat{\bm{v}}_t}+\epsilon}\,\hat{\bm{m}}_t , \;}\tag{4.47}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(\epsilon\)</span> a small constant, typically <span class="math notranslate nohighlight">\(10^{-8}\)</span>, preventing division by
 zero.  Step by step: compute the gradient; update the two moving
-averages (4.38) and (4.39); bias-correct with
-Eq. (4.41); form the step
+averages (4.43) and (4.44); bias-correct with
+Eq. (4.46); form the step
 <span class="math notranslate nohighlight">\(\Delta\bm{\theta}_t=\hat{\bm{m}}_t/(\sqrt{\hat{\bm{v}}_t}+\epsilon)\)</span>; and
 update the parameters.</p>
 <p><strong>Adam against its predecessors.</strong>
@@ -1437,7 +1622,7 @@ the thread that runs through Sections <em>The learning rate and the condition nu
 <p>The trouble with gradient descent is the mismatch between one global step size
 and a cost function whose curvature varies by direction; the iteration count
 scales with <span class="math notranslate nohighlight">\(\kappa=\lambda_{\max}/\lambda_{\min}\)</span> by
-Eq. (4.21).  Newton’s method removes the mismatch entirely by
+Eq. (4.26).  Newton’s method removes the mismatch entirely by
 premultiplying with <span class="math notranslate nohighlight">\(\bm{H}^{-1}\)</span>, but costs <span class="math notranslate nohighlight">\(\bigO(p^{3})\)</span>.</p>
 <p>Momentum attacks the symptom: it cancels the oscillation along steep
 directions and accumulates progress along flat ones, improving the rate from
@@ -1600,7 +1785,7 @@ sees most often – says more about which method happens to suit that number
 than about the methods.</p>
 <p>The third observation is the one to carry forward.  This problem has <span class="math notranslate nohighlight">\(p=2\)</span>,
 is convex, and has a Hessian with eigenvalues <span class="math notranslate nohighlight">\(0.311\)</span> and <span class="math notranslate nohighlight">\(3.728\)</span>, hence
-<span class="math notranslate nohighlight">\(\kappa=11.97\)</span> by Eq. (4.21).  That is a benign landscape, and
+<span class="math notranslate nohighlight">\(\kappa=11.97\)</span> by Eq. (4.26).  That is a benign landscape, and
 there is simply nothing for the adaptive machinery to repair; the overhead of
 estimating curvature buys nothing because the curvature is already uniform.
 The adaptive methods earn their place when <span class="math notranslate nohighlight">\(\kappa\)</span> is large, when <span class="math notranslate nohighlight">\(p\)</span> is
@@ -1703,13 +1888,13 @@ A numerical differentiator replaces the derivative by a difference quotient.  Fo
 variable the central difference is</p>
 <div class="math notranslate nohighlight">
 \[
-f'(x) \approx D_h f(x) = \frac{f(x+h)-f(x-h)}{2h},\tag{4.43}
+f'(x) \approx D_h f(x) = \frac{f(x+h)-f(x-h)}{2h},\tag{4.48}
 \]</div>
 <p>and its error can be analysed exactly.  Expanding both terms in Taylor series
 about <span class="math notranslate nohighlight">\(x\)</span> and subtracting, all even powers of <span class="math notranslate nohighlight">\(h\)</span> cancel and</p>
 <div class="math notranslate nohighlight">
 \[
-D_hf(x) = f'(x) + \frac{h^{2}}{6}f'''(x) + \bigO(h^{4}),\tag{4.44}
+D_hf(x) = f'(x) + \frac{h^{2}}{6}f'''(x) + \bigO(h^{4}),\tag{4.49}
 \]</div>
 <p>the <em>truncation error</em>, which shrinks as <span class="math notranslate nohighlight">\(h^{2}\)</span>.  This suggests taking
 <span class="math notranslate nohighlight">\(h\)</span> as small as possible.  But the two function values are computed in
@@ -1723,7 +1908,7 @@ form</p>
 <div class="math notranslate nohighlight">
 \[
 E(h) \approx \frac{h^{2}}{6}\left|f'''(x)\right|
-             + \frac{\epsilon_M\left|f(x)\right|}{h},\tag{4.45}
+             + \frac{\epsilon_M\left|f(x)\right|}{h},\tag{4.50}
 \]</div>
 <p>and setting <span class="math notranslate nohighlight">\(dE/dh=0\)</span> gives the optimal step and the best attainable accuracy,</p>
 <div class="math notranslate nohighlight">
@@ -1731,13 +1916,13 @@ E(h) \approx \frac{h^{2}}{6}\left|f'''(x)\right|
 h^{*} = \left(\frac{3\epsilon_M|f|}{|f'''|}\right)^{1/3}
         \sim \epsilon_M^{1/3}\approx 6\times10^{-6},
   \qquad
-  E(h^{*}) \sim \epsilon_M^{2/3}\approx 4\times10^{-11}.\tag{4.46}
+  E(h^{*}) \sim \epsilon_M^{2/3}\approx 4\times10^{-11}.\tag{4.51}
 \]</div>
 <p>A central difference can never deliver more than about two thirds of the
 available digits, and only if <span class="math notranslate nohighlight">\(h\)</span> is chosen well; the one-sided difference
 <span class="math notranslate nohighlight">\((f(x+h)-f(x))/h\)</span> has truncation error <span class="math notranslate nohighlight">\(\bigO(h)\)</span> and does correspondingly
 worse, <span class="math notranslate nohighlight">\(E\sim\epsilon_M^{1/2}\approx10^{-8}\)</span>.  Figure 4.6
-shows the curve (4.45) measured for a concrete function.  And
+shows the curve (4.50) measured for a concrete function.  And
 the cost is the second objection: for a function of <span class="math notranslate nohighlight">\(p\)</span> variables the gradient
 needs <span class="math notranslate nohighlight">\(2p\)</span> evaluations, or <span class="math notranslate nohighlight">\(p+1\)</span> for one-sided differences, and for <span class="math notranslate nohighlight">\(p=10^{7}\)</span>
 that is a week of computing to obtain one, mediocre, gradient.</p>
@@ -1758,18 +1943,18 @@ of the later chapters can be trained at all.</p>
 operations a program executes to evaluate it.  Consider the function</p>
 <div class="math notranslate nohighlight">
 \[
-f(x_1,x_2) = \ln x_1 + x_1x_2 - \sin x_2 ,\tag{4.47}
+f(x_1,x_2) = \ln x_1 + x_1x_2 - \sin x_2 ,\tag{4.52}
 \]</div>
 <p>which a program evaluates as the following list of assignments, each applying
 one elementary operation <span class="math notranslate nohighlight">\(\varphi_i\)</span> to variables already computed:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{aligned}
     v_{-1} &amp;= x_1, &amp; v_0 &amp;= x_2, \\
     v_1 &amp;= \ln v_{-1}, &amp; v_2 &amp;= v_{-1}\,v_0, &amp; v_3 &amp;= \sin v_0, \\
     v_4 &amp;= v_1 + v_2, &amp; v_5 &amp;= v_4 - v_3, &amp; y &amp;= v_5 .
-  \end{aligned}\tag{4.48}
-\end{split}\]</div>
+  \end{aligned}\tag{4.53}
+\end{equation*}\]</div>
 <p>This is the <em>evaluation trace</em>, or Wengert list, of <span class="math notranslate nohighlight">\(f\)</span>
 [wengert1964,griewank2008]: the inputs are numbered <span class="math notranslate nohighlight">\(v_{1-n},\dots,v_0\)</span>,
 the intermediate results <span class="math notranslate nohighlight">\(v_1,\dots,v_\ell\)</span> in the order in which they are
@@ -1782,8 +1967,8 @@ the given input – and that is what makes AD applicable to programs rather
 than to formulae.  A neural network is a particularly regular trace: the
 matrix products, additions and activation functions of Chapter 8,
 one layer after another.</p>
-<p><img alt="The computational graph of the evaluation trace 4.48 for .  Each node " src="../BookML/BookFigures/chapter04_optimization/4-compgraph.png" /></p>
-<p><em>Figure 4.5: The computational graph of the evaluation trace (4.48) for <span class="math notranslate nohighlight">\(f(x_1,x_2)=\ln x_1+x_1x_2-\sin x_2\)</span>.  Each node is one elementary operation applied to its predecessors.  Forward-mode AD sweeps this graph from left to right, carrying a derivative <span class="math notranslate nohighlight">\(\dot v_i\)</span> with every value; reverse-mode AD first evaluates the values from left to right and then sweeps back from right to left, carrying an adjoint <span class="math notranslate nohighlight">\(\bar v_i=\partial y/\partial v_i\)</span> with every node.</em></p>
+<p><img alt="The computational graph of the evaluation trace 4.53 for .  Each node " src="../BookML/BookFigures/chapter04_optimization/4-compgraph.png" /></p>
+<p><em>Figure 4.5: The computational graph of the evaluation trace (4.53) for <span class="math notranslate nohighlight">\(f(x_1,x_2)=\ln x_1+x_1x_2-\sin x_2\)</span>.  Each node is one elementary operation applied to its predecessors.  Forward-mode AD sweeps this graph from left to right, carrying a derivative <span class="math notranslate nohighlight">\(\dot v_i\)</span> with every value; reverse-mode AD first evaluates the values from left to right and then sweeps back from right to left, carrying an adjoint <span class="math notranslate nohighlight">\(\bar v_i=\partial y/\partial v_i\)</span> with every node.</em></p>
 <p>For each node the derivative of the elementary operation with respect to each
 of its arguments – its <em>local</em> or <em>partial</em> derivative – is known
 in closed form:</p>
@@ -1795,7 +1980,7 @@ in closed form:</p>
   \frac{\partial v_3}{\partial v_{0}} = \cos v_0,\quad
   \frac{\partial v_4}{\partial v_{1}} = \frac{\partial v_4}{\partial v_{2}} = 1,\quad
   \frac{\partial v_5}{\partial v_{4}} = 1,\quad
-  \frac{\partial v_5}{\partial v_{3}} = -1 .\tag{4.49}
+  \frac{\partial v_5}{\partial v_{3}} = -1 .\tag{4.54}
 \]</div>
 <p>Everything AD does is to combine these local derivatives by the chain rule.
 The only question is in which order, and there are two natural answers.</p>
@@ -1807,14 +1992,14 @@ for every node its <em>tangent</em>, the directional derivative</p>
 <div class="math notranslate nohighlight">
 \[
 \dot v_i = \sum_{k=1}^{n}\frac{\partial v_i}{\partial x_k}\,\dot x_k
-           = \frac{d}{d\epsilon}\,v_i(\bm{x}+\epsilon\dot{\bm{x}})\Big|_{\epsilon=0}.\tag{4.50}
+           = \frac{d}{d\epsilon}\,v_i(\bm{x}+\epsilon\dot{\bm{x}})\Big|_{\epsilon=0}.\tag{4.55}
 \]</div>
 <p>Since <span class="math notranslate nohighlight">\(v_i=\varphi_i(v_j:j\prec i)\)</span> depends only on its predecessors, the
 chain rule gives the <em>forward recursion</em></p>
 <div class="math notranslate nohighlight">
 \[
 \dot v_i = \sum_{j\prec i}\frac{\partial\varphi_i}{\partial v_j}\,\dot v_j ,
-  \qquad i=1,\dots,\ell,\tag{4.51}
+  \qquad i=1,\dots,\ell,\tag{4.56}
 \]</div>
 <p>started from <span class="math notranslate nohighlight">\(\dot v_{1-n},\dots,\dot v_0\)</span> set equal to the chosen direction
 <span class="math notranslate nohighlight">\(\dot x_1,\dots,\dot x_n\)</span>.  The recursion runs in the same order as the
@@ -1822,8 +2007,8 @@ evaluation itself, so each tangent can be computed alongside its value, and
 when the sweep reaches the output it holds <span class="math notranslate nohighlight">\(\dot y=\nabla f(\bm{x})^{T}\dot{\bm{x}}\)</span>.
 For our example with <span class="math notranslate nohighlight">\(\dot{\bm{x}}=(1,0)\)</span>, that is <span class="math notranslate nohighlight">\(\partial f/\partial x_1\)</span>,
 the sweep at <span class="math notranslate nohighlight">\((x_1,x_2)=(2,5)\)</span> reads</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{aligned}
     \dot v_{-1} &amp;= 1, &amp; \dot v_0 &amp;= 0,\\
     \dot v_1 &amp;= \dot v_{-1}/v_{-1} = 0.5, &amp;
@@ -1831,8 +2016,8 @@ the sweep at <span class="math notranslate nohighlight">\((x_1,x_2)=(2,5)\)</spa
     \dot v_3 &amp;= \cos(v_0)\,\dot v_0 = 0,\\
     \dot v_4 &amp;= \dot v_1+\dot v_2 = 5.5, &amp;
     \dot v_5 &amp;= \dot v_4-\dot v_3 = 5.5 ,
-  \end{aligned}\tag{4.52}
-\end{split}\]</div>
+  \end{aligned}\tag{4.57}
+\end{equation*}\]</div>
 <p>and indeed <span class="math notranslate nohighlight">\(\partial f/\partial x_1 = 1/x_1 + x_2 = 5.5\)</span>.  To obtain
 <span class="math notranslate nohighlight">\(\partial f/\partial x_2\)</span> the whole sweep is repeated with
 <span class="math notranslate nohighlight">\(\dot{\bm{x}}=(0,1)\)</span>.</p>
@@ -1843,7 +2028,7 @@ There is an elegant algebraic way to say the same thing.  Introduce a symbol
 componentwise and multiply as</p>
 <div class="math notranslate nohighlight">
 \[
-(a+b\varepsilon)(c+d\varepsilon) = ac + (ad+bc)\varepsilon ,\tag{4.53}
+(a+b\varepsilon)(c+d\varepsilon) = ac + (ad+bc)\varepsilon ,\tag{4.58}
 \]</div>
 <p>because the <span class="math notranslate nohighlight">\(\varepsilon^{2}\)</span> term vanishes.  Now let <span class="math notranslate nohighlight">\(g\)</span> be any function with
 a Taylor series and evaluate it at a dual argument.  Every power of
@@ -1852,11 +2037,11 @@ a Taylor series and evaluate it at a dual argument.  Every power of
 \[
 g(a+b\varepsilon) = g(a) + g'(a)\,b\varepsilon
      + \tfrac{1}{2}g''(a)\,b^{2}\varepsilon^{2}+\dots
-     = g(a) + g'(a)\,b\varepsilon .\tag{4.54}
+     = g(a) + g'(a)\,b\varepsilon .\tag{4.59}
 \]</div>
-<p>The dual part is exactly the tangent (4.51) of <span class="math notranslate nohighlight">\(g\)</span>: dual
+<p>The dual part is exactly the tangent (4.56) of <span class="math notranslate nohighlight">\(g\)</span>: dual
 numbers carry a value and a derivative together, and the multiplication
-rule (4.53) <em>is</em> the product rule.  Applying <span class="math notranslate nohighlight">\(g\)</span> to
+rule (4.58) <em>is</em> the product rule.  Applying <span class="math notranslate nohighlight">\(g\)</span> to
 <span class="math notranslate nohighlight">\(x+1\cdot\varepsilon\)</span> and reading off the coefficient of <span class="math notranslate nohighlight">\(\varepsilon\)</span>
 therefore returns <span class="math notranslate nohighlight">\(g'(x)\)</span> exactly – not approximately, since nothing was
 truncated: the series terminates by the algebra of <span class="math notranslate nohighlight">\(\varepsilon\)</span>, not by
@@ -1912,14 +2097,14 @@ For a vector-valued <span class="math notranslate nohighlight">\(\bm{f}:\mathbb{
 sweep with seed <span class="math notranslate nohighlight">\(\dot{\bm{x}}\)</span> returns</p>
 <div class="math notranslate nohighlight">
 \[
-\dot{\bm{y}} = \bm{J}\,\dot{\bm{x}} ,\tag{4.55}
+\dot{\bm{y}} = \bm{J}\,\dot{\bm{x}} ,\tag{4.60}
 \]</div>
 <p>a <em>Jacobian–vector product</em> (JVP), without ever forming <span class="math notranslate nohighlight">\(\bm{J}\)</span>.
 Seeding with the unit vector <span class="math notranslate nohighlight">\(\bm{e}_k\)</span> returns the <span class="math notranslate nohighlight">\(k\)</span>-th column of the
 Jacobian, so the full Jacobian costs <span class="math notranslate nohighlight">\(n\)</span> sweeps and the gradient of a scalar
 function of <span class="math notranslate nohighlight">\(p\)</span> parameters costs <span class="math notranslate nohighlight">\(p\)</span> sweeps – the same count as finite
 differences, only exact.  Each sweep costs a small multiple of one function
-evaluation, since Eq. (4.51) adds to each elementary
+evaluation, since Eq. (4.56) adds to each elementary
 operation a bounded number of further ones.  Forward mode is therefore the
 right tool when the number of <em>inputs</em> is small: the sensitivity of a
 whole network output to one physical parameter, or the derivatives with
@@ -1933,7 +2118,7 @@ tool for training, where <span class="math notranslate nohighlight">\(p\)</span>
 output <span class="math notranslate nohighlight">\(y\)</span> define the <em>adjoint</em> of every node,</p>
 <div class="math notranslate nohighlight">
 \[
-\bar v_i = \frac{\partial y}{\partial v_i},\tag{4.56}
+\bar v_i = \frac{\partial y}{\partial v_i},\tag{4.61}
 \]</div>
 <p>the sensitivity of the final result to that intermediate value.  Since <span class="math notranslate nohighlight">\(y\)</span>
 depends on <span class="math notranslate nohighlight">\(v_j\)</span> only through the nodes <span class="math notranslate nohighlight">\(v_i\)</span> that consume it, the chain rule
@@ -1941,17 +2126,17 @@ gives the <em>reverse recursion</em></p>
 <div class="math notranslate nohighlight">
 \[
 \bar v_j = \sum_{i\succ j}\bar v_i\,\frac{\partial\varphi_i}{\partial v_j},
-  \qquad j=\ell-1,\dots,1-n,\tag{4.57}
+  \qquad j=\ell-1,\dots,1-n,\tag{4.62}
 \]</div>
 <p>started from <span class="math notranslate nohighlight">\(\bar v_\ell=\partial y/\partial y=1\)</span>.  Compare this with the
-forward recursion (4.51): the same local derivatives appear,
+forward recursion (4.56): the same local derivatives appear,
 but the sum now runs over the <em>successors</em> of a node and the recursion
 runs <em>backwards</em> through the trace, from output to inputs.  When it
 reaches the inputs it holds <span class="math notranslate nohighlight">\(\bar v_{1-n},\dots,\bar v_0\)</span>, which is the whole
 gradient <span class="math notranslate nohighlight">\(\nabla f(\bm{x})\)</span> – all <span class="math notranslate nohighlight">\(n\)</span> components from a single sweep.  For
 our example, with the values from the forward evaluation at <span class="math notranslate nohighlight">\((2,5)\)</span>,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{aligned}
     \bar v_5 &amp;= 1,\\
     \bar v_4 &amp;= \bar v_5\cdot1 = 1, &amp;
@@ -1960,15 +2145,15 @@ our example, with the values from the forward evaluation at <span class="math no
     \bar v_2 &amp;= \bar v_4\cdot1 = 1,\\
     \bar v_0 &amp;= \bar v_3\cos v_0 + \bar v_2 v_{-1} = 2-\cos5 = 1.716, &amp;
     \bar v_{-1} &amp;= \bar v_2 v_0 + \bar v_1/v_{-1} = 5 + 0.5 = 5.5 ,
-  \end{aligned}\tag{4.58}
-\end{split}\]</div>
+  \end{aligned}\tag{4.63}
+\end{equation*}\]</div>
 <p>which are <span class="math notranslate nohighlight">\(\partial f/\partial x_2\)</span> and <span class="math notranslate nohighlight">\(\partial f/\partial x_1\)</span>, both
 obtained at once.  The two contributions to <span class="math notranslate nohighlight">\(\bar v_0\)</span> are the two paths
 from <span class="math notranslate nohighlight">\(v_0\)</span> to <span class="math notranslate nohighlight">\(y\)</span> in Fig. 4.5: the chain rule sums over
 paths, and the reverse sweep organises that sum so that each edge is visited
 once.</p>
 <p>Reverse mode has a price that forward mode does not: the local derivatives
-in Eq. (4.57) depend on the values <span class="math notranslate nohighlight">\(v_j\)</span> – <span class="math notranslate nohighlight">\(\cos v_0\)</span>,
+in Eq. (4.62) depend on the values <span class="math notranslate nohighlight">\(v_j\)</span> – <span class="math notranslate nohighlight">\(\cos v_0\)</span>,
 <span class="math notranslate nohighlight">\(v_{-1}\)</span>, <span class="math notranslate nohighlight">\(1/v_{-1}\)</span> above – and those must be available when the backward
 sweep needs them, in the reverse of the order in which they were produced.
 The forward evaluation must therefore be recorded, on what is called the
@@ -1983,10 +2168,10 @@ the reverse sweep returns</p>
 \[
 \bar{\bm{x}}^{T} = \bar{\bm{y}}^{T}\bm{J},
   \qquad\text{equivalently}\qquad
-  \bar{\bm{x}} = \bm{J}^{T}\bar{\bm{y}} ,\tag{4.59}
+  \bar{\bm{x}} = \bm{J}^{T}\bar{\bm{y}} ,\tag{4.64}
 \]</div>
 <p>a <em>vector–Jacobian product</em> (VJP): one row of <span class="math notranslate nohighlight">\(\bm{J}\)</span> per sweep, and
-the full Jacobian in <span class="math notranslate nohighlight">\(m\)</span> sweeps.  Equation (4.59) is precisely
+the full Jacobian in <span class="math notranslate nohighlight">\(m\)</span> sweeps.  Equation (4.64) is precisely
 Eq. (1.51), a gradient propagated backwards by multiplication
 with a transposed Jacobian, and it is why backpropagation was described in
 Section <em>The chain rule</em> as the chain rule with the products taken in the
@@ -1994,7 +2179,7 @@ cheapest order.</p>
 <p><strong>The cheap gradient principle.</strong>
 The result that makes all of deep learning possible is the following.</p>
 <div class="important admonition">
-<p class="admonition-title">Proposition 4.1 (Cheap gradient principle)</p>
+<p class="admonition-title">Proposition 4.2 (Cheap gradient principle)</p>
 <p>Let <span class="math notranslate nohighlight">\(f:\mathbb{R}^{p}\to\mathbb{R}\)</span> be evaluated by a trace of <span class="math notranslate nohighlight">\(\ell\)</span>
 elementary operations, each of which has at most two arguments and whose
 local derivatives cost at most a fixed multiple of the operation itself.
@@ -2005,7 +2190,7 @@ constant <em>independent of <span class="math notranslate nohighlight">\(p\)</sp
 <div class="note admonition">
 <p class="admonition-title">Proof</p>
 <p>The forward evaluation costs <span class="math notranslate nohighlight">\(\ell\)</span> operations and records the trace.  In the
-reverse recursion (4.57) each edge <span class="math notranslate nohighlight">\(j\to i\)</span> of the graph
+reverse recursion (4.62) each edge <span class="math notranslate nohighlight">\(j\to i\)</span> of the graph
 contributes exactly one term <span class="math notranslate nohighlight">\(\bar v_i\,\partial\varphi_i/\partial v_j\)</span>: one
 multiplication, one addition into <span class="math notranslate nohighlight">\(\bar v_j\)</span>, and the evaluation of the local
 derivative, which by hypothesis costs a bounded amount and often nothing at
@@ -2027,11 +2212,11 @@ between what can and cannot be trained.</p>
 <div class="tip admonition">
 <p class="admonition-title">Machine learning connection</p>
 <p>Backpropagation, the algorithm of Chapter 8 that trains every
-neural network, is Eq. (4.57) specialised to the layered
+neural network, is Eq. (4.62) specialised to the layered
 trace of a network.  The forward pass computes and stores the activations;
 the backward pass propagates the adjoint of the cost – the “error” of the
 older literature – from the output layer to the input, one transposed
-weight matrix at a time, exactly as in Eq. (4.59).  Nothing in
+weight matrix at a time, exactly as in Eq. (4.64).  Nothing in
 backpropagation is specific to networks: it is reverse-mode AD, and modern
 frameworks make no distinction.</p>
 </div>
@@ -2048,7 +2233,7 @@ product of the stage Jacobians,</p>
 \[
 \bm{J} = \bm{J}_L\,\bm{J}_{L-1}\cdots\bm{J}_1 ,
   \qquad
-  \bm{J}_k = \frac{\partial\bm{f}_k}{\partial\bm{x}_{k-1}}\in\mathbb{R}^{n_k\times n_{k-1}} .\tag{4.60}
+  \bm{J}_k = \frac{\partial\bm{f}_k}{\partial\bm{x}_{k-1}}\in\mathbb{R}^{n_k\times n_{k-1}} .\tag{4.65}
 \]</div>
 <p>Matrix multiplication is associative, so this product may be evaluated in any
 order, and the orders differ enormously in cost.  Forward mode multiplies from
@@ -2063,7 +2248,7 @@ costs <span class="math notranslate nohighlight">\(m\sum_kn_kn_{k-1}\)</span>.  
 when <span class="math notranslate nohighlight">\(n\ll m\)</span> and reverse mode when <span class="math notranslate nohighlight">\(m\ll n\)</span>.  Training a model is the
 extreme case <span class="math notranslate nohighlight">\(m=1\)</span>, <span class="math notranslate nohighlight">\(n=p\)</span>, and reverse mode wins by a factor <span class="math notranslate nohighlight">\(p\)</span>.  When <span class="math notranslate nohighlight">\(n\)</span>
 and <span class="math notranslate nohighlight">\(m\)</span> are comparable, neither mode is optimal and finding the cheapest
-bracketing of Eq. (4.60) – the optimal Jacobian
+bracketing of Eq. (4.65) – the optimal Jacobian
 accumulation problem – is NP-hard, though good heuristics exist
 [griewank2008].</p>
 <p><strong>Second derivatives.</strong>
@@ -2073,7 +2258,7 @@ Hessian–vector product is a directional derivative of the gradient,</p>
 <div class="math notranslate nohighlight">
 \[
 \bm{H}\bm{v}
-   = \frac{d}{d\epsilon}\nabla f(\bm{x}+\epsilon\bm{v})\Big|_{\epsilon=0} .\tag{4.61}
+   = \frac{d}{d\epsilon}\nabla f(\bm{x}+\epsilon\bm{v})\Big|_{\epsilon=0} .\tag{4.66}
 \]</div>
 <p>The right-hand side is a forward-mode derivative, in the direction <span class="math notranslate nohighlight">\(\bm{v}\)</span>,
 of a function – the gradient – that is itself computed by reverse mode.
@@ -2082,7 +2267,7 @@ one gradient, hence a small constant times one function evaluation, and it
 never forms the <span class="math notranslate nohighlight">\(p\times p\)</span> Hessian.  That is exactly the price at which
 Section <em>None of these can compete with Newton’s method</em> said curvature information could <em>not</em>
 be had; the truncated-Newton and conjugate-gradient methods of the
-optimisation literature [nocedal2006] use Eq. (4.61) to run
+optimisation literature [nocedal2006] use Eq. (4.66) to run
 Newton’s method (4.8) with only Hessian–vector products,
 and the natural-gradient methods of Chapter 8 rely on the same
 device.  The full Hessian, when it is wanted, is <span class="math notranslate nohighlight">\(p\)</span> such products,
@@ -2092,8 +2277,8 @@ device.  The full Hessian, when it is wanted, is <span class="math notranslate n
 <section id="accuracy-and-points-where-the-derivative-does-not-exist">
 <h3><span class="section-number">4.14.6. </span>Accuracy, and points where the derivative does not exist<a class="headerlink" href="#accuracy-and-points-where-the-derivative-does-not-exist" title="Link to this heading">#</a></h3>
 <p>We claimed that AD is accurate to working precision, and the claim can now be
-made precise.  The recursions (4.51) and
-(4.57) are exact identities; the only errors are the rounding
+made precise.  The recursions (4.56) and
+(4.62) are exact identities; the only errors are the rounding
 errors of the floating-point operations that implement them.  Each tangent or
 adjoint is obtained from its predecessors by a short chain of multiplications
 and additions of quantities that were themselves computed to relative accuracy
@@ -2185,9 +2370,9 @@ wrongly conclude that AD is inexact.</p>
 The two modes of Sections <em>Forward mode: tangents and dual numbers</em> and <em>Reverse mode: adjoints</em> are
 available directly.  <code class="docutils literal notranslate"><span class="pre">jvp</span></code> takes a function, a point and a tangent
 direction and returns the value and the Jacobian–vector product of
-Eq. (4.55); <code class="docutils literal notranslate"><span class="pre">vjp</span></code> takes a function and a point and returns
+Eq. (4.60); <code class="docutils literal notranslate"><span class="pre">vjp</span></code> takes a function and a point and returns
 the value and a function that maps a covector to the vector–Jacobian product
-of Eq. (4.59).  <code class="docutils literal notranslate"><span class="pre">jacfwd</span></code> and <code class="docutils literal notranslate"><span class="pre">jacrev</span></code> assemble the
+of Eq. (4.64).  <code class="docutils literal notranslate"><span class="pre">jacfwd</span></code> and <code class="docutils literal notranslate"><span class="pre">jacrev</span></code> assemble the
 full Jacobian by the two routes of Section <em>Forward or reverse: the chain rule as a matrix product</em>, one column or
 one row per sweep, and agree to rounding.</p>
 <div class="cell docutils container">
@@ -2301,7 +2486,7 @@ returns <span class="math notranslate nohighlight">\(\frac{2}{n}\bm{X}^{T}\bm{X}
 rounding, and one Newton step (4.8) with the automatic
 gradient and Hessian lands on the exact minimum, as
 Section <em>None of these can compete with Newton’s method</em> said it would.  The Hessian–vector product
-of Eq. (4.61) is one line, and it never forms the matrix.</p>
+of Eq. (4.66) is one line, and it never forms the matrix.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jax</span> <span class="kn">import</span> <span class="n">hessian</span><span class="p">,</span> <span class="n">jvp</span>
@@ -2334,12 +2519,12 @@ whose gradient one has <em>not</em> derived, and a classical test case is the
 Rosenbrock function [rosenbrock1960]</p>
 <div class="math notranslate nohighlight">
 \[
-f(x,y) = (1-x)^{2} + 100\,(y-x^{2})^{2},\tag{4.62}
+f(x,y) = (1-x)^{2} + 100\,(y-x^{2})^{2},\tag{4.67}
 \]</div>
 <p>which has a unique minimum at <span class="math notranslate nohighlight">\((1,1)\)</span> with <span class="math notranslate nohighlight">\(f=0\)</span> at the bottom of a long,
 curved, parabolic valley.  It is not convex, and its Hessian at the minimum
 has eigenvalues <span class="math notranslate nohighlight">\(0.40\)</span> and <span class="math notranslate nohighlight">\(1001.6\)</span>, hence <span class="math notranslate nohighlight">\(\kappa\approx2500\)</span>: by
-Eq. (4.21) plain gradient descent will be slow, momentum should
+Eq. (4.26) plain gradient descent will be slow, momentum should
 help by about <span class="math notranslate nohighlight">\(\sqrt{\kappa}\approx50\)</span>, and Newton’s method, which is
 invariant to the conditioning, should be fast.  With the gradient and Hessian
 supplied by JAX, all four methods are a few lines each.</p>
@@ -2424,19 +2609,19 @@ starting point has <span class="math notranslate nohighlight">\(\lambda_{\max}\a
 Eq. (4.20) <span class="math notranslate nohighlight">\(\gamma\)</span> must be below about <span class="math notranslate nohighlight">\(10^{-3}\)</span> – and then
 crawls along the valley floor at the rate set by <span class="math notranslate nohighlight">\(\lambda_{\min}\)</span>.  Momentum
 improves the count by a factor <span class="math notranslate nohighlight">\(10.5\)</span>, in line with the <span class="math notranslate nohighlight">\(\sqrt{\kappa}\)</span> of
-Eq. (4.26); Adam, with no tuning beyond <span class="math notranslate nohighlight">\(\gamma\)</span>, does about
+Eq. (4.31); Adam, with no tuning beyond <span class="math notranslate nohighlight">\(\gamma\)</span>, does about
 as well; and Newton’s method, using the curvature that JAX supplies at the
 cost of a few gradient evaluations, converges quadratically in six steps.
 None of the derivative code was written by hand, and replacing
-Eq. (4.62) by a neural network with a million parameters
+Eq. (4.67) by a neural network with a million parameters
 would change only the definition of the function.</p>
 </section>
 <section id="finite-differences-against-automatic-differentiation">
 <h3><span class="section-number">4.14.9. </span>Finite differences against automatic differentiation<a class="headerlink" href="#finite-differences-against-automatic-differentiation" title="Link to this heading">#</a></h3>
-<p>We close by measuring the error curve (4.45).  For
+<p>We close by measuring the error curve (4.50).  For
 <span class="math notranslate nohighlight">\(f(x)=\sin(2\pi x+x^{2})\)</span> at <span class="math notranslate nohighlight">\(x=1\)</span> the exact derivative is
 <span class="math notranslate nohighlight">\((2\pi+2)\cos(2\pi+1)=4.475424121402227\)</span>, and the central
-difference (4.43) gives, for decreasing <span class="math notranslate nohighlight">\(h\)</span>:</p>
+difference (4.48) gives, for decreasing <span class="math notranslate nohighlight">\(h\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -2461,18 +2646,18 @@ difference (4.43) gives, for decreasing <span class="math notranslate nohighligh
 </pre></div>
 </div>
 <p>The error falls as <span class="math notranslate nohighlight">\(h^{2}\)</span> – two orders of magnitude for each factor ten in
-<span class="math notranslate nohighlight">\(h\)</span>, with the coefficient <span class="math notranslate nohighlight">\(|f'''|/6\approx51\)</span> of Eq. (4.44)
+<span class="math notranslate nohighlight">\(h\)</span>, with the coefficient <span class="math notranslate nohighlight">\(|f'''|/6\approx51\)</span> of Eq. (4.49)
 – until <span class="math notranslate nohighlight">\(h\approx10^{-6}\)</span>, the <span class="math notranslate nohighlight">\(\epsilon_M^{1/3}\)</span> of
-Eq. (4.46), and then <em>rises</em> as <span class="math notranslate nohighlight">\(1/h\)</span> as rounding takes
+Eq. (4.51), and then <em>rises</em> as <span class="math notranslate nohighlight">\(1/h\)</span> as rounding takes
 over.  The best the finite difference achieves is <span class="math notranslate nohighlight">\(4\times10^{-10}\)</span>; the JAX
 derivative of the same function, <code class="docutils literal notranslate"><span class="pre">grad(f)(1.0)</span></code>, is
 <span class="math notranslate nohighlight">\(4.475424121402227\)</span>, correct in every digit.
 Figure 4.6 plots the whole curve, and it is worth memorising
 its shape: whenever a finite-difference gradient check is used, as in
-Eq. (4.63), <span class="math notranslate nohighlight">\(h\)</span> must sit near the bottom of this valley, and
+Eq. (4.68), <span class="math notranslate nohighlight">\(h\)</span> must sit near the bottom of this valley, and
 agreement to better than about <span class="math notranslate nohighlight">\(10^{-8}\)</span> relative should not be expected.</p>
-<p><img alt="Absolute error of the central finite difference 4.43 for fxsin2pi xx2 " src="../BookML/BookFigures/chapter04_optimization/fd_vs_ad_error.png" /></p>
-<p><em>Figure 4.6: Absolute error of the central finite difference (4.43) for <span class="math notranslate nohighlight">\(f(x)=\sin(2\pi x+x^{2})\)</span> at <span class="math notranslate nohighlight">\(x=1\)</span>, as a function of the step <span class="math notranslate nohighlight">\(h\)</span> (points), together with the model (4.45) (dashed): truncation error <span class="math notranslate nohighlight">\(\propto h^{2}\)</span> on the right, rounding error <span class="math notranslate nohighlight">\(\propto1/h\)</span> on the left, and a minimum of about <span class="math notranslate nohighlight">\(10^{-10}\)</span> near <span class="math notranslate nohighlight">\(h\approx\epsilon_M^{1/3}\)</span>.  The reverse-mode derivative computed by JAX has an error at the level of the unit roundoff, shown as the horizontal line, for any <span class="math notranslate nohighlight">\(h\)</span> because it involves no <span class="math notranslate nohighlight">\(h\)</span>.</em></p>
+<p><img alt="Absolute error of the central finite difference 4.48 for fxsin2pi xx2 " src="../BookML/BookFigures/chapter04_optimization/fd_vs_ad_error.png" /></p>
+<p><em>Figure 4.6: Absolute error of the central finite difference (4.48) for <span class="math notranslate nohighlight">\(f(x)=\sin(2\pi x+x^{2})\)</span> at <span class="math notranslate nohighlight">\(x=1\)</span>, as a function of the step <span class="math notranslate nohighlight">\(h\)</span> (points), together with the model (4.50) (dashed): truncation error <span class="math notranslate nohighlight">\(\propto h^{2}\)</span> on the right, rounding error <span class="math notranslate nohighlight">\(\propto1/h\)</span> on the left, and a minimum of about <span class="math notranslate nohighlight">\(10^{-10}\)</span> near <span class="math notranslate nohighlight">\(h\approx\epsilon_M^{1/3}\)</span>.  The reverse-mode derivative computed by JAX has an error at the level of the unit roundoff, shown as the horizontal line, for any <span class="math notranslate nohighlight">\(h\)</span> because it involves no <span class="math notranslate nohighlight">\(h\)</span>.</em></p>
 <p>The transformations of JAX compose: <code class="docutils literal notranslate"><span class="pre">jit(grad(f))</span></code> compiles the
 gradient, <code class="docutils literal notranslate"><span class="pre">vmap(grad(f))</span></code> vectorises it over a batch,
 <code class="docutils literal notranslate"><span class="pre">grad(grad(f))</span></code> differentiates it again and
@@ -2500,7 +2685,7 @@ equalises the scales and reduces <span class="math notranslate nohighlight">\(\k
 inputs as well.  The reason is exactly Eq. (1.44): for a squared
 error cost the Hessian <em>is</em> the correlation matrix of the inputs, up to
 normalisation, so standardising and decorrelating make the landscape as close
-to spherical as it can be made, which by Eq. (4.21) is the
+to spherical as it can be made, which by Eq. (4.26) is the
 best case.  Since most deep networks are linear transformations followed by
 non-linearities, the intuition carries beyond the linear case; this is also
 the motivation for batch normalisation.</p>
@@ -2523,7 +2708,7 @@ analytical expression against a central finite difference,</p>
 <div class="math notranslate nohighlight">
 \[
 \frac{\partial C}{\partial\theta_j}
-   \approx \frac{C(\bm{\theta}+h\bm{e}_j)-C(\bm{\theta}-h\bm{e}_j)}{2h},\tag{4.63}
+   \approx \frac{C(\bm{\theta}+h\bm{e}_j)-C(\bm{\theta}-h\bm{e}_j)}{2h},\tag{4.68}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(h\)</span> around <span class="math notranslate nohighlight">\(10^{-5}\)</span>, or against automatic differentiation.  An optimiser
 given a wrong gradient does not usually crash; it quietly converges to the
@@ -2549,7 +2734,7 @@ decoupled error recursion (4.19) explained exactly why: the
 step size is bounded above by <span class="math notranslate nohighlight">\(2/\lambda_{\max}\)</span> for stability while progress
 is governed by <span class="math notranslate nohighlight">\(\lambda_{\min}\)</span>, so the iteration count scales with the
 condition number <span class="math notranslate nohighlight">\(\kappa\)</span> of the Hessian – and by
-Eq. (4.22) with the <em>square</em> of the condition number
+Eq. (4.27) with the <em>square</em> of the condition number
 of the design matrix.  This single number connects the chapter to the two
 before it: it is the quantity of Section <em>Vector and matrix norms</em> that governs
 numerical accuracy, the quantity of Section <em>Statistical properties of the least-squares estimator</em> that
@@ -2567,7 +2752,7 @@ adaptive methods build a diagonal estimate of curvature from the second moment
 of the gradient: AdaGrad by an unbounded sum, which eventually stalls; RMSProp
 by an exponential moving average, which does not; and Adam by combining
 RMSProp with momentum and correcting the initialisation bias with the factors
-<span class="math notranslate nohighlight">\(1-\beta_i^{t}\)</span> derived in Eq. (4.40).</p>
+<span class="math notranslate nohighlight">\(1-\beta_i^{t}\)</span> derived in Eq. (4.45).</p>
 <p>The demonstration of Table 4.1 was deliberately
 unflattering, and its two lessons should be kept.  A learning rate is not
 comparable across optimisers, because the adaptive methods have already
@@ -2581,11 +2766,11 @@ Automatic differentiation applies the chain rule to the evaluation trace of a
 program: forward mode carries a tangent with every value and returns one
 Jacobian–vector product per sweep, reverse mode carries an adjoint with
 every node and returns one vector–Jacobian product per sweep, and by the
-cheap gradient principle of Proposition 4.1 the latter
+cheap gradient principle of Proposition 4.2 the latter
 delivers the gradient with respect to all <span class="math notranslate nohighlight">\(p\)</span> parameters for the price of a
 few function evaluations, independent of <span class="math notranslate nohighlight">\(p\)</span>.  It is exact to rounding, where
 finite differences are limited to <span class="math notranslate nohighlight">\(\epsilon_M^{2/3}\)</span> by
-Eq. (4.46), and it is the reason the models of the later
+Eq. (4.51), and it is the reason the models of the later
 chapters can be written down at all.</p>
 <p>The complete programs are collected in <code class="docutils literal notranslate"><span class="pre">doc/BookML/BookPrograms</span></code>:</p>
 <ul class="simple">
@@ -2593,9 +2778,9 @@ chapters can be written down at all.</p>
 <span class="math notranslate nohighlight">\(f(x)=x^{2}\)</span> and on the least-squares and Ridge problems of
 Section <em>Gradient descent for linear regression</em>, with the analytical solutions for
 comparison, and the empirical verification of the stability
-bound (4.20) and the rate (4.21).</p></li>
+bound (4.20) and the rate (4.26).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">stochastic_gradient.py</span></code> – minibatch SGD with a varying number
-of batches, the time-decay schedule (4.30), and a
+of batches, the time-decay schedule (4.35), and a
 comparison of convergence per iteration against convergence per unit
 of computation.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">adaptive_optimizers.py</span></code> – AdaGrad, RMSProp and Adam as in
@@ -2653,17 +2838,17 @@ Construct design matrices with condition numbers
 <span class="math notranslate nohighlight">\(\kappa_2(\bm{X})=10,10^{2},10^{3}\)</span>, for instance by rescaling the columns.
 (a) Measure the iteration count of gradient descent to fixed accuracy for
 each, and check the linear scaling with <span class="math notranslate nohighlight">\(\kappa\)</span> predicted by
-Eq. (4.21).
-(b) Repeat with momentum and verify the <span class="math notranslate nohighlight">\(\sqrt{\kappa}\)</span> scaling of
 Eq. (4.26).
+(b) Repeat with momentum and verify the <span class="math notranslate nohighlight">\(\sqrt{\kappa}\)</span> scaling of
+Eq. (4.31).
 (c) Repeat after standardising the columns, and comment.</p></li>
 <li><p><strong>Momentum as a damped oscillator.</strong>
 Consider the one-dimensional quadratic <span class="math notranslate nohighlight">\(C(\theta)=\tfrac{1}{2}\lambda\theta^{2}\)</span>.
-(a) Write the momentum update (4.23) as a two-term recurrence
+(a) Write the momentum update (4.28) as a two-term recurrence
 in <span class="math notranslate nohighlight">\(\theta\)</span>.
 (b) Find the values of <span class="math notranslate nohighlight">\(\gamma\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> for which the recurrence has
 complex roots, and interpret them as oscillation.
-(c) Verify Eq. (4.25) numerically by applying momentum to
+(c) Verify Eq. (4.30) numerically by applying momentum to
 a constant gradient.</p></li>
 <li><p><strong>Minibatch noise (numerical).</strong>
 For a fixed <span class="math notranslate nohighlight">\(\bm{\theta}\)</span>, compute the minibatch gradient many times for
@@ -2678,11 +2863,11 @@ each coordinate and show that it decays towards zero.
 (b) Estimate the total distance the iterate can still travel after <span class="math notranslate nohighlight">\(t\)</span>
 steps, and compare with the distance remaining to the minimum.
 (c) Repeat with RMSProp and explain, using
-Eq. (4.37), why the decay does not occur.</p></li>
+Eq. (4.42), why the decay does not occur.</p></li>
 <li><p><strong>Adam’s bias correction (numerical).</strong>
 (a) Implement Adam with and without the bias
-correction (4.41) and compare the first twenty steps.
-(b) For a constant gradient <span class="math notranslate nohighlight">\(g\)</span>, verify Eq. (4.40)
+correction (4.46) and compare the first twenty steps.
+(b) For a constant gradient <span class="math notranslate nohighlight">\(g\)</span>, verify Eq. (4.45)
 numerically.
 (c) Show that with <span class="math notranslate nohighlight">\(\beta_2=0.999\)</span> the uncorrected <span class="math notranslate nohighlight">\(\sqrt{v_1}\)</span> is smaller
 than the true root mean square gradient by a factor of about <span class="math notranslate nohighlight">\(32\)</span>, and
@@ -2691,7 +2876,7 @@ explain what that does to the first step.</p></li>
 (a) Using only <span class="math notranslate nohighlight">\(\varepsilon^{2}=0\)</span>, derive the rules for the quotient
 <span class="math notranslate nohighlight">\((a+b\varepsilon)/(c+d\varepsilon)\)</span> and for <span class="math notranslate nohighlight">\(\sqrt{a+b\varepsilon}\)</span>, and
 check that they reproduce the quotient rule and <span class="math notranslate nohighlight">\(d\sqrt{x}/dx\)</span>.
-(b) Show from Eq. (4.54) that dual numbers cannot deliver
+(b) Show from Eq. (4.59) that dual numbers cannot deliver
 second derivatives, and that the “hyper-dual” algebra with two
 symbols <span class="math notranslate nohighlight">\(\varepsilon_1,\varepsilon_2\)</span>, <span class="math notranslate nohighlight">\(\varepsilon_1^{2}=\varepsilon_2^{2}=0\)</span>
 but <span class="math notranslate nohighlight">\(\varepsilon_1\varepsilon_2\neq0\)</span>, can.
@@ -2701,37 +2886,37 @@ verify your rules numerically.</p></li>
 <li><p><strong>Forward and reverse sweeps by hand.</strong>
 For <span class="math notranslate nohighlight">\(f(x_1,x_2)=x_1x_2+\exp(x_1x_2)-\sin x_1\)</span> at <span class="math notranslate nohighlight">\((x_1,x_2)=(1,2)\)</span>:
 (a) write down the evaluation trace and draw the computational graph, as
-in Eq. (4.48) and Fig. 4.5;
-(b) carry out the forward sweep (4.51) for both
+in Eq. (4.53) and Fig. 4.5;
+(b) carry out the forward sweep (4.56) for both
 coordinate directions;
-(c) carry out the reverse sweep (4.57) once, and confirm
+(c) carry out the reverse sweep (4.62) once, and confirm
 that it delivers both partial derivatives;
 (d) count the multiplications in (b) and in (c), and check the operation
-count against Proposition 4.1.</p></li>
+count against Proposition 4.2.</p></li>
 <li><p><strong>Reverse mode for least squares.</strong>
 Write the least-squares cost (4.12) as the trace
 <span class="math notranslate nohighlight">\(\bm{v}_1=\bm{X}\bm{\theta}\)</span>, <span class="math notranslate nohighlight">\(\bm{v}_2=\bm{v}_1-\bm{y}\)</span>,
 <span class="math notranslate nohighlight">\(v_3=\bm{v}_2^{T}\bm{v}_2/n\)</span>, with vector-valued nodes.  Apply the reverse
-recursion (4.57) with the vector–Jacobian
-products (4.59) of each stage, and show that it produces the
+recursion (4.62) with the vector–Jacobian
+products (4.64) of each stage, and show that it produces the
 gradient (4.13) <span class="math notranslate nohighlight">\(\frac{2}{n}\bm{X}^{T}(\bm{X}\bm{\theta}-\bm{y})\)</span>
 without ever forming a Jacobian larger than <span class="math notranslate nohighlight">\(\bm{X}\)</span> itself.  Explain why
 the adjoint <span class="math notranslate nohighlight">\(\bar{\bm{v}}_1\)</span> is what Chapter 8 will call the
 output error.</p></li>
 <li><p><strong>Hessian–vector products (numerical).</strong>
-(a) Implement Eq. (4.61) in JAX as forward-over-reverse,
+(a) Implement Eq. (4.66) in JAX as forward-over-reverse,
 <code class="docutils literal notranslate"><span class="pre">jvp(grad(f))</span></code>, and alternatively as reverse-over-reverse,
 <code class="docutils literal notranslate"><span class="pre">grad(lambda</span> <span class="pre">x:</span> <span class="pre">grad(f)(x)</span> <span class="pre">&#64;</span> <span class="pre">v)</span></code>.  Check both against <code class="docutils literal notranslate"><span class="pre">jax.hessian</span></code>
 on the Ridge cost (4.16).
 (b) Use only Hessian–vector products and the conjugate-gradient method to
 solve the Newton system (4.8) for the Rosenbrock
-function (4.62), and reproduce the six-step
+function (4.67), and reproduce the six-step
 convergence of Section <em>The optimisers of this chapter on a non-convex function</em> without ever forming
 the Hessian.</p></li>
 <li><p><strong>The finite-difference error curve (numerical).</strong>
 Reproduce Fig. 4.6 for <span class="math notranslate nohighlight">\(f(x)=e^{x}\)</span> at <span class="math notranslate nohighlight">\(x=1\)</span> and for
 <span class="math notranslate nohighlight">\(f(x)=\tan x\)</span> at <span class="math notranslate nohighlight">\(x=1.5\)</span>.  From the measured minimum, estimate <span class="math notranslate nohighlight">\(\epsilon_M\)</span>
-and <span class="math notranslate nohighlight">\(|f'''|\)</span> using Eq. (4.46), and compare with the true
+and <span class="math notranslate nohighlight">\(|f'''|\)</span> using Eq. (4.51), and compare with the true
 values.  Repeat in single precision (<code class="docutils literal notranslate"><span class="pre">np.float32</span></code>) and explain the
 change.</p></li>
 </ol>
@@ -2746,7 +2931,7 @@ Generate a polynomial regression problem from the Franke function of
 Section <em>A complete example: the Franke function</em>, or from a one-dimensional polynomial of degree ten
 with the Vandermonde design matrix (3.3).  Compute
 <span class="math notranslate nohighlight">\(\kappa_2(\bm{X})\)</span> and <span class="math notranslate nohighlight">\(\kappa_2(\bm{X}^{T}\bm{X})\)</span> and confirm
-Eq. (4.22).  Then produce a second version with the columns
+Eq. (4.27).  Then produce a second version with the columns
 standardised and compare the two condition numbers.</p>
 <p><strong>Part b: plain gradient descent.</strong>
 Implement gradient descent with the analytical
@@ -2755,7 +2940,7 @@ gradient (4.13).  Determine empirically the largest stable
 iteration for several <span class="math notranslate nohighlight">\(\gamma\)</span> on both the raw and the standardised problem.</p>
 <p><strong>Part c: momentum and stochasticity.</strong>
 Add momentum and confirm the improvement in iteration count.  Then implement
-minibatch SGD with the time-decay schedule (4.30), and compare
+minibatch SGD with the time-decay schedule (4.35), and compare
 convergence per iteration and per gradient evaluation.  Which comparison is
 the fair one, and why?</p>
 <p><strong>Part d: the adaptive methods.</strong>
@@ -2776,7 +2961,7 @@ approximation to <span class="math notranslate nohighlight">\(\bm{H}\)</span> an
 <p><strong>Part f: automatic differentiation.</strong>
 Repeat part b using <code class="docutils literal notranslate"><span class="pre">autograd</span></code> or <code class="docutils literal notranslate"><span class="pre">JAX</span></code> instead of the
 hand-derived gradient, and verify that the two agree to machine precision.
-Then apply the gradient check (4.63) and compare the accuracy
+Then apply the gradient check (4.68) and compare the accuracy
 of the finite difference with that of automatic differentiation as <span class="math notranslate nohighlight">\(h\)</span> is
 varied over many orders of magnitude.  Explain the shape of the resulting
 curve using the discussion of round-off error in

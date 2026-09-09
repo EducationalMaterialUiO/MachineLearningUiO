@@ -628,7 +628,7 @@ recursions agree to <span class="math notranslate nohighlight">\(2\times10^{-16}
 <span class="math notranslate nohighlight">\(8\times10^{-17}\)</span> in the second – that is, to machine precision, as two
 correct computations of the same quantity should.</p>
 <p>The parameters are initialised exactly as in Section <em>Weight initialisation</em>,
-and trained with the Adam optimiser of Eq. (4.42); both are carried
+and trained with the Adam optimiser of Eq. (4.47); both are carried
 over unchanged.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -882,8 +882,8 @@ u''_{i} = \frac{u_{i+1}-2u_{i}+u_{i-1}}{\Delta x^{2}} + \bigO(\Delta x^{2}).\tag
 <p>Inserting Eq. (9.21) into Eq. (9.15) and using the
 boundary values <span class="math notranslate nohighlight">\(u_{0}=u_{n}=0\)</span> turns the differential equation into the linear
 system</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \frac{1}{\Delta x^{2}}
   \begin{bmatrix}
      2 &amp; -1 &amp;        &amp;        &amp;    \\
@@ -895,7 +895,7 @@ system</p>
   \begin{bmatrix} u_{1} \\ u_{2} \\ \vdots \\ u_{n-2} \\ u_{n-1} \end{bmatrix}
   =
   \begin{bmatrix} f_{1} \\ f_{2} \\ \vdots \\ f_{n-2} \\ f_{n-1} \end{bmatrix},\tag{9.22}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>whose matrix is the discrete one-dimensional Laplacian.  It is symmetric,
 positive definite and tridiagonal, and by the LU discussion of
 Section <em>LU and Cholesky decompositions</em> it can be factorised and solved in <span class="math notranslate nohighlight">\(\bigO(n)\)</span> operations

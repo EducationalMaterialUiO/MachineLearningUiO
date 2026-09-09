@@ -723,8 +723,8 @@ discarded exactly.</p>
 Collecting <span class="math notranslate nohighlight">\(\bm{\lambda}=[\lambda_1,\dots,\lambda_n]\)</span> and
 <span class="math notranslate nohighlight">\(\bm{y}=[y_1,\dots,y_n]\)</span>, minimising the negative of
 Eq. (6.17) reads</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \frac{1}{2}\bm{\lambda}^{T}
   \begin{bmatrix}
     y_1y_1\bm{x}_1^{T}\bm{x}_1 &amp; y_1y_2\bm{x}_1^{T}\bm{x}_2 &amp; \cdots &amp;
@@ -736,7 +736,7 @@ Eq. (6.17) reads</p>
       y_ny_n\bm{x}_n^{T}\bm{x}_n
   \end{bmatrix}
   \bm{\lambda} - \mathbb{1}^{T}\bm{\lambda},\tag{6.20}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>subject to <span class="math notranslate nohighlight">\(\bm{y}^{T}\bm{\lambda}=0\)</span> and <span class="math notranslate nohighlight">\(\bm{\lambda}\succeq\bm{0}\)</span>.  The
 matrix has entries <span class="math notranslate nohighlight">\(P_{ij}=y_iy_j\bm{x}_i^{T}\bm{x}_j\)</span> and is positive
 semi-definite, being of the form <span class="math notranslate nohighlight">\(\bm{Z}^{T}\bm{Z}\)</span> with
@@ -927,14 +927,14 @@ K(\bm{x}_i,\bm{x}_j) = \bm{z}_i^{T}\bm{z}_j
    = \phi(\bm{x}_i)^{T}\phi(\bm{x}_j).\tag{6.30}
 \]</div>
 <p>For the map (6.28) we can evaluate it explicitly,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 K(\bm{x}_i,\bm{x}_j)
    = \begin{bmatrix}x_i^{2}\\ y_i^{2}\\ \sqrt{2}x_iy_i\end{bmatrix}^{T}
      \begin{bmatrix}x_j^{2}\\ y_j^{2}\\ \sqrt{2}x_jy_j\end{bmatrix}
    = x_i^{2}x_j^{2} + 2x_ix_jy_iy_j + y_i^{2}y_j^{2}
    = \left(\bm{x}_i^{T}\bm{x}_j\right)^{2},\tag{6.31}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>the last step by recognising the expansion of a square.  This is the whole
 idea.  <em>The inner product in the three-dimensional feature space is a
 function of the inner product in the original two-dimensional space.</em>  We
@@ -1038,12 +1038,12 @@ polynomial model is the better matched of the two.</p>
 <span class="math notranslate nohighlight">\(\bm{A}=\bm{y}^{T}\)</span> and <span class="math notranslate nohighlight">\(f=0\)</span>.  The box
 constraints (6.26) split into <span class="math notranslate nohighlight">\(-\lambda_i\le0\)</span> and
 <span class="math notranslate nohighlight">\(\lambda_i\le C\)</span>, which stacked together give</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{G} = \begin{bmatrix}-\bm{I}\\ \bm{I}\end{bmatrix},
   \qquad
   \bm{h} = \begin{bmatrix}\bm{0}\\ C\mathbb{1}\end{bmatrix} .\tag{6.35}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>This is a <em>quadratic programme</em>: a convex quadratic objective with linear
 constraints, the class of problems treated at length by Boyd and
 Vandenberghe [boyd2004].</p>
@@ -1139,15 +1139,15 @@ E_i = f(\bm{x}_i)-y_i,
 <p>Since <span class="math notranslate nohighlight">\(\eta&lt;0\)</span>, the step moves <span class="math notranslate nohighlight">\(\lambda_2\)</span> opposite to <span class="math notranslate nohighlight">\(y_2(E_1-E_2)\)</span>, which
 is the direction of increasing <span class="math notranslate nohighlight">\(\mathcal{L}\)</span>.  Clipping to the feasible
 interval,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \lambda_2^{\mathrm{clip}} =
   \begin{cases}
     H &amp; \lambda_2^{\mathrm{new}}&gt;H,\\
     \lambda_2^{\mathrm{new}} &amp; L\le\lambda_2^{\mathrm{new}}\le H,\\
     L &amp; \lambda_2^{\mathrm{new}}&lt;L,
   \end{cases}\tag{6.43}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>and recovering the partner from Eq. (6.37),</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1549,7 +1549,7 @@ Chapter 4 apply after all.  The hinge is not differentiable at
 the kink, but it is convex and possesses a subgradient everywhere, which is
 enough.  The resulting algorithm, Pegasos, is stochastic gradient descent with
 the learning rate schedule <span class="math notranslate nohighlight">\(\gamma_t=1/(\lambda t)\)</span> of
-Eq. (4.30).</p>
+Eq. (4.35).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>

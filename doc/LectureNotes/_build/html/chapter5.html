@@ -453,10 +453,10 @@ and in particular to identify the classes of new, unseen samples.</p>
 <p>We specialise for most of the chapter to two classes, with outputs <span class="math notranslate nohighlight">\(y_i=0\)</span> and
 <span class="math notranslate nohighlight">\(y_i=1\)</span>.  The outcome might represent whether a credit card holder defaults on
 their debt,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 y_i = \begin{cases} 0 &amp; \text{no},\\ 1 &amp; \text{yes}. \end{cases}\tag{5.1}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p><strong>Why not simply use linear regression?.</strong>
 Before introducing anything new, it is worth seeing why the machinery of
 Chapter 3 is not adequate.  We could fit the linear model</p>
@@ -1412,32 +1412,26 @@ model’s output can be read as a probability.</p>
 <p class="admonition-title">Proposition 5.1 (Pointwise minimisers of the classification losses)</p>
 <p>For <span class="math notranslate nohighlight">\(0&lt;\eta&lt;1\)</span> the minimiser of Eq. (5.37) is</p>
 <div class="math notranslate nohighlight">
-\[\]</div>
-<div class="amsmath math notranslate nohighlight" id="equation-84f59e61-44d1-4b26-bc1d-dad9d78e4bf4">
-<span class="eqno">(5.1)<a class="headerlink" href="#equation-84f59e61-44d1-4b26-bc1d-dad9d78e4bf4" title="Permalink to this equation">#</a></span>\[\begin{align}
-\text{logistic:}  
+\[\begin{split}
+\begin{align}
+\text{logistic:}\quad
     &amp;t^{*}=\log\frac{\eta}{1-\eta},
     &amp;&amp;\sigma(t^{*})=\eta;
-    
-
-  \text{squared error:}  
+  \\
+  \text{squared error:}\quad
     &amp;\sigma(t^{*})=\eta;
-    
-
-  \text{exponential:}  
+  \\
+  \text{exponential:}\quad
     &amp;t^{*}=\tfrac12\log\frac{\eta}{1-\eta},
     &amp;&amp;\sigma(2t^{*})=\eta;
-    
-
-  \text{squared hinge:}  
+  \\
+  \text{squared hinge:}\quad
     &amp;t^{*}=2\eta-1;
-    
-
-  \text{hinge:}  
+  \\
+  \text{hinge:}\quad
     &amp;t^{*}=\mathrm{sign}(2\eta-1).
-\end{align}\]</div>
-<div class="math notranslate nohighlight">
-\[\]</div>
+\end{align}
+\end{split}\]</div>
 <p>All five are classification-calibrated.  The logistic and squared-error
 losses are proper; the exponential and squared-hinge losses determine <span class="math notranslate nohighlight">\(\eta\)</span>
 through <span class="math notranslate nohighlight">\(\sigma(2t^{*})\)</span> and <span class="math notranslate nohighlight">\((t^{*}+1)/2\)</span> respectively; the hinge loss
@@ -1965,15 +1959,15 @@ outcomes, and it turns out that no single number will do.</p>
 <p><strong>The confusion matrix.</strong>
 Everything starts here.  For two classes, cross-tabulating the true label
 against the predicted one gives four counts:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{array}{c|cc}
      &amp; \text{predicted } 1 &amp; \text{predicted } 0\\
     \hline
     \text{true } 1 &amp; \mathrm{TP} &amp; \mathrm{FN}\\
     \text{true } 0 &amp; \mathrm{FP} &amp; \mathrm{TN}
   \end{array}\tag{5.54}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>the true positives, false negatives, false positives and true negatives.
 Every scalar measure below is a function of these four numbers, and reporting
 the matrix itself is almost always more informative than reporting any of
@@ -2448,7 +2442,7 @@ predictors in the notebox of Section <em>The Lasso</em>.</p></li>
 Write logistic regression from scratch, with the stable sigmoid, the
 cross-entropy cost (5.13), the analytical
 gradient (5.17) and an <span class="math notranslate nohighlight">\(\ell_2\)</span> penalty.  Verify the gradient
-against a finite difference using Eq. (4.63) and against
+against a finite difference using Eq. (4.68) and against
 automatic differentiation as in Section <em>Automatic differentiation</em>.</p>
 <p><strong>Part b: optimisers.</strong>
 Train it on the Wisconsin data using plain gradient descent, momentum,

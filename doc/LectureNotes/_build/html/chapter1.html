@@ -483,8 +483,8 @@ than agreement with tradition.</p>
 described by <span class="math notranslate nohighlight">\(p\)</span> features (also called predictors, inputs or independent
 variables), together with <span class="math notranslate nohighlight">\(n\)</span> target values (outputs, responses or dependent
 variables).  We collect the features in the <em>design matrix</em></p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{X} =
   \begin{bmatrix}
     x_{00} &amp; x_{01} &amp; \cdots &amp; x_{0,p-1}\\
@@ -493,7 +493,7 @@ variables).  We collect the features in the <em>design matrix</em></p>
     x_{n-1,0} &amp; x_{n-1,1} &amp; \cdots &amp; x_{n-1,p-1}
   \end{bmatrix}
   \in\mathbb{R}^{n\times p},\tag{1.1}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>in which <em>row <span class="math notranslate nohighlight">\(i\)</span> is one observation</em> and <em>column <span class="math notranslate nohighlight">\(j\)</span> is one
 feature</em>, and the targets in a vector <span class="math notranslate nohighlight">\(\bm{y}\in\mathbb{R}^{n}\)</span>.  Model
 parameters are collected in <span class="math notranslate nohighlight">\(\bm{\theta}\in\mathbb{R}^{p}\)</span>, so that the linear
@@ -1051,8 +1051,8 @@ Section <em>Notation and conventions</em>.  We assume <span class="math notransl
 <h3><span class="section-number">1.8.1. </span>The Jacobian<a class="headerlink" href="#the-jacobian" title="Link to this heading">#</a></h3>
 <p>The partial derivatives of the components of <span class="math notranslate nohighlight">\(\bm{y}\)</span> with respect to the
 components of <span class="math notranslate nohighlight">\(\bm{x}\)</span> are collected in the <em>Jacobian matrix</em></p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{J}=\frac{\partial\bm{y}}{\partial\bm{x}}=
   \begin{bmatrix}
     \dfrac{\partial y_0}{\partial x_0} &amp;
@@ -1066,7 +1066,7 @@ components of <span class="math notranslate nohighlight">\(\bm{x}\)</span> are c
     \dfrac{\partial y_{m-1}}{\partial x_1} &amp; \cdots &amp;
     \dfrac{\partial y_{m-1}}{\partial x_{n-1}}
   \end{bmatrix},\tag{1.16}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>an <span class="math notranslate nohighlight">\(m\times n\)</span> matrix whose entry <span class="math notranslate nohighlight">\((i,k)\)</span> is <span class="math notranslate nohighlight">\(\partial y_i/\partial x_k\)</span>.  If
 <span class="math notranslate nohighlight">\(\bm{x}\)</span> is a scalar the Jacobian reduces to a single column, an <span class="math notranslate nohighlight">\(m\times1\)</span>
 matrix; if <span class="math notranslate nohighlight">\(\bm{y}\)</span> is a scalar it reduces to a single row, a <span class="math notranslate nohighlight">\(1\times n\)</span>
@@ -1098,8 +1098,8 @@ use in the derivations that follow.</p>
 <p>The gradient, on the other hand, is conventionally a <em>column</em> vector, so
 that it can be subtracted from the parameter vector in a gradient-descent
 step.  That is the <em>denominator</em> layout,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \nabla_{\bm{x}}\alpha
   = \left(\frac{\partial\alpha}{\partial\bm{x}}\right)^{T}
   = \begin{bmatrix}
@@ -1108,7 +1108,7 @@ step.  That is the <em>denominator</em> layout,</p>
       \dfrac{\partial\alpha}{\partial x_{n-1}}
     \end{bmatrix}
   \qquad\text{(\emph{denominator} layout).}\tag{1.18}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>The two differ by a transpose and by nothing else.  Neither is more correct
 than the other; what is fatal is to mix them inside a single calculation, and
 a large fraction of the sign and shape errors students make in this course
@@ -2183,8 +2183,8 @@ writes</p>
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(\bm{L}\)</span> unit lower triangular and <span class="math notranslate nohighlight">\(\bm{U}\)</span> upper triangular; for a
 <span class="math notranslate nohighlight">\(4\times 4\)</span> matrix</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{bmatrix}
     a_{00} &amp; a_{01} &amp; a_{02} &amp; a_{03}\\
     a_{10} &amp; a_{11} &amp; a_{12} &amp; a_{13}\\
@@ -2204,7 +2204,7 @@ writes</p>
     0      &amp; 0      &amp; u_{22} &amp; u_{23}\\
     0      &amp; 0      &amp; 0      &amp; u_{33}
   \end{bmatrix} .\tag{1.83}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>The factorisation exists whenever <span class="math notranslate nohighlight">\(\bm{A}\)</span> is non-singular and, with the
 normalisation <span class="math notranslate nohighlight">\(l_{ii}=1\)</span>, it is unique.  Multiplying out the first column
 gives <span class="math notranslate nohighlight">\(a_{00}=u_{00}\)</span> and <span class="math notranslate nohighlight">\(a_{j0}=l_{j0}u_{00}\)</span>, which determines <span class="math notranslate nohighlight">\(u_{00}\)</span> and
@@ -2686,10 +2686,10 @@ diagonalisability either.</p>
 <p>Recall that a square matrix can be diagonalised if and only if it is
 <em>normal</em>, that is if <span class="math notranslate nohighlight">\(\bm{X}\bm{X}^{T}=\bm{X}^{T}\bm{X}\)</span>.  Not every
 matrix satisfies this.  The simplest counterexample is</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{X} = \begin{bmatrix} 1 &amp; -1\\ 1 &amp; -1\end{bmatrix},\tag{1.111}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>whose determinant vanishes and for which
 <span class="math notranslate nohighlight">\(\bm{X}\bm{X}^{T}\neq\bm{X}^{T}\bm{X}\)</span>.  It is <em>defective</em>: it cannot be
 diagonalised, and it has no inverse.  A data set with two perfectly
@@ -2716,14 +2716,14 @@ diagonal, on which sit the <em>singular values</em></p>
 <p>The columns of <span class="math notranslate nohighlight">\(\bm{U}\)</span> are the <em>left</em> singular vectors and the columns
 of <span class="math notranslate nohighlight">\(\bm{V}\)</span> the <em>right</em> singular vectors.  The decomposition always
 exists.  For the defective matrix of Eq. (1.111) it reads</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{X}
    = \frac{1}{\sqrt{2}}\begin{bmatrix}1&amp;1\\1&amp;-1\end{bmatrix}
      \begin{bmatrix}2&amp;0\\0&amp;0\end{bmatrix}
      \frac{1}{\sqrt{2}}\begin{bmatrix}1&amp;-1\\1&amp;1\end{bmatrix}
    = \bm{U}\bm{\Sigma}\bm{V}^{T},\tag{1.114}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\sigma_0=2\)</span> and <span class="math notranslate nohighlight">\(\sigma_1=0\)</span>.  A matrix that cannot be diagonalised at
 all is decomposed without difficulty, and the vanishing singular value states
 plainly what the determinant only hinted at: the two columns carry one

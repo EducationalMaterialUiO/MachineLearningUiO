@@ -499,8 +499,8 @@ parameters and not to the features, and this distinction is the source of most
 of the method’s usefulness.  Nothing prevents the columns of <span class="math notranslate nohighlight">\(\bm{X}\)</span> from
 being non-linear functions of some underlying variable.  If we have a single
 input <span class="math notranslate nohighlight">\(x\)</span> and choose</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{X} =
   \begin{bmatrix}
     1 &amp; x_0 &amp; x_0^{2} &amp; \cdots &amp; x_0^{p-1}\\
@@ -508,7 +508,7 @@ input <span class="math notranslate nohighlight">\(x\)</span> and choose</p>
     \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
     1 &amp; x_{n-1} &amp; x_{n-1}^{2} &amp; \cdots &amp; x_{n-1}^{p-1}
   \end{bmatrix},\tag{3.3}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>then Eq. (3.2) is a polynomial fit of degree <span class="math notranslate nohighlight">\(p-1\)</span>, and it
 remains a <em>linear</em> regression problem.  More generally, replacing <span class="math notranslate nohighlight">\(x\)</span> by
 any set of basis functions <span class="math notranslate nohighlight">\(\phi_j(x)\)</span> – polynomials, splines, Fourier modes,
@@ -1808,14 +1808,14 @@ does.</p>
 <p><strong>No closed form.</strong>
 Differentiating Eq. (3.57) requires the derivative of the
 absolute value,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \frac{d\left|\theta\right|}{d\theta} = \mathrm{sgn}(\theta) =
   \begin{cases}
     +1 &amp; \theta&gt;0,\\
     -1 &amp; \theta&lt;0,
   \end{cases}\tag{3.58}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>which is undefined at the origin.  Ignoring that difficulty for a moment and
 dropping the <span class="math notranslate nohighlight">\(1/n\)</span>, the stationarity condition reads</p>
 <div class="math notranslate nohighlight">
@@ -1863,8 +1863,8 @@ gives <span class="math notranslate nohighlight">\(\theta_i=y_i-\lambda/2\)</spa
 when <span class="math notranslate nohighlight">\(y_i&gt;\lambda/2\)</span>; if <span class="math notranslate nohighlight">\(\theta_i&lt;0\)</span> it gives <span class="math notranslate nohighlight">\(\theta_i=y_i+\lambda/2\)</span>,
 consistent only when <span class="math notranslate nohighlight">\(y_i&lt;-\lambda/2\)</span>.  For <span class="math notranslate nohighlight">\(|y_i|\le\lambda/2\)</span> neither branch
 is consistent and the minimum lies at the kink <span class="math notranslate nohighlight">\(\theta_i=0\)</span>.  Collecting,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \boxed{\;
   \hat{\theta}_i^{\mathrm{Lasso}} =
   \begin{cases}
@@ -1872,7 +1872,7 @@ is consistent and the minimum lies at the kink <span class="math notranslate noh
     y_i + \lambda/2 &amp; y_i &lt; -\lambda/2,\\[2pt]
     0               &amp; \left|y_i\right| \le \lambda/2 .
   \end{cases} \;}\tag{3.63}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>This is the <em>soft thresholding</em> operator, written compactly as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1937,15 +1937,15 @@ which <span class="math notranslate nohighlight">\(\mathrm{sgn}\)</span> is unde
 ignored by the <em>subdifferential</em>: for a convex function <span class="math notranslate nohighlight">\(g\)</span>, the
 subdifferential at a point is the set of slopes of all lines lying below the
 graph and touching it there, and for the absolute value</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \partial\left|\theta\right| =
   \begin{cases}
     \{+1\} &amp; \theta&gt;0,\\
     \{-1\} &amp; \theta&lt;0,\\
     [-1,1] &amp; \theta=0 .
   \end{cases}\tag{3.65}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>A convex function is minimised exactly where <span class="math notranslate nohighlight">\(0\)</span> belongs to its
 subdifferential, which is the generalisation of “the derivative vanishes” and
 reduces to it wherever the function is differentiable.</p>
@@ -2115,12 +2115,12 @@ in dictionary learning and in the pruning of neural networks.</p>
 <h2><span class="section-number">3.10. </span>Comparing the three estimators<a class="headerlink" href="#comparing-the-three-estimators" title="Link to this heading">#</a></h2>
 <p>It is worth seeing the three methods act on the same small problem.  Take the
 targets and design matrix</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{y}=\begin{bmatrix}4\\2\\3\end{bmatrix},
   \qquad
   \bm{X}=\begin{bmatrix}2&amp;0\\0&amp;1\\0&amp;0\end{bmatrix},\tag{3.70}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>so that there are three observations, two features and two parameters.  The
 third row contributes nothing to the fit but does contribute to the error,
 which is what makes the example non-trivial.  Since
@@ -2131,24 +2131,24 @@ C(\bm{\theta}) = \left(4-2\theta_0\right)^{2}
                  + \left(2-\theta_1\right)^{2} + 3^{2},\tag{3.71}
 \]</div>
 <p>minimised at</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \hat{\bm{\theta}}_{\mathrm{OLS}}
    = \left(\bm{X}^{T}\bm{X}\right)^{-1}\bm{X}^{T}\bm{y}
    = \begin{bmatrix}2\\2\end{bmatrix}.\tag{3.72}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>Adding the Ridge penalty gives
 <span class="math notranslate nohighlight">\(C(\bm{\theta})=(4-2\theta_0)^{2}+(2-\theta_1)^{2}
 +\lambda(\theta_0^{2}+\theta_1^{2})\)</span> up to the constant, and differentiating
 with respect to each parameter separately,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \hat{\bm{\theta}}_{\mathrm{Ridge}}
    = \begin{bmatrix}
        \dfrac{8}{4+\lambda}\\[8pt]
        \dfrac{2}{1+\lambda}
      \end{bmatrix},\tag{3.73}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>which reproduces Eq. (3.72) at <span class="math notranslate nohighlight">\(\lambda=0\)</span> and decays to zero as
 <span class="math notranslate nohighlight">\(\lambda\)</span> grows.  Notice that the two coefficients are shrunk by
 <em>different</em> factors, <span class="math notranslate nohighlight">\(4/(4+\lambda)\)</span> and <span class="math notranslate nohighlight">\(1/(1+\lambda)\)</span>: the penalty is

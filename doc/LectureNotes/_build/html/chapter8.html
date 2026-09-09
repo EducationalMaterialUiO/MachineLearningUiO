@@ -679,14 +679,14 @@ in circulation claims both too much and too little.</p>
 <p><strong>Cybenko’s theorem.</strong></p>
 <p>The first result is due to Cybenko in 1989 [cybenko1989].  Let <span class="math notranslate nohighlight">\(\sigma\)</span> be
 any continuous <em>sigmoidal</em> function, meaning one with the limits</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \sigma(z) \longrightarrow
   \begin{cases}
     1 &amp; z\rightarrow+\infty,\\
     0 &amp; z\rightarrow-\infty,
   \end{cases}\tag{8.2}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>and let <span class="math notranslate nohighlight">\(F(\bm{x})\)</span> be a continuous function on the unit cube in <span class="math notranslate nohighlight">\(d\)</span>
 dimensions, <span class="math notranslate nohighlight">\(\bm{x}\in[0,1]^{d}\)</span>.  Then for every <span class="math notranslate nohighlight">\(\epsilon&gt;0\)</span> there exists a
 network with a single hidden layer,
@@ -1047,12 +1047,12 @@ parameters in all.</p>
 <p class="admonition-title">Lemma 8.5 (The sawtooth)</p>
 <p><span class="math notranslate nohighlight">\(s_k\)</span> maps <span class="math notranslate nohighlight">\([0,1]\)</span> onto <span class="math notranslate nohighlight">\([0,1]\)</span>, is piecewise linear with exactly <span class="math notranslate nohighlight">\(2^{k}\)</span>
 affine pieces of slope <span class="math notranslate nohighlight">\(\pm2^{k}\)</span>, and satisfies</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 s_k\!\left(\frac{j}{2^{k}}\right)
    = \begin{cases} 0 &amp; j \text{ even},\\ 1 &amp; j \text{ odd},\end{cases}
   \qquad j = 0,1,\dots,2^{k}.\tag{8.16}
-\end{split}\]</div>
+\end{equation*}\]</div>
 </div>
 <div class="note admonition">
 <p class="admonition-title">Proof</p>
@@ -1279,12 +1279,12 @@ learning.</p>
 <section id="the-rectified-family">
 <h3><span class="section-number">8.6.2. </span>The rectified family<a class="headerlink" href="#the-rectified-family" title="Link to this heading">#</a></h3>
 <p>The <em>rectified linear unit</em>,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \mathrm{ReLU}(z) = \max(0,z),
   \qquad
   \mathrm{ReLU}'(z) = \begin{cases}1 &amp; z&gt;0,\\ 0 &amp; z&lt;0,\end{cases}\tag{8.23}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>broke the deadlock.  It is trivial to compute, it does not saturate for
 positive arguments so the gradient passes through undiminished, and it produces
 genuinely sparse activations since about half the units output zero.  Its
@@ -1298,21 +1298,21 @@ learning rate a substantial fraction of a network can die this way – in bad
 cases half of it.</p>
 <p>Three repairs give the negative branch a non-zero slope.  The <em>leaky</em>
 ReLU uses a fixed small slope,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \mathrm{LReLU}(z) = \begin{cases} z &amp; z&gt;0,\\ \alpha z &amp; z\le 0,\end{cases}
   \qquad \alpha\approx0.01,\tag{8.24}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>so the gradient never vanishes entirely.  <em>PReLU</em> makes <span class="math notranslate nohighlight">\(\alpha\)</span> a
 parameter learned by backpropagation like any other, one per channel.  The
 <em>exponential linear unit</em></p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \mathrm{ELU}(z) = \begin{cases}
     \alpha\left(e^{z}-1\right) &amp; z&lt;0,\\
     z &amp; z\ge0,
   \end{cases}\tag{8.25}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>does the same more smoothly, saturating at <span class="math notranslate nohighlight">\(-\alpha\)</span> for large negative
 arguments so that the unit output has a mean nearer zero, at the cost of an
 exponential.  <em>SELU</em> is ELU with two particular constants chosen so that,
@@ -1703,7 +1703,7 @@ layer, exactly as the forward pass does.  The whole gradient with respect to
 of the number of parameters.  This is precisely the claim made for reverse-mode
 automatic differentiation in Section <em>Automatic differentiation</em>, and backpropagation is
 that algorithm specialised to a layered network.  Computing the same gradient
-by finite differences, Eq. (4.63), would require one forward
+by finite differences, Eq. (4.68), would require one forward
 pass per parameter; for a network with <span class="math notranslate nohighlight">\(10^{6}\)</span> weights the difference is
 between a second and a fortnight.</p>
 </section>
@@ -1753,7 +1753,7 @@ as in Section <em>Stochastic gradient descent</em>, and one pass over all miniba
 <p>Always verify a hand-written
 backpropagation implementation against finite differences before trusting it.
 Perturb one weight by <span class="math notranslate nohighlight">\(h\approx10^{-6}\)</span>, evaluate the cost twice, and compare
-the central difference (4.63) with the analytical gradient; the
+the central difference (4.68) with the analytical gradient; the
 relative discrepancy should be around <span class="math notranslate nohighlight">\(10^{-6}\)</span> or smaller.  A wrong gradient
 does not usually announce itself – the network still trains, just to the wrong
 place, or trains slightly worse than it should – and this check takes minutes
@@ -1925,7 +1925,7 @@ attacks the vanishing-gradient problem directly; it also acts as a mild
 regulariser, since the statistics depend on the composition of the minibatch.
 The connection to Section <em>The learning rate and the condition number</em> is exact: standardising the
 inputs to a layer improves the conditioning of the optimisation problem that
-layer poses, and Eq. (4.21) says what that is worth.</p>
+layer poses, and Eq. (4.26) says what that is worth.</p>
 <p><strong>Gradient clipping.</strong>
 If the gradient norm exceeds a threshold, rescale it to that threshold.  This
 does not cure exploding gradients but it prevents a single bad minibatch from

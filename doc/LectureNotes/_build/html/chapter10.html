@@ -544,8 +544,8 @@ p(t) = \alpha_0+\alpha_1 t+\alpha_2 t^{2},
 \]</div>
 <p>whose product is a polynomial of degree five,
 <span class="math notranslate nohighlight">\(z(t)=\sum_{l=0}^{5}\delta_l t^{l}\)</span>.  Collecting terms,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{split}
     \delta_0&amp;=\alpha_0\beta_0,\\
     \delta_1&amp;=\alpha_1\beta_0+\alpha_0\beta_1,\\
@@ -554,7 +554,7 @@ p(t) = \alpha_0+\alpha_1 t+\alpha_2 t^{2},
     \delta_4&amp;=\alpha_2\beta_2+\alpha_1\beta_3,\\
     \delta_5&amp;=\alpha_2\beta_3.
   \end{split}\tag{10.6}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>Every line has the same shape: the indices of the two factors sum to the index
 of the result.  That is precisely Eq. (10.4),</p>
 <div class="math notranslate nohighlight">
@@ -569,8 +569,8 @@ analogy; the coefficient sequences convolve.</p>
 <p>Since Eq. (10.7) is linear in <span class="math notranslate nohighlight">\(\bm{\beta}\)</span> we may write it as a
 matrix acting on <span class="math notranslate nohighlight">\(\bm{\beta}\)</span>.  Reading off the coefficients of
 Eq. (10.6),</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{\delta}=
   \begin{bmatrix}
     \alpha_0 &amp; 0 &amp; 0 &amp; 0 \\
@@ -582,7 +582,7 @@ Eq. (10.6),</p>
   \end{bmatrix}
   \begin{bmatrix} \beta_0 \\ \beta_1 \\ \beta_2 \\ \beta_3\end{bmatrix}
   \;\equiv\; \bm{T}_{\alpha}\,\bm{\beta}.\tag{10.8}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>Because convolution is commutative the same vector is obtained from
 <span class="math notranslate nohighlight">\(\bm{T}_{\beta}\bm{\alpha}\)</span> with a <span class="math notranslate nohighlight">\(6\times3\)</span> matrix built from <span class="math notranslate nohighlight">\(\bm{\beta}\)</span>;
 which of the two sequences is called the filter is a matter of interpretation,
@@ -848,8 +848,8 @@ Take the small example of a <span class="math notranslate nohighlight">\(3\times
 <span class="math notranslate nohighlight">\(S=1\)</span>, <span class="math notranslate nohighlight">\(P=0\)</span>.  Flattening the input row by row into <span class="math notranslate nohighlight">\(\bm{X}'\in\mathbb{R}^{9}\)</span>
 and the output into <span class="math notranslate nohighlight">\(\bm{Y}'\in\mathbb{R}^{4}\)</span>, the convolution is
 <span class="math notranslate nohighlight">\(\bm{Y}'=\bm{W}'\bm{X}'\)</span> with</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{W}'=
   \begin{bmatrix}
     w_{00} &amp; w_{01} &amp; 0 &amp; w_{10} &amp; w_{11} &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
@@ -857,7 +857,7 @@ and the output into <span class="math notranslate nohighlight">\(\bm{Y}'\in\math
     0 &amp; 0 &amp; 0 &amp; w_{00} &amp; w_{01} &amp; 0 &amp; w_{10} &amp; w_{11} &amp; 0 \\
     0 &amp; 0 &amp; 0 &amp; 0 &amp; w_{00} &amp; w_{01} &amp; 0 &amp; w_{10} &amp; w_{11}
   \end{bmatrix}.\tag{10.19}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>This matrix is <em>doubly block Toeplitz</em>: it is a Toeplitz matrix whose
 entries are themselves Toeplitz blocks, the outer structure coming from the row
 index and the inner from the column index.  Four numbers appear in thirty-six

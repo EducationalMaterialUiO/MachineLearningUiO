@@ -524,26 +524,22 @@ almost everywhere.</p>
 <p class="admonition-title">Proof</p>
 <p>Multiply by one and split.  Since <span class="math notranslate nohighlight">\(q_{\bm{\phi}}\)</span> integrates to one,</p>
 <div class="math notranslate nohighlight">
-\[\]</div>
-<div class="amsmath math notranslate nohighlight">
-\[\begin{align*}
+\[\begin{split}
+\begin{align*}
 \log p(\bm{x})
-   &amp;= \int q_{\bm{\phi}}(\bm{h}\mid\bm{x})\log p(\bm{x}) \mathrm{d}\bm{h}
-    = \mathbb{E}_{q_{\bm{\phi}}}\!\left[\log p(\bm{x})\right]  
-
+   &amp;= \int q_{\bm{\phi}}(\bm{h}\mid\bm{x})\log p(\bm{x})\,\mathrm{d}\bm{h}
+    = \mathbb{E}_{q_{\bm{\phi}}}\!\left[\log p(\bm{x})\right]\\
    &amp;= \mathbb{E}_{q_{\bm{\phi}}}\!\left[
         \log\frac{p(\bm{x},\bm{h})}{p(\bm{h}\mid\bm{x})}\right]
     = \mathbb{E}_{q_{\bm{\phi}}}\!\left[
-        \log\frac{p(\bm{x},\bm{h}) q_{\bm{\phi}}(\bm{h}\mid\bm{x})}
-                 {p(\bm{h}\mid\bm{x}) q_{\bm{\phi}}(\bm{h}\mid\bm{x})}\right]  
-
+        \log\frac{p(\bm{x},\bm{h})\,q_{\bm{\phi}}(\bm{h}\mid\bm{x})}
+                 {p(\bm{h}\mid\bm{x})\,q_{\bm{\phi}}(\bm{h}\mid\bm{x})}\right]\\
    &amp;= \mathbb{E}_{q_{\bm{\phi}}}\!\left[
         \log\frac{p(\bm{x},\bm{h})}{q_{\bm{\phi}}(\bm{h}\mid\bm{x})}\right]
     + \mathbb{E}_{q_{\bm{\phi}}}\!\left[
         \log\frac{q_{\bm{\phi}}(\bm{h}\mid\bm{x})}{p(\bm{h}\mid\bm{x})}\right],
-\end{align*}\]</div>
-<div class="math notranslate nohighlight">
-\[\]</div>
+\end{align*}
+\end{split}\]</div>
 <p>where the second line used <span class="math notranslate nohighlight">\(p(\bm{x})=p(\bm{x},\bm{h})/p(\bm{h}\mid\bm{x})\)</span>.
 The last expectation is the definition of the KL divergence, which is
 non-negative by Eq. (14.7) and zero only when the two distributions

@@ -761,24 +761,20 @@ and at that point <span class="math notranslate nohighlight">\(D^{*}\equiv\tfrac
 <p class="admonition-title">Proof</p>
 <p>Substituting Eq. (17.6) into Eq. (17.5),</p>
 <div class="math notranslate nohighlight">
-\[\]</div>
-<div class="amsmath math notranslate nohighlight" id="equation-7237de8b-e8fb-4066-ac3c-b7ce9d972ee5">
-<span class="eqno">(17.1)<a class="headerlink" href="#equation-7237de8b-e8fb-4066-ac3c-b7ce9d972ee5" title="Permalink to this equation">#</a></span>\[\begin{align}
+\[\begin{split}
+\begin{align}
 V(G,D^{*})
-  &amp;= \int p_r\log\frac{p_r}{p_r+p_g} \ud{\bm{x}}
-   + \int p_g\log\frac{p_g}{p_r+p_g} \ud{\bm{x}}
-  \nonumber  
-
-  &amp;= \int p_r\log\frac{p_r}{\tfrac{1}{2}(p_r+p_g)} \ud{\bm{x}} - \log 2
-   + \int p_g\log\frac{p_g}{\tfrac{1}{2}(p_r+p_g)} \ud{\bm{x}} - \log 2
-  \nonumber  
-
+  &amp;= \int p_r\log\frac{p_r}{p_r+p_g}\,\ud{\bm{x}}
+   + \int p_g\log\frac{p_g}{p_r+p_g}\,\ud{\bm{x}}
+  \nonumber\\
+  &amp;= \int p_r\log\frac{p_r}{\tfrac{1}{2}(p_r+p_g)}\,\ud{\bm{x}} - \log 2
+   + \int p_g\log\frac{p_g}{\tfrac{1}{2}(p_r+p_g)}\,\ud{\bm{x}} - \log 2
+  \nonumber\\
   &amp;= 2\left[\tfrac{1}{2}D_{\mathrm{KL}}\!\left(p_r\Big\|\tfrac{p_r+p_g}{2}\right)
      + \tfrac{1}{2}D_{\mathrm{KL}}\!\left(p_g\Big\|\tfrac{p_r+p_g}{2}\right)\right]
      - 2\log 2,
-\end{align}\]</div>
-<div class="math notranslate nohighlight">
-\[\]</div>
+\end{align}
+\end{split}\]</div>
 <p>where in the second line we multiplied and divided each argument of the
 logarithm by <span class="math notranslate nohighlight">\(2\)</span>, each such step contributing <span class="math notranslate nohighlight">\(-\log2\)</span> because <span class="math notranslate nohighlight">\(p_r\)</span> and <span class="math notranslate nohighlight">\(p_g\)</span>
 integrate to one.  The bracket is Eq. (17.11).  The bound then follows
@@ -1063,12 +1059,12 @@ V(x,y) = xy,\tag{17.22}
 \]</div>
 <p>with <span class="math notranslate nohighlight">\(x\)</span> minimising and <span class="math notranslate nohighlight">\(y\)</span> maximising.  The unique Nash equilibrium is the
 origin.  Simultaneous gradient updates give</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{pmatrix}x_{t+1}\\y_{t+1}\end{pmatrix}
    = \begin{pmatrix}1 &amp; -\gamma\\ \gamma &amp; 1\end{pmatrix}
      \begin{pmatrix}x_{t}\\y_{t}\end{pmatrix},\tag{17.23}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>whose matrix has eigenvalues <span class="math notranslate nohighlight">\(1\pm i\gamma\)</span> of modulus <span class="math notranslate nohighlight">\(\sqrt{1+\gamma^{2}}&gt;1\)</span>.
 The iteration therefore <em>spirals outward</em>, and does so exactly:</p>
 <div class="math notranslate nohighlight">
@@ -1078,12 +1074,12 @@ x_t^{2}+y_t^{2} = (1+\gamma^{2})^{t}\,\bigl(x_0^{2}+y_0^{2}\bigr).\tag{17.24}
 <p>No step size helps; smaller <span class="math notranslate nohighlight">\(\gamma\)</span> only slows the divergence.</p>
 <p>Now alternate, using the updated <span class="math notranslate nohighlight">\(x\)</span> in the <span class="math notranslate nohighlight">\(y\)</span> update as every practical
 implementation does:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{pmatrix}x_{t+1}\\y_{t+1}\end{pmatrix}
    = \begin{pmatrix}1 &amp; -\gamma\\ \gamma &amp; 1-\gamma^{2}\end{pmatrix}
      \begin{pmatrix}x_{t}\\y_{t}\end{pmatrix}.\tag{17.25}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>The determinant is <span class="math notranslate nohighlight">\(1-\gamma^{2}+\gamma^{2}=1\)</span> and the trace is <span class="math notranslate nohighlight">\(2-\gamma^{2}\)</span>, so
 for <span class="math notranslate nohighlight">\(\gamma&lt;2\)</span> the eigenvalues are complex conjugates on the unit circle: the
 orbit neither converges nor diverges but circulates forever at constant radius.

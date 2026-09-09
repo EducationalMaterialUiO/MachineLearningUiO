@@ -508,15 +508,15 @@ carrying a time stamp – but our examples will be time series.</p>
 <p>The simplest recurrent network, usually called the <em>vanilla</em> or
 <em>simple</em> RNN, realises Eq. (11.3) with one affine map
 and one activation.  At each step <span class="math notranslate nohighlight">\(t\)</span>,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{split}
     \bm{a}^{(t)} &amp;= \bm{U}\bm{x}^{(t)} + \bm{W}\bm{h}^{(t-1)} + \bm{b},\\
     \bm{h}^{(t)} &amp;= \sigma_h\!\left(\bm{a}^{(t)}\right),\\
     \bm{o}^{(t)} &amp;= \bm{V}\bm{h}^{(t)} + \bm{c},\\
     \hat{\bm{y}}^{(t)} &amp;= \sigma_y\!\left(\bm{o}^{(t)}\right),
   \end{split}\tag{11.4}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>with <span class="math notranslate nohighlight">\(\bm{U}\in\mathbb{R}^{n_h\times n_x}\)</span> mapping the input into the state,
 <span class="math notranslate nohighlight">\(\bm{W}\in\mathbb{R}^{n_h\times n_h}\)</span> mapping the state to itself,
 <span class="math notranslate nohighlight">\(\bm{V}\in\mathbb{R}^{n_y\times n_h}\)</span> reading the state out, and <span class="math notranslate nohighlight">\(\bm{b}\)</span>,
@@ -716,8 +716,8 @@ backwards from <span class="math notranslate nohighlight">\(t=T\)</span> to <spa
 <p><strong>The parameters.</strong>
 Because the same matrices act at every step, each accumulates a contribution
 from every step:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{split}
     \nabla_{\bm{c}}\mathcal{L} &amp;= \sum_{t}\nabla_{\bm{o}^{(t)}}\mathcal{L},\\
     \nabla_{\bm{V}}\mathcal{L} &amp;= \sum_{t}
@@ -728,7 +728,7 @@ from every step:</p>
     \nabla_{\bm{U}}\mathcal{L} &amp;= \sum_{t}
       \bm{\delta}^{(t)}\bm{x}^{(t)\mathsf{T}},
   \end{split}\tag{11.18}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>where
 <span class="math notranslate nohighlight">\(\bm{\delta}^{(t)}=\operatorname{diag}(\sigma_h'(\bm{a}^{(t)}))
 \nabla_{\bm{h}^{(t)}}\mathcal{L}\)</span>
@@ -909,14 +909,14 @@ have symmetric remedies.  Explosion is the easier of the two, because it is
 visible: the gradient norm spikes and the parameters jump.  The standard fix is
 to rescale any gradient whose norm exceeds a threshold, keeping the direction
 and discarding only the magnitude,</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \bm{g} \;\longleftarrow\;
   \begin{cases}
     \bm{g}, &amp; \|\bm{g}\|\le\theta,\\[2pt]
     \dfrac{\theta}{\|\bm{g}\|}\,\bm{g}, &amp; \|\bm{g}\|&gt;\theta.
   \end{cases}\tag{11.23}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>Two properties make Eq. (11.23) safe to apply unconditionally.</p>
 <div class="important admonition">
 <p class="admonition-title">Proposition 11.3 (Clipping is a trust region and preserves descent)</p>
@@ -1277,8 +1277,8 @@ clipping remains necessary.</p>
 <p>The gated recurrent unit of Cho <em>et al.</em> [cho2014] applies the same
 idea with fewer parts.  It drops the separate cell state, keeping only
 <span class="math notranslate nohighlight">\(\bm{h}\)</span>, and uses two gates instead of three:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
+<div class="amsmath math notranslate nohighlight">
+\[\begin{equation*}
 \begin{split}
     \bm{z}^{(t)} &amp;= \sigma\!\left(\bm{W}_{zx}\bm{x}^{(t)}
       +\bm{W}_{zh}\bm{h}^{(t-1)}+\bm{b}_z\right),\\
@@ -1289,7 +1289,7 @@ idea with fewer parts.  It drops the separate cell state, keeping only
     \bm{h}^{(t)} &amp;= \left(1-\bm{z}^{(t)}\right)\odot\bm{h}^{(t-1)}
       + \bm{z}^{(t)}\odot\tilde{\bm{h}}^{(t)} .
   \end{split}\tag{11.32}
-\end{split}\]</div>
+\end{equation*}\]</div>
 <p>The <em>update</em> gate <span class="math notranslate nohighlight">\(\bm{z}\)</span> plays the roles of both the forget and input
 gates at once – what is not written is retained, by construction – and the
 <em>reset</em> gate <span class="math notranslate nohighlight">\(\bm{r}\)</span> controls how much of the past enters the candidate
