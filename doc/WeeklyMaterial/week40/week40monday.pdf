@@ -19,7 +19,7 @@
 %% Figures week40_*.pdf are produced by make_week40_figures.py; the same code
 %% appears verbatim in week40.ipynb.  Book figures come from
 %% BookFigures/chapter05_logistic_regression and chapter08_neural_networks.
-%% Tuesday is devoted to the finalisation of Project 1 (week40tuesday.tex);
+%% Tuesday is devoted to the finalisation of Project 1 (week40tuesday.tex, no notebook);
 %% there are no weekly exercises this week.
 %% Build:  pdflatex week40slides.tex  (twice)
 \documentclass[10pt,aspectratio=169]{beamer}
@@ -93,12 +93,12 @@
         code (Sections 8.8.3--8.8.5 and 8.13)
 \end{itemize}
 \textbf{Tuesday (flipped classroom):} your questions, then \emph{only}
-Project 1 -- two cases on the analysis and presentation of your results
-(\texttt{week40tuesday.ipynb}).  \textbf{No weekly exercises this week}: the
+Project 1 -- two cases on the analysis and presentation of your results.
+\textbf{No weekly exercises this week}: the
 project is due \textbf{Monday October 5}.\\[2pt]
 \textbf{Reading:} Chapter 8, Sections 8.1--8.8; Section 5.8 once more.
-Goodfellow et al.\ Chapter 6; Hastie et al.\ Chapter 11; Nielsen,
-\emph{Neural Networks and Deep Learning}, Chapters 1--2.
+Goodfellow et al.\ Chapter 6; Raschka et al., \emph{Machine Learning with
+PyTorch and Scikit-Learn}, Chapter 11.
 \end{frame}
 
 %% ====================================================================
@@ -1258,8 +1258,7 @@ classification problem.
 \end{itemize}
 \begin{block}{Tomorrow and the deadline}
 Tuesday is \emph{only} Project 1: your questions, then two cases on reading,
-analysing and presenting your own results (\texttt{week40tuesday.ipynb}).
-No weekly exercises.  \textbf{Project 1 is due Monday October 5.}
+analysing and presenting your own results.  No weekly exercises.  \textbf{Project 1 is due Monday October 5.}
 \end{block}
 \end{frame}
 
