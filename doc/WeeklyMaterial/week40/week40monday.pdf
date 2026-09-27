@@ -1,0 +1,1266 @@
+%% Week 40 -- From logistic regression to our first neural network:
+%% backpropagation by hand and by automatic differentiation
+%% Sources: Section 5.8 of chapter5.tex (the single neuron, Sec 5.8.1, and
+%% the computational graph with forward and reverse sweeps, Sec 5.8.2 --
+%% the frames that were cut from week 39 on 2026-09-20), and Chapter 8 of
+%% the book: Sections 8.1-8.7 (the artificial neuron, XOR, multilayer
+%% perceptrons, the universal approximation theorem, notation and the
+%% feed-forward pass, activation functions, the cost function) and the new
+%% Sections 8.8.1-8.8.2 (the two scalar examples with no and one hidden
+%% layer, the first training program by hand and with jax.grad, and the
+%% 2-2-1 network worked out derivative by derivative).  The general case
+%% (Sections 8.8.3-8.8.5, the four equations and the algorithm) and the
+%% class of Section 8.13 are week 41.
+%% Equation, figure and section numbers are those of book.aux as rebuilt on
+%% 2026-09-27 (chapter 8 as of the 2026-09-23 edit).
+%% Part 1 (15 min) is the reminder from week 39; Part 2 (25 min) introduces
+%% neural networks and deep learning; Part 3 (50 min) is backpropagation
+%% from the smallest networks, coupled to reverse-mode AD.
+%% Figures week40_*.pdf are produced by make_week40_figures.py; the same code
+%% appears verbatim in week40.ipynb.  Book figures come from
+%% BookFigures/chapter05_logistic_regression and chapter08_neural_networks.
+%% Tuesday is devoted to the finalisation of Project 1 (week40tuesday.tex);
+%% there are no weekly exercises this week.
+%% Build:  pdflatex week40slides.tex  (twice)
+\documentclass[10pt,aspectratio=169]{beamer}
+\usetheme{red_plain}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\graphicspath{{../BookFigures/chapter08_neural_networks/}{../BookFigures/chapter05_logistic_regression/}{./}}
+
+%% ---- code listings
+\definecolor{codebg}{rgb}{0.97,0.97,0.97}
+\lstset{language=Python,basicstyle=\ttfamily\scriptsize,backgroundcolor=\color{codebg},
+  keywordstyle=\color{blue!70!black}\bfseries,commentstyle=\color{green!45!black},
+  stringstyle=\color{red!60!black},showstringspaces=false,frame=single,
+  framerule=0pt,xleftmargin=4pt,xrightmargin=4pt,breaklines=true,columns=fullflexible}
+
+%% ---- the "pause and think" question frames
+\newcounter{insight}
+\newenvironment{insight}[1][]{%
+  \stepcounter{insight}%
+  \begin{frame}{Pause and think \arabic{insight}: #1}%
+  \setbeamercolor{block title}{bg=structure.fg,fg=white}%
+  \setbeamercolor{block body}{bg=structure.fg!8}%
+}{\end{frame}}
+\newcommand{\question}[1]{\begin{block}{Question}#1\end{block}}
+\newcommand{\answer}[1]{\pause\begin{block}{Answer}#1\end{block}}
+\newcommand{\hint}[1]{\pause{\small\emph{Hint: }#1}}
+
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercovered{invisible}
+
+\title{Week 40: From Logistic Regression to Our First Neural Network}
+\subtitle{Neurons, layers, activation functions -- and backpropagation as
+  the reverse sweep that does not stop\\[3pt]
+  \small With pauses for questions}
+\author{Morten Hjorth-Jensen}
+\institute{Department of Physics and Center for Computing in Science Education,\\
+  University of Oslo, Norway}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Plan for week 40}
+\small
+\textbf{Monday lecture (2$\times$45 min):}
+\begin{itemize}
+  \item \textbf{First 15 min, the reminder from last week:} logistic
+        regression drawn as a single neuron and its learning rule
+        (Section 5.8.1); the same picture read backwards -- the
+        computational graph, forward and reverse sweeps, and why every
+        framework runs reverse mode (Section 5.8.2)
+  \item \textbf{Neural networks and deep learning:} the artificial neuron,
+        why one layer is not enough (XOR), multilayer perceptrons, the
+        universal approximation theorem and what it does not say, activation
+        functions, and the cost we have to minimise (Sections 8.1--8.7)
+  \item \textbf{Backpropagation from the smallest networks:} one neuron with
+        a scalar input, then one hidden neuron in front of it, by hand and
+        with \texttt{jax.grad}; our first training program; then two inputs
+        and two hidden nodes, derivative by derivative (Sections 8.8.1--8.8.2)
+  \item \textbf{Next week:} the general case, the four equations of
+        backpropagation and the algorithm, and how to write your own network
+        code (Sections 8.8.3--8.8.5 and 8.13)
+\end{itemize}
+\textbf{Tuesday (flipped classroom):} your questions, then \emph{only}
+Project 1 -- two cases on the analysis and presentation of your results
+(\texttt{week40tuesday.ipynb}).  \textbf{No weekly exercises this week}: the
+project is due \textbf{Monday October 5}.\\[2pt]
+\textbf{Reading:} Chapter 8, Sections 8.1--8.8; Section 5.8 once more.
+Goodfellow et al.\ Chapter 6; Hastie et al.\ Chapter 11; Nielsen,
+\emph{Neural Networks and Deep Learning}, Chapters 1--2.
+\end{frame}
+
+%% ====================================================================
+%% Part 1: the reminder from week 39 (Section 5.8)
+%% ====================================================================
+
+\begin{frame}{Where we were: logistic regression as a single neuron (Section 5.8.1, Figure 5.4)}
+\centering
+\includegraphics[width=0.62\textwidth]{5-neuron}\par
+\vspace{-1pt}
+\raggedright\small
+Eq.~(5.35): $z=\theta_0+\sum_j\theta_jx_j$, $\hat p=\sigma(z)$; the loss
+$\ln(1+e^{z})-yz$ of Eq.~(5.14) is one more node.
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{The vocabulary}
+\footnotesize
+$x_j$ \emph{inputs}; $\theta_j$ \emph{weights}; $\theta_0$ \emph{bias} (the
+weight of an input fixed at one); $z$ \emph{pre-activation}; $\sigma$
+\emph{activation function}.  With the step function this is Rosenblatt's
+perceptron; with the identity it is linear regression.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{The learning rule, Eqs.~(5.36)--(5.37)}
+\footnotesize
+$\partial C_i/\partial\theta_j=(\hat p_i-y_i)\,x_{ij}$, so
+$\theta_j\leftarrow\theta_j-\gamma(\hat p_i-y_i)x_{ij}$: \emph{error times the
+input on the edge}.  The delta rule, SGD with $M=1$ on the cross entropy;
+summed over $i$ it is $\bm{X}^{T}(\bm{p}-\bm{y})$, Eq.~(5.17).
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{The same picture, read backwards: the computational graph (Section 5.8.2)}
+\small
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\includegraphics[width=\textwidth]{5-logreggraph}
+\footnotesize Book Figure 5.5: the neuron redrawn as the evaluation trace of
+Section 4.14, with the parameters as \emph{inputs}, the data $x,y$ as
+constants on the edges, and the loss as output.  Trace, Eq.~(5.38):
+$v_{-1}=\theta_0$, $v_0=\theta_1$, $v_1=v_0x$, $v_2=v_1+v_{-1}=z$,
+$v_3=e^{v_2}$, $v_4=1+v_3$, $v_5=\ln v_4$, $v_6=yv_2$, $v_7=v_5-v_6=C_i$.
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Two readings of one diagram}
+\footnotesize
+As a \textbf{model}: data flow left to right, parameters are fixed numbers
+on the edges, a probability comes out.  As a \textbf{computational graph}:
+same nodes, same edges, roles exchanged -- we differentiate with respect to
+the parameters, the data are constants.  The one structural feature: $z=v_2$
+fans out into the softplus branch and the label branch.
+\end{block}
+\begin{block}{Local derivatives, Eq.~(5.39) -- eight numbers}
+\footnotesize
+$\partial v_1/\partial v_0=x$, $\partial v_2/\partial v_1=\partial v_2/\partial v_{-1}=1$,
+$\partial v_3/\partial v_2=v_3$, $\partial v_4/\partial v_3=1$,
+$\partial v_5/\partial v_4=1/v_4$, $\partial v_6/\partial v_2=y$,
+$\partial v_7/\partial v_5=1$, $\partial v_7/\partial v_6=-1$.  Everything
+that follows combines these.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Forward sweep, reverse sweep -- with numbers (Eqs.~5.40--5.41)}
+\small
+Take $\bm{\theta}=(0.5,0.25)$, $x=2$, $y=1$: the tape holds $z=1$,
+$v_3=2.718$, $v_4=3.718$, $v_5=1.313$, $C_i=0.313$, $p=v_3/v_4=0.731$.
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{block}{Forward mode: seed $(\dot v_{-1},\dot v_0)=(1,0)$, Eq.~(5.40)}
+\footnotesize
+$\dot v_1=x\dot v_0=0$, $\dot v_2=1$, $\dot v_3=v_3$, $\dot v_4=v_3$,
+$\dot v_5=v_3/v_4=p$, $\dot v_6=y$, $\dot v_7=p-y=-0.269$.\\
+That is $\partial C_i/\partial\theta_0$ -- and only that.  Seed $(0,1)$ and
+sweep again: every tangent is the one above times $x$, ending in
+$x(p-y)=-0.538$.  \textbf{Two parameters, two sweeps}; $p$ parameters,
+$p$ sweeps.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Reverse mode: $\bar v_7=1$, back along the tape, Eq.~(5.41)}
+\footnotesize
+$\bar v_5=1$, $\bar v_6=-1$, $\bar v_4=1/v_4$, $\bar v_3=1/v_4$,\\
+$\bar v_2=\bar v_3v_3+\bar v_6y=v_3/v_4-y=p-y$ \quad(the fan-out sums),\\
+$\bar v_1=\bar v_2$, $\bar v_{-1}=\bar v_2=p-y=-0.269$,
+$\bar v_0=\bar v_1x=x(p-y)=-0.538$.\\
+\textbf{One sweep, both derivatives}, read off at the input nodes.
+\end{block}
+\end{column}
+\end{columns}
+\vspace{2pt}
+\begin{block}{What the reverse sweep has produced}
+\footnotesize
+At $v_2$ the two branches contribute $p$ and $-y$: the \emph{residual}
+$\hat p-y$, which Section 5.4 obtained by differentiating the log-odds by
+hand, appears as the sensitivity of the cost to the linear predictor,
+produced mechanically by the fan-out rule.  From $v_2$ down to the parameters
+the sweep only multiplies by the input on each edge, $1$ and $x$ -- the delta
+rule, done by the machine.  Keep the name: \textbf{the adjoint of the
+pre-activation}, $\bar z$.  Today it will be called $\delta$.
+\end{block}
+\end{frame}
+
+\begin{frame}{The whole data set, and why every framework runs reverse mode (Eq.~5.42)}
+\small
+\begin{columns}
+\begin{column}{0.5\textwidth}
+The cost is $\sum_iC_i$: $n$ copies of the graph hanging from the
+\emph{same} $p$ parameter nodes, feeding one summation node.
+\begin{itemize}
+  \item \textbf{Reverse:} the sum passes $\bar C_i=1$ to every copy, each
+        produces its residual $r_i=p_i-y_i$ at $z_i$, each parameter node
+        accumulates $\sum_iX_{ij}r_i$:
+        \[
+          \bar{\bm{\theta}}=\bm{X}^{T}(\bm{p}-\bm{y})
+        \]
+        in \emph{one} pass, $\mathcal{O}(np)$ -- one $\bm{X}\bm{\theta}$ forward,
+        one $\bm{X}^{T}\bm{r}$ back.  Tape: the $n$ numbers $z_i$.
+  \item \textbf{Forward:} seed $\bm{e}_j$, get one component $\sum_iX_{ij}r_i$;
+        $p$ sweeps, $\mathcal{O}(np^{2})$.
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Measured (book Section 5.8.2, JAX, $n=5000$)}
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+$p$ & value & reverse & forward\\
+\midrule
+$20$   & $0.13$ ms & $0.19$ ms & $0.41$ ms\\
+$200$  & $0.32$ ms & $0.47$ ms & $4.53$ ms\\
+$1000$ & $1.59$ ms & $3.31$ ms & $85.9$ ms\\
+\bottomrule
+\end{tabular}\\[3pt]
+Reverse: $1.4$--$2$ evaluations of $C$ whatever $p$ -- the cheap gradient
+principle, Prop.~4.2.  Forward: $3$, $14$, $54$ evaluations, growing with
+$p$.  Both agree with $\bm{X}^{T}(\bm{p}-\bm{y})$ to $10^{-16}$.
+\end{block}
+\begin{block}{The rule}
+\footnotesize
+Forward mode: one input direction to all outputs.  Reverse mode: one output
+to all inputs.  A cost has one output and $p$ inputs -- training asks the
+reverse-mode question.  Price: the tape.  A network with $10^{6}$ weights
+asks it $10^{6}$ times more loudly.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Code: the trace, both sweeps, and JAX (Section 5.8.2; \texttt{week40.ipynb})}
+\begin{lstlisting}
+def cross_entropy_one(theta0, theta1, x, y):     # the trace of Eq. (5.38), one node per line
+    v1 = theta1 * x;  v2 = v1 + theta0;  v3 = jnp.exp(v2);  v4 = 1.0 + v3
+    v5 = jnp.log(v4);  v6 = y * v2
+    return v5 - v6
+
+def reverse_sweep(theta0, theta1, x, y):         # Eq. (5.41) by hand
+    v1 = theta1 * x; v2 = v1 + theta0; v3 = np.exp(v2); v4 = 1.0 + v3   # forward, onto the tape
+    b7 = 1.0; b5, b6 = b7, -b7; b4 = b5 / v4; b3 = b4
+    b2 = b3 * v3 + b6 * y                        # fan-out: two successors, one sum
+    return b2, b2 * x                            # dC/dtheta0, dC/dtheta1
+
+cost_one = lambda th: cross_entropy_one(th[0], th[1], 2.0, 1.0)
+theta = jnp.array([0.5, 0.25])
+for k in range(2):                               # forward mode: one sweep per parameter
+    _, tangent = jax.jvp(cost_one, (theta,), (jnp.eye(2)[k],))
+print(jax.grad(cost_one)(theta))                 # reverse mode: one sweep, both -> [-0.269 -0.538]
+
+def cost(theta, X, y):                           # the whole data set, Eq. (5.43)
+    z = X @ theta
+    return jnp.mean(jnp.logaddexp(0.0, z) - y * z)
+grad_ad = jax.grad(cost)(theta_p, X, y)          # == X.T @ (sigmoid(X @ theta_p) - y) / n
+\end{lstlisting}
+\footnotesize
+\texttt{jax.grad(cost)} \emph{is} the gradient of Eq.~(5.17).  Hold on to the
+pattern: we write the forward pass, the library writes the backward one.  In
+fifty minutes we will have written the backward pass ourselves for a network
+-- and checked it against this.
+\end{frame}
+
+\begin{insight}[one layer more]
+\question{Suppose the inputs $x_j$ of the neuron in Figure 5.4 were not the
+raw features but the outputs of another layer of such neurons,
+$x_j=\sigma(\bm{w}_j^{T}\bm{u}+b_j)$.  What does the reverse sweep do when it
+reaches $\bar z=\hat p-y$ -- and what is the name of the algorithm?}
+\answer{It does not stop.  From $\bar z$ it walks down each edge to the
+parameter it carries -- $\bar\theta_j=\bar z\,x_j$, the delta rule -- but
+also to the \emph{input} $x_j$ of that edge: $\bar x_j=\bar z\,\theta_j$.  Since
+$x_j$ is itself the output of a neuron, the sweep continues through its
+activation, $\bar z_j=\bar x_j\,\sigma'(z_j)$, and then along its edges to
+$\bm{w}_j$ and to the layer before.  Layer by layer, the adjoint of each
+layer's output is multiplied by the transposed weight matrix and by the
+derivative of the activation: that is \textbf{backpropagation}, and
+Eq.~(5.41) is its one-layer special case.  The $\sigma'\le1/4$ factor is
+multiplied in once per layer -- the reason deep sigmoid networks stop
+learning, and the reason the activation function is chosen with care.}
+\end{insight}
+
+%% ====================================================================
+%% Part 2: neural networks and deep learning (Sections 8.1-8.7)
+%% ====================================================================
+
+\begin{frame}{The artificial neuron (Section 8.1, book Figure 8.1)}
+\begin{columns}
+\begin{column}{0.42\textwidth}
+\includegraphics[width=\textwidth]{8-neuron}
+\end{column}
+\begin{column}{0.56\textwidth}
+\footnotesize
+Eq.~(8.1): $n$ inputs, a weighted sum, a bias, a non-linearity,
+$y=f\bigl(\sum_{i=1}^{n}w_ix_i+b\bigr)=f(z)$.
+\begin{block}{Nothing new -- three models under one name}
+\footnotesize
+$f=$ identity: linear regression (Chapter 3).  $f=\sigma$: logistic
+regression, exactly (Chapter 5).  $f=$ step: Rosenblatt's perceptron
+(1958), the first machine-learning model.
+\end{block}
+\begin{block}{What changes now}
+\footnotesize
+In a \emph{network} the inputs of one neuron are the \emph{outputs} of
+the neurons in the layer before.  \textbf{Fully connected}: every neuron
+sees every output of the previous layer.  \textbf{Feed-forward}: information
+flows one way, no cycles.  The features fed to the final sigmoid are then
+\emph{learned}, not given -- that is the whole point, and the whole price:
+no convexity, no closed form, only the chain rule.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Why one layer is not enough: XOR (Section 8.2, book Figure 8.2)}
+\centering
+\includegraphics[width=0.78\textwidth]{xor_problem}\par
+\vspace{-2pt}
+\raggedright\footnotesize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+Table 8.1: AND, OR and XOR of two binary inputs.  Least squares on XOR
+returns $\bm{\theta}=(0.5,0,0)$ -- the best \emph{linear} function is the
+constant $1/2$; logistic regression scores $0.50$, chance.  Not a training
+failure: \textbf{the model class contains no solution}, because one neuron
+computes one straight line and no line puts both circles on one side.  This
+stalled the field for two decades (Minsky and Papert, 1969).
+\end{column}
+\begin{column}{0.46\textwidth}
+\begin{block}{The remedy}
+Two hidden neurons form two intermediate features -- ``$x_1$ or $x_2$'' and
+``not both'' -- and the output neuron combines \emph{them} linearly:
+accuracy $1.00$ on all three gates with the class of Section 8.13.  Seen
+from Chapter 3: a basis expansion whose basis functions are \emph{fitted},
+not chosen.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{What a hidden layer supplies: the features it learned (\texttt{week40.ipynb})}
+\centering
+\includegraphics[width=0.9\textwidth]{week40_xor_hidden}\par
+\vspace{-2pt}
+\raggedright\footnotesize
+The 2--2--1 network we derive in Part 3 (sigmoid hidden nodes, sigmoid
+output, squared error, plain gradient descent, $\gamma=2$, $20\,000$
+iterations, seed 2026), trained on the four XOR points.  Each hidden node is
+one neuron and draws one line: node 1 fires only near $(0,0)$ (``neither''),
+node 2 only near $(1,1)$ (``both'').  In the plane of $(a_1^{1},a_2^{1})$ the
+four points \emph{are} linearly separable, and the output neuron is the line
+``not neither and not both'': outputs $0.01,0.99,0.99,0.01$.  A single neuron
+trained the same way returns $0.5$ four times.  \textbf{Non-linearity is
+essential}: with linear hidden units
+$\bm{W}^{2}(\bm{W}^{1}\bm{x}+\bm{b}^{1})+\bm{b}^{2}$ is again affine in
+$\bm{x}$ -- no depth of linear layers escapes linearity.
+\end{frame}
+
+\begin{frame}{Multilayer perceptrons and other architectures (Section 8.3, Figure 8.5)}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\includegraphics[width=\textwidth]{8-mlp}
+\end{column}
+\begin{column}{0.48\textwidth}
+\footnotesize
+A fully connected feed-forward network with an input layer, one or more
+hidden layers and an output layer, non-linear activations throughout: the
+\textbf{multilayer perceptron} (MLP) -- the architecture we analyse, and the
+one for which backpropagation is simplest.  Here $L=3$: $M_0=3$ inputs, two
+hidden layers of four, two outputs.
+\begin{block}{Other architectures (later chapters)}
+\footnotesize
+\textbf{Convolutional}: a small kernel slid across the input, weights shared
+across positions -- translation invariance, far fewer parameters; images.
+\textbf{Recurrent}: the output of a layer fed back at the next time step --
+a memory; sequences.  \textbf{Autoencoders}: a bottleneck between encoder
+and decoder, trained to reproduce the input -- non-linear PCA.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Notation and the feed-forward pass (Section 8.5, book Figure 8.6)}
+\begin{columns}[T]
+\begin{column}{0.4\textwidth}
+\includegraphics[width=\textwidth]{8-node}
+\end{column}
+\begin{column}{0.58\textwidth}
+\footnotesize
+Layers $l=0,1,\dots,L$ with $M_l$ nodes; $a_i^{0}=x_i$, $\tilde{\bm{y}}=\bm{a}^{L}$.
+Node $j$ of layer $l$, Eqs.~(8.18)--(8.19):
+\[
+  z_j^{l}=\sum_{i=1}^{M_{l-1}}w_{ij}^{l}a_i^{l-1}+b_j^{l},\qquad a_j^{l}=f\bigl(z_j^{l}\bigr).
+\]
+$w_{ij}^{l}$: superscript = the layer it \emph{arrives} at, first index = the
+node it \emph{leaves}, second = the node it arrives at; the forward sum runs
+over the first index, the backward sum (next week) over the second.  Almost
+every difficulty with backpropagation is a difficulty with indices.
+\begin{block}{The feed-forward pass, Eqs.~(8.20)--(8.21)}
+\scriptsize
+$\bm{z}^{l}=(\bm{W}^{l})^{T}\bm{a}^{l-1}+\bm{b}^{l}$, $\bm{a}^{l}=f(\bm{z}^{l})$
+for $l=1,\dots,L$; with $n$ samples as rows,
+$\bm{Z}^{l}=\bm{A}^{l-1}\bm{W}^{l}+\bm{b}^{l}$ -- the form our code uses
+(\texttt{X @ W1 + b1}), $\bm{W}^{l}$ untransposed; mixing the two is the
+most frequent shape error.  Cost $\mathcal{O}(\sum_lM_{l-1}M_l)$ = the
+number of weights: level-3 BLAS interleaved with element-wise $f$.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{insight}[count the parameters, and the functions]
+\question{A network for the $28\times28$ digit images has $784$ inputs, two
+hidden layers of $100$ nodes and $10$ outputs.  How many parameters does it
+have?  If the hidden activations were \emph{linear}, how many numbers would
+it take to write down every function it can compute -- and what does that
+say about the $100$ hidden nodes?}
+\answer{Weights and biases: $784\cdot100+100+100\cdot100+100+100\cdot10+10=89\,610$.
+With linear hidden layers the whole network is one affine map
+$\bm{x}\mapsto\bm{A}\bm{x}+\bm{c}$ with $\bm{A}=\bm{W}^{1}\bm{W}^{2}\bm{W}^{3}$ of size
+$784\times10$: at most $7\,850$ numbers matter, and since
+$\mathrm{rank}\,\bm{A}\le100$ is no restriction for a $784\times10$ matrix,
+it is exactly the multinomial logistic regression of Section 5.6 with an
+$89\,610$-parameter way of writing $7\,850$ numbers.  The hidden nodes buy
+nothing.  Everything the extra $81\,760$ parameters can do, they do through
+the non-linearity of $f$ -- which is why the next frames are about which
+$f$, and why the theorem after them requires $f$ not to be a polynomial.}
+\end{insight}
+
+\begin{frame}{The universal approximation theorem (Section 8.4)}
+\small
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Cybenko (1989), Eq.~(8.3)}
+\footnotesize
+$\sigma$ continuous and sigmoidal ($\to1$ at $+\infty$, $\to0$ at $-\infty$),
+$F$ continuous on $[0,1]^{d}$.  For every $\epsilon>0$ there is a
+\emph{one-hidden-layer} network with
+\[
+  \bigl|F(\bm{x})-f(\bm{x};\bm{\Theta})\bigr|<\epsilon\quad\text{for all }\bm{x}\in[0,1]^{d}.
+\]
+Same shape of argument as Stone--Weierstrass for polynomials and the
+convergence of Fourier series: a family of simple functions is dense.  To be
+regarded with the same mixture of reassurance and scepticism.
+\end{block}
+\begin{block}{Hornik (1991), Eq.~(8.5)}
+\footnotesize
+Activation only non-constant and bounded, and the statement in mean square,
+$\mathbb{E}|F-f|^{2}<\epsilon$ over the input density -- the expected
+squared error of Section 2.10, not a worst case over a cube the data never
+visit.  Universality is a property of the \emph{architecture}, not of
+sigmoids.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Leshno, Lin, Pinkus, Schocken (1993): the sharp condition}
+\footnotesize
+One hidden layer is a universal approximator \textbf{if and only if the
+activation is not a polynomial} on any interval.  So ReLU qualifies although
+unbounded; every function of Section 8.6 qualifies; the \emph{one} that
+fails is the linear activation -- Pause and think 2, recovered from the
+general theory.
+\end{block}
+\begin{block}{A constructive version, Theorem 8.2, Eq.~(8.7)}
+\footnotesize
+In one dimension, $F$ $L$-Lipschitz on $[a,b]$: $N$ rectified units give
+$\sup|F-g|\le L(b-a)/2N$ -- the network \emph{is} the piecewise-linear
+interpolant at $N+1$ knots, and only the $N+1$ output weights depend on
+$F$.  The classical proofs give no such relation between $\epsilon$ and the
+width.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{What the theorem does not say (Section 8.4)}
+\footnotesize
+\begin{enumerate}
+  \item \textbf{Hidden layer only.}  The output nodes are linear; a sigmoid
+        output could never represent the value $7$.  The output activation
+        is dictated by the range of the target, the loss by its
+        distribution (Section 3.6) -- never chosen independently.
+  \item \textbf{Existence, not construction.}  The classical proofs relate
+        $\epsilon$ to nothing -- not to the width (which may grow
+        exponentially with $d$) and not to the size of the weights -- and
+        say nothing about whether gradient descent on a non-convex cost will
+        \emph{find} the weights.  \emph{Representability is not
+        learnability}; the distance between the two is where the practical
+        difficulty of deep learning lives (Section 8.4.4).
+  \item \textbf{Universality is not remarkable.}  Polynomials, Fourier
+        series, splines and radial basis functions are universal too.  What
+        distinguishes networks is how \emph{economically} they approximate
+        in high dimensions, and that \emph{depth} beats width: Theorem 8.6
+        exhibits a function that a deep network represents with a number of
+        units polynomial in the depth and a shallow one needs exponentially
+        many for.  The theorem that names the field is about one hidden
+        layer -- precisely the case it does not cover.
+\end{enumerate}
+\begin{block}{Hold it next to Chapter 3}
+\footnotesize
+Polynomials are universal, and the degree-14 fit of Figure 3.7 failed
+catastrophically -- not because $f$ was unrepresentable but because the
+coefficients could not be \emph{estimated} from a hundred noisy points.
+Universality is a statement about the model class; generalisation is about
+the class, the data and the estimator together, Eq.~(2.52).  A network large
+enough to approximate anything is large enough to overfit anything.
+\end{block}
+\end{frame}
+
+\begin{frame}{Activation functions: three families -- only the derivative matters (Section 8.6)}
+\centering
+\includegraphics[width=0.6\textwidth]{activation_families}\par
+\vspace{-3pt}
+\raggedright\footnotesize
+\textbf{Saturating}, Eq.~(8.22): $\sigma(z)$ with $\sigma'=\sigma(1-\sigma)\le1/4$;
+$\tanh(z)=2\sigma(2z)-1$, centred, $\tanh'\le1$ -- both die in the tails.
+\textbf{Rectified}, Eqs.~(8.23)--(8.25): $\mathrm{ReLU}(z)=\max(0,z)$, derivative
+exactly $1$ or $0$ -- cheap, non-saturating, sparse; its failure is the
+\emph{dying} unit (input negative for every sample $\Rightarrow$ zero gradient
+forever); leaky ReLU ($\alpha z$ for $z<0$), ELU, SELU repair the negative
+branch.  \textbf{Smooth gated}, Eqs.~(8.26)--(8.28): $\mathrm{GELU}(z)=z\Phi(z)$,
+Swish $z\sigma(z)$, Mish -- non-monotone, derivative slightly above $1$,
+twice differentiable (needed when the \emph{output} is differentiated, as
+in physics-informed networks).  It is $f'$, not $f$, that enters the backward
+recursion: it decides whether a gradient survives a layer.
+\end{frame}
+
+\begin{frame}{Which activation? Measure before believing the folklore (Table 8.2)}
+\small
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\includegraphics[width=0.9\textwidth]{activation_comparison}\\
+\footnotesize Book Figure 8.7: a $64$--$30$--$30$--$30$--$10$ network on the
+digits data, $60$ epochs, mean $\pm$ s.d.\ over five seeds.
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{What the table says}
+\scriptsize
+Sigmoid $0.890\pm0.010$, far behind, training loss two orders of magnitude
+higher: with three hidden layers the $1/4$ per layer already bites.  The
+seven non-saturating activations span $0.966$--$0.972$ -- \emph{less than
+the spread between seeds} ($0.004$--$0.008$); $\tanh$ is nominally the best.
+With $360$ test samples the standard error of an accuracy near $0.97$ is
+$0.009$ (Section 2.5): a difference of $0.006$ was never resolvable.  A paper
+declaring a winner from one run reports seed noise.
+\end{block}
+\begin{block}{Working rule}
+\scriptsize
+ReLU first; leaky ReLU or ELU if units die; GELU/Swish in transformers, very
+deep networks, and wherever the output must be differentiated; $\tanh$ when
+a bounded activation is wanted; the logistic function in a hidden layer only
+to reproduce an old result.  \textbf{The output activation is not a free
+choice}: identity for regression, sigmoid for two classes, softmax for $K$.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{insight}[the derivative is what matters]
+\question{Ten sigmoid layers in a chain, every pre-activation near zero so
+that each $\sigma'$ is at its maximum.  By what factor is the gradient that
+reaches the first layer at most attenuated?  And with ReLU?  With a
+pre-activation of $z=5$ in every sigmoid layer instead?}
+\answer{Each layer multiplies the error by $\sigma'(z^{l})\le1/4$ (and by a
+weight), so at best $(1/4)^{10}\approx10^{-6}$: the first layer receives a
+millionth of the signal and, at any sensible learning rate, does not move --
+the \emph{vanishing gradient} of Section 8.9, and the reason the sigmoid
+sits alone at the bottom of Table 8.2.  ReLU has derivative exactly one on
+the active side: the factor is one for every active unit and the signal
+arrives undiminished (the weights still scale it, which is the subject of
+initialisation, Section 8.10).  At $z=5$, $\sigma'(5)=0.0066$ and ten layers
+give $10^{-22}$: a saturated sigmoid network cannot learn at all, whatever the
+depth of the error at the output.  We will see the mechanism with a single
+hidden neuron in twenty minutes.}
+\end{insight}
+
+\begin{frame}{The cost function and the optimisation problem (Section 8.7)}
+\small
+Collect every weight and bias into $\bm{\Theta}=\{\bm{W}^{l},\bm{b}^{l}\}_{l=1}^{L}$,
+Eqs.~(8.31)--(8.32):
+\[
+  \hat{\bm{\Theta}}=\operatorname*{arg\,min}_{\bm{\Theta}}\;
+  \frac1n\sum_{i=1}^{n}L\bigl(y_i,\tilde y_i(\bm{\Theta})\bigr)+\lambda\Omega(\bm{\Theta}),
+  \qquad
+  C(\bm{\Theta})=\frac{1}{2n}\sum_{i=1}^{n}\bigl(a_i^{L}-y_i\bigr)^{2}
+  \ \text{(regression)},
+\]
+the cross entropy (5.13)/(5.28) for classification -- the loss is still
+decided by the distribution of the target, Section 3.6.
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Three things we have never met before}
+\footnotesize
+\textbf{Not convex}: linear maps composed with non-linearities -- local
+minima, saddles, and the answer depends on the initialisation; Section 4.1
+no longer protects us.  \textbf{Highly symmetric}: permute the hidden units
+and nothing changes, so every minimum has a large family of copies.
+\textbf{Very many parameters}: the Hessian of Section 4.2 is out of the
+question -- first-order methods only, Sections 4.7--4.11.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{What we are left with, and why it is enough}
+\footnotesize
+Gradient descent and the chain rule.  That such networks train at all is an
+empirical fact, not a theorem (strict local minima are rare in high
+dimensions relative to saddles; the symmetric copies make \emph{some} good
+solution easy to reach).  The one thing we can make exact is the
+\emph{gradient}: for the price of about two forward passes, whatever the
+number of parameters -- reverse-mode AD, Section 4.14, written out by hand
+for a layered network.  That is Part 3.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+%% ====================================================================
+%% Part 3: backpropagation from the smallest networks (Sections 8.8.1-8.8.2)
+%% ====================================================================
+
+\begin{frame}{The smallest network: no hidden layer (Section 8.8.1, Eqs.~8.33--8.37)}
+\small
+One node per layer, so only the layer superscript survives: $w^{1},b^{1},z^{1},a^{1}$
+are numbers.  Sigmoid activation, half-squared error for one pair $(x,y)$:
+\[
+  x\;\longrightarrow\;z^{1}=w^{1}x+b^{1}\;\longrightarrow\;a^{1}=\sigma(z^{1})
+  \;\longrightarrow\;C=\tfrac12(a^{1}-y)^{2}.
+\]
+The neuron of Figure 5.4 with $p=1$ and the loss swapped.  $C$ depends on
+$w^{1}$ only along $w^{1}\to z^{1}\to a^{1}\to C$, so the chain rule (1.51):
+\[
+  \frac{\partial C}{\partial w^{1}}
+  =\frac{\partial C}{\partial a^{1}}\frac{\partial a^{1}}{\partial z^{1}}\frac{\partial z^{1}}{\partial w^{1}}
+  =(a^{1}-y)\,\sigma'(z^{1})\,x,\qquad
+  \frac{\partial C}{\partial b^{1}}=(a^{1}-y)\,\sigma'(z^{1})
+\]
+(the same path, with $\partial z^{1}/\partial b^{1}=1$ as its last factor).
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Name the shared part: the error, Eq.~(8.35)}
+\footnotesize
+\[
+  \delta^{1}=(a^{1}-y)\,\sigma'(z^{1})=\frac{\partial C}{\partial z^{1}},
+  \quad
+  \frac{\partial C}{\partial w^{1}}=\delta^{1}x,\ \
+  \frac{\partial C}{\partial b^{1}}=\delta^{1},
+\]
+and one step of gradient descent, Eq.~(8.37):
+$w^{1}\leftarrow w^{1}-\gamma\delta^{1}x$, $b^{1}\leftarrow b^{1}-\gamma\delta^{1}$
+-- error times the signal that entered the parameter.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{The delta rule once more -- with one difference}
+\scriptsize
+For the cross entropy $\partial C/\partial z$ was the bare residual
+$\hat p-y$ (5.36): the softplus derivative cancelled $\sigma'$.  With the
+squared error nothing cancels and the residual is multiplied by
+$\sigma'(z^{1})\le1/4$, which dies once $|z^{1}|$ is a few units.  \emph{A
+saturated neuron learns slowly however wrong it is}: the factor $f'$ that
+will sit in front of every error, and the seed of Section 8.9.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{The same neuron read backwards: $\delta$ is the adjoint of $z$ (Eqs.~8.38--8.39)}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\includegraphics[width=\textwidth,trim=0 138 100 0,clip]{8-scalargraph}
+\footnotesize Book Figure 8.10, top panel: black the forward pass, red dashed
+the reverse sweep.
+\end{column}
+\begin{column}{0.48\textwidth}
+\footnotesize
+Parameters as inputs, $v_{-1}=b^{1}$, $v_0=w^{1}$; data as constants.  The
+trace, Eq.~(8.38):
+\begin{align*}
+  v_1&=v_0x, & v_2&=v_1+v_{-1}=z^{1},\\
+  v_3&=\sigma(v_2)=a^{1}, & v_4&=\tfrac12(v_3-y)^{2}=C .
+\end{align*}
+Reverse sweep, Eq.~(4.87), from $\bar v_4=1$, Eq.~(8.39):
+\begin{align*}
+  \bar v_3&=v_3-y=a^{1}-y, & \bar v_2&=\bar v_3\,\sigma'(v_2)=\delta^{1},\\
+  \bar v_0&=\bar v_2\,x=\delta^{1}x, & \bar v_{-1}&=\bar v_2=\delta^{1}.
+\end{align*}
+\begin{block}{Read it}
+\scriptsize
+The error $\delta^{1}$ \emph{is} $\bar z^{1}$, exactly as $\bar z=\hat p-y$
+was in Figure 5.5, and Eq.~(8.36) is what the sweep delivers at the two
+inputs.  One sweep, both gradients; forward mode (4.81) would need one per
+parameter.  Backpropagation is this sweep continued through as many layers
+as the network has.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{One hidden layer: the recursion appears (Eqs.~8.40--8.43)}
+\centering
+\includegraphics[width=0.56\textwidth,trim=0 0 0 128,clip]{8-scalargraph}\par
+\vspace{-6pt}
+\raggedright
+\begin{columns}[T]
+\begin{column}{0.4\textwidth}
+\scriptsize
+Book Figure 8.10, bottom panel.  Eq.~(8.40):
+\begin{align*}
+  z^{1}&=w^{1}x+b^{1}, & a^{1}&=\sigma(z^{1}),\\
+  z^{2}&=w^{2}a^{1}+b^{2}, & a^{2}&=\sigma(z^{2}),\\
+  C&=\tfrac12(a^{2}-y)^{2}.
+\end{align*}
+The forward pass computes \emph{and stores} $(z^{1},a^{1},z^{2},a^{2})$:
+every one is needed on the way back.\\[3pt]
+\textbf{Output layer} = the previous example with $a^{1}$ in place of $x$,
+Eq.~(8.41):
+\[
+  \delta^{2}=(a^{2}-y)\sigma'(z^{2}),\ \
+  \frac{\partial C}{\partial w^{2}}=\delta^{2}a^{1},\ \
+  \frac{\partial C}{\partial b^{2}}=\delta^{2}.
+\]
+\end{column}
+\begin{column}{0.58\textwidth}
+\scriptsize
+\textbf{Hidden weight}: the longer path $w^{1}\to z^{1}\to a^{1}\to z^{2}\to a^{2}\to C$,
+Eq.~(8.42):
+\[
+  \frac{\partial C}{\partial w^{1}}
+  =\underbrace{(a^{2}-y)\sigma'(z^{2})}_{\delta^{2}}\,w^{2}\,\sigma'(z^{1})\,x .
+\]
+The first two factors are $\delta^{2}$, \emph{already computed}.  With
+$\delta^{1}=\partial C/\partial z^{1}$ as before, Eq.~(8.43):
+\[
+  \boxed{\;\delta^{1}=\delta^{2}\,w^{2}\,\sigma'(z^{1})\;}\quad
+  \frac{\partial C}{\partial w^{1}}=\delta^{1}x,\ \
+  \frac{\partial C}{\partial b^{1}}=\delta^{1}.
+\]
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{The pattern -- and the reverse sweep that did not stop}
+\small
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Forwards and backwards}
+\footnotesize
+Forwards, every layer computes $z^{l}=w^{l}a^{l-1}+b^{l}$ and
+$a^{l}=\sigma(z^{l})$.  Backwards, every layer computes its error from the
+error downstream, times the weight that connects them, times its own
+$\sigma'(z^{l})$; the gradient of a weight is that error times the activation
+that entered the weight, the gradient of a bias is the error itself.
+\emph{Nothing is recomputed}: the long product of Eq.~(8.42) is never formed,
+its first half is $\delta^{2}$ and was already evaluated for the output
+layer.  With ten hidden neurons in a chain each error costs one
+multiplication, each gradient one more.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{In the language of Section 4.14}
+\footnotesize
+Eq.~(8.43) is the reverse sweep of Eq.~(8.39) that did not stop at the
+pre-activation.  In Section 5.8.2 the sweep reached $\bar z=\hat p-y$ and
+stepped onto the edges carrying the parameters, because the inputs of the
+neuron were constants.  Here the input $a^{1}$ of the output neuron is the
+output of a node, so the sweep continues: $\bar a^{1}=\delta^{2}w^{2}$ by the
+local derivative $\partial z^{2}/\partial a^{1}=w^{2}$, then
+$\bar z^{1}=\bar a^{1}\sigma'(z^{1})=\delta^{1}$, and only then the edges
+$w^{1}$, $b^{1}$.  Pause and think 1, answered -- and the whole of
+backpropagation, for one node per layer.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Numbers, and the program that is Eqs.~(8.36)--(8.43) transcribed}
+\begin{columns}[T]
+\begin{column}{0.56\textwidth}
+\begin{lstlisting}
+def grad_one(w1, b1, x, y):             # no hidden layer
+    z1 = w1*x + b1; a1 = sigma(z1)      # forward, store z1, a1
+    delta1 = (a1 - y)*dsigma(z1)        # Eq. (8.35)
+    return 0.5*(a1-y)**2, delta1*x, delta1, delta1
+
+def grad_two(w1, b1, w2, b2, x, y):     # one hidden layer
+    z1 = w1*x + b1; a1 = sigma(z1)      # forward pass
+    z2 = w2*a1 + b2; a2 = sigma(z2)
+    delta2 = (a2 - y)*dsigma(z2)        # output error, Eq. (8.41)
+    delta1 = delta2*w2*dsigma(z1)       # Eq. (8.43)
+    return (0.5*(a2-y)**2, delta1*x, delta1,
+            delta2*a1, delta2, delta1, delta2)
+\end{lstlisting}
+\begin{lstlisting}
+no hidden layer : C = 0.0362  delta1 = -0.0529
+   dC/dw1 = -0.1058  dC/db1 = -0.0529
+one hidden layer: C = 0.0979  delta2 = -0.1092  delta1 = -0.0215
+   dC/dw1 = -0.0429  dC/db1 = -0.0215
+   dC/dw2 = -0.0798  dC/db2 = -0.1092
+\end{lstlisting}
+\end{column}
+\begin{column}{0.42\textwidth}
+\footnotesize
+At the point of Section 5.8.2, $w^{1}=0.25$, $b^{1}=0.5$, $x=2$, $y=1$:
+$z^{1}=1$, $a^{1}=0.731$, $C=0.0362$, $\sigma'(z^{1})=0.197$,
+$\delta^{1}=-0.0529$, gradient $(-0.106,-0.0529)$.
+\begin{block}{Compare with the cross entropy}
+\footnotesize
+At the same point the cross entropy gave $(-0.538,-0.269)$ (Part 1).  The
+ratio is exactly $\sigma'(z^{1})=0.197$: the factor that the squared error
+does not cancel.
+\end{block}
+\begin{block}{Add the output neuron, $w^{2}=1$, $b^{2}=-0.5$}
+\footnotesize
+$z^{2}=0.231$, $a^{2}=0.557$, $C=0.0979$, $\delta^{2}=-0.109$, and by the
+boxed recursion $\delta^{1}=\delta^{2}w^{2}\sigma'(z^{1})=-0.0215$.  Four
+gradients, one forward pass, one backward pass, and every number reused.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{A first training program: the same equations with arrays (Section 8.8.1)}
+\vspace{-3pt}
+\begin{columns}[T]
+\begin{column}{0.58\textwidth}
+\begin{lstlisting}
+def forwardpropagation(x):
+    z_1 = x @ w_1 + b_1              # hidden pre-activation
+    a_1 = sigmoid(z_1)
+    z_2 = a_1 @ w_2 + b_2            # output pre-activation
+    return a_1, z_2                  # linear output: a_2 = z_2
+
+def backpropagation(x, y):
+    a_1, a_2 = forwardpropagation(x)
+    delta_2 = a_2 - y                # linear output: f' = 1
+    delta_1 = (delta_2 @ w_2.T) * a_1 * (1 - a_1)   # Eq. (8.43)
+    dW2 = a_1.T @ delta_2;  db2 = np.sum(delta_2, axis=0)
+    dW1 = x.T @ delta_1;    db1 = np.sum(delta_1, axis=0)
+    return dW2, db2, dW1, db1, 0.5*np.sum((a_2 - y)**2)
+
+np.random.seed(0)                    # w_1, w_2 ~ randn(1, 1); biases 0.01
+x = np.array([[4.0]]); y = 2*x + 1.0  # one sample, target 9
+gamma = 0.1
+for i in range(50):
+    dW2, db2, dW1, db1, cost = backpropagation(x, y)
+    w_2 -= gamma*dW2;  b_2 -= gamma*db2
+    w_1 -= gamma*dW1;  b_1 -= gamma*db1
+\end{lstlisting}
+\end{column}
+\begin{column}{0.4\textwidth}
+\small
+\begin{lstlisting}
+iteration  0: cost = 36.895631
+iteration 10: cost = 0.426990
+iteration 20: cost = 0.004939
+iteration 49: cost = 0.000000
+w_1 = [1.7958]  b_1 = [0.0179];  w_2 = [4.6950]  b_2 = [4.3084]
+\end{lstlisting}
+\begin{block}{Two details that will survive unchanged}
+\scriptsize
+Samples are \emph{rows} (shape $(1,1)$ here), weights have shape (inputs,
+outputs), the forward pass reads \texttt{x @ w\_1 + b\_1}, Eq.~(8.21).  The
+output is \emph{linear}, so $\delta^{2}=a^{2}-y$ with no $f'$ -- Eq.~(8.69),
+the natural pairing of a regression target with the squared error.
+\texttt{delta\_2 @ w\_2.T} pulls the error back through the weight,
+\texttt{x.T @ delta\_1} is the outer product of inputs and errors: for
+scalars the multiplications of Eq.~(8.43), but Eqs.~(8.66) and (8.68) of
+next week without a change to the code.  Not learning in any interesting
+sense -- four parameters, one point -- but every line survives into the
+2--2--1 network and into the class of Section 8.13.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{The learning rate matters even here: a saturated hidden neuron (\texttt{week40.ipynb})}
+\centering
+\includegraphics[width=0.92\textwidth]{week40_scalar_saturation}\par
+\vspace{-2pt}
+\raggedright\footnotesize
+The program of the previous frame at $\gamma=0.1$ (blue) and $\gamma=1$
+(red).  \textbf{(a)} At $\gamma=0.1$ the cost falls by nine orders of
+magnitude in fifty iterations.  At $\gamma=1$ the first steps drive the
+hidden weight to $w^{1}\approx4$, so $z^{1}\approx16$ \textbf{(b)}, and
+$\sigma'(z^{1})\approx10^{-7}$ \textbf{(c)}: every gradient reaching the
+first layer, $\delta^{1}x=\delta^{2}w^{2}\sigma'(z^{1})x$, is multiplied by
+that factor, the hidden neuron stops learning, and the cost stalls at
+$5.02$ for the remaining forty iterations however large the error at the
+output.  This is the mechanism of Section 8.9 in a program of twenty lines.
+Note the blue curve in (c) too: $\sigma'(z^{1})\approx7\times10^{-4}$
+throughout -- see the next question.
+\end{frame}
+
+\begin{insight}[who did the learning?]
+\question{In the successful run ($\gamma=0.1$) the hidden weight started at
+$w^{1}=1.764$ (the first \texttt{randn} of seed 0) and ended at $1.796$,
+while $\sigma'(z^{1})$ stayed near $7\times10^{-4}$.  Which parameters fitted
+the target $9$, and why does the network still reach a cost of $10^{-8}$?
+What would happen with a second training point at $x=-4$, $y=-7$?}
+\answer{The output layer did all of it: with $a^{1}=\sigma(z^{1})\approx0.9993$
+essentially constant, $a^{2}=w^{2}a^{1}+b^{2}$ is a linear function of two
+free parameters $(w^{2},b^{2})$, and any single target can be hit with the
+hidden neuron frozen -- $w^{2}$ went from $0.400$ to $4.695$ and $b^{2}$
+from $0.01$ to $4.308$.  The gradient reaching $w^{1}$ was $\delta^{2}w^{2}
+\sigma'(z^{1})x\sim10^{-3}\times$ the output error, so it hardly moved.  With
+a second point at $x=-4$ the hidden neuron would have to output two
+\emph{different} values, $a^{1}(4)\neq a^{1}(-4)$, and the frozen unit at
+$0.9993$ for $x=4$ would give $\sigma(-7.0)\approx10^{-3}$ for $x=-4$: fine
+by luck for this sign pattern, but in general the hidden layer must
+\emph{learn}, and a saturated one cannot.  Two lessons for the class of
+Section 8.13: initialise small (Section 8.10) so that $z^{1}$ starts in the
+region where $\sigma'$ is not tiny, and watch $f'$, not only the cost.}
+\end{insight}
+
+\begin{frame}[fragile]{The same by automatic differentiation: we write the forward pass only}
+\begin{columns}[T]
+\begin{column}{0.64\textwidth}
+\begin{lstlisting}
+def C_one(p, x, y):                 # forward pass, single neuron
+    return 0.5*(jax.nn.sigmoid(p[0]*x + p[1]) - y)**2
+def C_two(p, x, y):                 # ... with the hidden neuron
+    a1 = jax.nn.sigmoid(p[0]*x + p[1])
+    return 0.5*(jax.nn.sigmoid(p[2]*a1 + p[3]) - y)**2
+
+p1, p2 = jnp.array([0.25, 0.5]), jnp.array([0.25, 0.5, 1.0, -0.5])
+print(jax.grad(C_one)(p1, 2.0, 1.0))   # [-0.1058 -0.0529]
+print(jax.grad(C_two)(p2, 2.0, 1.0))   # [-0.0429 -0.0215 -0.0798 -0.1092]
+\end{lstlisting}
+\begin{lstlisting}
+def cost(params, x, y):
+    w_1, b_1, w_2, b_2 = params
+    a_1 = jax.nn.sigmoid(x @ w_1 + b_1)     # the forward pass, nothing else
+    return 0.5*jnp.sum((a_1 @ w_2 + b_2 - y)**2)
+grad = jax.jit(jax.grad(cost))              # the backward pass, generated
+for i in range(50):                         # same costs, same parameters
+    g = grad(params, x, y)
+    params = [p - gamma*gp for p, gp in zip(params, g)]
+\end{lstlisting}
+\end{column}
+\begin{column}{0.35\textwidth}
+\scriptsize
+Every digit agrees with \texttt{grad\_one}/\texttt{grad\_two};
+\texttt{jax.jvp} with the two unit seeds (notebook) returns the same two
+numbers one at a time.
+\begin{block}{What happened}
+\scriptsize
+Nothing in the listing mentions $\delta$, $\sigma'$ or the chain rule.
+\texttt{jax.grad} traced the forward pass, recorded the tape
+$(z^{1},a^{1},z^{2},a^{2})$ and swept it in reverse -- Eq.~(8.39)
+continued through the hidden neuron.  The training program loses
+\texttt{backpropagation} and prints the \emph{same} costs and parameters.
+\end{block}
+\begin{block}{Why we still write it by hand}
+\scriptsize
+The pattern of every framework from Chapter 10 on: we write the forward
+pass, the library the backward one.  The hand-written version (Section
+8.13) is the only way to know what the library does; the gradient check of
+Eq.~(4.102) verifies that the two agree.  Project 2 asks for both.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Training the two networks on twenty points (book Figure 8.11)}
+\centering
+\includegraphics[width=0.96\textwidth]{scalar_backprop}\par
+\vspace{-3pt}
+\raggedright\footnotesize
+$n=20$ inputs in $[-2,2]$, $y_i=\sigma(2x_i-1)+\varepsilon_i$,
+$\varepsilon_i\sim N(0,0.1^{2})$, cost averaged over the sample (the errors
+$\delta^{l}$ of the observations simply add), $1000$ steps of plain gradient
+descent with $\gamma=2$ from the parameters above.  \textbf{Left:} the cost
+surface of the single neuron is \emph{not convex} -- the sigmoid sees to
+that -- but has one basin around $(2,-1)$; the path from $(0.25,0.5)$ ends at
+$(2.13,-0.78)$, $C=0.0053$.  \textbf{Middle:} the network with a hidden
+neuron contains the single one as a special case and has four parameters,
+yet reaches only $C=0.0066$ in the same number of steps.  \textbf{Right:}
+why -- the gradient reaching $w^{1}$ is $\delta^{1}x$ in both, but in the
+deeper network $\delta^{1}$ carries the extra factor $w^{2}\sigma'(z^{2})
+\approx0.25$ of Eq.~(8.43), which shrinks the first-layer gradient by that
+amount.  Every gradient was again compared with \texttt{jax.grad} at every
+iteration: largest discrepancy $3\times10^{-17}$.
+\end{frame}
+
+\begin{frame}{Two inputs, two hidden nodes, one output (Section 8.8.2, book Figure 8.12)}
+\centering
+\includegraphics[width=0.66\textwidth]{8-twotwo}\par
+\vspace{-2pt}
+\raggedright\footnotesize
+The smallest network in which a weight needs two indices, Eqs.~(8.44)--(8.47):
+$w_{ij}^{1}$ leaves input $i$ and arrives at hidden node $j$,
+\[
+  z_j^{1}=w_{1j}^{1}x_1+w_{2j}^{1}x_2+b_j^{1},\ a_j^{1}=\sigma(z_j^{1}),\ j=1,2;
+  \quad
+  z^{2}=w_1^{2}a_1^{1}+w_2^{2}a_2^{1}+b^{2},\ a^{2}=\sigma(z^{2}),\ C=\tfrac12(a^{2}-y)^{2},
+\]
+or $\bm{z}^{1}=(\bm{W}^{1})^{T}\bm{x}+\bm{b}^{1}$ with
+$\bm{W}^{1}=\begin{bmatrix}w_{11}^{1}&w_{12}^{1}\\w_{21}^{1}&w_{22}^{1}\end{bmatrix}$,
+Eq.~(8.45).  Nine parameters; the forward pass stores
+$z_1^{1},z_2^{1},a_1^{1},a_2^{1},z^{2},a^{2}$.  This is the last time we
+write the derivatives one by one.
+\end{frame}
+
+\begin{frame}{The nine derivatives, three at a time (Eqs.~8.48--8.52)}
+\footnotesize
+\textbf{Output layer} -- the scalar case with the input activation carrying
+the index of its edge, Eq.~(8.48):
+\[
+  \delta^{2}=\frac{\partial C}{\partial z^{2}}=(a^{2}-y)\,\sigma'(z^{2}),\qquad
+  \frac{\partial C}{\partial w_j^{2}}=\delta^{2}a_j^{1}\ (j=1,2),\qquad
+  \frac{\partial C}{\partial b^{2}}=\delta^{2}.
+\]
+\textbf{Hidden layer} -- take $w_{11}^{1}$: it affects $z_1^{1}$ only, which
+reaches $C$ only through $z^{2}$ along the edge $w_1^{2}$; the same
+five-factor chain as Eq.~(8.42), Eq.~(8.49):
+\[
+  \frac{\partial C}{\partial w_{11}^{1}}
+  =\underbrace{\frac{\partial C}{\partial a^{2}}\frac{\partial a^{2}}{\partial z^{2}}}_{\delta^{2}}
+   \frac{\partial z^{2}}{\partial a_1^{1}}\frac{\partial a_1^{1}}{\partial z_1^{1}}
+   \frac{\partial z_1^{1}}{\partial w_{11}^{1}}
+  =\delta^{2}\,w_1^{2}\,\sigma'(z_1^{1})\,x_1 .
+\]
+$w_{21}^{1}$ (from $x_2$, same node) has the identical chain with $x_2$ last;
+$b_1^{1}$ has the factor $1$.  So each hidden node has an error of its own,
+Eqs.~(8.50)--(8.51), and collected, Eq.~(8.52):
+\[
+  \boxed{\;\delta_j^{1}=\delta^{2}\,w_j^{2}\,\sigma'(z_j^{1}),\qquad
+  \frac{\partial C}{\partial w_{ij}^{1}}=\delta_j^{1}\,a_i^{0},\qquad
+  \frac{\partial C}{\partial b_j^{1}}=\delta_j^{1},\qquad i,j\in\{1,2\}.\;}
+\]
+\begin{block}{The rule, now with indices (Eq.~8.53)}
+\scriptsize
+$\partial C/\partial w_{ij}^{l}=\delta_j^{l}a_i^{l-1}$, $\partial C/\partial b_j^{l}=\delta_j^{l}$:
+\emph{the gradient of a weight is the error at the node it arrives at, times
+the signal at the node it leaves}.  The error carries the receiving index,
+the activation the sending index, and the gradient has the shape of the
+weight matrix.
+\end{block}
+\end{frame}
+
+\begin{frame}{Vector form, outer product -- and the fan-out the sweep did not need (8.54--8.56)}
+\footnotesize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+The two hidden errors as a vector, Eq.~(8.54),
+\[
+  \bm{\delta}^{1}=\begin{bmatrix}\delta_1^{1}\\ \delta_2^{1}\end{bmatrix}
+  =\bigl(\bm{W}^{2}\delta^{2}\bigr)\circ\sigma'(\bm{z}^{1}),
+  \qquad \bm{W}^{2}=\begin{bmatrix}w_1^{2}\\ w_2^{2}\end{bmatrix},
+\]
+and the four hidden weight gradients as an outer product, Eq.~(8.55),
+\[
+  \frac{\partial C}{\partial\bm{W}^{1}}=\bm{x}\,(\bm{\delta}^{1})^{T}
+  =\begin{bmatrix}x_1\delta_1^{1}&x_1\delta_2^{1}\\ x_2\delta_1^{1}&x_2\delta_2^{1}\end{bmatrix},
+\]
+entry $(i,j)$ in the position of $w_{ij}^{1}$.  These are, for this network,
+Eqs.~(8.66) and (8.68) of next week.  Update, Eq.~(8.56):
+$w_{ij}^{l}\leftarrow w_{ij}^{l}-\gamma\delta_j^{l}a_i^{l-1}$,
+$b_j^{l}\leftarrow b_j^{l}-\gamma\delta_j^{l}$, all nine at once.
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Read as the reverse sweep of Section 4.14.4}
+\scriptsize
+\textbf{New:} the adjoint $\delta^{2}$ leaves the output node along
+\emph{two} edges, $w_1^{2}$ and $w_2^{2}$ -- a fan-in seen from the output;
+it costs nothing, each hidden node receives its own share.
+\textbf{Still missing:} the fan-out.  Each hidden node feeds \emph{one} node
+downstream, so its adjoint arrives in a single term and no sum is needed.
+(The inputs $x_i$ do feed both hidden nodes, but they are constants of the
+trace and we never need their adjoints.)
+\end{block}
+\begin{block}{The only thing the general case adds}
+\scriptsize
+Give the network a second output node: $z_j^{1}$ reaches $C$ along two
+paths, the adjoints from the two outputs must be \emph{added} at each hidden
+node, and Eq.~(8.52) acquires $\sum_k\delta_k^{2}w_{jk}^{2}$ -- the fan-out
+rule, exactly as the two branches of Figure 5.5 were summed at $v_2$.  That
+sum, Eq.~(8.64), is Section 8.8.3 -- next week.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Code: the 2--2--1 network, five lines of backward pass, checked with AD}
+\vspace{-2pt}
+\begin{lstlisting}
+def forward(X, W1, b1, W2, b2):
+    A1 = sigmoid(X @ W1 + b1)                                 # hidden layer, samples in rows
+    return A1, A1 @ W2 + b2                                   # linear output node
+def backward(X, y, W1, b1, W2, b2):
+    n = X.shape[0]
+    A1, A2 = forward(X, W1, b1, W2, b2)
+    delta2 = (A2 - y)/n                                       # output error, f' = 1, Eq. (8.48)
+    delta1 = (delta2 @ W2.T) * A1*(1 - A1)                    # Eq. (8.54): (W2 delta2) o sigma'(z1)
+    dW2 = A1.T @ delta2;  db2 = delta2.sum(axis=0)            # Eq. (8.53), l = 2
+    dW1 = X.T @ delta1;   db1 = delta1.sum(axis=0)            # Eq. (8.55), summed over the samples
+    return dW1, db1, dW2, db2, 0.5*np.sum((A2 - y)**2)/n
+def cost(params, X, y):                                       # the same model, for jax.grad
+    W1, b1, W2, b2 = params
+    return 0.5*jnp.mean((jax.nn.sigmoid(X @ W1 + b1) @ W2 + b2 - y)**2)
+g_hand = backward(X, y, W1, b1, W2, b2)[:4]                   # W1 (2, 2), W2 (2, 1) ~ N(0, 1), seed 41
+g_jax  = jax.grad(cost)([jnp.array(p) for p in (W1, b1, W2, b2)], X, y)
+print(max(float(jnp.max(jnp.abs(h - j))) for h, j in zip(g_hand, g_jax)))    # 1.78e-15
+\end{lstlisting}
+\vspace{-4pt}
+\scriptsize
+$\bm{X}$: $n=100$ rows, two columns; $\bm{W}^{1}$ is $2\times2$, $\bm{W}^{2}$
+is $2\times1$.  Every line of \texttt{backward} is one of Eqs.~(8.48),
+(8.54), (8.55) for all samples at once, \texttt{X.T @ delta1} summing the
+outer products $\bm{x}_i(\bm{\delta}_i^{1})^{T}$.  Linear output, target
+$y=x_1^{2}+3x_1x_2+x_2^{2}+5$, $\gamma=0.5$, $5000$ iterations: cost $22.76\to0.00113\to0.00081$
+after $0/1000/5000$, $\bm{W}^{1}=\bigl[\begin{smallmatrix}2.524&1.048\\2.558&1.052\end{smallmatrix}\bigr]$,
+$\bm{b}^{1}=(-4.12,-1.97)$, $\bm{W}^{2}=(5.08,2.98)$, $b^{2}=4.45$.  The
+class of Section 8.13 has these five lines inside a loop over layers.
+\end{frame}
+
+\begin{frame}{The 2--2--1 network at work (\texttt{week40.ipynb})}
+\centering
+\includegraphics[width=0.94\textwidth]{week40_twotwo}\par
+\vspace{-2pt}
+\raggedright\footnotesize
+\textbf{(a)} The cost falls from $22.8$ to $10^{-3}$ in a thousand
+iterations and then creeps to $C=0.00081$ -- a mean squared error of
+$1.6\times10^{-3}$, rms error $0.04$ on targets between $5$ and $10$
+\textbf{(b)}.  \textbf{(c)} The two learned features: both hidden nodes are
+sigmoids of a linear function of $(x_1,x_2)$ -- ridges across the square,
+$a_1^{1}$ steep along the diagonal, $a_2^{1}$ gentler -- and the linear
+output node combines them, $a^{2}=5.08\,a_1^{1}+2.98\,a_2^{1}+4.45$, into a
+surface that follows $x_1^{2}+3x_1x_2+x_2^{2}+5$ to $0.4\%$.  Two hidden
+nodes, nine parameters, no polynomial features chosen by us.  What limits
+the fit is the two-ridge shape; more hidden nodes would add more ridges --
+the constructive theorem of Section 8.4.1 in two dimensions.
+\end{frame}
+
+\begin{insight}[a second output node]
+\question{Give the 2--2--1 network a second output node, $z_k^{2}=\sum_jw_{jk}^{2}a_j^{1}+b_k^{2}$
+for $k=1,2$, with the cost $\tfrac12\sum_k(a_k^{2}-y_k)^{2}$.  Which of the
+nine-plus-three derivatives change their form, and what is the new
+expression for $\delta_1^{1}$?  How does this read in the language of the
+reverse sweep, and what is the vector form?}
+\answer{The output layer is unchanged in form: $\delta_k^{2}=(a_k^{2}-y_k)\sigma'(z_k^{2})$,
+$\partial C/\partial w_{jk}^{2}=\delta_k^{2}a_j^{1}$, one error per output
+node.  What changes is the hidden error.  $z_1^{1}$ now reaches $C$ along
+\emph{two} paths, through $z_1^{2}$ via $w_{11}^{2}$ and through $z_2^{2}$
+via $w_{12}^{2}$, and the chain rule adds them:
+$\delta_1^{1}=\bigl(\delta_1^{2}w_{11}^{2}+\delta_2^{2}w_{12}^{2}\bigr)\sigma'(z_1^{1})
+=\bigl(\sum_k\delta_k^{2}w_{1k}^{2}\bigr)\sigma'(z_1^{1})$.  In the sweep:
+$a_1^{1}$ has two successors, so its adjoint is the \emph{sum} of the two
+contributions -- the fan-out rule of Section 4.14.4 that the 2--2--1 network
+never needed.  Vector form: $\bm{\delta}^{1}=(\bm{W}^{2}\bm{\delta}^{2})\circ\sigma'(\bm{z}^{1})$
+with $\bm{W}^{2}$ now $2\times2$ -- Eq.~(8.54) with a matrix in place of a
+column, which is Eq.~(8.66), the backpropagation equation, in full
+generality.  The weight gradients keep the outer-product form, Eq.~(8.68).
+That is all next week adds.}
+\end{insight}
+
+\begin{frame}{Next week: the general case, the four equations, your own code (8.8.3--8.13)}
+\small
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{The four equations, Eqs.~(8.65)--(8.68)}
+\scriptsize
+\begin{align*}
+  \bm{\delta}^{L}&=f'(\bm{z}^{L})\circ\partial C/\partial\bm{a}^{L}
+   &&\text{(start at the output)}\\
+  \bm{\delta}^{l}&=\bigl(\bm{W}^{l+1}\bm{\delta}^{l+1}\bigr)\circ f'(\bm{z}^{l})
+   &&\text{(carry it back)}\\
+  \partial C/\partial b_j^{l}&=\delta_j^{l},\quad
+  \partial C/\partial w_{ij}^{l}=\delta_j^{l}a_i^{l-1}
+   &&\text{(the gradients)}
+\end{align*}
+The second is Eq.~(8.64): the same graph traversed backwards with the
+transposed weights (book Figure 8.13); the sum over $k$ is the fan-out we
+just met.  For the natural output/loss pairings the first collapses to
+$\bm{\delta}^{L}=\bm{a}^{L}-\bm{y}$, Eq.~(8.69).
+\end{block}
+\begin{block}{Cost}
+\scriptsize
+One matrix--vector product per layer, like the forward pass: the whole
+gradient for about two forward passes whatever the number of parameters --
+Prop.~4.2 for a layered network.  Finite differences, Eq.~(4.102): one pass
+per parameter; for $10^{6}$ weights a second against a fortnight.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{The algorithm (Section 8.8.5) and the class (Section 8.13)}
+\scriptsize
+Forward pass storing $\bm{z}^{l},\bm{a}^{l}$; output error; backward pass
+$l=L-1,\dots,1$; gradients; update with any optimiser of Chapter 4, on
+minibatches.  Then a \texttt{NeuralNetwork} class: a loop over layers, any
+activation, both output heads, and its gradient check at $10^{-6}$--$10^{-8}$.
+\end{block}
+\begin{block}{And what makes it work}
+\scriptsize
+Vanishing/exploding gradients (8.9), initialisation (8.10), classification
+heads (8.11), regularisation and early stopping (8.12).  Project 2 asks for
+exactly this network, on the regression problem of Project 1 and on a
+classification problem.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+%% ====================================================================
+%% Summary
+%% ====================================================================
+
+\begin{frame}{Summary of week 40}
+\footnotesize
+\begin{itemize}
+  \item \textbf{The reminder:} logistic regression is one neuron; its
+        learning rule is error times the input on the edge (5.36--5.37); read
+        as a computational graph, one reverse sweep gives the whole gradient
+        for $1.4$--$2$ evaluations of the cost whatever $p$, forward mode
+        needs $p$ sweeps (5.40--5.42).  Training asks the reverse-mode
+        question.
+  \item \textbf{Networks:} a neuron whose inputs are outputs of other
+        neurons; one layer draws one line and cannot do XOR, a hidden layer
+        learns the features that make the problem linear; non-linear $f$ is
+        essential, and \emph{not a polynomial} is the exact condition for
+        universality (8.4) -- an existence statement that says nothing about
+        width, weights or learnability.  Only $f'$ enters the backward pass:
+        sigmoid $\le1/4$ per layer, ReLU $1$.  The cost (8.31) is non-convex,
+        symmetric and huge: first-order methods, and an exact gradient.
+  \item \textbf{Backpropagation from the smallest networks:} the error
+        $\delta=\partial C/\partial z$ is the adjoint of the pre-activation
+        (8.35, 8.39); a weight's gradient is $\delta$ times its input; one
+        hidden layer gives the recursion $\delta^{1}=\delta^{2}w^{2}\sigma'(z^{1})$
+        (8.43) -- the reverse sweep that does not stop; the 2--2--1 network
+        fixes the indices, $\partial C/\partial w_{ij}^{l}=\delta_j^{l}a_i^{l-1}$
+        (8.53), vector and outer-product form (8.54--8.55); \texttt{jax.grad}
+        of the forward pass reproduces every digit; a saturated hidden
+        neuron stops learning (the $\gamma=1$ run).
+  \item \textbf{What is left:} the sum over receiving nodes when a node
+        feeds several -- the fan-out rule -- and with it the four equations
+        (8.65--8.68), the algorithm and the class.  Next Monday.
+\end{itemize}
+\begin{block}{Tomorrow and the deadline}
+Tuesday is \emph{only} Project 1: your questions, then two cases on reading,
+analysing and presenting your own results (\texttt{week40tuesday.ipynb}).
+No weekly exercises.  \textbf{Project 1 is due Monday October 5.}
+\end{block}
+\end{frame}
+
+\end{document}
