@@ -1,0 +1,15 @@
+standardised features: C* = 0.47624, excess of theta_true 2.7e-04
+  method           gamma    excess after 1 / 5 / 20 epochs   mean 15-20   accuracy
+  GD, 200 epochs   0.734    1.1e-01 / 3.9e-02 / 4.1e-04      4.1e-04     0.7671
+  SGD              0.01     1.2e-02 / 1.8e-03 / 3.2e-04      1.9e-04     0.7666
+  SGD, decaying    0.1      3.6e-03 / 3.0e-04 / 2.8e-05      5.1e-05     0.7671
+  AdaGrad          0.1      3.3e-03 / 3.0e-04 / 2.2e-04      1.3e-04     0.7670
+  RMSProp          0.001    8.7e-03 / 9.4e-04 / 4.9e-04      2.3e-04     0.7663
+  Adam             0.001    1.0e-02 / 9.7e-04 / 2.8e-04      2.2e-04     0.7666
+raw features: C* = 0.47624, excess of theta_true 2.7e-04
+  method           gamma    excess after 1 / 5 / 20 epochs   mean 15-20   accuracy
+  GD, 200 epochs   0.148    1.3e-01 / 8.6e-02 / 3.0e-02      3.0e-02     0.7471
+  SGD              0.03     2.9e-02 / 1.8e-02 / 1.4e-02      1.2e-02     0.7585
+  AdaGrad          0.3      7.3e-03 / 2.2e-03 / 1.8e-03      9.4e-04     0.7657
+  RMSProp          0.003    1.2e-02 / 3.6e-03 / 3.4e-03      1.7e-03     0.7647
+  Adam             0.003    1.6e-02 / 3.3e-03 / 1.5e-03      1.3e-03     0.7656

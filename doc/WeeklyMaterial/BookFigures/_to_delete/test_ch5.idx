@@ -1,0 +1,32 @@
+\indexentry{classification|hyperpage}{1}
+\indexentry{logistic function|hyperpage}{2}
+\indexentry{sigmoid|hyperpage}{2}
+\indexentry{cross entropy|hyperpage}{3}
+\indexentry{maximum likelihood!logistic regression|hyperpage}{3}
+\indexentry{cross entropy!gradient|hyperpage}{6}
+\indexentry{logistic regression!multiple predictors|hyperpage}{7}
+\indexentry{softmax|hyperpage}{8}
+\indexentry{multinomial logistic regression|hyperpage}{8}
+\indexentry{logistic regression!optimisation|hyperpage}{10}
+\indexentry{perceptron|hyperpage}{14}
+\indexentry{artificial neuron|hyperpage}{14}
+\indexentry{delta rule|hyperpage}{14}
+\indexentry{automatic differentiation!logistic regression|hyperpage}{15}
+\indexentry{computational graph!logistic regression|hyperpage}{15}
+\indexentry{stochastic gradient descent!logistic regression|hyperpage}{19}
+\indexentry{minibatch!logistic regression|hyperpage}{19}
+\indexentry{AdaGrad!logistic regression|hyperpage}{22}
+\indexentry{RMSProp!logistic regression|hyperpage}{22}
+\indexentry{Adam!logistic regression|hyperpage}{22}
+\indexentry{loss function!for classification|hyperpage}{25}
+\indexentry{margin|hyperpage}{25}
+\indexentry{proper scoring rule|hyperpage}{27}
+\indexentry{calibration|hyperpage}{27}
+\indexentry{JAX!logistic regression|hyperpage}{28}
+\indexentry{kernel logistic regression|hyperpage}{30}
+\indexentry{logistic regression!kernel|hyperpage}{30}
+\indexentry{confusion matrix|hyperpage}{34}
+\indexentry{accuracy|hyperpage}{34}
+\indexentry{precision|hyperpage}{34}
+\indexentry{recall|hyperpage}{34}
+\indexentry{Wisconsin breast cancer data|hyperpage}{36}

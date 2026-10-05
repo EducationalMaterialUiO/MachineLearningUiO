@@ -1,0 +1,157 @@
+%......................................................................
+\subsection{Logistic regression as a single neuron}
+\label{sec:logregneuron}
+
+\index{perceptron}\index{artificial neuron}\index{delta rule}
+Before we take the class apart with automatic differentiation, it is worth
+drawing it.  Written out for one observation with $p$ features, the model
+of Eq.~(\ref{eq:5-logodds}) is
+\begin{equation}
+  z = \theta_0 + \sum_{j=1}^{p}\theta_j x_j ,
+  \qquad
+  \hat p = \sigma(z) = P(y=1\mid\bm{x}) ,
+  \label{eq:5-neuron}
+\end{equation}
+a weighted sum of the inputs, shifted by the intercept and passed through
+one non-linear function.  Figure~\ref{fig:5-neuron} shows
+Eq.~(\ref{eq:5-neuron}) as a diagram: the features enter on the left, each
+edge carries a parameter, the node $\Sigma$ forms the linear predictor $z$,
+the node $\sigma$ squashes it into a probability, and, if we also attach
+the label, the cross entropy of Eq.~(\ref{eq:5-crossentropycompact}) is one
+more node at the far right.  This diagram is the \emph{simple perceptron}
+of Rosenblatt, mentioned in Section~\ref{sec:classification}, with one
+change: the step function that made the perceptron a hard classifier has
+been replaced by the sigmoid.  In the language of Chapter~\ref{chap:nn},
+which begins with this very picture, the $x_j$ are the inputs of an
+\emph{artificial neuron}, the $\theta_j$ are its \emph{weights}, the
+intercept $\theta_0$ is its \emph{bias}, $\sigma$ is its \emph{activation
+function} and $z$ its \emph{pre-activation}.  Logistic regression is a
+neural network with a single neuron and no hidden layer; nothing in this
+chapter needs to be renamed when we get there.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[>=Latex,
+  inp/.style={circle,draw=black!65,fill=Blue3!12,minimum size=8.5mm,
+              inner sep=0pt,font=\small},
+  bia/.style={circle,draw=black!65,fill=Red3!12,minimum size=8.5mm,
+              inner sep=0pt,font=\small},
+  sm/.style={circle,draw=black!65,fill=black!5,minimum size=10mm,inner sep=0pt},
+  ac/.style={rectangle,rounded corners=1pt,draw=black!65,fill=green!12,
+             minimum height=10mm,minimum width=10mm,inner sep=1pt},
+  ls/.style={rectangle,rounded corners=1pt,draw=black!65,dashed,fill=black!3,
+             minimum height=10mm,minimum width=13mm,inner sep=2pt,font=\small},
+  wl/.style={font=\footnotesize,fill=white,inner sep=1pt}]
+  \node[inp] (x1) at (0, 2.10) {$x_1$};
+  \node[inp] (x2) at (0, 1.10) {$x_2$};
+  \node      (xd) at (0, 0.30) {$\vdots$};
+  \node[inp] (xp) at (0,-0.55) {$x_p$};
+  \node[sm] (S) at (3.60,0.78) {$\sum$};
+  \node[ac] (F) at (5.60,0.78) {$\sigma$};
+  \node[bia] (b) at (3.60,-1.35) {$1$};
+  \node[ls] (L) at (8.40,0.78) {$\ln(1+e^{z})-yz$};
+  \node[inp] (y) at (8.40,-1.35) {$y$};
+  \draw[->,black!70] (x1) -- node[wl,pos=0.62]{$\theta_1$} (S);
+  \draw[->,black!70] (x2) -- node[wl,pos=0.62]{$\theta_2$} (S);
+  \draw[->,black!70] (xp) -- node[wl,pos=0.62]{$\theta_p$} (S);
+  \draw[->,black!70] (b)  -- node[wl,pos=0.5]{$\theta_0$} (S);
+  \draw[->,black!70] (S) -- node[above,font=\footnotesize]{$z$} (F);
+  \draw[->,black!70] (F) -- node[above,font=\footnotesize]{$\hat p=\sigma(z)$} (L);
+  \draw[->,black!70] (y) -- (L);
+  \draw[->,black!70] (L) -- ++(1.6,0) node[right,font=\small] {$C_i$};
+  \node[font=\footnotesize,align=center] at (3.60,2.35)
+       {$z=\theta_0+\displaystyle\sum_{j=1}^{p}\theta_jx_j$};
+  \node[font=\footnotesize,black!60] at (0,-1.35) {inputs};
+  \node[font=\footnotesize,black!60] at (5.60,-1.35) {activation};
+  \node[font=\footnotesize,black!60] at (8.40,2.35) {loss};
+  \draw[<-,black!50,dashed] ([yshift=-3pt]F.south) -- ++(0,-0.45)
+       node[below,font=\footnotesize,black!60,align=center]
+       {reverse sweep:\\ $\bar z=\hat p-y$};
+\end{tikzpicture}
+\caption{Logistic regression drawn as a single artificial neuron,
+Eq.~(\ref{eq:5-neuron}): the features $x_j$ enter on the left, the edges
+carry the parameters $\theta_j$, the intercept $\theta_0$ is the weight of
+an input permanently fixed at one, the node $\Sigma$ forms the linear
+predictor $z$ and the activation $\sigma$ turns it into the probability
+$\hat p$.  Attaching the label $y$ and the cross entropy of
+Eq.~(\ref{eq:5-crossentropycompact}) on the right gives the cost of one
+observation.  With the step function in place of $\sigma$ this is
+Rosenblatt's perceptron.  Read from right to left, the same diagram is the
+reverse sweep of Section~\ref{sec:logregad}: the sensitivity of the cost to
+the pre-activation is the residual $\hat p-y$, and the gradient with
+respect to $\theta_j$ is that residual times the input $x_j$ on the
+corresponding edge.}
+\label{fig:5-neuron}
+\end{figure}
+
+\paragraph{The perceptron learning rule.}
+The picture makes the gradient obvious.  The cost of one observation
+depends on the parameters only through $z$, so by the chain rule
+$\partial C_i/\partial\theta_j
+ =(\partial C_i/\partial z)(\partial z/\partial\theta_j)$.  The first factor
+is the derivative of $\ln(1+e^{z})-y_iz$, namely $\sigma(z)-y_i=\hat p_i-y_i$,
+the summand of Eq.~(\ref{eq:5-dtheta0}); the second is the input $x_{ij}$
+sitting on the edge of $\theta_j$ (with $x_{i0}=1$ for the bias).  Hence
+\begin{equation}
+  \frac{\partial C_i}{\partial\theta_j} = (\hat p_i-y_i)\,x_{ij},
+  \qquad
+  \nabla_{\bm{\theta}}C_i = (\hat p_i-y_i)\,\bm{x}_i ,
+  \label{eq:5-gradone}
+\end{equation}
+and a gradient step on this one observation reads
+\begin{equation}
+  \theta_j \;\leftarrow\; \theta_j - \gamma\,(\hat p_i-y_i)\,x_{ij} .
+  \label{eq:5-deltarule}
+\end{equation}
+Equation~(\ref{eq:5-deltarule}) is, up to the choice of activation,
+Rosenblatt's original perceptron learning rule of 1958, and with a
+differentiable activation it is the \emph{delta rule} of Widrow and Hoff:
+increase the weight on every input that was active when the output was too
+small, decrease it when the output was too large, in proportion to the
+error.  Summing Eq.~(\ref{eq:5-gradone}) over the observations gives back
+$\bm{X}^{T}(\bm{p}-\bm{y})$, the gradient~(\ref{eq:5-gradient}) we
+derived by algebra in Section~\ref{sec:logreggradient}.  Applying
+Eq.~(\ref{eq:5-deltarule}) one observation, or a few observations, at a
+time rather than summing first is stochastic gradient descent, to which
+Section~\ref{sec:logregsgd} is devoted.
+
+\paragraph{From the neuron to the computational graph.}
+Figure~\ref{fig:5-neuron} can be read in two ways, and the difference
+between them is the subject of the next subsection.  Read as a
+\emph{model}, information flows from left to right: the data $\bm{x}$ enter,
+the parameters are fixed numbers on the edges, and a probability comes out.
+Read as a \emph{computational graph} in the sense of
+Section~\ref{sec:adtrace}, it is the same nodes and the same edges, but the
+roles are exchanged: the parameters are the inputs with respect to which we
+differentiate, the data are constants of the trace, and the output is the
+scalar cost $C_i$.  Automatic differentiation in reverse mode is then
+nothing but the neuron read backwards.  The adjoint of the cost is one; it
+passes through the loss node to give the sensitivity of $C_i$ to $\hat p$,
+through the activation to give the sensitivity to the pre-activation,
+$\bar z=\hat p-y$, and from there along each edge to the parameter it
+carries, picking up the factor $x_j$ on the way -- which is
+Eq.~(\ref{eq:5-gradone}) once more, now produced by the fan-out rule rather
+than by the chain rule written out by hand.  The next subsection performs
+exactly this sweep on the trace of the graph, node by node, and compares it
+with the forward sweep.  The reason for insisting on the picture is what
+comes after: in Chapter~\ref{chap:nn} the inputs $x_j$ of this neuron will
+themselves be the outputs of other neurons, the reverse sweep will not stop
+at $\bar z$ but continue along the edges into the layer before, and
+Eq.~(\ref{eq:5-gradone}) will be applied layer by layer.  That is
+backpropagation, and Figure~\ref{fig:5-neuron} is its one-neuron case.
+
+\begin{notebox}
+\textbf{Why the sigmoid, and not the step.}  The perceptron and logistic
+regression share Figure~\ref{fig:5-neuron}, and the reason the latter
+replaced the former is visible in it.  With the step function as
+activation the node $\sigma$ has derivative zero almost everywhere, the
+reverse sweep dies at that node, and no gradient reaches the parameters:
+Rosenblatt's rule had to be justified by a separate convergence argument
+that works only for separable data.  With the sigmoid every node of the
+graph is differentiable, the sweep passes through, and the rule becomes an
+instance of gradient descent on a convex cost, with all of
+Chapter~\ref{chap:optim} behind it.  The same requirement -- that the
+activation be differentiable so that the sweep can pass through it -- is
+what shapes the choice of activation functions in Chapter~\ref{chap:nn}.
+\end{notebox}
+

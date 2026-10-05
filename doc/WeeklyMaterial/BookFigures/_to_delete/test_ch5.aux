@@ -1,0 +1,226 @@
+\relax 
+\providecommand\zref@newlabel[2]{}
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\providecommand \oddpage@label [2]{}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Logistic Regression}{1}{chapter.5}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:logreg}{{5}{1}{Logistic Regression}{chapter.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Classification problems}{1}{section.5.1}\protected@file@percent }
+\newlabel{sec:classification}{{5.1}{1}{Classification problems}{section.5.1}{}}
+\newlabel{eq:5-binarylabels}{{5.1}{1}{Classification problems}{equation.5.1.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Why not simply use linear regression?}{1}{section*.1}\protected@file@percent }
+\newlabel{eq:5-linearattempt}{{5.2}{1}{Why not simply use linear regression?}{equation.5.1.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{An illustration.}{2}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}The logistic function}{2}{section.5.2}\protected@file@percent }
+\newlabel{sec:sigmoid}{{5.2}{2}{The logistic function}{section.5.2}{}}
+\newlabel{eq:5-sigmoid}{{5.3}{2}{The logistic function}{equation.5.2.3}{}}
+\newlabel{eq:5-sigmareflect}{{5.4}{2}{The logistic function}{equation.5.2.4}{}}
+\newlabel{eq:5-sigmaderiv}{{5.5}{3}{The logistic function}{equation.5.2.5}{}}
+\newlabel{eq:5-logit}{{5.6}{3}{The logistic function}{equation.5.2.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Related functions.}{3}{section*.3}\protected@file@percent }
+\newlabel{eq:5-tanh}{{5.7}{3}{Related functions}{equation.5.2.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Maximum likelihood and the cross-entropy}{3}{section.5.3}\protected@file@percent }
+\newlabel{sec:crossentropy}{{5.3}{3}{Maximum likelihood and the cross-entropy}{section.5.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces The logistic function\nobreakspace  {}(\ref  {eq:5-sigmoid}) with its derivative $\sigma '=\sigma (1-\sigma )$, the step function of the perceptron, and $\qopname  \relax o{tanh}$. The derivative attains its maximum of $1/4$ at the origin and decays rapidly, a fact that returns when deep networks are trained.}}{4}{figure.5.1}\protected@file@percent }
+\newlabel{fig:activations}{{5.1}{4}{The logistic function~(\ref {eq:5-sigmoid}) with its derivative $\sigma '=\sigma (1-\sigma )$, the step function of the perceptron, and $\tanh $. The derivative attains its maximum of $1/4$ at the origin and decays rapidly, a fact that returns when deep networks are trained}{figure.5.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{The model.}{4}{section*.4}\protected@file@percent }
+\newlabel{eq:5-p1}{{5.8}{4}{The model}{equation.5.3.8}{}}
+\newlabel{eq:5-p0}{{5.9}{4}{The model}{equation.5.3.9}{}}
+\newlabel{eq:5-logodds}{{5.10}{4}{The model}{equation.5.3.10}{}}
+\@writefile{toc}{\contentsline {paragraph}{The likelihood.}{4}{section*.5}\protected@file@percent }
+\newlabel{eq:5-likelihood}{{5.11}{4}{The likelihood}{equation.5.3.11}{}}
+\newlabel{eq:5-loglikelihood}{{5.12}{4}{The likelihood}{equation.5.3.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Fitted probability $p(y=1\mid \bm  {x})$ for two Gaussian classes. The solid line is the decision boundary $p=\genfrac  {}{}{}112$, a straight line; the dashed contours at $p=0.1$ and $0.9$ bound the region of genuine uncertainty.}}{5}{figure.5.2}\protected@file@percent }
+\newlabel{fig:logisticboundary}{{5.2}{5}{Fitted probability $p(y=1\mid \bm {x})$ for two Gaussian classes. The solid line is the decision boundary $p=\tfrac 12$, a straight line; the dashed contours at $p=0.1$ and $0.9$ bound the region of genuine uncertainty}{figure.5.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{The cost function.}{5}{section*.6}\protected@file@percent }
+\newlabel{eq:5-crossentropy}{{5.13}{5}{The cost function}{equation.5.3.13}{}}
+\newlabel{eq:5-crossentropycompact}{{5.14}{5}{The cost function}{equation.5.3.14}{}}
+\@writefile{toc}{\contentsline {paragraph}{Convexity.}{5}{section*.7}\protected@file@percent }
+\zref@newlabel{mdf@pagelabel-1}{\default{5.3}\page{5}\abspage{5}\mdf@pagevalue{5}}
+\zref@newlabel{mdf@pagelabel-2}{\default{5.3}\page{6}\abspage{6}\mdf@pagevalue{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces Cross entropy and squared error for a single observation with $y=1$ (left) and the magnitudes of their gradients with respect to $t=\bm  {x}^{T}\bm  {\theta }$ (right). In the shaded region the prediction is confidently wrong, and the squared-error gradient vanishes there.}}{6}{figure.5.3}\protected@file@percent }
+\newlabel{fig:losscompare}{{5.3}{6}{Cross entropy and squared error for a single observation with $y=1$ (left) and the magnitudes of their gradients with respect to $t=\bm {x}^{T}\bm {\theta }$ (right). In the shaded region the prediction is confidently wrong, and the squared-error gradient vanishes there}{figure.5.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Gradients, the Hessian and convexity}{6}{section.5.4}\protected@file@percent }
+\newlabel{sec:logreggradient}{{5.4}{6}{Gradients, the Hessian and convexity}{section.5.4}{}}
+\newlabel{eq:5-dtheta0}{{5.15}{6}{Gradients, the Hessian and convexity}{equation.5.4.15}{}}
+\newlabel{eq:5-dtheta1}{{5.16}{6}{Gradients, the Hessian and convexity}{equation.5.4.16}{}}
+\@writefile{toc}{\contentsline {paragraph}{Compact form.}{6}{section*.8}\protected@file@percent }
+\newlabel{eq:5-gradient}{{5.17}{6}{Compact form}{equation.5.4.17}{}}
+\@writefile{toc}{\contentsline {paragraph}{The Hessian.}{7}{section*.9}\protected@file@percent }
+\newlabel{eq:5-Wmatrix}{{5.18}{7}{The Hessian}{equation.5.4.18}{}}
+\newlabel{eq:5-hessian}{{5.19}{7}{The Hessian}{equation.5.4.19}{}}
+\@writefile{toc}{\contentsline {paragraph}{Convexity, proved.}{7}{section*.10}\protected@file@percent }
+\newlabel{eq:5-convexproof}{{5.20}{7}{Convexity, proved}{equation.5.4.20}{}}
+\@writefile{toc}{\contentsline {paragraph}{No closed form.}{7}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}More predictors, and regularisation}{7}{section.5.5}\protected@file@percent }
+\newlabel{sec:logregpenalty}{{5.5}{7}{More predictors, and regularisation}{section.5.5}{}}
+\newlabel{eq:5-multilogodds}{{5.21}{8}{More predictors, and regularisation}{equation.5.5.21}{}}
+\newlabel{eq:5-multip}{{5.22}{8}{More predictors, and regularisation}{equation.5.5.22}{}}
+\@writefile{toc}{\contentsline {paragraph}{Regularisation.}{8}{section*.12}\protected@file@percent }
+\newlabel{eq:5-penalised}{{5.23}{8}{Regularisation}{equation.5.5.23}{}}
+\zref@newlabel{mdf@pagelabel-3}{\default{5.5}\page{8}\abspage{8}\mdf@pagevalue{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}More than two classes: the softmax}{8}{section.5.6}\protected@file@percent }
+\newlabel{sec:softmax}{{5.6}{8}{More than two classes: the softmax}{section.5.6}{}}
+\newlabel{eq:5-multilogit}{{5.24}{9}{More than two classes: the softmax}{equation.5.6.24}{}}
+\newlabel{eq:5-softmaxref}{{5.25}{9}{More than two classes: the softmax}{equation.5.6.25}{}}
+\newlabel{eq:5-softmaxlast}{{5.26}{9}{More than two classes: the softmax}{equation.5.6.26}{}}
+\@writefile{toc}{\contentsline {paragraph}{The symmetric form.}{9}{section*.13}\protected@file@percent }
+\newlabel{eq:5-softmax}{{5.27}{9}{The symmetric form}{equation.5.6.27}{}}
+\newlabel{eq:5-multicrossentropy}{{5.28}{9}{The symmetric form}{equation.5.6.28}{}}
+\newlabel{eq:5-softmaxgradient}{{5.29}{9}{The symmetric form}{equation.5.6.29}{}}
+\@writefile{toc}{\contentsline {paragraph}{A numerical warning.}{10}{section*.14}\protected@file@percent }
+\newlabel{eq:5-softmaxstable}{{5.30}{10}{A numerical warning}{equation.5.6.30}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.7}Optimising the cross entropy}{10}{section.5.7}\protected@file@percent }
+\newlabel{sec:logregoptim}{{5.7}{10}{Optimising the cross entropy}{section.5.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Gradient descent.}{10}{section*.15}\protected@file@percent }
+\newlabel{eq:5-gd}{{5.31}{10}{Gradient descent}{equation.5.7.31}{}}
+\@writefile{toc}{\contentsline {paragraph}{Newton-Raphson, or iteratively reweighted least squares.}{10}{section*.16}\protected@file@percent }
+\newlabel{eq:5-newtonabstract}{{5.32}{10}{Newton-Raphson, or iteratively reweighted least squares}{equation.5.7.32}{}}
+\newlabel{eq:5-newton}{{5.33}{10}{Newton-Raphson, or iteratively reweighted least squares}{equation.5.7.33}{}}
+\newlabel{eq:5-irls}{{5.34}{10}{Newton-Raphson, or iteratively reweighted least squares}{equation.5.7.34}{}}
+\zref@newlabel{mdf@pagelabel-4}{\default{5.7}\page{11}\abspage{11}\mdf@pagevalue{11}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.8}An implementation}{11}{section.5.8}\protected@file@percent }
+\newlabel{sec:logregcode}{{5.8}{11}{An implementation}{section.5.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{Synthetic data.}{13}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8.1}Logistic regression as a single neuron}{14}{subsection.5.8.1}\protected@file@percent }
+\newlabel{sec:logregneuron}{{5.8.1}{14}{Logistic regression as a single neuron}{subsection.5.8.1}{}}
+\newlabel{eq:5-neuron}{{5.35}{14}{Logistic regression as a single neuron}{equation.5.8.35}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Logistic regression drawn as a single artificial neuron, Eq.\nobreakspace  {}(\ref  {eq:5-neuron}): the features $x_j$ enter on the left, the edges carry the parameters $\theta _j$, the intercept $\theta _0$ is the weight of an input permanently fixed at one, the node $\Sigma $ forms the linear predictor $z$ and the activation $\sigma $ turns it into the probability $\hat  p$. Attaching the label $y$ and the cross entropy of Eq.\nobreakspace  {}(\ref  {eq:5-crossentropycompact}) on the right gives the cost of one observation. With the step function in place of $\sigma $ this is Rosenblatt's perceptron. Read from right to left, the same diagram is the reverse sweep of Section\nobreakspace  {}\ref  {sec:logregad}: the sensitivity of the cost to the pre-activation is the residual $\hat  p-y$, and the gradient with respect to $\theta _j$ is that residual times the input $x_j$ on the corresponding edge.}}{14}{figure.5.4}\protected@file@percent }
+\newlabel{fig:5-neuron}{{5.4}{14}{Logistic regression drawn as a single artificial neuron, Eq.~(\ref {eq:5-neuron}): the features $x_j$ enter on the left, the edges carry the parameters $\theta _j$, the intercept $\theta _0$ is the weight of an input permanently fixed at one, the node $\Sigma $ forms the linear predictor $z$ and the activation $\sigma $ turns it into the probability $\hat p$. Attaching the label $y$ and the cross entropy of Eq.~(\ref {eq:5-crossentropycompact}) on the right gives the cost of one observation. With the step function in place of $\sigma $ this is Rosenblatt's perceptron. Read from right to left, the same diagram is the reverse sweep of Section~\ref {sec:logregad}: the sensitivity of the cost to the pre-activation is the residual $\hat p-y$, and the gradient with respect to $\theta _j$ is that residual times the input $x_j$ on the corresponding edge}{figure.5.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{The perceptron learning rule.}{14}{section*.18}\protected@file@percent }
+\newlabel{eq:5-gradone}{{5.36}{14}{The perceptron learning rule}{equation.5.8.36}{}}
+\newlabel{eq:5-deltarule}{{5.37}{15}{The perceptron learning rule}{equation.5.8.37}{}}
+\@writefile{toc}{\contentsline {paragraph}{From the neuron to the computational graph.}{15}{section*.19}\protected@file@percent }
+\zref@newlabel{mdf@pagelabel-5}{\default{5.8.1}\page{15}\abspage{15}\mdf@pagevalue{15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8.2}The same algorithm by automatic differentiation}{15}{subsection.5.8.2}\protected@file@percent }
+\newlabel{sec:logregad}{{5.8.2}{15}{The same algorithm by automatic differentiation}{subsection.5.8.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{The evaluation trace.}{15}{section*.20}\protected@file@percent }
+\newlabel{eq:5-adtrace}{{5.38}{16}{The evaluation trace}{equation.5.8.38}{}}
+\newlabel{eq:5-adlocal}{{5.39}{16}{The evaluation trace}{equation.5.8.39}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces The computational graph of the cross entropy of one observation, trace\nobreakspace  {}(\ref  {eq:5-adtrace}). The inputs are the two parameters; the data $x$ and $y$ enter as constants on the edges. The linear predictor $z=v_2$ fans out into the softplus branch along the top and the label branch along the bottom, and the reverse sweep of Eq.\nobreakspace  {}(\ref  {eq:5-adreverse}) sums the two when it reaches $v_2$, producing the residual $p-y$.}}{16}{figure.5.5}\protected@file@percent }
+\newlabel{fig:5-logreggraph}{{5.5}{16}{The computational graph of the cross entropy of one observation, trace~(\ref {eq:5-adtrace}). The inputs are the two parameters; the data $x$ and $y$ enter as constants on the edges. The linear predictor $z=v_2$ fans out into the softplus branch along the top and the label branch along the bottom, and the reverse sweep of Eq.~(\ref {eq:5-adreverse}) sums the two when it reaches $v_2$, producing the residual $p-y$}{figure.5.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Forward mode.}{16}{section*.21}\protected@file@percent }
+\newlabel{eq:5-adforward}{{5.40}{16}{Forward mode}{equation.5.8.40}{}}
+\@writefile{toc}{\contentsline {paragraph}{Reverse mode.}{17}{section*.22}\protected@file@percent }
+\newlabel{eq:5-adreverse}{{5.41}{17}{Reverse mode}{equation.5.8.41}{}}
+\@writefile{toc}{\contentsline {paragraph}{The whole data set, and why reverse mode wins.}{17}{section*.23}\protected@file@percent }
+\newlabel{eq:5-adgradient}{{5.42}{17}{The whole data set, and why reverse mode wins}{equation.5.8.42}{}}
+\zref@newlabel{mdf@pagelabel-6}{\default{5.8.2}\page{19}\abspage{19}\mdf@pagevalue{19}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.9}Stochastic gradient descent for logistic regression}{19}{section.5.9}\protected@file@percent }
+\newlabel{sec:logregsgd}{{5.9}{19}{Stochastic gradient descent for logistic regression}{section.5.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9.1}Minibatches and the per-observation gradient}{19}{subsection.5.9.1}\protected@file@percent }
+\newlabel{sec:logregminibatch}{{5.9.1}{19}{Minibatches and the per-observation gradient}{subsection.5.9.1}{}}
+\newlabel{eq:5-costmean}{{5.43}{19}{Minibatches and the per-observation gradient}{equation.5.9.43}{}}
+\newlabel{eq:5-minibatchgrad}{{5.44}{19}{Minibatches and the per-observation gradient}{equation.5.9.44}{}}
+\newlabel{eq:5-sgdupdate}{{5.45}{20}{Minibatches and the per-observation gradient}{equation.5.9.45}{}}
+\@writefile{toc}{\contentsline {paragraph}{What an epoch costs, and what it buys.}{20}{section*.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The learning rate of gradient descent.}{20}{section*.25}\protected@file@percent }
+\newlabel{eq:5-gdstability}{{5.46}{20}{The learning rate of gradient descent}{equation.5.9.46}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9.2}Gradient descent against SGD, measured}{20}{subsection.5.9.2}\protected@file@percent }
+\newlabel{sec:logregsgdvsgd}{{5.9.2}{20}{Gradient descent against SGD, measured}{subsection.5.9.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces Excess cross entropy $C(\bm  {\theta })-C(\hat  {\bm  {\theta }})$ against passes over the data for the logistic regression problem of Section\nobreakspace  {}\ref  {sec:logregsgdvsgd} ($n=50\,000$, $p=20$, $\kappa =173$). Gradient descent uses the learning rate\nobreakspace  {}(\ref  {eq:5-gdstability}); the SGD runs use minibatches of $M=32$, the cost being recorded ten times per epoch, at three constant learning rates and with the decaying schedule $\gamma _t=0.1\cdot 10^{3}/(t+10^{3})$. The dotted line is the excess cost of the parameters that generated the data, about $p/(2n)$. After a single epoch every SGD run is where gradient descent is after twenty. The constant-rate runs then equilibrate in a cloud whose size grows with $\gamma $, as Eq.\nobreakspace  {}(\ref  {eq:4-sgdcloud}) predicts, the smallest rate reaching within twenty epochs the level gradient descent needs two hundred for; only the decaying schedule continues downwards.}}{21}{figure.5.6}\protected@file@percent }
+\newlabel{fig:5-sgdvsgd}{{5.6}{21}{Excess cross entropy $C(\bm {\theta })-C(\hat {\bm {\theta }})$ against passes over the data for the logistic regression problem of Section~\ref {sec:logregsgdvsgd} ($n=50\,000$, $p=20$, $\kappa =173$). Gradient descent uses the learning rate~(\ref {eq:5-gdstability}); the SGD runs use minibatches of $M=32$, the cost being recorded ten times per epoch, at three constant learning rates and with the decaying schedule $\gamma _t=0.1\cdot 10^{3}/(t+10^{3})$. The dotted line is the excess cost of the parameters that generated the data, about $p/(2n)$. After a single epoch every SGD run is where gradient descent is after twenty. The constant-rate runs then equilibrate in a cloud whose size grows with $\gamma $, as Eq.~(\ref {eq:4-sgdcloud}) predicts, the smallest rate reaching within twenty epochs the level gradient descent needs two hundred for; only the decaying schedule continues downwards}{figure.5.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.9.3}AdaGrad, RMSProp and Adam on the same problem}{22}{subsection.5.9.3}\protected@file@percent }
+\newlabel{sec:logregadaptive}{{5.9.3}{22}{AdaGrad, RMSProp and Adam on the same problem}{subsection.5.9.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.7}{\ignorespaces Plain SGD, AdaGrad, RMSProp and Adam, all with $M=32$ and each at the best of five constant learning rates, against gradient descent at the learning rate\nobreakspace  {}(\ref  {eq:5-gdstability}), on the logistic regression problem of Section\nobreakspace  {}\ref  {sec:logregsgdvsgd}. Left: standardised features, $\kappa =173$. Right: the same data with each feature column multiplied by a random factor between $0.1$ and $10$, which raises the condition number of the Hessian at the optimum to $4.4\times 10^{4}$ and the excess cost of the two plain-gradient methods by nearly two orders of magnitude, while the three adaptive methods lose less than one. On standardised features the four stochastic methods are indistinguishable after ten epochs.}}{22}{figure.5.7}\protected@file@percent }
+\newlabel{fig:5-adaptive}{{5.7}{22}{Plain SGD, AdaGrad, RMSProp and Adam, all with $M=32$ and each at the best of five constant learning rates, against gradient descent at the learning rate~(\ref {eq:5-gdstability}), on the logistic regression problem of Section~\ref {sec:logregsgdvsgd}. Left: standardised features, $\kappa =173$. Right: the same data with each feature column multiplied by a random factor between $0.1$ and $10$, which raises the condition number of the Hessian at the optimum to $4.4\times 10^{4}$ and the excess cost of the two plain-gradient methods by nearly two orders of magnitude, while the three adaptive methods lose less than one. On standardised features the four stochastic methods are indistinguishable after ten epochs}{figure.5.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Excess cross entropy $C(\bm  {\theta })-C(\hat  {\bm  {\theta }})$ and training accuracy for the methods of Figure\nobreakspace  {}\ref  {fig:5-adaptive}, from the output of the listing below. Gradient descent is listed after $200$ epochs, the stochastic methods after $20$; the column ``mean'' averages the excess cost at the ends of epochs $15$ to $20$, which smooths the fluctuations of the constant-rate runs. The excess cost of the parameters that generated the data is $2.7\times 10^{-4}$ in both cases.}}{23}{table.5.1}\protected@file@percent }
+\newlabel{tab:5-sgdcompare}{{5.1}{23}{Excess cross entropy $C(\bm {\theta })-C(\hat {\bm {\theta }})$ and training accuracy for the methods of Figure~\ref {fig:5-adaptive}, from the output of the listing below. Gradient descent is listed after $200$ epochs, the stochastic methods after $20$; the column ``mean'' averages the excess cost at the ends of epochs $15$ to $20$, which smooths the fluctuations of the constant-rate runs. The excess cost of the parameters that generated the data is $2.7\times 10^{-4}$ in both cases}{table.5.1}{}}
+\zref@newlabel{mdf@pagelabel-7}{\default{5.9.3}\page{25}\abspage{25}\mdf@pagevalue{25}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.10}Other loss functions, and automatic differentiation}{25}{section.5.10}\protected@file@percent }
+\newlabel{sec:logreglosses}{{5.10}{25}{Other loss functions, and automatic differentiation}{section.5.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.10.1}Margin-based losses}{26}{subsection.5.10.1}\protected@file@percent }
+\newlabel{sec:marginlosses}{{5.10.1}{26}{Margin-based losses}{subsection.5.10.1}{}}
+\newlabel{eq:5-margin}{{5.47}{26}{Margin-based losses}{equation.5.10.47}{}}
+\newlabel{eq:5-logisticloss}{{5.48}{26}{Margin-based losses}{equation.5.10.48}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Loss functions for binary classification. $m=\tilde  y\,t$ is the margin, $\eta =p(y=1\mid \bm  {x})$ the true class probability, and $t^{*}$ the value of the linear predictor that minimises the expected loss at a point, Proposition\nobreakspace  {}\ref  {prop:5-bayeslosses}; for the focal loss $p$ denotes the probability assigned to the correct class. Only the losses whose $\sigma (t^{*})$ column reads $\eta $ estimate the class probability directly.}}{26}{table.5.2}\protected@file@percent }
+\newlabel{tab:5-losses}{{5.2}{26}{Loss functions for binary classification. $m=\tilde y\,t$ is the margin, $\eta =p(y=1\mid \bm {x})$ the true class probability, and $t^{*}$ the value of the linear predictor that minimises the expected loss at a point, Proposition~\ref {prop:5-bayeslosses}; for the focal loss $p$ denotes the probability assigned to the correct class. Only the losses whose $\sigma (t^{*})$ column reads $\eta $ estimate the class probability directly}{table.5.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.8}{\ignorespaces Left: the loss functions of Table\nobreakspace  {}\ref  {tab:5-losses} against the margin, for a point of class $\tilde  y=+1$; the 0--1 loss is dotted. Right: the probability $\sigma (\bm  {x}^{T}\hat  {\bm  {\theta }})$ obtained by minimising each loss with a linear model on $400$ points drawn from a true logistic model, plotted against the true probability. The cross entropy and the squared error follow the diagonal; the exponential loss recovers half the log-odds, so its curve is the diagonal compressed towards $\genfrac  {}{}{}112$; the squared hinge and the focal loss are compressed further; the hinge loss does not estimate a probability at all.}}{26}{figure.5.8}\protected@file@percent }
+\newlabel{fig:5-marginlosses}{{5.8}{26}{Left: the loss functions of Table~\ref {tab:5-losses} against the margin, for a point of class $\tilde y=+1$; the 0--1 loss is dotted. Right: the probability $\sigma (\bm {x}^{T}\hat {\bm {\theta }})$ obtained by minimising each loss with a linear model on $400$ points drawn from a true logistic model, plotted against the true probability. The cross entropy and the squared error follow the diagonal; the exponential loss recovers half the log-odds, so its curve is the diagonal compressed towards $\tfrac 12$; the squared hinge and the focal loss are compressed further; the hinge loss does not estimate a probability at all}{figure.5.8}{}}
+\citation{bartlett2006}
+\citation{brier1950,gneiting2007}
+\citation{lin2017}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.10.2}What each loss estimates}{27}{subsection.5.10.2}\protected@file@percent }
+\newlabel{sec:losscalibration}{{5.10.2}{27}{What each loss estimates}{subsection.5.10.2}{}}
+\newlabel{eq:5-expectedloss}{{5.49}{27}{What each loss estimates}{equation.5.10.49}{}}
+\newlabel{prop:5-bayeslosses}{{5.1}{27}{What each loss estimates}{theorem.5.10.1}{}}
+\newlabel{eq:5-bayeslogistic}{{5.50}{27}{What each loss estimates}{equation.5.10.50}{}}
+\newlabel{eq:5-bayessquared}{{5.51}{27}{What each loss estimates}{equation.5.10.51}{}}
+\newlabel{eq:5-bayesexp}{{5.52}{27}{What each loss estimates}{equation.5.10.52}{}}
+\newlabel{eq:5-bayessqhinge}{{5.53}{27}{What each loss estimates}{equation.5.10.53}{}}
+\newlabel{eq:5-bayeshinge}{{5.54}{27}{What each loss estimates}{equation.5.10.54}{}}
+\newlabel{eq:5-focal}{{5.55}{28}{What each loss estimates}{equation.5.10.55}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.10.3}One program for every loss}{28}{subsection.5.10.3}\protected@file@percent }
+\newlabel{sec:losscode}{{5.10.3}{28}{One program for every loss}{subsection.5.10.3}{}}
+\zref@newlabel{mdf@pagelabel-8}{\default{5.10.3}\page{30}\abspage{30}\mdf@pagevalue{30}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.11}Kernel logistic regression}{30}{section.5.11}\protected@file@percent }
+\newlabel{sec:kernellogreg}{{5.11}{30}{Kernel logistic regression}{section.5.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.11.1}The problem, and what the representer theorem gives}{30}{subsection.5.11.1}\protected@file@percent }
+\newlabel{sec:klogregsetup}{{5.11.1}{30}{The problem, and what the representer theorem gives}{subsection.5.11.1}{}}
+\newlabel{eq:5-klogregproblem}{{5.56}{31}{The problem, and what the representer theorem gives}{equation.5.11.56}{}}
+\newlabel{eq:5-krepresenter}{{5.57}{31}{The problem, and what the representer theorem gives}{equation.5.11.57}{}}
+\newlabel{eq:5-kcost}{{5.58}{31}{The problem, and what the representer theorem gives}{equation.5.11.58}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.11.2}Gradient, Hessian and kernel IRLS}{31}{subsection.5.11.2}\protected@file@percent }
+\newlabel{sec:kirls}{{5.11.2}{31}{Gradient, Hessian and kernel IRLS}{subsection.5.11.2}{}}
+\newlabel{eq:5-kgradient}{{5.59}{31}{Gradient, Hessian and kernel IRLS}{equation.5.11.59}{}}
+\newlabel{eq:5-khessian}{{5.60}{31}{Gradient, Hessian and kernel IRLS}{equation.5.11.60}{}}
+\newlabel{eq:5-knewtonstep}{{5.61}{31}{Gradient, Hessian and kernel IRLS}{equation.5.11.61}{}}
+\newlabel{eq:5-kirlsstep}{{5.62}{31}{Gradient, Hessian and kernel IRLS}{equation.5.11.62}{}}
+\newlabel{eq:5-kworking}{{5.63}{31}{Gradient, Hessian and kernel IRLS}{equation.5.11.63}{}}
+\newlabel{eq:5-kirls}{{5.64}{31}{Gradient, Hessian and kernel IRLS}{equation.5.11.64}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.11.3}The method, verified}{32}{subsection.5.11.3}\protected@file@percent }
+\newlabel{sec:klogregverify}{{5.11.3}{32}{The method, verified}{subsection.5.11.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.11.4}What the coefficients are}{33}{subsection.5.11.4}\protected@file@percent }
+\newlabel{sec:kalpharesidual}{{5.11.4}{33}{What the coefficients are}{subsection.5.11.4}{}}
+\newlabel{prop:5-kalpharesidual}{{5.2}{33}{What the coefficients are}{theorem.5.11.2}{}}
+\newlabel{eq:5-kalpharesidual}{{5.65}{33}{What the coefficients are}{equation.5.11.65}{}}
+\zref@newlabel{mdf@pagelabel-9}{\default{5.11.4}\page{33}\abspage{33}\mdf@pagevalue{33}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.11.5}The penalty, measured}{34}{subsection.5.11.5}\protected@file@percent }
+\newlabel{sec:klogregpenalty}{{5.11.5}{34}{The penalty, measured}{subsection.5.11.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.12}Measuring the quality of a classifier}{34}{section.5.12}\protected@file@percent }
+\newlabel{sec:classmetrics}{{5.12}{34}{Measuring the quality of a classifier}{section.5.12}{}}
+\@writefile{toc}{\contentsline {paragraph}{The confusion matrix.}{34}{section*.26}\protected@file@percent }
+\newlabel{eq:5-confusion}{{5.66}{34}{The confusion matrix}{equation.5.12.66}{}}
+\@writefile{toc}{\contentsline {paragraph}{Accuracy, and why it misleads.}{34}{section*.27}\protected@file@percent }
+\newlabel{eq:5-accuracy}{{5.67}{34}{Accuracy, and why it misleads}{equation.5.12.67}{}}
+\@writefile{toc}{\contentsline {paragraph}{Precision and recall.}{35}{section*.28}\protected@file@percent }
+\newlabel{eq:5-precisionrecall}{{5.68}{35}{Precision and recall}{equation.5.12.68}{}}
+\newlabel{eq:5-f1}{{5.69}{35}{Precision and recall}{equation.5.12.69}{}}
+\@writefile{toc}{\contentsline {paragraph}{ROC and AUC.}{35}{section*.29}\protected@file@percent }
+\zref@newlabel{mdf@pagelabel-10}{\default{5.12}\page{36}\abspage{36}\mdf@pagevalue{36}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.13}The Wisconsin breast cancer data}{36}{section.5.13}\protected@file@percent }
+\newlabel{sec:wisconsin}{{5.13}{36}{The Wisconsin breast cancer data}{section.5.13}{}}
+\@writefile{toc}{\contentsline {paragraph}{Inspecting the features.}{36}{section*.30}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.9}{\ignorespaces Logistic regression on the Wisconsin test set. Left: the ROC curve, with AUC $=0.9914$. Right: the confusion matrix, whose off-diagonal entries are the two kinds of error and are not equally costly.}}{38}{figure.5.9}\protected@file@percent }
+\newlabel{fig:wisconsin}{{5.9}{38}{Logistic regression on the Wisconsin test set. Left: the ROC curve, with AUC $=0.9914$. Right: the confusion matrix, whose off-diagonal entries are the two kinds of error and are not equally costly}{figure.5.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.14}Summary and the programs}{38}{section.5.14}\protected@file@percent }
+\newlabel{sec:ch5summary}{{5.14}{38}{Summary and the programs}{section.5.14}{}}
+\@writefile{toc}{\contentsline {paragraph}{Looking ahead.}{40}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.15}Exercises}{40}{section.5.15}\protected@file@percent }
+\newlabel{sec:ch5exercises}{{5.15}{40}{Exercises}{section.5.15}{}}
+\@writefile{toc}{\contentsline {subsection}{Warm-up exercises}{40}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{Project-style exercise: classification}{41}{section*.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Part a: your own implementation.}{41}{section*.34}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Part b: optimisers.}{41}{section*.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Part c: Newton-Raphson.}{42}{section*.36}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Part d: model selection.}{42}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Part e: assessment.}{42}{section*.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Part f: multiclass.}{42}{section*.39}\protected@file@percent }
+\gdef \@abspage@last{42}
