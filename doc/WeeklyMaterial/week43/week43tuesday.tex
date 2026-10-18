@@ -1,0 +1,498 @@
+%% Week 43 -- Tuesday session (flipped classroom): first the worked screening
+%% example of Monday, measure by measure (Part A, ~25 min in plenum); then
+%% ONE case (Part B): the confusion matrix, the ROC curve and the AUC written
+%% from the definitions and checked against scikit-learn, on "is it an
+%% eight?" with the scikit-learn digits and logistic regression against a
+%% one-hidden-layer network -- the structure of exercises 1 and 2 of
+%% exercisesweek43.ipynb (deadline Friday October 23).  No validation set and
+%% no threshold selection: cross-validation for the Project 2 network is the
+%% Tuesday session and the exercises of week 44.  The case is followed by a
+%% "do you have the insight?" frame (answers on \pause).
+%% Companion to week43slides.tex (Monday lecture) and to week43tuesday.ipynb.
+%% Sources: Section 5.12 of the book, Section 2.4 for the correlation
+%% coefficient, the week-41 network code; all numbers from
+%% week43tuesday.ipynb (seed 2026).
+%% Build:  pdflatex week43tuesday.tex  (twice)
+\documentclass[10pt,aspectratio=169]{beamer}
+\usetheme{red_plain}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\graphicspath{{../BookFigures/chapter05_logistic_regression/}{./}}
+
+%% ---- code listings
+\definecolor{codebg}{rgb}{0.97,0.97,0.97}
+\lstset{language=Python,basicstyle=\ttfamily\scriptsize,backgroundcolor=\color{codebg},
+  keywordstyle=\color{blue!70!black}\bfseries,commentstyle=\color{green!45!black},
+  stringstyle=\color{red!60!black},showstringspaces=false,frame=single,
+  framerule=0pt,xleftmargin=4pt,xrightmargin=4pt,breaklines=true,columns=fullflexible}
+
+%% ---- discussion frames (kept for future weeks, unused in this deck)
+\newcounter{insight}
+\newenvironment{insight}[1][]{%
+  \stepcounter{insight}%
+  \begin{frame}{Warm-up \arabic{insight}: #1}%
+  \setbeamercolor{block title}{bg=structure.fg,fg=white}%
+  \setbeamercolor{block body}{bg=structure.fg!8}%
+}{\end{frame}}
+\newcommand{\question}[1]{\begin{block}{Question}#1\end{block}}
+\newcommand{\answer}[1]{\pause\begin{block}{Answer}#1\end{block}}
+\newcommand{\hint}[1]{\pause{\small\emph{Hint: }#1}}
+
+%% ---- case frames
+\newcounter{case}
+\newenvironment{case}[1][]{%
+  \stepcounter{case}%
+  \begin{frame}[fragile,environment=case]{Case \arabic{case}: #1}%
+}{\end{frame}}
+
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamerfont{block title}{size=\small}
+\setbeamercovered{invisible}
+
+\title{Week 43, Tuesday Session}
+\subtitle{Flipped classroom: the measures of a classifier, measure by
+  measure -- then one case: your own confusion matrix, ROC curve and AUC\\[3pt]
+  \small Bring your laptop; open \texttt{week43tuesday.ipynb} and
+  \texttt{exercisesweek43.ipynb}}
+\author{Morten Hjorth-Jensen}
+\institute{Department of Physics and Center for Computing in Science Education,\\
+  University of Oslo, Norway}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{How today works}
+\small
+\begin{block}{The format (as every Tuesday)}
+Mondays are lectures; Tuesdays belong to your questions and to concrete
+cases.  Today has two parts, and the second is the skeleton of this week's
+exercises and of part e) of Project 2.
+\end{block}
+\begin{enumerate}
+  \item \textbf{Part A, first $\sim$25 min, in plenum:} Monday's worked
+        screening example measure by measure -- the four counts, accuracy
+        and why it prefers the useless test, precision and recall and their
+        two denominators, $F_1$, balanced accuracy, MCC, the AUC as a
+        probability about pairs, and why we train on the cross entropy.
+        Bring your questions on Monday's lecture here.
+  \item \textbf{Part B, the rest of the double session, in groups:} Case 1
+        with \texttt{week43tuesday.ipynb}: your own confusion matrix, ROC
+        curve and AUC, written from the definitions and checked against
+        \texttt{scikit-learn}, for logistic regression and a one-hidden-layer
+        network from your own code on ``is it an eight?'' -- then the
+        \texttt{scikit-learn} calls you will use in Project 2, and the
+        insight questions in plenum.
+  \item \textbf{Last 5 min:} wrap-up, the exercises, and next week.
+\end{enumerate}
+\begin{block}{Exercises week 43}
+Exercise 1: the functions of Part B, with a small test.  Exercise 2: MNIST,
+one digit against the rest, with your Project 2 classifiers.  Exercise 3
+(optional): the $10\times10$ matrix.  Deadline \textbf{Friday October 23 at
+midnight}; declare your use of LLMs.  No validation sets yet -- that is
+week 44.
+\end{block}
+\end{frame}
+
+%% ====================================================================
+%% Part A: the worked example
+%% ====================================================================
+
+\begin{frame}{Part A: the worked example -- four counts and seven numbers}
+\small
+\begin{columns}[T]
+\begin{column}{0.46\textwidth}
+\begin{block}{A screening test, prevalence $\pi=2\%$, $1000$ people}
+\scriptsize
+\[
+  \begin{array}{c|cc}
+     & \text{predicted } 1 & \text{predicted } 0\\
+    \hline
+    \text{true } 1 & \mathrm{TP}=15 & \mathrm{FN}=5\\
+    \text{true } 0 & \mathrm{FP}=40 & \mathrm{TN}=940
+  \end{array}
+\]
+Twenty people have the condition; the test finds fifteen and raises forty
+false alarms.  Rows are the truth, columns the decision; FN are the
+\emph{missed} cases (the dangerous error in screening), FP the \emph{false
+alarms} (a follow-up, not a life).  Next to it: the ``test'' that declares
+everybody healthy, $0,20,0,980$.
+\end{block}
+\begin{block}{Ask the room first}
+\scriptsize
+Before showing the table: which of the two tests has the higher accuracy?
+Which would you rather be screened with?  Why do the two answers differ?
+\end{block}
+\end{column}
+\begin{column}{0.52\textwidth}
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}llcc@{}}
+\toprule
+measure & definition & test & empty\\
+\midrule
+accuracy & $(\mathrm{TP}+\mathrm{TN})/n$ & $0.955$ & $\mathbf{0.980}$\\
+precision & $\mathrm{TP}/(\mathrm{TP}+\mathrm{FP})$ & $0.273$ & $0$ ($0/0$)\\
+recall, TPR & $\mathrm{TP}/(\mathrm{TP}+\mathrm{FN})$ & $0.750$ & $0$\\
+specificity, TNR & $\mathrm{TN}/(\mathrm{TN}+\mathrm{FP})$ & $0.959$ & $1.000$\\
+$F_1$ & $2\,\mathrm{prec}\cdot\mathrm{rec}/(\mathrm{prec}+\mathrm{rec})$ & $0.400$ & $0$\\
+balanced acc. & $\tfrac12(\mathrm{TPR}+\mathrm{TNR})$ & $0.855$ & $0.500$\\
+MCC & $(\mathrm{TP}\,\mathrm{TN}-\mathrm{FP}\,\mathrm{FN})/\sqrt{D}$ & $0.436$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\scriptsize
+$D=(\mathrm{TP}+\mathrm{FP})(\mathrm{TP}+\mathrm{FN})(\mathrm{TN}+\mathrm{FP})(\mathrm{TN}+\mathrm{FN})$.
+What each row asks: decisions right, all alike; of those flagged, how many
+were?; of the sick, how many found?; of the healthy, how many left alone?;
+both of the previous two; accuracy at equal class weights; correlation of
+$y$ and $\tilde y$.  Accuracy ranks the two tests the wrong way round;
+every other row ranks them the right way, and each says something
+different.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Part A: what the numbers mean, one at a time}
+\scriptsize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Accuracy is a prevalence-weighted average}
+With $n_+=\mathrm{TP}+\mathrm{FN}$, $n_-=\mathrm{FP}+\mathrm{TN}$,
+$\pi=n_+/n$:
+\[
+  \mathrm{accuracy}=\frac{n_+}{n}\frac{\mathrm{TP}}{n_+}+\frac{n_-}{n}\frac{\mathrm{TN}}{n_-}
+  =\pi\,\mathrm{recall}+(1-\pi)\,\mathrm{specificity}
+\]
+$=0.02\times0.75+0.98\times0.959=0.955$: the sick enter with weight
+$0.02$.  Compare every accuracy with the majority rule $\max(\pi,1-\pi)$
+and quote the fraction of the \emph{remaining} error removed,
+$1-(1-\mathrm{acc})/(1-p_0)$ -- here negative.  Balanced accuracy is the
+same average at equal weights: $0.855$ against $0.5$ for a coin.
+\end{block}
+\begin{block}{Recall is about the misses, precision about the false alarms}
+Different denominators: the truth ($n_+=20$) for recall, our decision
+($\mathrm{TP}+\mathrm{FP}=55$) for precision.  Three quarters of the sick
+are found; three of four people called back are healthy, because the
+condition is rare ($40$ false alarms among $980$ healthy is a $4\%$ false
+positive rate).  Lower the threshold: recall up, precision down.  Screening
+wants recall, a spam filter precision.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{$F_1$ is small whenever either is small}
+With $m=\min(\mathrm{prec},\mathrm{rec})$, $M=\max$:
+$F_1=2mM/(m+M)=2m/(1+m/M)$, so $m\le F_1\le2m$.  That is why the harmonic
+mean: precision $1$ and recall $0.1$ give an arithmetic mean of $0.55$ and
+a harmonic mean of $0.18$ -- perfect on one axis and useless on the other
+is useless.  Worked example: $2\times0.273\times0.75/1.023=0.40$.  $F_1$
+never looks at TN.
+\end{block}
+\begin{block}{MCC is a correlation}
+The Pearson correlation (Section 2.4) between the $0/1$ labels and the
+$0/1$ decisions: all four counts, symmetric in the classes, $0$ for the
+empty rule, $\pm1$ perfect/perfectly wrong -- hard to fool by imbalance:
+$13\,900/31\,917=0.436$.
+\end{block}
+\begin{block}{Why we train on the cross entropy}
+All of the above are functions of the decisions: staircases in the
+parameters, zero gradient.  The cross entropy is the smooth surrogate,
+minimised \emph{roughly} where the decisions are right: one positive, one
+negative, model A ($0.51$, $0.49$) has accuracy $1$ and cross entropy
+$0.673$, model B ($0.99$, $0.60$) accuracy $0.5$ and $0.463$.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Part A: the AUC is a probability about pairs}
+\scriptsize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{From one threshold to all of them}
+A confusion matrix is one threshold: one point
+$(\mathrm{FPR},\mathrm{TPR})=(0.041,0.75)$ for our test.  Scores give a
+whole curve, from $(0,0)$ (flag nobody) to $(1,1)$ (flag everybody); a
+perfect ranking passes through $(0,1)$, a random one is the diagonal.  The
+curve is every trade-off the model offers; a threshold picks one point.
+\end{block}
+\begin{block}{The rank formula}
+Sort all $n=n_++n_-$ scores increasingly; let $R_i$ be the rank of the
+$k_i$th positive.  Below it sit $R_i-1$ samples, $k_i-1$ of them positives,
+so it outranks $R_i-k_i$ negatives.  Summed over the positives:
+$\sum_iR_i-\tfrac12n_+(n_++1)$ correctly ordered pairs of $n_+n_-$,
+\[
+  \mathrm{AUC}=\frac{\sum_{i\in\mathrm{pos}}R_i-\tfrac12n_+(n_++1)}{n_+n_-}
+  =\mathrm{Prob}(\text{pos}>\text{neg}),
+\]
+the Mann--Whitney statistic (ties: average rank, half a pair), equal to
+the trapezoidal area under the curve.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Three checks of the formula}
+A random ranking: every pair is ordered correctly with probability
+$\tfrac12$, so $0.5$.  All scores equal: every $R_i=(n+1)/2$ with average
+ranks, $\sum_iR_i=n_+(n+1)/2$, numerator $n_+n_-/2$: again $0.5$.  Perfect
+separation: the positives hold the top $n_+$ ranks,
+$\sum_iR_i=n_+n_-+\tfrac12n_+(n_++1)$: $1$.
+\end{block}
+\begin{block}{What the AUC ignores}
+The threshold -- there is none in it.  The prevalence -- duplicate every
+positive: TP and FN double together, every TPR is unchanged, FPR never saw
+the positives.  Precision is different: FP sits in its denominator, so the
+precision--recall curve moves up when positives are duplicated, and its
+floor is $\pi$ -- the curve to look at when positives are rare and the ROC
+curve flatters ($1\%$ FPR on $9108$ negatives is $91$ false alarms against
+$892$ fives).
+\end{block}
+\begin{block}{In one sentence each}
+Matrix: what a user of the classifier experiences at a stated threshold.
+AUC: what the model is capable of.  A report gives both.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+%% ====================================================================
+%% Part B: the case
+%% ====================================================================
+
+\begin{case}[your own confusion matrix, ROC curve and AUC, in five steps]
+\footnotesize
+\textbf{Goal:} leave with your own \texttt{confusion\_matrix},
+\texttt{classification\_report}, \texttt{roc\_curve} and \texttt{roc\_auc},
+agreeing with \texttt{scikit-learn} to every digit, and with the
+\texttt{scikit-learn} calls for Project 2 at your fingertips (notebook,
+Case 1; seed 2026).  Exercises 1 and 2 are the same steps.
+\begin{enumerate}
+  \item \textbf{The data and the number to beat:} the $8\times8$ digits,
+        $y=1$ for the eights ($9.7\%$); stratified $80/20$ split, $1437$
+        training and $360$ test images.  ``Never an eight'' scores
+        $0.9028$ -- write it down before training anything.
+  \item \textbf{Two classifiers with your own code:} logistic regression
+        (the week-41 network with no hidden layer, $64\to1$, $65$
+        parameters) and one hidden layer of $32$ ReLU units ($2113$
+        parameters), SGD with $M=32$, $\gamma=0.1$, $150$ epochs.
+  \item \textbf{The confusion matrix by hand:} four counts for $p>0.5$,
+        then accuracy, precision, recall, specificity, $F_1$, balanced
+        accuracy and MCC from the definitions of Part A -- checked against
+        \texttt{sklearn.metrics} (mind its layout).
+  \item \textbf{The ROC curve and the AUC from one sorted pass:} the curve
+        from cumulative TP and FP down the sorted scores, the area by the
+        trapezoidal rule and by the rank formula; the histogram of the
+        output probabilities by class; all against \texttt{roc\_auc\_score}
+        and \texttt{roc\_curve}.
+  \item \textbf{The same with \texttt{scikit-learn}:}
+        \texttt{confusion\_matrix}, \texttt{classification\_report},
+        \texttt{roc\_curve}, \texttt{roc\_auc\_score},
+        \texttt{ConfusionMatrixDisplay}, \texttt{RocCurveDisplay} -- the
+        template for Project 2.
+\end{enumerate}
+\end{case}
+
+\begin{frame}[fragile]{Case 1: the code you should end up with}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{lstlisting}
+def confusion_matrix(y, yhat):
+    tp = np.sum((y == 1) & (yhat == 1))
+    fn = np.sum((y == 1) & (yhat == 0))
+    fp = np.sum((y == 0) & (yhat == 1))
+    tn = np.sum((y == 0) & (yhat == 0))
+    return tp, fn, fp, tn
+
+def roc_curve(y, s):
+    order = np.argsort(-s, kind="mergesort")
+    y, s = y[order], s[order]
+    tp = np.cumsum(y == 1)
+    fp = np.cumsum(y == 0)
+    last = np.r_[np.diff(s) != 0, True]
+    tpr = np.r_[0.0, tp[last] / tp[-1]]
+    fpr = np.r_[0.0, fp[last] / fp[-1]]
+    return fpr, tpr, np.r_[np.inf, s[last]]
+
+def roc_auc(y, s):            # P(pos > neg)
+    _, inv, cnt = np.unique(
+        s, return_inverse=True, return_counts=True)
+    first = np.cumsum(cnt) - cnt + 1
+    ranks = (first + (cnt - 1) / 2)[inv]
+    n_pos = np.sum(y == 1)
+    n_neg = len(y) - n_pos
+    S = np.sum(ranks[y == 1])
+    S -= n_pos * (n_pos + 1) / 2
+    return S / (n_pos * n_neg)
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{lstlisting}
+# step 5: the scikit-learn template for Project 2
+from sklearn.metrics import (
+    confusion_matrix, classification_report,
+    precision_score, recall_score, f1_score,
+    roc_curve, roc_auc_score,
+    ConfusionMatrixDisplay, RocCurveDisplay)
+
+y_pred = p_test > 0.5
+cm = confusion_matrix(y_test, y_pred)
+print(cm)                 # [[TN, FP], [FN, TP]]
+print(classification_report(y_test, y_pred))
+fpr, tpr, thr = roc_curve(
+    y_test, p_test, drop_intermediate=False)
+print(roc_auc_score(y_test, p_test))
+
+fig, ax = plt.subplots(1, 2, figsize=(9, 3.6))
+ConfusionMatrixDisplay(cm).plot(ax=ax[0])
+RocCurveDisplay.from_predictions(
+    y_test, p_test, ax=ax[1])
+\end{lstlisting}
+\scriptsize
+Checkpoints: your ROC curve has $361$ points and equals
+\texttt{roc\_curve(..., drop\_intermediate=False)}; the three AUCs agree
+to five decimals.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Case 1: what you should find}
+\scriptsize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Steps 2--4: the test set at $t=0.5$}
+\begin{center}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+ & TP & FN & FP & acc & prec & rec & AUC\\
+\midrule
+never an eight & $0$ & $35$ & $0$ & $0.903$ & -- & $0$ & $0.5$\\
+logistic regr. & $25$ & $10$ & $3$ & $0.964$ & $0.893$ & $0.714$ & $0.9613$\\
+one hidden layer & $29$ & $6$ & $2$ & $0.978$ & $0.935$ & $0.829$ & $0.9896$\\
+\bottomrule
+\end{tabular}
+\end{center}
+TN $=322$ and $323$ of $325$.  The accuracies are $0.96$ and $0.98$ against
+the free $0.90$: the two classifiers removed $63\%$ and $77\%$ of the
+remaining error.  Logistic regression misses $10$ of $35$ eights; $F_1$
+$0.79$ against $0.88$, balanced accuracy $0.85$ against $0.91$, MCC $0.78$
+against $0.87$.  The hand-made numbers agree with \texttt{scikit-learn} to
+every digit printed; the hand-made ROC curve has $361$ points and is
+identical to \texttt{roc\_curve(..., drop\_intermediate=False)}; the three
+AUCs agree to five decimals.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Reading it with Part A}
+Accuracy $=0.097\times\mathrm{recall}+0.903\times\mathrm{specificity}$:
+for logistic regression $0.097\times0.714+0.903\times0.991=0.964$ -- the
+missed eights cost it $0.03$, the three false alarms $0.008$.  The two
+classifiers differ almost only in FN ($10$ against $6$): recall is the
+measure that moves ($0.71\to0.83$), precision barely
+($0.89\to0.94$).
+\end{block}
+\begin{block}{What the AUC adds}
+Logistic regression at $0.5$ misses $10$ eights, yet its AUC is $0.96$:
+their $p$ runs from $0.006$ to $0.45$, and each of them is still ranked
+above $157$ to $321$ of the $325$ non-eights.  A lower threshold would
+find some of them at the price of false alarms -- the operating point can
+be slid along the curve; the histogram of step 4 shows what it would cost.
+Which point to choose, and on which data, is next week.
+\end{block}
+\begin{block}{Step 5}
+\texttt{classification\_report} prints precision, recall and $F_1$ for
+\emph{both} classes plus their macro and weighted averages: $0.94/0.83/0.88$
+for the eights, $0.98/0.99/0.99$ for the rest -- the same numbers, with the
+negatives' side made explicit.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Case 1: do you have the insight?}
+\scriptsize
+\vspace{-3pt}
+\begin{enumerate}
+  \item \textbf{Accuracy.}  Both classifiers scored above $0.95$ while
+        ``never an eight'' scores $0.90$.  What fraction of the
+        \emph{remaining} error did each remove?  Write each accuracy as
+        $\pi\,\mathrm{recall}+(1-\pi)\,\mathrm{specificity}$ and say which
+        term carries it.  Which single numbers survive the imbalance?
+  \item \textbf{The two errors.}  The two classifiers differ mostly in one
+        of the four counts.  Which one, what does it mean for an eight, and
+        which measure is it that moves most between the two?
+  \item \textbf{The AUC.}  State in one sentence, about pairs of images,
+        what an AUC of $0.99$ means.  Why does the ROC curve ignore the
+        threshold and the class balance, and why does the precision--recall
+        curve not?
+  \item \textbf{What a confusion matrix cannot say.}  The AUC of logistic
+        regression is $0.96$, not $0.5$, although it misses ten eights at
+        $t=0.5$.  What does that tell you about the choice of threshold, and
+        why is the matrix at $0.5$ nevertheless what Project 2 asks for?
+\end{enumerate}
+\pause
+\begin{block}{What we hope you say}
+\scriptsize
+(1) With $p_0$ the majority accuracy, the fraction removed is
+$1-(1-\mathrm{acc})/(1-p_0)$: $63\%$ and $77\%$.  The accuracy is
+$0.1\times\mathrm{recall}+0.9\times\mathrm{specificity}$, carried almost
+entirely by the specificity, so missing a quarter of the eights still
+scores above $0.95$; balanced accuracy, $F_1$ and the MCC give the majority
+rule $0.5$ or $0$ and do not reward it.
+(2) FN, the missed eights; recall is the measure that moves,
+$0.71\to0.83$.
+(3) Pick a random eight and a random non-eight: with probability $0.99$
+the eight gets the higher score.  The ROC curve is built from the ranking
+alone, and copying every eight leaves every rate unchanged; precision has
+FP in its denominator, so the fraction of positives enters it.
+(4) $0.5$ is a convention; a lower threshold would find more of the eights
+at the price of false alarms -- the operating point can be moved along the
+curve, and choosing it, on validation data and from the costs of the two
+errors, is next week.  The matrix at a stated threshold is what a user of
+the classifier experiences; the AUC is what the model is capable of.  A
+report gives both.
+\end{block}
+\end{frame}
+
+\begin{frame}{Wrap-up, the exercises, and next week}
+\small
+\begin{block}{What you should own now}
+\footnotesize
+A confusion matrix you can compute and read without a library; accuracy,
+precision, recall and $F_1$ from their definitions and from the table of
+Part A, with the two identities ($\mathrm{acc}=\pi\,\mathrm{rec}+(1-\pi)\,
+\mathrm{spec}$, $m\le F_1\le2m$); the ROC curve and the AUC from a sorted
+pass and from the rank formula, checked against \texttt{scikit-learn}; and
+the \texttt{scikit-learn} calls for Project 2.
+\end{block}
+\begin{block}{Exercises week 43 -- deadline Friday October 23 at midnight}
+\footnotesize
+\texttt{exercisesweek43.ipynb}: exercise 1 is steps 3--5 as functions
+with a small test (tied scores on purpose); exercise 2 is steps 1--4 on
+MNIST, one digit against the rest, with your Project 2 classifiers;
+exercise 3 (optional) is the $10\times10$ matrix.  Hand in one notebook per
+group in Canvas; list your collaborators; finish the self-check table;
+declare your use of LLMs.
+\end{block}
+\begin{block}{Project 2 (deadline November 6) and next week}
+\footnotesize
+Part e) of Project 2 asks for logistic regression as the baseline and for
+the confusion matrix on the full MNIST test set with its interpretation:
+today's steps 3--5 on the full data, read with Part A.  \textbf{Week 44,
+Tuesday session and exercises:} validation sets and cross-validation for
+your Project 2 network -- choosing the hyperparameters, and the threshold,
+without touching the test set.  \textbf{Week 44, Monday:} Chapter 10
+continued -- equivariance and pooling.
+\end{block}
+\end{frame}
+
+\end{document}
