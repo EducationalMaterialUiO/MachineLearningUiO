@@ -25,6 +25,9 @@
 %% Numbers from make_week44_figures.py, Part 5 (seed 2026, KFold(5,
 %% shuffle=True, random_state=2026)), figure week44_cv.pdf; book figure 3.4
 %% (cv_ridge_lasso) from BookFigures/chapter03_linear_regression.
+%% 2026-10-27: two frames added after Part A.3 (the 100-point example of
+%% addtuesday.txt: holdout versus four-fold cross-validation, the refit on
+%% all 80 non-test points, the two practical details).
 %% Build:  pdflatex week44tuesday.tex  (twice)
 \documentclass[10pt,aspectratio=169]{beamer}
 \usetheme{red_plain}
@@ -214,6 +217,79 @@ details that make it correct.
 \medskip
 Six steps, six places where something can go wrong.  Part A takes them in
 turn.
+\end{frame}
+
+%% ---- added 2026-10-27 from addtuesday.txt: a worked example of the recipe
+\begin{frame}{Part A.3, an example: a question from the group sessions}
+\small
+\begin{block}{The question}
+``I have $100$ points.  I set $20$ aside as a test set, use $20$ as a
+validation set and train on the remaining $60$.  Once I have chosen the
+hyperparameters, may I refit on all $80$ non-test points -- the validation
+points included?''
+\end{block}
+\pause
+\begin{block}{The answer: yes}
+The validation points were used to \emph{select} the hyperparameters; that
+job is finished.  Fit a fresh model on all $80$ non-test points with the
+selected hyperparameters, then evaluate it \emph{once} on the $20$ untouched
+test points.  The test set is still independent: nothing about the model was
+chosen on it.
+\end{block}
+\pause
+\begin{block}{What that single split is, and what it is not}
+One fixed $60/20$ split is \textbf{holdout validation}: one validation
+error, from one set of $20$ points, with no error bar.  The same numbers
+give a natural \textbf{four-fold cross-validation}: cut the $80$ non-test
+points into four folds of $20$ and let the validation set \emph{rotate}, so
+that every one of the $80$ points is validated exactly once -- next frame.
+\end{block}
+\end{frame}
+
+\begin{frame}{Part A.3, the example continued: four folds of twenty}
+\footnotesize
+\begin{columns}[T]
+\begin{column}{0.46\textwidth}
+\begin{block}{For every candidate hyperparameter setting, four fits}
+\centering
+\begin{tabular}{@{}cll@{}}
+\toprule
+Fit & Training data & Validation data \\
+\midrule
+1 & folds 2, 3, 4 ($60$ pts) & fold 1 ($20$ pts) \\
+2 & folds 1, 3, 4 ($60$ pts) & fold 2 ($20$ pts) \\
+3 & folds 1, 2, 4 ($60$ pts) & fold 3 ($20$ pts) \\
+4 & folds 1, 2, 3 ($60$ pts) & fold 4 ($20$ pts) \\
+\bottomrule
+\end{tabular}
+\end{block}
+\end{column}
+\begin{column}{0.52\textwidth}
+\begin{block}{The six steps, on these numbers}
+\begin{enumerate}
+  \item Set aside $20$ points for testing; keep them out of model selection.
+  \item Divide the remaining $80$ into four folds of $20$.
+  \item For each candidate setting, perform the four fits of the table.
+  \item Choose the setting with the best \emph{average} validation
+        performance over the four folds (their spread is the error bar).
+  \item Refit on all $80$ points with the selected setting.
+  \item Evaluate once on the $20$ test points.
+\end{enumerate}
+\end{block}
+\end{column}
+\end{columns}
+\medskip
+\begin{block}{Two practical details that matter}
+\begin{itemize}
+  \item \textbf{Preprocessing belongs inside the procedure.}  In each fold,
+        fit the scaling (imputation, feature selection) on its $60$ training
+        points only; for the final model, refit it on all $80$ -- what a
+        \texttt{Pipeline} does for you (A.12).
+  \item \textbf{Keep the hyperparameters fixed after looking at the test
+        result.}  Change the model in response to it, and the test set has
+        become another validation set.
+\end{itemize}
+\end{block}
 \end{frame}
 
 \begin{frame}{Part A.4: the $k$-fold estimate (Section 2.12, Eq.~3.92)}
