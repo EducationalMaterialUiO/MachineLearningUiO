@@ -27,7 +27,10 @@
 %% (cv_ridge_lasso) from BookFigures/chapter03_linear_regression.
 %% 2026-10-27: two frames added after Part A.3 (the 100-point example of
 %% addtuesday.txt: holdout versus four-fold cross-validation, the refit on
-%% all 80 non-test points, the two practical details).
+%% all 80 non-test points, the two practical details), then four frames with
+%% the example in code: Ridge on the Runge data with four folds and the penalty
+%% chosen by scikit-learn's cross-validation alone (ridge_cv_example.py,
+%% week44_ridge_cv.pdf, the table of every fold error, the refit and the test).
 %% Build:  pdflatex week44tuesday.tex  (twice)
 \documentclass[10pt,aspectratio=169]{beamer}
 \usetheme{red_plain}
@@ -290,6 +293,149 @@ Fit & Training data & Validation data \\
         become another validation set.
 \end{itemize}
 \end{block}
+\end{frame}
+
+%% ---- added 2026-10-27: the example in code -- Ridge on the Runge data, four folds,
+%% the penalty chosen by scikit-learn's cross-validation alone (ridge_cv_example.py,
+%% week44_ridge_cv.pdf; the same cells are in week44tuesday.ipynb after Part A)
+\begin{frame}[fragile]{Part A.3, the example in code: Ridge on the Runge data, four folds}
+\footnotesize
+The model of Project 1 -- Ridge on polynomial features of degree $10$ -- on the
+$100$ Runge points of Project 2, with \emph{no code of our own}: the test
+set, the folds, the scaler inside the fold, the grid and the refit are all
+\texttt{scikit-learn}.  (Its \texttt{alpha} multiplies $\sum\theta_j^2$ with
+no $1/n$ on the data term: $\lambda_{\text{notes}}=\texttt{alpha}/n_{\text{train}}$;
+we cross-validate \texttt{alpha} and call it $\lambda$.)
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.6}{7.2}\selectfont]
+X, y = runge_project2()                                          # the 100 points, seed 2026
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=20, random_state=2026)  # step 1
+cv = KFold(n_splits=4, shuffle=True, random_state=2026)          # step 2: 80 points, four folds of 20
+ridge = make_pipeline(PolynomialFeatures(10, include_bias=False), StandardScaler(), Ridge())
+lambdas = np.logspace(-6, 1, 15)
+search = GridSearchCV(ridge, {"ridge__alpha": lambdas}, cv=cv,
+                      scoring="neg_mean_squared_error", return_train_score=True)
+search.fit(X_train, y_train)                                     # step 3: 4 fits per lambda, 60 in all
+r = search.cv_results_
+fold_mse = -np.array([r[f"split{j}_test_score"] for j in range(4)]).T   # (lambda, fold): every fold error
+cv_mse, cv_se = -r["mean_test_score"], r["std_test_score"] / np.sqrt(4 - 1)   # std_test_score has ddof=0
+i_min = np.argmin(cv_mse)                                        # step 4: the minimum ...
+i_one = np.max(np.where(cv_mse <= cv_mse[i_min] + cv_se[i_min])[0])   # ... and the one-s.e. choice
+best = search.best_estimator_                                    # step 5: the minimum, refit on all 80
+mse_test = np.mean((best.predict(X_test) - y_test) ** 2)         # step 6: the 20 test points, once
+\end{lstlisting}
+The scaler comes \emph{after} \texttt{PolynomialFeatures}, so every power of
+$x$ is centred and scaled on the $60$ training points of each fold before
+the penalty sees it.  \texttt{cv\_results\_} keeps every fold's score
+(\texttt{split0\_test\_score}, \dots): that is the table on the next frame.
+\end{frame}
+
+\begin{frame}{Part A.3, every stage of the cross-validation in one table}
+\begin{columns}[T]
+\begin{column}{0.66\textwidth}
+\centering
+{\fontsize{6.2}{7.0}\selectfont
+\begin{tabular}{@{}rrrrrrrr@{}}
+\toprule
+$\lambda$ & fold 1 & fold 2 & fold 3 & fold 4 & CV MSE & s.e. & training \\
+\midrule
+$10^{-6}$ & 0.0263 & 0.0105 & 0.0318 & 0.1306 & 0.0498 & 0.0273 & 0.0147 \\
+$10^{-5.5}$ & 0.0266 & 0.0105 & 0.0319 & 0.1178 & 0.0467 & 0.0241 & 0.0147 \\
+$10^{-5}$ & 0.0274 & 0.0105 & 0.0323 & 0.0870 & 0.0393 & 0.0166 & 0.0147 \\
+$10^{-4.5}$ & 0.0298 & 0.0106 & 0.0334 & 0.0424 & 0.0290 & 0.0067 & 0.0148 \\  % within one s.e.
+\textbf{$10^{-4}$} & \textbf{0.0351} & \textbf{0.0110} & \textbf{0.0352} & \textbf{0.0275} & \textbf{0.0272} & \textbf{0.0057} & \textbf{0.0151} \\  % minimum
+$10^{-3.5}$ & 0.0416 & 0.0120 & 0.0373 & 0.0350 & 0.0315 & 0.0066 & 0.0157 \\  % within one s.e.
+$10^{-3}$ & 0.0443 & 0.0135 & 0.0389 & 0.0300 & 0.0317 & 0.0067 & 0.0163 \\  % within one s.e.
+$10^{-2.5}$ & 0.0411 & 0.0158 & 0.0394 & 0.0297 & 0.0315 & 0.0058 & 0.0171 \\  % one-s.e.
+$10^{-2}$ & 0.0347 & 0.0197 & 0.0397 & 0.0538 & 0.0370 & 0.0070 & 0.0187 \\
+$10^{-1.5}$ & 0.0318 & 0.0242 & 0.0404 & 0.0779 & 0.0436 & 0.0119 & 0.0214 \\
+$10^{-1}$ & 0.0340 & 0.0266 & 0.0405 & 0.0582 & 0.0398 & 0.0067 & 0.0241 \\
+$10^{-0.5}$ & 0.0394 & 0.0272 & 0.0414 & 0.0330 & 0.0353 & 0.0032 & 0.0270 \\
+$10^{0}$ & 0.0474 & 0.0275 & 0.0458 & 0.0383 & 0.0397 & 0.0046 & 0.0314 \\
+$10^{0.5}$ & 0.0539 & 0.0282 & 0.0519 & 0.0411 & 0.0438 & 0.0059 & 0.0367 \\
+$10^{1}$ & 0.0580 & 0.0313 & 0.0604 & 0.0431 & 0.0482 & 0.0068 & 0.0439 \\
+\bottomrule
+\end{tabular}
+}
+\end{column}
+\begin{column}{0.32\textwidth}
+\scriptsize
+\begin{block}{How to read it}
+One row per $\lambda$: the validation MSE of each of the four fits, their
+mean (the CV MSE), its standard error $s/\sqrt4$, and the mean training
+MSE of the four fold models.
+\end{block}
+\begin{block}{What it says}
+\begin{itemize}
+  \item Minimum (bold): $\lambda=10^{-4}$, $0.0272\pm0.0057$; within one
+        s.e.\ of it: $3\cdot10^{-5}$ to $3\cdot10^{-3}$, five rows, two
+        decades.  The one-s.e.\ rule takes the largest, $3\cdot10^{-3}$.
+  \item Fold 4 holds the right end point ($x=0.979$): for
+        $\lambda\le10^{-5}$ the fit extrapolates there, error $0.09$--$0.13$
+        against $0.01$--$0.03$ in folds 1--3.  Overfitting -- invisible in
+        the training column.
+  \item From $\lambda=10^{-2}$ up every column rises together: underfitting.
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Part A.3, the figure: what the analysis of a hyperparameter should look like}
+\centering
+\includegraphics[width=0.9\textwidth]{week44_ridge_cv.pdf}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\scriptsize
+(a) CV MSE with its error bars and the training MSE against $\lambda$; the
+minimum (red) and the one-s.e.\ choice (yellow); the dashed line is
+``minimum plus one standard error'' -- everything below it is
+indistinguishable from the best.  (b) The four fold curves that every
+point of (a) averages: fold 2, without end points, is near the noise floor
+throughout; fold 4 is the one that moves.
+\end{column}
+\begin{column}{0.48\textwidth}
+\scriptsize
+(c) The mechanism: the ten scaled coefficients, up to $\pm10$ without a
+penalty, shrink through the chosen $\lambda$'s.  (d) Step 6: the minimum
+and the one-s.e.\ model refitted on the $80$ points, OLS at the same
+degree for comparison, and the $20$ test points -- each evaluated once.
+This is the figure Project 2 asks for, with $\gamma$ and $\lambda$ on a
+grid instead of $\lambda$ alone; it is also what Project 1 should have had.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Part A.3, the example read to the end}
+\footnotesize
+\begin{block}{Steps 5 and 6: the refit and the test number, once}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+model (refit on the $80$ non-test points) & CV MSE & s.e. & test MSE ($20$ points) \\
+\midrule
+Ridge, the minimum, $\lambda=10^{-4}$ (\texttt{best\_estimator\_}) & $0.0272$ & $0.0057$ & $0.0201$ \\
+Ridge, the one-s.e.\ choice, $\lambda=3\cdot10^{-3}$ & $0.0315$ & $0.0058$ & $0.0201$ \\
+OLS, degree $10$ ($\lambda=0$), for comparison & & & $0.0189$ \\
+\bottomrule
+\end{tabular}
+\end{block}
+\pause
+\begin{block}{What the numbers teach}
+\begin{itemize}
+  \item Both test errors are \emph{below} their CV estimates: the refit has
+        $80$ points, the fold models had $60$ (A.5).  Not a contradiction.
+  \item OLS, which the folds rejected, is \emph{best} on the test set -- by
+        $0.001$, on $20$ points, where even a perfect model's test MSE has a
+        standard deviation of $\sigma^2\sqrt{2/20}\approx0.003$.  The test
+        set \emph{measures}; it cannot \emph{select}, and we do not let it:
+        the selection was made where the error bars are, in the four folds.
+  \item Two decades of $\lambda$ are indistinguishable on $80$ points.  Say
+        so in the report; that is the result, not a failure.
+\end{itemize}
+\end{block}
+\textbf{What goes into the report:} the table (per-fold numbers
+available), panel (a) with error bars and both marks, the chosen $\lambda$
+with its reason, the test number once.  Case 2 does the same for the
+network, with $\gamma$ and $\lambda$ on a grid.
 \end{frame}
 
 \begin{frame}{Part A.4: the $k$-fold estimate (Section 2.12, Eq.~3.92)}
