@@ -58,14 +58,19 @@ The table below maps task types to the required level of declaration.
 |---|---|---|
 | Spell-checking / grammar correction | Yes (brief) | Appendix, one line |
 | Rephrasing for clarity (minor) | Yes (brief) | Appendix, one line |
-| Structural editing (reorganising sections, rewriting paragraphs) | Yes (detailed) | Appendix, per section |
-| Drafting an entire section from a prompt | Yes (detailed) | Appendix + inline note |
 | Generating a code skeleton or template | Yes | Code comment + Appendix |
 | Debugging code (LLM identified the bug) | Yes | Code comment |
 | Generating a complete function or class | Yes | Docstring + Appendix |
 | Explaining a concept you then summarised in your own words | No | — |
 | Literature search (you verified all citations) | No | — |
 | Brainstorming project ideas (you chose and developed them) | No | — |
+
+### 3.1 Unacceptable AI/LLM Use
+
+Fully generating any or all sections the written report does not consitute acceptable use
+og generative AI. The purpose of this course is to provide an opportunity for you to learn
+how to write a report like the ones in this course. Offloading this learning opportunity to 
+generative AI defeats the purpose of the assignment. 
 
 ---
 
@@ -93,7 +98,7 @@ Example:
 ### 4.2 Text Writing and Editing
 
 For each section of the report, state the role the LLM played using one of the four
-**contribution levels** defined below.
+**contribution levels** defined below. 
 
 **Contribution levels:**
 
@@ -101,8 +106,6 @@ For each section of the report, state the role the LLM played using one of the f
 |---|---|---|
 | 0 | None | No LLM assistance |
 | 1 | Language only | Spell-check, grammar, minor phrasing |
-| 2 | Editorial | LLM rewrote or restructured sentences/paragraphs; you supplied all ideas and checked the result |
-| 3 | Generative | LLM drafted substantial text from your prompts; you revised, verified, and took ownership |
 
 **Template:**
 
@@ -110,23 +113,17 @@ For each section of the report, state the role the LLM played using one of the f
 Section              | LLM contribution level | Notes
 ---------------------|------------------------|------------------------------
 Abstract             | 1                      | Grammar check only
-Introduction         | 2                      | Rephrased two paragraphs for clarity
+Introduction         | 1                      | LLM read for clarity and suggested minor changes
 Theory / Methods     | 0                      | Written independently
 Results              | 0                      | Written independently
-Discussion           | 2                      | LLM suggested reorganisation of Sec. 4.2
+Discussion           | 1                      | Grammar check only
 Conclusion           | 1                      | Minor language corrections
 ```
 
-If any section is Level 3, add a sentence describing what prompt(s) you used and what changes
-you made to the LLM output.
+Note: The purpose of this course is to provide the opportunity for students to learn how to analyze and draw meaningful
+insights from data and the methods used. This includes the formulation and writing of the project reports. We have made 
+an amendment to only allow up to level 1 contribution from generative AI models on the writing of the report. 
 
-**Example (Level 3 note):**
-
-> *Section 2.3 (Variational Quantum Eigensolver):* I prompted Claude with "Explain the
->  VQE for a student at graduate level, assuming the reader knows the variational principle." The
-> output was used as a starting point; I rewrote the notation to match the rest of the report,
-> corrected a sign error in equation (7), and added the connection to our specific code
-> architecture.
 
 ### 4.3 Code Generation and Assistance
 
