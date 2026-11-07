@@ -1,0 +1,627 @@
+%% Week 46 -- Tuesday session (flipped classroom): questions from Monday,
+%% then Project 3.  Companion to week46slides.tex (Monday lecture on
+%% decision trees, bagging and random forests) and to
+%% doc/BookML/Projects/Project3.tex (first iteration, 2026-11-07, with the
+%% updated LLM rules).  Structure decided 2026-11-07: ~20 min open
+%% questions from Monday; then the project text is walked through; then
+%% the groups (1) decide which of the three paths interests them most and
+%% (2) start drafting a proposal -- other data sets than the suggested ones
+%% are welcome.  Aim for the end of the session: a sketch of 3-5 slides.
+%% The finished sketch is the weekly exercise of week 47 (the last one,
+%% deadline Friday November 20, published already in week 46) and is
+%% presented (3-5 min per group) in the final flipped classroom of week 47.
+%% No cases/insight frames in this deck: the "cases" are the groups' own
+%% proposals.  The environments are kept for consistency with the other
+%% Tuesday decks.
+%% Build:  pdflatex week46tuesday.tex  (twice)
+\documentclass[10pt,aspectratio=169]{beamer}
+\usetheme{red_plain}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\graphicspath{{../BookFigures/chapter07_trees_and_ensembles/}{./ch7/}{./}}
+
+%% ---- code listings
+\definecolor{codebg}{rgb}{0.97,0.97,0.97}
+\lstset{language=Python,basicstyle=\ttfamily\scriptsize,backgroundcolor=\color{codebg},
+  keywordstyle=\color{blue!70!black}\bfseries,commentstyle=\color{green!45!black},
+  stringstyle=\color{red!60!black},showstringspaces=false,frame=single,
+  framerule=0pt,xleftmargin=4pt,xrightmargin=4pt,breaklines=true,columns=fullflexible}
+
+%% ---- discussion frames (kept for consistency, unused in this deck)
+\newcounter{insight}
+\newenvironment{insight}[1][]{%
+  \stepcounter{insight}%
+  \begin{frame}{Warm-up \arabic{insight}: #1}%
+  \setbeamercolor{block title}{bg=structure.fg,fg=white}%
+  \setbeamercolor{block body}{bg=structure.fg!8}%
+}{\end{frame}}
+\newcommand{\question}[1]{\begin{block}{Question}#1\end{block}}
+\newcommand{\answer}[1]{\pause\begin{block}{Answer}#1\end{block}}
+\newcommand{\hint}[1]{\pause{\small\emph{Hint: }#1}}
+
+%% ---- case frames (unused)
+\newcounter{case}
+\newenvironment{case}[1][]{%
+  \stepcounter{case}%
+  \begin{frame}[fragile,environment=case]{Case \arabic{case}: #1}%
+}{\end{frame}}
+
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamercovered{invisible}
+
+\newcommand{\var}{\mathrm{var}}
+
+\title{Week 46, Tuesday Session}
+\subtitle{Flipped classroom: your questions on trees and forests, then
+  Project 3 -- read the text, choose a path, and start drafting your
+  proposal}
+\author{Morten Hjorth-Jensen}
+\institute{Department of Physics and Center for Computing in Science Education,\\
+  University of Oslo, Norway}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{How today works}
+\footnotesize
+\begin{block}{The format (as every Tuesday)}
+Mondays are lectures; Tuesdays belong to your questions and to concrete
+work in groups.  Today the concrete work is the start of \textbf{Project 3},
+the last and freest project of the course.
+\end{block}
+\begin{enumerate}
+  \item \textbf{First $\sim$20 min:} your open questions from Monday's
+        lecture -- the impurity measures, the CART split, the Gini and
+        entropy arithmetic, our own tree code, Eq.~(7.16), bagging, the
+        out-of-bag error, the random forest -- discussed in plenum.
+  \item \textbf{$\sim$15 min:} the text of Project 3, walked through: the
+        deliverables, the updated rules on LLMs, the three paths, what is
+        common to all of them.
+  \item \textbf{$\sim$15 min, in your groups:} read the three paths and
+        decide which one interests you most -- and why.
+  \item \textbf{$\sim$35 min, in your groups:} start drafting a
+        \textbf{proposal}: problem, data, methods, plan.  Other data sets
+        than the ones we suggest are welcome.  We circulate.
+  \item \textbf{Last 5 min:} wrap-up.  \textbf{The aim for today is a sketch of
+        3--5 slides} of what you want to do.
+\end{enumerate}
+\begin{block}{The sketch is the weekly exercise of week 47 -- the last one}
+The exercise text (\texttt{exercisesweek47.ipynb}) is published already.  You
+present the proposal in the final flipped classroom on Tuesday November 17
+and hand in the finished version by \textbf{Friday November 20}.  Details on
+the last frame.
+\end{block}
+\end{frame}
+
+%=============================================================================
+\section{Questions from Monday}
+%=============================================================================
+
+\begin{frame}{Picking up from Monday}
+\footnotesize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Monday in one sentence each}
+\tiny
+A tree partitions the feature space into axis-aligned boxes and predicts a
+constant in each, grown top-down and greedily.  A split is scored by the
+weighted impurity of its children, Eq.~(7.9) -- MSE for regression, Gini
+index or entropy for classification -- and CART keeps the largest gain,
+Eq.~(7.10), over every feature and every midpoint; the ten points and the
+ride data showed the arithmetic, sixty lines of Python reproduced
+\texttt{scikit-learn}.  A full-depth tree has zero training error and large
+variance.  $\var(\bar f)=\rho\sigma^2+(1-\rho)\sigma^2/B$ (7.16): bagging
+shrinks the second term, the random forest lowers $\rho$ with $m\approx\sqrt p$
+features per split (7.18), and the out-of-bag error (7.17) comes for free.
+\end{block}
+
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Questions we expect -- ask them}
+\scriptsize
+\setlength{\itemsep}{0pt}
+\begin{itemize}\setlength{\itemsep}{0pt}
+  \item Why do the Gini index and the entropy almost always pick the same
+        split, and when could they differ?
+  \item Why only the midpoints between consecutive values?  What does a
+        tree predict outside the range of the training data?
+  \item Why does adding trees to a forest never overfit, when adding depth
+        to one tree does?
+  \item Why $m\approx\sqrt p$ -- and what happens at $m=1$ and $m=p$?
+  \item Is the out-of-bag error a substitute for cross-validation?
+  \item On the cancer data logistic regression won.  So when are forests
+        the right choice?
+\end{itemize}
+\end{block}
+\begin{block}{Everything is in \texttt{week46.ipynb}}
+\scriptsize
+Impurities, the CART scan, \texttt{build\_id3}, the \texttt{DecisionTree},
+\texttt{BaggingClassifier} and \texttt{RandomForestClassifier} classes,
+every number on the slides.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Short answers, in case they are needed}
+\scriptsize
+\begin{itemize}
+  \item \textbf{Gini vs entropy.}  Both are strictly concave in the class
+        proportions and nearly proportional for two classes ($S/2$ tracks
+        $G$); they rank splits the same way unless two candidates are very
+        close.  They differ in \emph{values}, never in the tree, on both of
+        Monday's examples.
+  \item \textbf{Midpoints.}  The criterion is constant between consecutive
+        sorted values, so there is nothing to gain in between; outside the
+        training range a tree returns the value of the outermost leaf --
+        \textbf{no extrapolation}, and a forest inherits this.
+  \item \textbf{Error rate as criterion.}  Piecewise linear: it does not
+        reward a split that creates a pure child unless the majority vote
+        changes ($(400,400)$ example).  Concave measures do, and a pure node
+        never needs splitting again.
+  \item \textbf{More trees never overfit.}  Eq.~(7.16): $B$ only enters the
+        term $(1-\rho)\sigma^2/B$, which decreases; the bias is untouched.
+        Depth increases the variance $\sigma^2$ of each tree instead.
+  \item \textbf{$m$.}  $m=p$ is bagging ($\rho$ high); $m=1$ picks the split
+        feature at random ($\rho$ low, $\sigma^2$ high).  $\sqrt p$ is a rule
+        of thumb; the cancer scan showed $\rho$ from $0.68$ to $0.81$ and a
+        flat out-of-bag accuracy -- cross-validate $m$ when it matters.
+  \item \textbf{OOB vs CV.}  For bagged ensembles, yes, as an estimate of
+        the test error of \emph{that} ensemble; it is not a replacement for
+        a held-out test set once you have tuned on it.
+  \item \textbf{When forests.}  Tabular data with many mixed features,
+        interactions, no good parametric form, little time for feature
+        engineering; not for one smooth feature, not for extrapolation, not
+        when a linear model is already at the Bayes rate.
+\end{itemize}
+\end{frame}
+
+%=============================================================================
+\section{Project 3: the text}
+%=============================================================================
+
+\begin{frame}{Project 3: the frame}
+\footnotesize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Deliverables and deadline}
+As in Projects 1 and 2: a report of about 5000 words and 10--15 figures,
+written as a scientific report; the GitHub repository with \texttt{Code},
+\texttt{README} and the PDF; delivered as a group in Canvas.
+\textbf{Deadline: December 11 (midnight).}
+\end{block}
+\begin{block}{The updated rules on LLMs -- read them}
+The guidelines were changed this week.  For the \textbf{text of the report}
+only \emph{contribution level 1} is allowed: spell-checking, grammar, minor
+phrasing.  Having an LLM draft, rewrite or restructure a section is
+\textbf{not acceptable use}.  For the \textbf{code}, levels 0--4 still apply,
+with the inline \texttt{LLM-assisted} tag.  The declaration after the
+conclusions is required ($-5$ points if missing) and now states the level
+(0 or 1) for every text section and the level for every code file.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{What is new: you choose}
+Projects 1 and 2 prescribed data and methods.  Project 3 offers
+\textbf{three paths}, and you pick one -- or propose your own problem,
+after writing to us.
+\end{block}
+\begin{block}{What is the same for every path}
+Own code or libraries (say which); the quality measures of Projects 1--2
+where they apply; hyperparameters on training/validation data and the test
+set once; seeds and documented settings; a link to the literature; a
+critical assessment.  The report structure is the one you know.
+\end{block}
+\begin{block}{Where the text is}
+\texttt{doc/Projects/2026/Project3/} in the course repository: PDF, LaTeX
+and a notebook with the same text and two starter cells.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Path A: Solving differential equations with neural networks}
+\scriptsize
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{block}{The problem}
+The one-dimensional diffusion equation $u_{xx}=u_t$ on $[0,1]$ with
+$u(x,0)=\sin(\pi x)$ and $u(0,t)=u(1,t)=0$ -- or another ordinary or
+partial differential equation agreed with us (wave, Poisson, coupled ODEs,
+the matrix-eigenvalue ODE).
+\end{block}
+\begin{block}{The parts}
+\begin{enumerate}
+  \item[a)] the scheme, the analytical solution, the stability condition;
+  \item[b)] the explicit scheme at $\Delta x=1/10,\,1/100$, two times, errors;
+  \item[c)] neural networks: a trial function with \textbf{hard-coded}
+        conditions, and a \textbf{PINN} with soft conditions; against the
+        scheme and the analytical solution;
+  \item[d)] nodes, layers, activations, collocation points, loss weights,
+        optimizer;
+  \item[e)] critical assessment.
+\end{enumerate}
+\end{block}
+\end{column}
+\begin{column}{0.46\textwidth}
+\begin{block}{Who this is for}
+You liked weeks 42--43 (Chapter 9), you know finite differences from
+FYS3150/4150 or MAT-MEK4270, and you want a problem with an exact answer to
+compare against.
+\end{block}
+\begin{block}{What you need}
+Your Project-2 network, or Keras/PyTorch/JAX; automatic differentiation
+for $\partial_x$, $\partial_{xx}$ and $\partial_t$ of the network
+\emph{output with respect to its inputs}; patience with training
+(PINNs are fussy about the learning rate and the loss weights).
+\end{block}
+\begin{block}{Typical risk}
+Spending all the time on getting one PINN to converge and none on part d).
+Get the hard-coded version working first.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Path B: A classification study with several methods}
+\scriptsize
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{block}{The problem}
+One multiclass (or rich binary) classification data set that is \emph{not}
+MNIST, analyzed with \textbf{at least three} methods of the course, among
+them \textbf{at least one neural network} (FFNN or CNN) and \textbf{at
+least one tree-based ensemble} (random forest, gradient boosting,
+XGBoost); logistic regression as the cheap baseline.
+\end{block}
+\begin{block}{Default data set: Fashion-MNIST}
+$70\,000$ grey-scale $28\times 28$ images of clothing in ten classes, the
+MNIST format exactly -- your Project-2 code runs unchanged -- but harder:
+roughly $0.84$ (logistic) to $0.91$--$0.94$ (CNNs).  Shirt, T-shirt,
+pullover and coat get confused, so the confusion matrix means something.
+\end{block}
+\begin{block}{Other data}
+CIFAR-10; UCI tabular sets (covertype, adult, wine quality, spambase);
+sequence data for an RNN; Kaggle; your own field -- write to us first.
+\end{block}
+\end{column}
+\begin{column}{0.46\textwidth}
+\begin{block}{The parts}
+a) the data in context; b) the theory of your methods; c) implementation,
+hyperparameter search with cross-validation, times and parameter counts;
+d) results on one test set -- accuracy with standard error, confusion
+matrix, per-class precision/recall/$F_1$, one-vs-rest ROC and AUC,
+misclassified samples, importances or filters -- against the literature;
+e) critical assessment.
+\end{block}
+\begin{block}{Who this is for}
+You want the workflow of an applied study: data, baseline, several methods,
+honest comparison, published numbers to beat or to explain.
+\end{block}
+\begin{block}{Typical risk}
+Three methods run once each with default settings and a table of three
+accuracies.  The points are in the tuning, the uncertainties and the
+analysis of \emph{why} the ranking is what it is.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Path C: The statistics and mathematics behind the methods}
+\scriptsize
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{block}{The idea}
+Synthetic data where the \emph{truth is known} -- a function plus noise of
+known $\sigma^2$, a Gaussian mixture with known Bayes error
+$\Phi(-\Delta/2)$ -- so that bias, variance, the Bayes rate, the correlation
+between trees and the bias of an error estimator can all be \textbf{derived
+and then measured}.
+\end{block}
+\begin{block}{The parts}
+a) the derivations (bias-variance, OLS/Ridge expectation and covariance,
+Bayes error, logistic regression as maximum likelihood with the Fisher
+information, Eq.~(7.16), what each resampling estimator estimates);
+b) linear models and networks: measured against closed-form bias and
+variance, the Ridge path, width/epochs/$L_2$, optional double descent;
+c) classifiers against the Bayes error, calibration, class imbalance;
+d) ensembles against Eq.~(7.16), $\rho$ against $m$, bias-variance of
+tree/bagging/forest; e) CV, LOO, bootstrap, .632 and OOB \emph{as
+estimators}: their bias and variance, the one-SE rule, nested CV;
+f) critical assessment.
+\end{block}
+\end{column}
+\begin{column}{0.46\textwidth}
+\begin{block}{Who this is for}
+You enjoyed the derivations more than the data sets, and you want to see
+Chapters 2, 3, 5, 7 and 8 confirmed -- or refined -- by experiments you
+control completely.  Mostly your own code (projects 1 and 2) plus
+\texttt{scikit-learn}.
+\end{block}
+\begin{block}{What it is not}
+Not a literature project and not a big-data project: the data are cheap to
+generate, the computing is in the repetitions (many training sets, many
+bootstrap samples).
+\end{block}
+\begin{block}{Typical risk}
+Measuring everything and deriving nothing -- or the reverse.  The report
+must pair each measurement with the formula it tests, and say where they
+disagree and why.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{How we read a Project 3 report}
+\scriptsize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{The same grading as before}
+Abstract, introduction, theory and methods, implementation and tests,
+results and discussion, conclusions and perspectives, the LLM declaration,
+references.  Figures with captions that make a point; tables with
+uncertainties; code that we can rerun from the README.
+\end{block}
+\begin{block}{What the freedom adds}
+\begin{itemize}
+  \item A clear \textbf{question} on page one: what did you set out to find?
+  \item A \textbf{justified choice} of data and methods -- why these, what
+        is the baseline, what would a sceptic want to see.
+  \item A \textbf{comparison} with something external: analytical solution,
+        published benchmark, the formula, the Bayes rate.
+  \item A \textbf{critical assessment} that goes beyond ``method X was best''.
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{The seven take-aways in the text}
+Method fits problem; a number needs a baseline and an error bar; model
+selection is not model assessment; flexibility costs variance; averaging
+removes variance, not bias; verification before results; reproducibility.
+Use them as the checklist for your conclusions.
+\end{block}
+\begin{block}{Scope}
+About five weeks, next to other courses.  A narrow question answered
+properly beats a wide one half done.  The proposal you start today is where
+you set the scope -- and where we can tell you if it is too much or too
+little.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+%=============================================================================
+\section{Group work}
+%=============================================================================
+
+\begin{frame}{Group work, step 1 ($\sim$15 min): which path?}
+\footnotesize
+\begin{block}{Read the three paths in the project text, then answer in your group}
+\begin{enumerate}
+  \item Which path do you find most \textbf{interesting} -- and is that the
+        same as the one you find easiest?  Say both.
+  \item What do you \textbf{already have}?  Project-1 regression and
+        bootstrap/CV code, the Project-2 network and its MNIST pipeline,
+        today's tree and forest code, finite-difference code from other
+        courses, Keras or PyTorch experience.
+  \item What would you have to \textbf{learn} for each path (PINNs and
+        autodiff of network inputs; gradient boosting and CNN tuning;
+        Fisher information and the error-estimator study)?  Is that
+        learning the kind you want?
+  \item \textbf{Compute and data access}: do you have a laptop that can
+        train a CNN on $60\,000$ images, or a GPU in Colab?  Is the data set
+        you have in mind downloadable without registration and allowed for
+        this use?
+  \item Who in the group would do what?
+\end{enumerate}
+\end{block}
+\begin{block}{Decide, and write the decision down in one sentence}
+``We choose path \_\_ because \_\_; the main thing we must learn is \_\_.''
+If you cannot decide between two paths, note what would settle it and ask
+us when we come by.
+\end{block}
+\end{frame}
+
+\begin{frame}{Group work, step 2 ($\sim$35 min): draft the proposal -- the sketch}
+\footnotesize
+\begin{block}{The aim for today: 3--5 slides, roughly one per item}
+\begin{enumerate}
+  \item \textbf{The question and the data.}  One sentence stating what you
+        want to find out.  The data: what, where from, how many samples and
+        features, what the target is, who has analyzed them before (one or
+        two references).  For path A: which equation, which conditions,
+        what the analytical or reference solution is.  For path C: which
+        synthetic setup, with which known quantities.
+  \item \textbf{Methods and baseline.}  Which two or three methods, which
+        is the baseline, what is own code and what is a library, which
+        quality measures, how the hyperparameters will be chosen.
+  \item \textbf{Plan and risks.}  A timeline from now to December 11 with
+        the division of labour; the one thing most likely to go wrong and
+        what you do if it does; the computing you need.
+  \item \textbf{(Optional) The figures you expect.}  Sketch the two or three
+        key figures of the report before you have the data: what is on the
+        axes, what the curves should look like if you are right.
+\end{enumerate}
+\end{block}
+\begin{block}{Format}
+Slides (Beamer, PowerPoint, Keynote, Google Slides -- anything that becomes
+a PDF).  Sketchy is fine today; the finished version is next week's
+exercise.
+\end{block}
+\end{frame}
+
+\begin{frame}{If you consider a data set of your own: the checklist}
+\footnotesize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Practical}
+\begin{itemize}
+  \item Can it be downloaded today, without registration, in a format you
+        can read (csv, npz, images in folders)?  Is the licence compatible
+        with coursework?
+  \item Size: enough samples to train, validate and test (thousands rather
+        than hundreds); small enough to iterate on a laptop.
+  \item Labels: clean, documented classes or targets; a known class balance.
+  \item A documented or canonical train/test split, or a plan for making
+        one.
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Scientific}
+\begin{itemize}
+  \item At least one published analysis to compare with -- a benchmark
+        table, an article, a Kaggle leaderboard with documented methods.
+  \item A question that the methods of the course can answer: tabular
+        $\to$ trees and ensembles against logistic regression and a network;
+        images $\to$ CNN against the rest; sequences $\to$ RNN; a known
+        equation $\to$ path A.
+  \item Something you understand: domain knowledge makes the discussion.
+\end{itemize}
+\end{block}
+\begin{block}{Then}
+Tell us when we come by, or write to us before the week-47 session.  A
+data set that passes this checklist is as welcome as Fashion-MNIST.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{What a sketch can look like (an example for path B)}
+\tiny
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Page 1 -- question and data}
+\emph{Can a gradient-boosting model on raw pixels compete with a small
+convolutional network on Fashion-MNIST, and at what cost?}  Fashion-MNIST:
+$70\,000$ $28\times 28$ grey-scale images, 10 balanced classes,
+canonical $60\,000/10\,000$ split; Xiao et al.\ 2017, benchmark table on the
+Zalando repository (logistic $\approx 0.84$, GB $\approx 0.88$, CNN
+$0.91$--$0.94$).
+\end{block}
+\begin{block}{Page 2 -- methods and baseline}
+Baseline: logistic regression (Project 2, zero hidden layers).
+Methods: (1) our Project-2 FFNN, 784--128--10, Adam, $L_2$; (2)
+\texttt{HistGradientBoostingClassifier} / XGBoost; (3) Keras CNN of week 44.
+Hyperparameters by 5-fold CV on $10\,000$ training images, final models on
+all $60\,000$, test set once.  Measures: accuracy $\pm$ SE, confusion matrix,
+per-class $F_1$, one-vs-rest ROC/AUC, training time, parameter count.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Page 3 -- plan and risks}
+Week 47: data pipeline, baseline, FFNN rerun (A). Week 48: boosting tuning
+(B), CNN tuning (A). Week 49: results, figures, misclassified samples (all).
+Week 50: writing, LLM declaration, README, freeze on Dec 9.  Risk: CNN
+tuning too slow on laptops $\to$ Colab GPU, or a fixed small
+architecture with only the learning rate and dropout tuned.
+\end{block}
+\begin{block}{Page 4 -- expected figures}
+Accuracy of all four models against training-set size (log $x$-axis);
+confusion matrices side by side with the shirt/T-shirt/pullover/coat
+block highlighted; AUC per class; accuracy against training time.
+\end{block}
+\begin{block}{Why this is a good sketch}
+A question, numbers to beat, a baseline, a plan with names and dates, a
+risk with a fallback, and figures imagined before the data.  Yours can be
+rougher today.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Prompts for the other two paths while you draft}
+\footnotesize
+\begin{columns}[T]
+\begin{column}{0.49\textwidth}
+\begin{block}{Path A}
+\begin{itemize}
+  \item Diffusion equation as given, or another equation?  If another: do
+        you have an analytical or a trusted numerical reference solution?
+  \item Which library for the networks, and how will you get $u_{xx}$ and
+        $u_t$ of the network -- \texttt{jax.grad} twice, \texttt{torch.autograd},
+        \texttt{tf.GradientTape}?
+  \item Which architectures and activations go into the part-d) scan, and
+        how many collocation points?
+  \item What is your measure of error -- against the analytical solution at
+        two times, over the domain, as a function of training time?
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{0.49\textwidth}
+\begin{block}{Path C}
+\begin{itemize}
+  \item Which regression function (Runge 1D, 2D, Franke) and which
+        $\sigma$?  Which Gaussian mixture, and will the Bayes boundary be
+        linear or curved?
+  \item How many training sets and bootstrap samples can you afford per
+        experiment?  (Hundreds are needed; plan the loops.)
+  \item Which derivations of part a) will you write out in full, and which
+        will you cite?
+  \item Which optional items (double descent, boosting) will you include,
+        if any?
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\begin{block}{For everyone}
+Which figure of the report is the one you would show to prove your point?
+Draw it now, with axes and expected curves.
+\end{block}
+\end{frame}
+
+%=============================================================================
+\section{Wrap-up}
+%=============================================================================
+
+\begin{frame}{Wrap-up: the sketch becomes the weekly exercise of week 47}
+\scriptsize
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{The last weekly exercise}
+Finish the sketch you started today into a \textbf{proposal of 3--5
+slides}: question and data, methods and baseline, plan and risks, (optional)
+the expected figures.  If you propose a data set of your own, include the
+checklist items (source, size, licence, split, literature).  Add the short
+LLM declaration as in the earlier weekly exercises.  The exercise text is
+already in the week-47 folder; hand in the final version as a PDF in
+Canvas, one per group, by \textbf{Friday November 20 (midnight)} -- after
+you have presented it and heard our reaction.
+\end{block}
+\begin{block}{The final flipped classroom, Tuesday November 17}
+Each group presents its proposal -- the $3$--$5$ slides as they stand that
+day, $3$--$5$ minutes -- we and the other groups react, and you leave with a
+plan that we have seen.  Revise it with that feedback before Friday.  This
+is the last chance to redirect before the project deadline; use it.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Until then}
+\begin{itemize}
+  \item Read the full text of your path, including the summary of
+        requirements and the take-aways.
+  \item Download the data and look at them before you promise anything.
+  \item Paths A and B: get the baseline running (explicit scheme; logistic
+        regression).  Path C: the data generators and the bias-variance loop.
+\end{itemize}
+\end{block}
+\begin{block}{Monday November 16: boosting}
+AdaBoost, gradient boosting, XGBoost, and boosting any loss with automatic
+differentiation (Sections 7.11--7.15) -- the method that attacks the bias
+that today's ensembles leave alone, and a natural third method for path B.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\end{document}

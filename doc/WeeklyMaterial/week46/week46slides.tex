@@ -282,6 +282,64 @@ prediction is an average of observed targets.  Keep this in mind for the
 forests at the end of the lecture: they inherit it.}
 \end{insight}
 
+\begin{frame}{Recursive binary splitting in pictures (\texttt{week46\_boxes.pdf})}
+\begin{columns}[T]
+\begin{column}{0.72\textwidth}
+\centering
+\includegraphics[height=0.86\textheight]{week46_boxes.pdf}
+\end{column}
+\begin{column}{0.27\textwidth}
+\small
+\vspace{8pt}
+Two features, $36$ points.\\[4pt]
+The response $y$ is the \textbf{colour of the points} (a few are
+labelled); the box mean $\overline{y}_{R_j}$ is the \textbf{colour of the
+box}.\\[4pt]
+\textcolor{red!70!black}{Red ticks}: the candidate cutpoints, the midpoints
+between consecutive values of each feature.\\[4pt]
+\textcolor{red!70!black}{Red labels}: the cutpoints chosen.\\[4pt]
+The number under each title is Eq.~(7.1), the sum of squares the tree is
+minimising: $214\to97\to9.3$.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Reading the picture: one split at a time}
+\small
+\begin{columns}[T]
+\begin{column}{0.49\textwidth}
+\begin{block}{(a) One box}
+Everything starts in $R_1$, predicting the grand mean $\overline{y}=6.20$;
+Eq.~(7.1) is the total sum of squares, $214$.  The red ticks are the
+\emph{candidate} cutpoints: the $n-1=35$ midpoints between consecutive
+values of $x_1$ (bottom edge) and of $x_2$ (left edge) -- $70$ splits to
+score, each by Eq.~(7.3).
+\end{block}
+\begin{block}{(b) The first split}
+The best of the seventy is $x_1\le 0.51$: two boxes with means $4.29$ and
+$7.90$, Eq.~(7.1) down to $97$.  Every point left of the line is now
+predicted by $4.29$, every point right of it by $7.90$.
+\end{block}
+\end{column}
+\begin{column}{0.49\textwidth}
+\begin{block}{(c) The second level}
+Each child is split \emph{on its own data}: $x_2\le 0.54$ on the left,
+$x_2\le 0.49$ on the right -- two different cutpoints for the same feature,
+because each box only sees its own points.  Four boxes, four means
+$2.70,\,6.08,\,6.93,\,10.02$; Eq.~(7.1) down to $9.3$.
+\end{block}
+\begin{block}{(d) The same thing as a tree}
+A new point is sent down two questions and receives the mean of the box it
+lands in.  The data were generated as $3+4\,[x_1>0.5]+3\,[x_2>0.5]$ plus
+noise of standard deviation $0.5$: the tree has found the right boxes and
+the right plateaus, up to the noise -- and would keep splitting the noise
+if we let it.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+
 \begin{frame}{Grown to completion, a tree learns nothing: pruning, Eq.\ (7.4)}
 \small
 \begin{block}{The overfitting signature}
@@ -334,6 +392,64 @@ Misclassification rate, \textbf{Gini index}, \textbf{entropy}.  All vanish
 for a pure node; all are maximal when the classes are balanced.
 \end{block}
 \end{frame}
+
+\begin{frame}{What the Gini index measures}
+\small
+\begin{block}{Two readings of $G_m=\sum_k p_{mk}(1-p_{mk})=1-\sum_k p_{mk}^2$}
+\begin{itemize}
+  \item \textbf{A random guess.}  Draw two observations from the node
+        \emph{with replacement}; the probability that they belong to
+        different classes is $1-\sum_kp_{mk}^2=G_m$.  Equivalently: label a
+        point by drawing a class at random from the node's own
+        proportions -- the error rate of that randomized classifier is
+        $\sum_kp_{mk}(1-p_{mk})$.  The majority vote has error
+        $E_m=1-\max_kp_{mk}$, always smaller; $G_m$ measures how far the
+        node is from being a safe bet.
+  \item \textbf{A variance.}  For the indicator $I(y=k)$, a Bernoulli
+        variable with mean $p_{mk}$, the variance is $p_{mk}(1-p_{mk})$.
+        So $G_m$ is the \emph{total variance of the one-hot encoded target}
+        inside the node -- the exact analogue of the node MSE (7.12) of a
+        regression tree.  Splitting to reduce the weighted Gini index is
+        splitting to reduce within-node variance, for classes.
+\end{itemize}
+\end{block}
+\begin{block}{Numbers}
+Two classes, $p$ the fraction of class 1: $G=2p(1-p)$, zero at $p=0,1$ and
+maximal ($1/2$) at $p=1/2$.  $K$ balanced classes: $G=1-1/K$.  Always
+$0\le G\le 1-1/K<1$.  The ride-data root: $1-(10/14)^2-(4/14)^2=0.408$.
+\end{block}
+\end{frame}
+
+\begin{frame}{What the entropy measures, and why the two agree}
+\small
+\begin{block}{Information: $S_m=-\sum_kp_{mk}\log_2p_{mk}$}
+\begin{itemize}
+  \item Shannon: a class with probability $p$ carries $-\log_2p$ bits of
+        \emph{surprise}; $S_m$ is the \textbf{average surprise}, the
+        average number of yes/no questions needed to learn the class of a
+        point drawn from the node.  A pure node: $0$ bits.  Two balanced
+        classes: $1$ bit.  $K$ balanced classes: $\log_2K$ bits -- unlike
+        $G$ it is not bounded by one.
+  \item The \textbf{information gain} $\Delta=S_{\mathrm{parent}}-\sum_c\frac{m_c}{m}S_c$
+        is the \emph{mutual information} between the split variable and
+        the class: how many bits the answer to the question tells you about
+        the label.  The ride data: Outlook answers $0.17$ bits of the
+        $0.86$ at the root.
+  \item Same object as the cross entropy of Chapter 5: a leaf that predicts
+        its own proportions $p_{mk}$ has cross entropy $S_m$ on its own
+        points, so minimizing the weighted entropy of the children
+        \textbf{maximizes the multinomial log-likelihood} of the tree --
+        growing by entropy is maximum likelihood, one split at a time.
+\end{itemize}
+\end{block}
+\begin{block}{Why they rarely disagree}
+Expand $-p\ln p$ about $p=1$: $-p\ln p=p(1-p)+\tfrac12p(1-p)^2+\dots$, so
+$S\approx G/\ln2$ to leading order -- the dashed $S/2$ in the figure.  Both
+are strictly concave in $\bm{p}$; the error rate $E=1-\max_kp_{mk}$ is
+only piecewise linear, which is the whole difference (next frame).
+\end{block}
+\end{frame}
+
 
 \begin{frame}{Why the Gini index and the entropy, not the error rate}
 \begin{columns}[T]
@@ -980,6 +1096,85 @@ on is a way of controlling it.
 \end{column}
 \end{columns}
 \end{frame}
+
+\begin{frame}{Why a tree has high variance, 1: the leaf mean}
+\small
+\begin{block}{Start from the decomposition of Eq.~(2.52)}
+$\mathbb{E}\bigl[(y-\hat f(\bm{x}))^2\bigr]=\sigma^2+\mathrm{Bias}^2\hat f(\bm{x})+\mathrm{Var}\,\hat f(\bm{x})$,
+with $\sigma^2$ the noise variance.  A regression tree predicts the mean of
+the $n_m$ training responses in the leaf $R_m$ that contains $\bm{x}$:
+\[
+  \hat f(\bm{x})=\frac1{n_m}\sum_{i\in R_m}y_i,\qquad
+  \mathrm{Var}\bigl[\hat f(\bm{x})\,\big|\,\text{partition}\bigr]=\frac{\sigma^2}{n_m}.
+\]
+\end{block}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Grown to completion: $n_m=1$}
+The variance is $\sigma^2$ -- the leaf repeats one noisy observation -- and
+the bias is zero (the tree interpolates).  Expected test error
+$\sigma^2+0+\sigma^2=\mathbf{2\sigma^2}$: zero training error, \emph{twice}
+the noise on new data.  The Runge experiment measured $0.0214$ at full
+depth with $\sigma^2=0.01$.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Depth $d$: the trade-off in orders of magnitude}
+With $\approx n/2^d$ points per leaf, $\mathrm{Var}\approx\sigma^2\,2^d/n$:
+it \textbf{doubles with every level}.  For a smooth $f$ on boxes of width
+$w\propto2^{-d}$ the constant fit has
+$\mathrm{Bias}^2\approx\tfrac1{12}f'^2w^2\propto4^{-d}$: it quarters with
+every level.  The sum has a minimum at a moderate depth -- the U-shape of
+the test curve, $0.0181$ at depth $4$ for $n=200$ -- and the minimum is
+\emph{far above} $\sigma^2$, because a staircase is a poor approximant of a
+smooth curve.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Why a tree has high variance, 2: the partition is random too}
+\footnotesize
+\begin{block}{The conditional variance is only half the story}
+The cutpoints are \emph{estimated} from the same noisy data.  The empirical
+criterion (7.3), as a function of $s$, is flat near its minimum, so a small
+change in a few $y_i$ moves the argmin -- and because the search is greedy,
+a different root split changes \emph{every} split below it.  By the law of
+total variance,
+\[
+  \mathrm{Var}\,\hat f(\bm{x})
+  =\underbrace{\mathbb{E}\bigl[\sigma^2/n_{m(\bm{x})}\bigr]}_{\text{leaf mean}}
+  +\underbrace{\mathrm{Var}\bigl[\mathbb{E}(\hat f(\bm{x})\mid\text{partition})\bigr]}_{\text{which box }\bm{x}\text{ lands in}},
+\]
+and the second term is large wherever $\bm{x}$ is near a cutpoint: the
+prediction jumps between two box means.  This is the \textbf{instability}
+of Section 7.7.
+\end{block}
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\begin{block}{Compare a linear smoother}
+OLS, Ridge, kernel smoothers: $\hat{\bm{y}}=\bm{S}\bm{y}$, \emph{linear} in
+$\bm{y}$, so $\mathrm{Var}\,\hat y_i=\sigma^2\,(\bm{S}\bm{S}^{\mathsf{T}})_{ii}$
+and on average $\sigma^2\,\mathrm{tr}(\bm{S})/n=\sigma^2p/n$ -- bounded,
+continuous in the data, and small when $p\ll n$.  A tree is a
+\emph{discontinuous} function of its training data: no bound of this kind
+holds.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Degrees of freedom and optimism}
+Conditional on the partition a tree with $M$ leaves spends $M$ degrees of
+freedom.  Searching $p(n-1)$ candidate splits for the one that fits the
+noise best spends more: the \emph{generalized} degrees of freedom
+$\sum_i\mathrm{Cov}(\hat y_i,y_i)/\sigma^2$ exceed $M$, and by Efron's
+identity the training error is optimistic by $2\sigma^2\,\mathrm{df}/n$.
+Deep trees: low bias, huge $\mathrm{df}$, high variance -- precisely the
+profile that averaging repairs (Part 5).
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
 
 \begin{frame}{What the depth does to the boundary (book Figure 7.2)}
 \centering
