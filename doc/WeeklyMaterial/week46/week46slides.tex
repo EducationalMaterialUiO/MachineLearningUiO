@@ -1,3 +1,4 @@
+%% Revised 2026-11-09 after the review in week46_slides_review/ (see claude/ml-book-week46.md in the project).
 %% Week 46 -- Decision trees, bagging and random forests (Chapter 7, Sections
 %% 7.1-7.10).  Monday lecture, 2 x 45 min.  Part 1: what a tree is, regression
 %% and classification trees, the impurity measures (7.1-7.3).  Part 2: the
@@ -73,9 +74,9 @@
 \end{frame}
 
 \begin{frame}{Plan for week 46}
-\small
-\textbf{Monday lecture (2$\times$45 min), the last new topic of the semester:
-Chapter 7, Sections 7.1--7.10.}
+\footnotesize
+\textbf{Monday lecture (2$\times$45 min), the first half of the last chapter
+of the semester: Chapter 7, Sections 7.1--7.10.}
 \begin{enumerate}
   \item \textbf{A single tree}: what it is, regression and classification
         trees, the three impurity measures and why the Gini index and the
@@ -84,11 +85,11 @@ Chapter 7, Sections 7.1--7.10.}
         maximises -- done by hand on ten points, with both criteria.
   \item \textbf{A worked example}: the ride data -- Gini index and entropy at
         the root and down the tree, and the same tree in \texttt{scikit-learn}.
-  \item \textbf{A decision tree from scratch}: forty lines of Python,
+  \item \textbf{A decision tree from scratch}: sixty lines of Python,
         checked against \texttt{scikit-learn}; regression trees; strengths and
         weaknesses.
-  \item \textbf{Many trees}: why averaging helps (one formula that explains
-        the whole chapter), \textbf{bagging} and the out-of-bag error.
+  \item \textbf{Many trees}: why averaging helps (one formula, with its
+        assumptions made explicit), \textbf{bagging} and the out-of-bag error.
   \item \textbf{Random forests}: the one tweak that decorrelates the trees, own
         code and \texttt{scikit-learn}, two data sets.
 \end{enumerate}
@@ -133,7 +134,8 @@ is in \texttt{week46.ipynb} (the functions of
 \begin{block}{What we have done}
 Linear regression: a hyperplane.  Logistic regression: a sigmoid of a
 hyperplane.  Neural networks: compositions of such maps.  In every case
-\emph{one} function is adjusted to all the data at once, by a gradient.
+\emph{one} function is adjusted to all the data at once, by a gradient (or,
+for least squares, in closed form).
 \end{block}
 \begin{block}{What a tree does instead}
 It \textbf{partitions} the feature space into boxes by a sequence of
@@ -144,9 +146,9 @@ no scaling, no distance.
 \begin{column}{0.43\textwidth}
 \begin{block}{Why the chapter is interesting}
 A tree can be read aloud -- the most interpretable model in the course --
-and, on its own, one of the least accurate: \textbf{low bias, very high
-variance}.  Fixing that gives bagging, random forests and boosting: on
-tabular data, the most accurate methods known.
+and, on its own, one of the least accurate: grown deep it has \textbf{low
+bias and very high variance}.  Fixing that gives bagging, random forests and
+boosting: on tabular data, among the most accurate methods known.
 \end{block}
 \end{column}
 \end{columns}
@@ -163,8 +165,8 @@ tabular data, the most accurate methods known.
   \item Each \textbf{leaf} (terminal node) carries a prediction: a class, or
         a number.
   \item Predicting a new point = walking from the root to a leaf: one
-        comparison per level, so the cost is logarithmic in the number of
-        leaves.
+        comparison per level, so the cost is $\mathcal{O}(\text{depth})$ --
+        logarithmic in the number of leaves for a balanced tree.
   \item The \textbf{depth} is the length of the longest walk.
 \end{itemize}
 \end{column}
@@ -194,7 +196,7 @@ tabular data, the most accurate methods known.
 
 \begin{frame}{The geometry: boxes}
 \begin{block}{Each test cuts the space with an axis-aligned plane}
-$x_j\le t$ is a hyperplane perpendicular to axis $j$.  A tree therefore
+The boundary $x_j=t$ is a hyperplane perpendicular to axis $j$.  A tree therefore
 partitions the feature space into \textbf{axis-aligned boxes}, one per leaf,
 and predicts a constant in each box.
 \end{block}
@@ -209,9 +211,11 @@ steps small.
 \begin{column}{0.49\textwidth}
 \begin{block}{The strength}
 No notion of distance is needed, so \textbf{no scaling} of the features;
-categorical variables and interactions are handled without any special
-provision; a monotone transformation of any feature leaves the tree
-\emph{unchanged} (which no other method in this course can claim).
+interactions arise by themselves from successive tests; and a strictly
+increasing transformation of a feature ($\log x_j$, say) grows the
+\emph{same tree}: the same points go left and right at every split, with the
+same gains.  Only the numerical thresholds move (Pause 4) -- no other method
+in this course comes close to this.
 \end{block}
 \end{column}
 \end{columns}
@@ -239,11 +243,12 @@ and \textbf{greedily}.
 \end{frame}
 
 \begin{frame}{Recursive binary splitting, Eqs.\ (7.2)--(7.3)}
+\small
 \begin{block}{One step}
-Choose a feature $x_j$ and a cutpoint $s$, splitting the current region into
-the two half spaces
+Choose a feature $x_j$ and a cutpoint $s$, splitting the current region $R$
+into the two half boxes
 \[
-  R_1(j,s)=\{X\mid x_j<s\},\qquad R_2(j,s)=\{X\mid x_j\ge s\},
+  R_1(j,s)=\{\bm{x}\in R\mid x_j\le s\},\qquad R_2(j,s)=\{\bm{x}\in R\mid x_j> s\},
 \]
 so as to minimise
 \[
@@ -254,10 +259,11 @@ over \emph{all} features $j=1,\dots,p$ and \emph{all} cutpoints $s$.
 \end{block}
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
-\begin{block}{Only $n-1$ cutpoints per feature matter}
+\begin{block}{At most $n-1$ cutpoints per feature matter}
 The criterion is constant between consecutive sorted values of $x_j$, so
-only the midpoints need be tried: one sort per feature, $\mathcal{O}(pn\log n)$
-for a split.
+only the midpoints need be tried.  With one sort per feature and running
+sums a split costs $\mathcal{O}(pn\log n)$; our listing recomputes every
+child impurity and costs $\mathcal{O}(pn^2)$ -- fine for a lecture.
 \end{block}
 \end{column}
 \begin{column}{0.48\textwidth}
@@ -340,12 +346,13 @@ if we let it.
 \end{frame}
 
 
-\begin{frame}{Grown to completion, a tree learns nothing: pruning, Eq.\ (7.4)}
-\small
+\begin{frame}{Grown to completion, a tree memorises: pruning, Eq.\ (7.4)}
+\footnotesize
 \begin{block}{The overfitting signature}
 Let the splitting run and every training point ends in its own leaf: zero
-training error, and by Chapter 2 no generalisation.  A smaller tree has more
-bias but less variance.
+training error, each leaf repeating one noisy observation -- in the language
+of Chapter 2, very high variance.  A smaller tree has more bias but less
+variance.
 \end{block}
 \begin{block}{Cost-complexity pruning}
 Grow a large tree $T_0$, then for a parameter $\alpha\ge 0$ find the subtree
@@ -357,8 +364,9 @@ $T\subset T_0$ minimising
 \]
 This is training error plus $\alpha$ times a complexity penalty: the
 structure of \textbf{Ridge regression}, Eq.\ (3.43), with the number of leaves
-in place of $\|\bm{\theta}\|^2$.  Choose $\alpha$ by cross-validation, exactly
-as in week 36.  (\texttt{scikit-learn}: \texttt{ccp\_alpha} and
+in place of $\|\bm{\theta}\|^2$ (an analogy, not the same penalty).  Choose
+$\alpha$ by cross-validation, exactly as in week 36.  (\texttt{scikit-learn}:
+\texttt{ccp\_alpha}, which is $\alpha/n$ in the units above, and
 \texttt{cost\_complexity\_pruning\_path}.)
 \end{block}
 \begin{block}{In practice today}
@@ -369,11 +377,12 @@ ensemble deal with the variance.
 \end{frame}
 
 \begin{frame}{Classification trees (Section 7.3)}
-\small
+\small\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}
 \begin{block}{Two differences from a regression tree}
 A leaf predicts the \textbf{majority class} of the training points in it
-(and the class proportions give a crude probability).  And the squared error
-cannot score a split, so we need a measure of how \emph{impure} a node is.
+(and the class proportions give a crude probability).  And squared errors
+of class \emph{labels} make no sense: we need a measure of how \emph{impure}
+a node is.
 \end{block}
 \begin{block}{The class proportions in a node, Eq.\ (7.5)}
 For $K$ classes and the $N_m$ points of region $R_m$,
@@ -388,8 +397,8 @@ For $K$ classes and the $N_m$ points of region $R_m$,
   G_m = \sum_{k=1}^{K}p_{mk}(1-p_{mk}) = 1-\sum_{k=1}^{K}p_{mk}^{2},\qquad
   S_m = -\sum_{k=1}^{K}p_{mk}\log_2 p_{mk}.
 \]
-Misclassification rate, \textbf{Gini index}, \textbf{entropy}.  All vanish
-for a pure node; all are maximal when the classes are balanced.
+Misclassification rate, \textbf{Gini index}, \textbf{entropy}: all vanish
+for a pure node, all are maximal for balanced classes.
 \end{block}
 \end{frame}
 
@@ -403,8 +412,9 @@ for a pure node; all are maximal when the classes are balanced.
         point by drawing a class at random from the node's own
         proportions -- the error rate of that randomized classifier is
         $\sum_kp_{mk}(1-p_{mk})$.  The majority vote has error
-        $E_m=1-\max_kp_{mk}$, always smaller; $G_m$ measures how far the
-        node is from being a safe bet.
+        $E_m=1-\max_kp_{mk}$, never larger (equal only for a pure node or
+        perfectly balanced classes); $G_m$ measures how far the node is from
+        being a safe bet.
   \item \textbf{A variance.}  For the indicator $I(y=k)$, a Bernoulli
         variable with mean $p_{mk}$, the variance is $p_{mk}(1-p_{mk})$.
         So $G_m$ is the \emph{total variance of the one-hot encoded target}
@@ -420,16 +430,16 @@ $0\le G\le 1-1/K<1$.  The ride-data root: $1-(10/14)^2-(4/14)^2=0.408$.
 \end{block}
 \end{frame}
 
-\begin{frame}{What the entropy measures, and why the two agree}
-\small
-\begin{block}{Information: $S_m=-\sum_kp_{mk}\log_2p_{mk}$}
+\begin{frame}{What the entropy measures, and how it relates to the Gini index}
+\footnotesize
+\begin{block}{Information: $S_m=-\sum_kp_{mk}\log_2p_{mk}$ (with $0\log_20=0$)}
 \begin{itemize}
   \item Shannon: a class with probability $p$ carries $-\log_2p$ bits of
-        \emph{surprise}; $S_m$ is the \textbf{average surprise}, the
-        average number of yes/no questions needed to learn the class of a
-        point drawn from the node.  A pure node: $0$ bits.  Two balanced
-        classes: $1$ bit.  $K$ balanced classes: $\log_2K$ bits -- unlike
-        $G$ it is not bounded by one.
+        \emph{surprise}; $S_m$ is the \textbf{average surprise} -- the
+        smallest average number of yes/no questions (bits) per label that
+        any code can achieve for points drawn from the node.  A pure node:
+        $0$ bits.  Two balanced classes: $1$ bit.  $K$ balanced classes:
+        $\log_2K$ bits -- unlike $G$ it is not bounded by one.
   \item The \textbf{information gain} $\Delta=S_{\mathrm{parent}}-\sum_c\frac{m_c}{m}S_c$
         is the \emph{mutual information} between the split variable and
         the class: how many bits the answer to the question tells you about
@@ -442,11 +452,17 @@ $0\le G\le 1-1/K<1$.  The ride-data root: $1-(10/14)^2-(4/14)^2=0.408$.
         growing by entropy is maximum likelihood, one split at a time.
 \end{itemize}
 \end{block}
-\begin{block}{Why they rarely disagree}
-Expand $-p\ln p$ about $p=1$: $-p\ln p=p(1-p)+\tfrac12p(1-p)^2+\dots$, so
-$S\approx G/\ln2$ to leading order -- the dashed $S/2$ in the figure.  Both
-are strictly concave in $\bm{p}$; the error rate $E=1-\max_kp_{mk}$ is
-only piecewise linear, which is the whole difference (next frame).
+\begin{block}{Why they rarely disagree -- and why they are not proportional}
+Near a balanced node, $p_k=1/K+\delta_k$ with $\sum_k\delta_k=0$:
+$G=1-\tfrac1K-\sum_k\delta_k^2$ and
+$S=\log_2K-\tfrac{K}{2\ln2}\sum_k\delta_k^2+\mathcal{O}(\delta^3)$ -- the
+same quadratic bowl, so the two agree on which split is best whenever the
+children stay fairly mixed.  Near a pure node they part company: with a
+minority fraction $q\to0$, $G\approx2q$ but $S\approx q\log_2(1/q)$.  So
+$S/2$ in the figure matches $G$ at the maximum, not everywhere, and the
+two criteria \emph{can} rank splits differently (in practice in a few per
+cent of the splits).  Both are strictly concave in $\bm{p}$; the error rate
+$E=1-\max_kp_{mk}$ is only piecewise linear -- the whole difference (next frame).
 \end{block}
 \end{frame}
 
@@ -475,10 +491,37 @@ after B & 0.250 & \textbf{0.333} & \textbf{0.689}\\\bottomrule
 Both splits leave the error rate at $0.25$: $E$ cannot tell them apart.  But
 B makes a \textbf{pure} node, and $G$ and $S$ prefer it.  Concavity is the
 reason: the weighted average of the children is strictly below the parent
-unless the split is trivial, so a split that purifies one branch is rewarded
-even when no majority vote changes.  A pure node never needs splitting again.
+unless every child has the parent's class proportions, so a split that
+purifies one branch is rewarded even when no majority vote changes.  A pure
+node never needs splitting again.
 \end{column}
 \end{columns}
+\end{frame}
+
+\begin{frame}{The gain is never negative -- two one-line identities}
+\small
+Let child $c$ hold the fraction $w_c=m_c/m$ of the node's points with class
+proportions $\bm{p}_c$, so that the parent has $\bm{p}=\sum_cw_c\bm{p}_c$.
+\begin{block}{Gini: the gain is the variance \emph{between} the children}
+\[
+  \Delta_G=G(\bm{p})-\sum_cw_cG(\bm{p}_c)
+          =\sum_cw_c\|\bm{p}_c\|^2-\|\bm{p}\|^2
+          =\sum_cw_c\,\|\bm{p}_c-\bm{p}\|^2\;\ge0 .
+\]
+The one-hot reading of the previous frame made exact: total variance
+(parent) $=$ within (children) $+$ between, and the split keeps the
+``between'' part.
+\end{block}
+\begin{block}{Entropy: the gain is a Kullback--Leibler divergence}
+\[
+  \Delta_S=\sum_cw_c\sum_kp_{ck}\log_2\frac{p_{ck}}{p_k}
+          =\sum_cw_c\,D_{\mathrm{KL}}(\bm{p}_c\,\|\,\bm{p})\;\ge0 .
+\]
+\end{block}
+Both vanish exactly when every child has the parent's proportions -- a
+geometrically non-trivial split can have \emph{zero} gain (XOR, Part 2).
+And neither says ``a pure child always wins'': the weights $w_c$ and all
+the child proportions enter.
 \end{frame}
 
 \begin{insight}[the numbers behind the three measures]
@@ -490,9 +533,10 @@ $G=1-(0.36+0.04+0.04)=0.56$;
 $S=-(0.6\log_2 0.6+2\cdot 0.2\log_2 0.2)=0.442+0.929=1.371$ bits.\\[3pt]
 Balanced, $p_k=1/K$: $G=1-1/K$ ($=2/3$ for $K=3$) and $S=\log_2 K$
 ($=1.585$ for $K=3$).  So $G\le 1$ always, while $S$ grows with the number of
-classes -- which is why the figure drew $S/2$: for two classes the two
-curves are nearly proportional, and in practice they rarely choose different
-splits.}
+classes -- which is why the figure drew $S/2$: for two classes that puts the
+maxima on top of each other.  The curves are similar but not proportional
+($S$ is much steeper near a pure node), and in practice they rarely choose
+different splits.}
 \end{insight}
 
 %=============================================================================
@@ -524,7 +568,9 @@ the \textbf{ID3} algorithm.  Same idea, different impurity, multiway splits.
 \end{block}
 \begin{block}{Stopping}
 A maximum depth, a minimum number of points to split a node or to make a
-leaf, a maximum number of leaves, or no split with $\Delta>0$.
+leaf, a maximum number of leaves, or no admissible split at all (the node
+is pure, or constant in every feature).  A split with $\Delta=0$ is
+\emph{allowed}: it may pay off one level down (XOR, in a moment).
 \end{block}
 \end{frame}
 
@@ -564,7 +610,8 @@ That is what we shall write in Part 4.
   \item For every feature $k$: sort its values, and for every midpoint $t$
         between consecutive distinct values compute $C(k,t)$ of Eq.\ (7.9)
         and the gain $\Delta=G_{\mathrm{parent}}-C(k,t)$.
-  \item Keep the $(k,t)$ with the largest $\Delta$.  If $\Delta\le 0$: return a leaf.
+  \item Keep the admissible $(k,t)$ (both children large enough) with the
+        largest $\Delta$, zero included.  If there is none: return a leaf.
   \item Split the data by $x_k\le t$ and call \textsc{grow} on both halves
         with depth $d+1$.
 \end{enumerate}
@@ -572,9 +619,44 @@ That is what we shall write in Part 4.
 \begin{block}{Two remarks}
 Ties happen (two splits with the same gain); CART breaks them by order or at
 random, and that is one reason two implementations can grow different trees
-from the same data.  And the search is \textbf{greedy}: the globally best
-tree is NP-complete to find; nobody tries.
+from the same data.  And the search is \textbf{greedy}: finding the globally
+best tree is NP-hard; exact methods exist only for small trees, and CART
+does not try.
 \end{block}
+\end{frame}
+
+\begin{frame}{Why a zero-gain split must be allowed: XOR}
+\small
+\begin{columns}[T]
+\begin{column}{0.3\textwidth}
+\begin{center}
+\begin{tabular}{ccc}\toprule
+$x_1$ & $x_2$ & $y$\\\midrule
+0 & 0 & 0\\
+0 & 1 & 1\\
+1 & 0 & 1\\
+1 & 1 & 0\\\bottomrule
+\end{tabular}
+\end{center}
+\end{column}
+\begin{column}{0.68\textwidth}
+\begin{block}{At the root}
+Both candidates, $x_1\le\frac12$ and $x_2\le\frac12$, produce two children
+with one point of each class: $\Delta_G=\Delta_S=0$.  A rule ``stop when the
+best gain is zero'' returns a single leaf with $50\%$ training accuracy.
+\end{block}
+\begin{block}{One level further}
+Split on either feature anyway, then on the other feature in both children:
+four pure leaves, depth 2, training accuracy $100\%$.  The gain was not
+absent, it was \emph{one level away} -- the greedy search cannot see it, but
+it must be allowed to walk there.
+\end{block}
+\end{column}
+\end{columns}
+\medskip
+Our code (Part 4) therefore stops only when no admissible split exists, as
+\texttt{scikit-learn} does (its \texttt{min\_impurity\_decrease} defaults to
+$0$).  Depth and leaf-size limits remain the regularisation.
 \end{frame}
 
 \begin{frame}{CART by hand: ten points in the plane}
@@ -645,13 +727,14 @@ $x_2\le 4.75$ & 8 & 2 & 0.3750 & 0.1250 & 0.7635 & 0.2365\\\bottomrule
 \footnotesize
 \begin{block}{Reading the table}
 \begin{itemize}
-  \item A split that moves one point ($x_1\le 1.25$: points 1 and 9, one of
-        each class) gains nothing: the children are as mixed as the parent.
+  \item A split that isolates two points ($x_1\le 1.25$: points 1 and 9,
+        one of each class) gains nothing: both children are as mixed as the
+        parent.
   \item Symmetric splits give symmetric rows ($x_1\le 2.5$ and $x_1\le 4.5$).
   \item $x_2\le 2.5$ wins with both criteria, and by a margin: it creates a
         \textbf{pure} child of four points.
   \item The Gini index and the entropy \emph{rank} the twelve splits
-        identically here -- the usual experience.
+        identically here -- the usual, but not guaranteed, experience.
 \end{itemize}
 \end{block}
 \begin{block}{Then recurse}
@@ -693,8 +776,10 @@ $G_{\mathrm{right}}=0.32$.  $C=\tfrac{5}{10}0.32+\tfrac{5}{10}0.32=0.32$,
 $\Delta=0.5-0.32=0.18$.\\[3pt]
 It leaves one stray point on \emph{each} side, so both children must be
 split again; $x_2\le 2.5$ leaves one stray point on one side and none on the
-other.  A pure child is worth more to a concave measure than two
-nearly-pure ones -- the same lesson as the $(400,400)$ example.}
+other.  For these counts a pure child plus one $(1,5)$ child has lower
+weighted impurity than two $(4,1)$ children -- the same lesson as the
+$(400,400)$ example, though not a general rule: the weights and all the
+proportions enter the identities above.}
 \end{insight}
 
 %=============================================================================
@@ -733,9 +818,9 @@ target, fourteen days.
 \end{block}
 \begin{block}{How a categorical feature is split}
 The ID3 way: one child per value (outlook $\to$ sunny, overcast, rain) and
-the weighted impurity of Eq.\ (7.9) over all children.  CART (and
-\texttt{scikit-learn}) instead makes binary splits on one-hot columns,
-``overcast or not?'' -- we shall see both.
+the weighted impurity of Eq.\ (7.9) over all children.  CART makes
+\emph{binary} splits; \texttt{scikit-learn} needs numbers, so we give it
+one-hot columns and it asks ``overcast or not?'' -- we shall see both.
 \end{block}
 \begin{block}{What we compute}
 Gini index and entropy at the root, after a split on each feature, then the
@@ -818,8 +903,10 @@ Greedy, never backtracking.
 \begin{column}{0.49\textwidth}
 \begin{block}{Rain: days 4, 5, 6, 10, 14, counts $(2,3)$, $G=0.48$}
 Wind: Weak = days 4, 5, 10, all rides; Strong = days 6, 14, no rides.  Both
-children pure, $C=0$, gain $0.48$ (entropy: gain $0.971$).  Humidity gives
-$C=0.4$, Temperature $0.467$.  \textbf{Wind} wins and the branch is finished.
+children pure, $C=0$, gain $0.48$ (entropy: gain $0.971$).  Humidity: High
+$(1,1)$, Normal $(1,2)$, $C=\tfrac25\tfrac12+\tfrac35\tfrac49=\tfrac7{15}=0.467$;
+Temperature: Mild $(1,2)$, Cool $(1,1)$, also $0.467$.  \textbf{Wind} wins
+and the branch is finished.
 \end{block}
 \begin{block}{Sunny: days 1, 2, 8, 9, 11, counts $(2,3)$, $G=0.48$}
 Humidity: High = days 1, 2, 8, counts $(2,1)$, $G=0.444$; Normal = days 9,
@@ -840,12 +927,13 @@ $(2,1)$ is then split by Wind: Weak = days 1, 8 (no ride), Strong = day 2
   \item Outlook = Sunny $\to$ Humidity: Normal $\to$ ride; High $\to$
         Wind: Strong $\to$ ride, Weak $\to$ no.
 \end{itemize}
-Depth 3, seven leaves, every leaf pure, training error zero.
+Depth 3, six leaves ($1+2+3$), every leaf pure, training error zero.
 \end{block}
 \begin{block}{Gini or entropy?}
-The two criteria rank every split the same way at every node here, so they
-grow the \textbf{same tree}; only the numbers on the nodes differ.  The tie
-on the sunny branch is real for both.
+On these data the two criteria rank every split the same way at every node,
+so with the same tie-breaking rule they grow the \textbf{same tree}; only
+the numbers on the nodes differ.  The tie on the sunny branch is real for
+both.
 \end{block}
 \end{column}
 \end{columns}
@@ -874,7 +962,8 @@ Xoh = enc.fit_transform(X)            # 14 x 10 indicators
 names = [n.replace("_", "=")
          for n in enc.get_feature_names_out(features)]
 
-clf = DecisionTreeClassifier(criterion="entropy")
+clf = DecisionTreeClassifier(criterion="entropy",
+                             random_state=2026)   # ties!
 clf.fit(Xoh, y)
 print(export_text(clf, feature_names=names))
 plot_tree(clf, feature_names=names,
@@ -887,13 +976,15 @@ plot_tree(clf, feature_names=names,
 \texttt{scikit-learn} is CART: every split is binary, and a categorical
 feature must first be \textbf{one-hot encoded} -- ten indicator columns
 ``Outlook=Sunny'', ``Wind=Weak'', \dots\ The root asks ``Outlook=Overcast
-$\le 0.5$?'', i.e.\ \emph{is it overcast?}, which is our overcast leaf; then
-``Humidity=Normal?'', and so on.
+$\le 0.5$?'': the \emph{true} (left) branch is ``not overcast'', the false
+(right) branch is our pure overcast leaf; then ``Humidity=Normal?'', and so
+on.
 \end{block}
 \begin{block}{What is the same}
 The impurity (\texttt{criterion="gini"} or \texttt{"entropy"}), the greedy
 search, pure leaves, training error zero.  Binary splits need more levels:
-depth 5 and nine leaves against our depth 3 and seven.
+depth 5 and nine leaves against our depth 3 and six -- with this seed;
+splits tie, and seed 0 gives depth 4 and eight leaves, equally pure.
 \end{block}
 \end{column}
 \end{columns}
@@ -958,8 +1049,9 @@ its prediction \texttt{value}, so any node can be a leaf if we stop there.
 class DecisionTree:
     """CART for regression and classification.
     task: "classification" or "regression";  criterion: "gini" or "entropy";
-    max_features: if set, only a random subset of features is tried at each split
-                  -- this is what turns bagging into a random forest (Part 6)."""
+    max_features: if set, only m random features are tried at each split (more
+                  only if none of them can split the node) -- this is what turns
+                  bagging into a random forest (Part 6)."""
 
     def __init__(self, task="classification", criterion="gini", max_depth=None,
                  min_samples_split=2, min_samples_leaf=1, max_features=None, rng=None):
@@ -988,10 +1080,12 @@ class DecisionTree:
         n, p = X.shape
         features = np.arange(p)
         if self.max_features is not None and self.max_features < p:
-            features = self.rng.choice(p, self.max_features, replace=False)   # random forest
+            features = self.rng.permutation(p)                # random forest: a fresh random order
         parent = self._impurity(y)
-        best_gain, best_j, best_t = 0.0, None, None
-        for j in features:
+        best_gain, best_j, best_t = -np.inf, None, None       # any admissible split beats "none"
+        for rank, j in enumerate(features):
+            if self.max_features is not None and rank >= self.max_features and best_j is not None:
+                break                                         # m features tried, one works
             xs = X[:, j]
             uniq = np.unique(xs)                              # sorted distinct values
             if len(uniq) < 2:
@@ -1007,8 +1101,8 @@ class DecisionTree:
                     best_gain, best_j, best_t = gain, j, t
         return best_gain, best_j, best_t
 \end{lstlisting}
-\small This is the recipe frame, line for line: the double loop over
-features and midpoints, $C(k,t)$ as \texttt{child}, the gain, the argmax.
+\small The recipe frame, line for line; starting from $-\infty$, not $0$,
+lets a zero-gain split through (XOR).
 \end{frame}
 
 \begin{frame}[fragile]{A decision tree from scratch, 4: grow, fit, predict}
@@ -1021,7 +1115,7 @@ features and midpoints, $C(k,t)$ as \texttt{child}, the gain, the argmax.
                 or len(np.unique(y)) == 1):           # stopping rules
             return node
         gain, j, t = self._best_split(X, y)
-        if j is None or gain <= 0:
+        if j is None:                             # no admissible split (gain 0 is fine)
             return node
         mask = X[:, j] <= t
         node.feature, node.threshold = j, t
@@ -1084,92 +1178,96 @@ pure Python.
 \begin{block}{Identical where it should be}
 Same accuracies, same number of leaves at every depth.  At unlimited depth
 the test accuracies differ by two points out of a hundred: \textbf{ties}
-between equally good splits, broken differently.
+between equally good splits, broken differently.  (Both also pass XOR.)
 \end{block}
 \begin{block}{The last row is the lesson}
 The fully grown tree fits the training data perfectly and generalises
 \emph{no better} than depth 3 -- here slightly worse for
-\texttt{scikit-learn}.  The variance term of the bias-variance
-decomposition, Eq.\ (2.52), growing without limit.  Everything from Part 5
-on is a way of controlling it.
+\texttt{scikit-learn}.  The signature of the variance term of Eq.\ (2.52),
+growing with the depth (next two frames).  Everything from Part 5 on is a
+way of controlling it.
 \end{block}
 \end{column}
 \end{columns}
 \end{frame}
 
 \begin{frame}{Why a tree has high variance, 1: the leaf mean}
-\small
-\begin{block}{Start from the decomposition of Eq.~(2.52)}
-$\mathbb{E}\bigl[(y-\hat f(\bm{x}))^2\bigr]=\sigma^2+\mathrm{Bias}^2\hat f(\bm{x})+\mathrm{Var}\,\hat f(\bm{x})$,
-with $\sigma^2$ the noise variance.  A regression tree predicts the mean of
-the $n_m$ training responses in the leaf $R_m$ that contains $\bm{x}$:
+\footnotesize\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}
+\begin{block}{Start from the decomposition of Eq.~(2.52), for a \emph{fixed} partition}
+$y_i=f(\bm{x}_i)+\epsilon_i$, independent noise of variance $\sigma^2$, and a
+partition chosen \emph{without looking at the} $y_i$.  The tree predicts the
+mean of the $n_m$ training responses in the leaf $R_m$ containing $\bm{x}$:
 \[
   \hat f(\bm{x})=\frac1{n_m}\sum_{i\in R_m}y_i,\qquad
-  \mathrm{Var}\bigl[\hat f(\bm{x})\,\big|\,\text{partition}\bigr]=\frac{\sigma^2}{n_m}.
+  \mathbb{E}\bigl[\hat f(\bm{x})\,\big|\,\text{partition}\bigr]=\overline{f}_m,\qquad
+  \mathrm{Var}\bigl[\hat f(\bm{x})\,\big|\,\text{partition}\bigr]=\frac{\sigma^2}{n_m},
 \]
+so the expected squared error at $\bm{x}$ is
+$\sigma^2+(\overline{f}_m-f(\bm{x}))^2+\sigma^2/n_m$: noise, bias, variance.
 \end{block}
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
 \begin{block}{Grown to completion: $n_m=1$}
-The variance is $\sigma^2$ -- the leaf repeats one noisy observation -- and
-the bias is zero (the tree interpolates).  Expected test error
-$\sigma^2+0+\sigma^2=\mathbf{2\sigma^2}$: zero training error, \emph{twice}
-the noise on new data.  The Runge experiment measured $0.0214$ at full
-depth with $\sigma^2=0.01$.
+The variance is $\sigma^2$ -- the leaf repeats one noisy observation.  At a
+training input the bias vanishes (the tree interpolates) and the expected
+error on a fresh response is $\sigma^2+0+\sigma^2=\mathbf{2\sigma^2}$: zero
+training error, \emph{twice} the noise; between training points the bias
+$f(\bm{x}_i)-f(\bm{x})$ adds to it.  The Runge experiment measured $0.0214$
+at full depth with $\sigma^2=0.01$.
 \end{block}
 \end{column}
 \begin{column}{0.48\textwidth}
 \begin{block}{Depth $d$: the trade-off in orders of magnitude}
-With $\approx n/2^d$ points per leaf, $\mathrm{Var}\approx\sigma^2\,2^d/n$:
-it \textbf{doubles with every level}.  For a smooth $f$ on boxes of width
-$w\propto2^{-d}$ the constant fit has
-$\mathrm{Bias}^2\approx\tfrac1{12}f'^2w^2\propto4^{-d}$: it quarters with
-every level.  The sum has a minimum at a moderate depth -- the U-shape of
-the test curve, $0.0181$ at depth $4$ for $n=200$ -- and the minimum is
-\emph{far above} $\sigma^2$, because a staircase is a poor approximant of a
-smooth curve.
+One feature, cells of roughly equal size: $\approx n/2^d$ points per leaf,
+$\mathrm{Var}\approx\sigma^2\,2^d/n$ -- it \textbf{doubles with every
+level}.  For a smooth $f$ on cells of width $w\propto2^{-d}$ the constant
+fit has $\mathrm{Bias}^2\approx\tfrac1{12}f'^2w^2\propto4^{-d}$: it quarters
+with every level.  The sum has a minimum at a moderate depth -- the U-shape
+of the test curve, $0.0181$ at depth $4$ for $n=200$ -- \emph{far above}
+$\sigma^2$: a staircase is a poor approximant of a smooth curve.  (A
+heuristic; in $p$ dimensions $w\propto2^{-d/p}$.)
 \end{block}
 \end{column}
 \end{columns}
 \end{frame}
 
 \begin{frame}{Why a tree has high variance, 2: the partition is random too}
-\footnotesize
+\footnotesize\setlength{\abovedisplayskip}{3pt}\setlength{\belowdisplayskip}{3pt}
 \begin{block}{The conditional variance is only half the story}
-The cutpoints are \emph{estimated} from the same noisy data.  The empirical
-criterion (7.3), as a function of $s$, is flat near its minimum, so a small
-change in a few $y_i$ moves the argmin -- and because the search is greedy,
-a different root split changes \emph{every} split below it.  By the law of
-total variance,
+The cutpoints are \emph{estimated} from the same noisy data.  When two
+candidate splits score nearly the same, a small change in a few $y_i$ moves
+the argmin -- and, the search being greedy, a different root split changes
+\emph{every} split below it.  By the law of total variance,
 \[
   \mathrm{Var}\,\hat f(\bm{x})
-  =\underbrace{\mathbb{E}\bigl[\sigma^2/n_{m(\bm{x})}\bigr]}_{\text{leaf mean}}
+  =\underbrace{\mathbb{E}\bigl[\mathrm{Var}(\hat f(\bm{x})\mid\text{partition})\bigr]}_{\text{leaf mean}}
   +\underbrace{\mathrm{Var}\bigl[\mathbb{E}(\hat f(\bm{x})\mid\text{partition})\bigr]}_{\text{which box }\bm{x}\text{ lands in}},
 \]
 and the second term is large wherever $\bm{x}$ is near a cutpoint: the
-prediction jumps between two box means.  This is the \textbf{instability}
-of Section 7.7.
+prediction jumps between two box means -- the \textbf{instability} of
+Section 7.7.  (The first term is $\mathbb{E}[\sigma^2/n_{m(\bm{x})}]$ only
+for a partition chosen blind to the noise; CART's is not.)
 \end{block}
 \begin{columns}[T]
 \begin{column}{0.5\textwidth}
 \begin{block}{Compare a linear smoother}
 OLS, Ridge, kernel smoothers: $\hat{\bm{y}}=\bm{S}\bm{y}$, \emph{linear} in
 $\bm{y}$, so $\mathrm{Var}\,\hat y_i=\sigma^2\,(\bm{S}\bm{S}^{\mathsf{T}})_{ii}$
-and on average $\sigma^2\,\mathrm{tr}(\bm{S})/n=\sigma^2p/n$ -- bounded,
-continuous in the data, and small when $p\ll n$.  A tree is a
-\emph{discontinuous} function of its training data: no bound of this kind
-holds.
+and on average $\sigma^2\,\mathrm{tr}(\bm{S}\bm{S}^{\mathsf{T}})/n$ ($=\sigma^2p/n$
+for OLS, a projection) -- bounded, continuous in the data, small when
+$p\ll n$.  A tree is a \emph{discontinuous} function of its training data:
+no bound of this kind holds.
 \end{block}
 \end{column}
 \begin{column}{0.48\textwidth}
 \begin{block}{Degrees of freedom and optimism}
-Conditional on the partition a tree with $M$ leaves spends $M$ degrees of
-freedom.  Searching $p(n-1)$ candidate splits for the one that fits the
-noise best spends more: the \emph{generalized} degrees of freedom
-$\sum_i\mathrm{Cov}(\hat y_i,y_i)/\sigma^2$ exceed $M$, and by Efron's
-identity the training error is optimistic by $2\sigma^2\,\mathrm{df}/n$.
-Deep trees: low bias, huge $\mathrm{df}$, high variance -- precisely the
-profile that averaging repairs (Part 5).
+For a fixed partition a tree with $M$ leaves spends $M=\mathrm{tr}(\bm{S})$
+degrees of freedom.  Searching $p(n-1)$ candidate splits for the one that
+fits the noise best spends more: the \emph{generalized} degrees of freedom
+$\sum_i\mathrm{Cov}(\hat y_i,y_i)/\sigma^2$ typically exceed $M$, and by
+Efron's identity the training error is optimistic by
+$2\sigma^2\,\mathrm{df}/n$.  Deep trees: low bias, huge $\mathrm{df}$, high
+variance -- the profile that averaging repairs.
 \end{block}
 \end{column}
 \end{columns}
@@ -1194,8 +1292,9 @@ our \texttt{DecisionTree("regression")}.  A depth-$d$ tree has at most $2^d$
 leaves, each a constant.  Train MSE falls to zero; test MSE is smallest at
 depth 4 ($0.0181$), then rises to $0.0214$ at full depth -- and never reaches
 the noise floor $0.01$ that a degree-10 polynomial ($0.0133$) gets close to.
-A tree is the wrong tool for one smooth feature; \texttt{scikit-learn} gives
-the same test numbers to four digits.
+A tree is a poor tool for one smooth feature; \texttt{scikit-learn} gives
+the same test numbers to four digits.  (In practice the depth is chosen on
+validation data, not by reading off the minimum of the test curve.)
 \end{frame}
 
 \begin{frame}[fragile]{Trees in \texttt{scikit-learn}: what you will actually call}
@@ -1224,8 +1323,9 @@ grid = GridSearchCV(DecisionTreeClassifier(random_state=0),
                      "ccp_alpha": [0.0, 1e-3, 1e-2]},
                     cv=5).fit(X_train, y_train)
 print(grid.best_params_, grid.best_score_)
+print(grid.best_estimator_.score(X_test, y_test))  # once, at the end
 
-reg = DecisionTreeRegressor(max_depth=4).fit(X_train, y_train)
+reg = DecisionTreeRegressor(max_depth=4).fit(Xr_train, yr_train)  # regression data
 \end{lstlisting}
 \end{column}
 \begin{column}{0.46\textwidth}
@@ -1235,12 +1335,13 @@ reg = DecisionTreeRegressor(max_depth=4).fit(X_train, y_train)
 for the regressor); \texttt{max\_depth}, \texttt{min\_samples\_split},
 \texttt{min\_samples\_leaf} = the three stopping rules of \texttt{\_build};
 \texttt{max\_features} = the random subset in \texttt{\_best\_split};
-\texttt{ccp\_alpha} = the $\alpha$ of Eq.\ (7.4).
+\texttt{ccp\_alpha} = the $\alpha$ of Eq.\ (7.4) divided by $n$.
 \end{block}
 \begin{block}{Two habits}
-No scaling pipeline is needed (it would change nothing).  Cross-validate the
-depth or $\alpha$ exactly as you cross-validated $\lambda$ in Project 1 and
-the learning rate in Project 2 -- the week-44 machinery applies unchanged.
+No scaling pipeline is needed (it would change nothing); categories must
+be encoded.  Cross-validate the depth or $\alpha$ exactly as you
+cross-validated $\lambda$ in Project 1 and the learning rate in Project 2 --
+the week-44 machinery applies unchanged.
 \end{block}
 \end{column}
 \end{columns}
@@ -1253,11 +1354,11 @@ the learning rate in Project 2 -- the week-44 machinery applies unchanged.
 \begin{itemize}
   \item Simple to understand, to interpret, to draw: a \textbf{white box} --
         any prediction is explained by its sequence of tests.
-  \item Little data preparation: no scaling or centring; invariant under
-        monotone transformations of the features.
+  \item Little data preparation: no scaling or centring; the tree grown is
+        invariant under increasing transformations of the features.
   \item Prediction costs $\mathcal{O}(\text{depth})$.
   \item Numerical and categorical features, multiple outputs, missing values
-        (with some care).
+        (with some care; implementation dependent).
 \end{itemize}
 \end{block}
 \end{column}
@@ -1267,8 +1368,8 @@ the learning rate in Project 2 -- the week-44 machinery applies unchanged.
   \item \textbf{Overfits} readily: depth limits, leaf sizes or pruning are
         mandatory.
   \item \textbf{Unstable}: a small change in the data can give a completely
-        different tree -- the high variance we just measured.
-  \item Greedy: no guarantee of the best tree (NP-complete anyway).
+        different tree -- the high variance we just analysed.
+  \item Greedy: no guarantee of the best tree (NP-hard anyway).
   \item Staircases for diagonal boundaries; biased towards features with many
         split points and towards the majority class.
 \end{itemize}
@@ -1286,11 +1387,16 @@ helps most.  The rest of the lecture follows from that one observation.
 standard deviation) before fitting (a) a decision tree, (b) Ridge
 regression, (c) a neural network trained with SGD.  Which fits change?  And
 if instead you replace a feature $x_j$ by $\log x_j$ ($x_j>0$)?}
-\answer{(a) \textbf{Nothing} changes, in either case: a test $x_j\le t$
-becomes $(x_j-\mu)/\sigma\le(t-\mu)/\sigma$, or $\log x_j\le\log t$ -- the
-same points go left and right at every candidate split, so the same tree is
-grown with the same gains.  Any strictly monotone map of a feature leaves a
-tree invariant.\\
+\answer{(a) The \textbf{same tree} is grown in either case: at every
+candidate split the same points go left and right, so every gain, every
+chosen feature and every leaf is unchanged.  Standardising moves the
+thresholds with the data, $t\to(t-\mu)/\sigma$, and the predictions are
+identical everywhere.  The logarithm is subtler: the midpoint between
+training values $1$ and $9$ is $5$, but the midpoint of $\log1$ and $\log9$
+is $\log3$ -- a boundary at $3$ in the original units.  Training points are
+predicted identically; a test point at $x=4$ changes leaves.  Strictly
+increasing maps leave the tree invariant, and the thresholds move
+\emph{between} the training values.\\
 (b) Ridge changes under both: the penalty $\lambda\|\bm{\theta}\|^2$ weighs
 coefficients whose meaning depends on the units, and $\log x_j$ is a
 different model.  (c) The network's fit changes too (conditioning of the
@@ -1304,21 +1410,25 @@ advice ``scale your data'' is void.}
 %=============================================================================
 
 \begin{frame}{Why averaging helps (Section 7.8): independent predictors, Eq.\ (7.14)}
-\begin{block}{Average $B$ predictors}
-$\hat f_1,\dots,\hat f_B$, each unbiased for the target with variance
-$\sigma^2$, and $\bar f=\frac1B\sum_b\hat f_b$.  If they are
-\textbf{independent},
+\small
+\begin{block}{Average $B$ predictors, at a fixed input $\bm{x}$}
+$\hat f_1(\bm{x}),\dots,\hat f_B(\bm{x})$ are random through their training
+data; each has mean $\mu(\bm{x})$ and variance $\sigma_T^2$ (of \emph{one
+tree} -- not the noise $\sigma^2$).  For $\bar f=\frac1B\sum_b\hat f_b$, if
+the members are \textbf{independent},
 \[
-  \mathbb{E}[\bar f]=\mathbb{E}[\hat f_b],\qquad
-  \var(\bar f)=\frac{\sigma^2}{B}.
+  \mathbb{E}[\bar f]=\mu,\qquad
+  \var(\bar f)=\frac{\sigma_T^2}{B}.
 \]
 \end{block}
 \begin{block}{Read against the bias-variance decomposition, Eq.\ (2.52)}
-The bias is untouched; the variance falls as $1/B$.  Averaging attacks the
-\textbf{variance term only}.  That is why it is the right treatment for
-\emph{deep} trees (bias already small, variance huge) and the wrong one for a
-model that is too rigid -- averaging a hundred straight lines gives a
-straight line.
+The mean -- hence the bias $\mu-f$ -- is untouched; the variance falls as
+$1/B$.  Averaging attacks the \textbf{variance term only}.  That is why it
+is the right treatment for \emph{deep} trees (bias already small, variance
+huge) and the wrong one for a model that is too rigid -- averaging a
+hundred straight lines gives a straight line.  (Fine print: a bagged
+member is a tree fitted to a \emph{bootstrap} sample, so its bias is close
+to, not exactly, that of the tree fitted once to all the data.)
 \end{block}
 \begin{block}{The catch}
 Predictors fitted to the same data set are \emph{not} independent.
@@ -1326,46 +1436,81 @@ Predictors fitted to the same data set are \emph{not} independent.
 \end{frame}
 
 \begin{frame}{The central formula of the chapter, Eqs.\ (7.15)--(7.16)}
-\begin{block}{Pairwise correlation $\rho$}
+\small
+\begin{block}{Pairwise correlation $\rho$ (at a fixed $\bm{x}$, equal variances)}
 \[
   \var(\bar f)=\frac{1}{B^2}\Big[\sum_b\var(\hat f_b)+\sum_{b\ne b'}\cov(\hat f_b,\hat f_{b'})\Big]
-  =\frac{1}{B^2}\Big[B\sigma^2+B(B-1)\rho\sigma^2\Big],
+  =\frac{1}{B^2}\Big[B\sigma_T^2+B(B-1)\rho\sigma_T^2\Big],
 \]
 which simplifies to
 \[
-  \boxed{\;\var(\bar f)=\rho\,\sigma^2+\frac{1-\rho}{B}\,\sigma^2 .\;}
+  \boxed{\;\var(\bar f)=\rho\,\sigma_T^2+\frac{1-\rho}{B}\,\sigma_T^2 .\;}
 \]
 \end{block}
+\vspace{-4pt}
+{\footnotesize $\rho$ may be read as the \emph{average} pairwise correlation;
+no unbiasedness is needed; $\rho\ge0$ if the formula is to hold for every $B$.}
+\vspace{2pt}
 \begin{columns}[T]
 \begin{column}{0.49\textwidth}
 \begin{block}{Read it carefully}
-The second term vanishes as $B\to\infty$: more predictors always help, with
-diminishing returns.  The first term does \textbf{not depend on $B$}: however
-many trees we average, the variance cannot fall below $\rho\sigma^2$.
+The second term vanishes as $B\to\infty$: more predictors always help (in
+expectation -- a test score still wobbles), with diminishing returns.  The
+first term does \textbf{not depend on $B$}: however many trees we average,
+the variance cannot fall below $\rho\sigma_T^2$.
 \end{block}
 \end{column}
 \begin{column}{0.49\textwidth}
 \begin{block}{The design specification}
-Make $\sigma^2$ small (accurate members), $B$ large (many members), and --
+Make $\sigma_T^2$ small (accurate members), $B$ large (many members), and --
 easy to overlook -- $\rho$ small (\textbf{diverse} members).  Bagging
-attacks $\sigma^2/B$; random forests exist because bagging leaves $\rho$ too
-large; boosting (next week) attacks the bias instead.
+attacks $\sigma_T^2/B$; random forests exist because bagging leaves $\rho$
+too large; boosting (next week) attacks the bias instead.
 \end{block}
 \end{column}
 \end{columns}
+\end{frame}
+
+\begin{frame}{Where does the floor come from?  (optional derivation)}
+\small
+Write a bagged tree as $\hat f_b(\bm{x})=h(\bm{x};D,\Theta_b)$: $D$ the
+training set, $\Theta_b$ the bootstrap (and feature) draws, independent
+across $b$ \emph{given} $D$.  Let $\mu_D(\bm{x})=\mathbb{E}_\Theta[h\mid D]$ be
+the infinite-ensemble prediction and $v_D(\bm{x})=\var_\Theta(h\mid D)$ the
+spread of the members around it.
+\begin{block}{The law of total variance, once more}
+\[
+  \boxed{\;\var(\bar f)=\underbrace{\var_D\,\mu_D(\bm{x})}_{\text{the floor}}
+  +\frac{\mathbb{E}_D\,v_D(\bm{x})}{B}\;}
+  \qquad\text{so}\qquad
+  \rho\,\sigma_T^2=\var_D\,\mu_D,\quad
+  (1-\rho)\,\sigma_T^2=\mathbb{E}_D\,v_D .
+\]
+Given $D$ the trees are independent; unconditionally they are correlated
+through the data set they share, and the floor is how much the \emph{whole
+ensemble} would change on another data set.
+\end{block}
+\begin{block}{What this says about measuring $\rho$}
+Eq.~(7.16) lives at a fixed $\bm{x}$, across training sets -- the middle
+panel of the next figure measures it that way.  Correlating two trees'
+\emph{prediction vectors} across test points (Part 6) also picks up the
+signal both follow: a diagnostic of diversity, not the $\rho$ of the formula.
+\end{block}
 \end{frame}
 
 \begin{frame}{Eq.\ (7.16) measured on bagged trees, and Condorcet's jury}
 \centering
 \includegraphics[width=0.98\textwidth]{week46_variance.pdf}\\
 \small
-\textbf{Left}: the formula; dotted lines are the floors $\rho\sigma^2$.
+\textbf{Left}: the formula; dotted lines are the floors $\rho\sigma_T^2$.
 \textbf{Middle}: 200 independent training sets of the noisy Runge function,
-100 deep trees on bootstrap samples of each; measured $\sigma^2=0.0102$ for
-one tree, measured $\rho=0.46$ between two trees of the same ensemble, and
-the variance of the average of $B$ of them -- the formula with these two
-numbers, no fitting.  Averaging 100 trees removes half the variance and then
-stops.  \textbf{Right}: $B$ independent voters each right with probability
+100 deep trees on bootstrap samples of each, all evaluated at the same 40
+test points; across the 200 training sets, at each test point: the variance
+of one tree, $\sigma_T^2=0.0102$ on average (about the noise variance
+$0.01$), the correlation between two trees of the same ensemble,
+$\rho=0.46$, and the variance of the average of $B$ of them -- the formula
+with these two numbers, no fitting.  Averaging 100 trees removes half the
+variance and then stops.  \textbf{Right}: $B$ independent voters each right with probability
 $p$: a majority of 1001 voters with $p=0.55$ is right with probability
 $0.999$; with $p=0.51$, $0.737$.  Weak but independent voters combine into a
 strong one -- the italics are the assumption reality violates.
@@ -1383,8 +1528,9 @@ the predictions (regression) or take a \textbf{majority vote}
 \begin{column}{0.49\textwidth}
 \begin{block}{Grow the trees deep and do not prune}
 Deliberate: deep trees have low bias and high variance; averaging removes
-variance and leaves bias.  We want the members as unbiased as possible and
-let the ensemble handle the rest.
+variance and leaves bias (essentially) alone.  We want the members as
+unbiased as possible and let the ensemble handle the rest.  A leaf-size
+limit is still worth a cross-validation.
 \end{block}
 \end{column}
 \begin{column}{0.49\textwidth}
@@ -1397,7 +1543,8 @@ cannot be drawn as one.
 \end{columns}
 \end{frame}
 
-\begin{frame}{A free validation set: the out-of-bag error, Eq.\ (7.17)}
+\begin{frame}{A validation set for free: the out-of-bag error, Eq.\ (7.17)}
+\footnotesize
 \begin{block}{A third of the data misses each tree}
 The probability that a given observation is \emph{not} drawn in one
 bootstrap sample of size $n$ is
@@ -1409,15 +1556,19 @@ Measured in our implementation: $0.3693$ against $0.3679$.
 \end{block}
 \begin{block}{Out-of-bag prediction}
 For each observation, average (or let vote) only the trees that did
-\textbf{not} see it -- about $0.37B$ of them.  The resulting error is an
-almost unbiased estimate of the test error, with no separate split and no
-cross-validation loop.  In \texttt{scikit-learn}: \texttt{oob\_score=True}.
+\textbf{not} see it -- about $0.37B$ of them.  For independent observations
+the resulting error is an honest estimate of the test error, with no
+separate split and no cross-validation loop (like any validation score it
+turns optimistic if tuned on repeatedly; grouped or time-ordered data need
+a scheme that respects the groups).  In \texttt{scikit-learn}:
+\texttt{oob\_score=True}.
 \end{block}
 \begin{block}{What survives of interpretability}
-\textbf{Variable importance}: the total decrease of impurity (MSE or Gini)
-due to splits on each feature, summed over all trees and normalised.  A
-summary, not an explanation -- and known to favour features with many
-distinct values.
+\textbf{Variable importance}: the impurity decrease (MSE or Gini) at every
+node splitting on the feature, weighted by the fraction of data reaching
+the node, summed over the trees and normalised.  A summary, not an
+explanation -- it favours features with many distinct values (permutation
+importance on held-out data is the usual cross-check).
 \end{block}
 \end{frame}
 
@@ -1458,10 +1609,15 @@ class BaggingClassifier:
 \begin{frame}[fragile]{Bagging from scratch, 2: the out-of-bag score}
 \begin{columns}[T]
 \begin{column}{0.56\textwidth}
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\tiny]
+    def predict_proba(self, X):      # fraction of trees voting for each class
+        votes = np.stack([t.predict(X) for t in self.trees_])
+        return np.column_stack([np.mean(votes == c, axis=0)
+                                for c in self.classes_])
+
     def oob_score(self, X, y):
-        """Eq. (7.17): each point is scored only by
-        the trees that never saw it."""
+        """Eq. (7.17): each point is scored only by the trees that
+        never saw it.  X, y: the training rows, in order."""
         X, y = np.asarray(X, dtype=float), np.asarray(y)
         tally = np.zeros((len(y), len(self.classes_)))
         for tree, oob in zip(self.trees_, self.oob_):
@@ -1471,21 +1627,28 @@ class BaggingClassifier:
             for k, c in enumerate(self.classes_):
                 tally[oob[pred == c], k] += 1
         seen = tally.sum(axis=1) > 0
+        self.oob_coverage_ = seen.mean()   # rows with a vote
         vote = self.classes_[np.argmax(tally[seen], axis=1)]
         return np.mean(vote == y[seen])
 \end{lstlisting}
 \end{column}
 \begin{column}{0.42\textwidth}
-\small
+\footnotesize
 \begin{block}{Reading it}
 \texttt{tally[i, k]} counts how many of the trees that did not train on
 point $i$ voted for class $k$.  Each point gets about $0.37B$ votes; with
-$B=100$ every point is \texttt{seen} in practice.  The majority of those
-votes is the out-of-bag prediction.
+$B=100$ every point is \texttt{seen} (\texttt{oob\_coverage\_} $=1$; not
+so for small $B$).  The majority of those votes is the out-of-bag
+prediction.
 \end{block}
 \begin{block}{Why it is honest}
 No tree that votes on point $i$ has ever seen $y_i$: exactly the situation
 of a test point, obtained from the training set alone.
+\end{block}
+\begin{block}{Votes or probabilities?}
+Ours counts votes; \texttt{scikit-learn} averages the trees' \emph{leaf
+proportions} -- the same for pure leaves, not otherwise: $0.51,0.51,0.01$
+vote $2{:}1$ for class 1 but average to $0.34$.
 \end{block}
 \end{column}
 \end{columns}
@@ -1510,7 +1673,7 @@ bag = BaggingClassifier(
 bag.fit(X_train, y_train)
 print(bag.oob_score_, bag.score(X_test, y_test))
 print(len(bag.estimators_))   # the 100 trees
-print(bag.predict_proba(X_test)[:3])   # vote fractions
+print(bag.predict_proba(X_test)[:3])   # averaged leaf proportions
 
 # regression: averages instead of votes
 breg = BaggingRegressor(n_estimators=200, oob_score=True)
@@ -1523,12 +1686,14 @@ breg = BaggingRegressor(n_estimators=200, oob_score=True)
 the standard choice; \texttt{max\_samples=1.0} and \texttt{bootstrap=True}
 give the bootstrap of Eq.\ (7.17); \texttt{oob\_score=True} makes the free
 validation estimate available as \texttt{oob\_score\_};
-\texttt{predict\_proba} returns the fraction of trees voting for each class.
+\texttt{predict\_proba} averages the trees' leaf proportions (our code
+counts votes; the same for pure leaves).
 \end{block}
 \begin{block}{The one parameter}
-$B$ = \texttt{n\_estimators}.  By Eq.\ (7.16) more trees never hurt, they
-only stop helping; choose by budget, and watch \texttt{oob\_score\_}
-flatten.
+$B$ = \texttt{n\_estimators}.  By Eq.\ (7.16) more trees never hurt (in
+expectation), they only stop helping; choose by budget, and watch
+\texttt{oob\_score\_} flatten.  The tree's \texttt{min\_samples\_leaf} is
+worth a look too.
 \end{block}
 \end{column}
 \end{columns}
@@ -1541,8 +1706,10 @@ flatten.
 \begin{frame}{Random forests (Section 7.10): one tweak that decorrelates the trees}
 \begin{block}{As bagging, plus}
 Each time a split is considered, only a \textbf{random sample of $m$ of the $p$
-features} is offered as candidates, and the split must use one of them.  A
-fresh sample at every split.  Typically
+features} is offered as candidates, and the split must use one of them
+(unless none of the $m$ can split the node at all, in which case more are
+drawn -- \texttt{scikit-learn} does the same).  A fresh sample at every
+split.  Typically
 \[
   m\approx\sqrt{p}\quad\text{(classification)},\qquad m\approx p/3\quad\text{(regression)}.
   \tag{7.18}
@@ -1550,38 +1717,43 @@ fresh sample at every split.  Typically
 At each split the algorithm is \emph{not allowed} to look at most of the
 features.
 \end{block}
-\begin{block}{In our code it is one line}
+\begin{block}{In our code it is three lines}
 The \texttt{max\_features} branch of \texttt{\_best\_split}:
-\texttt{features = rng.choice(p, max\_features, replace=False)}.
+\texttt{features = rng.permutation(p)}, a fresh random order of the
+features, and the loop stops after the first $m$ of them as soon as one of
+them has produced an admissible split.
 \end{block}
 \end{frame}
 
 \begin{frame}{Why this clever restriction works}
+\small
 \begin{columns}[T]
 \begin{column}{0.49\textwidth}
 \begin{block}{The problem with bagging}
 Suppose one feature is very strong and several others moderately strong.
 Almost every bagged tree puts the strong feature at its root; the trees look
 alike and their predictions are \textbf{highly correlated}.  By Eq.\ (7.16)
-the floor $\rho\sigma^2$ is high and more trees do not help.
+the floor $\rho\sigma_T^2$ is high and more trees do not help.
 \end{block}
 \begin{block}{The cure}
 With $m$ of $p$ features per split, the strong feature is unavailable in a
 fraction $1-m/p$ of the splits; other features get their turn, and the trees
-\emph{genuinely differ}: $\rho$ falls.
+\emph{genuinely differ}: $\rho$ falls -- usually (Breiman's argument and
+the general experience, not a theorem).
 \end{block}
 \end{column}
 \begin{column}{0.49\textwidth}
 \begin{block}{The price}
-Each tree is worse than it could be: $\sigma^2$ rises.  Random forests work
-because, for deep trees, the fall in $\rho$ outweighs the rise in
-$\sigma^2$ -- and $m$ is the hyperparameter trading them off.
+Each tree is worse than it could be: typically $\sigma_T^2$ rises, and the
+bias may move too.  Random forests work because, for deep trees, the fall
+in $\rho$ outweighs what is lost per tree -- and $m$ is the hyperparameter
+trading them off.
 \end{block}
 \begin{block}{The two limits}
-$m=p$ is bagging exactly.  $m=1$ gives maximally decorrelated but very weak
-trees (the split \emph{feature} is random, only the threshold is chosen).
-Eq.\ (7.18) is a rule of thumb; $m$ deserves cross-validation like any other
-hyperparameter.
+$m=p$ is bagging exactly.  $m=1$ gives the most randomised and usually the
+weakest trees (the split \emph{feature} is random, only the threshold is
+chosen).  Eq.\ (7.18) is a rule of thumb; $m$ deserves cross-validation
+like any other hyperparameter.
 \end{block}
 \end{column}
 \end{columns}
@@ -1636,7 +1808,7 @@ single tree (ours) & 0.824 & --\\
 single tree (\texttt{sklearn}) & 0.824 & --\\
 bagging (ours) & 0.896 & 0.907\\
 bagging (\texttt{sklearn}) & 0.872 & 0.923\\
-forest (ours) & 0.880 & 0.909\\
+forest (ours) & 0.888 & 0.909\\
 forest (\texttt{sklearn}) & 0.880 & 0.915\\\bottomrule
 \end{tabular}
 \end{center}
@@ -1645,11 +1817,12 @@ Out-of-bag fraction measured: $0.3693$ ($1/e=0.3679$).
 \begin{column}{0.48\textwidth}
 \begin{block}{What is significant and what is not}
 Both ensembles beat the single tree by five to seven points.  Between the
-four ensemble numbers the differences are \emph{not} significant: for an
+four ensemble numbers the differences are within the noise: for an
 accuracy near $0.9$ on 125 points the standard error, Eq.\ (2.24), is
-$\sqrt{0.9\cdot 0.1/125}\approx 0.027$.
+$\sqrt{0.9\cdot 0.1/125}\approx 0.027$ (a proper comparison on the
+\emph{same} test points is paired: count the disagreements, McNemar's test).
 \end{block}
-\begin{block}{Trust the out-of-bag numbers more}
+\begin{block}{The out-of-bag numbers as a second opinion}
 They use all 375 training points.  They agree: around $0.91$--$0.92$ for
 every ensemble, against $0.82$ for one tree.
 \end{block}
@@ -1660,12 +1833,15 @@ every ensemble, against $0.82$ for one tree.
 \begin{frame}{What the ensembles do to the boundary}
 \centering
 \includegraphics[width=0.98\textwidth]{week46_ensembles.pdf}\\
-\small Colour = fraction of trees voting for class 1 (\texttt{predict\_proba});
-black line = the majority.  The single tree's islands around individual
-points are averaged away; the ensemble boundary is smoother and comes with a
-graded confidence.  \textbf{Right}: test and out-of-bag accuracy against
-$B$ -- the gain is complete by $B\approx 50$, exactly the saturation of the
-second term of Eq.\ (7.16); nothing is lost by going further.
+\small Colour = \texttt{scikit-learn}'s \texttt{predict\_proba}, the mean
+leaf proportion for class 1 -- the fraction of trees voting for it, since
+deep trees have pure leaves; black line = the majority.  The single tree's
+islands around individual points are averaged away; the ensemble boundary
+is smoother and comes with a graded score (a confidence, not a calibrated
+probability).  \textbf{Right}: test and out-of-bag accuracy against $B$ --
+the gain is complete by $B\approx 50$, the saturation of the second term of
+Eq.\ (7.16); beyond that the curves only wobble, and nothing but time is
+lost by going further.
 \end{frame}
 
 \begin{frame}[fragile]{Random forests in \texttt{scikit-learn}}
@@ -1693,14 +1869,16 @@ for i in np.argsort(imp)[::-1][:5]:
 # regression: max_features defaults to 1.0 (= p, i.e. bagging);
 # set max_features=1/3 for the classical rule
 rfr = RandomForestRegressor(n_estimators=200, max_features=1/3,
-                            oob_score=True).fit(X_train, y_train)
+                            oob_score=True).fit(Xr_train, yr_train)
 \end{lstlisting}
 \end{column}
 \begin{column}{0.44\textwidth}
 \small
 \begin{block}{Two hyperparameters that matter}
 \texttt{n\_estimators} ($B$) and \texttt{max\_features} ($m$).  Everything
-else is the tree's own knobs, and a forest is remarkably insensitive to them.
+else is the tree's own knobs, and a forest is fairly insensitive to them --
+\texttt{min\_samples\_leaf} and, for unbalanced classes,
+\texttt{class\_weight} are the ones worth a check.
 \texttt{max\_features=None} turns the forest back into bagging.
 \end{block}
 \begin{block}{Note the default for regression}
@@ -1729,7 +1907,8 @@ random forest, $m=5$ & 1.000 & 0.953 & 0.957\\
 logistic regression, scaled & 0.993 & 0.965 & --\\\bottomrule
 \end{tabular}
 \end{center}
-Mean pairwise correlation between the trees' test predictions:
+Mean pairwise correlation between the trees' test-prediction vectors (a
+diversity diagnostic, see the floor frame):
 \textbf{bagging $0.81$, forest $0.78$}.
 \end{column}
 \begin{column}{0.46\textwidth}
@@ -1739,8 +1918,8 @@ Mean pairwise correlation between the trees' test predictions:
   \item The ensembles beat the single tree again, by two to three points
         (standard error here $\approx 0.017$).
   \item The forest decorrelates only a little on these data: the 30 features
-        are themselves strongly correlated (radius, perimeter, area), so a
-        strong one is rarely \emph{all} unavailable.
+        are themselves strongly correlated (radius, perimeter, area), so
+        when a strong one is hidden a near-copy of it is usually available.
   \item \textbf{Trees are not always best.}  A scaled logistic regression
         wins on this nearly linearly separable problem.  Forests are the
         safe default on tabular data, not the guaranteed winner.
@@ -1757,10 +1936,11 @@ Mean pairwise correlation between the trees' test predictions:
 \textbf{Left}: the forest's variable importances -- concave points, area,
 perimeter, radius; what replaces the readable tree.  \textbf{Right}: the
 mean correlation between trees rises monotonically with $m$, from $0.68$ at
-$m=1$ to $0.81$ at $m=p=30$ (bagging), as Eq.\ (7.16) predicts; the
-out-of-bag accuracy moves within $\pm 0.005$ -- four tumours -- so on these
-data any $m$ from 2 to 30 is as good as any other.  The dial works; here it
-has little to turn.
+$m=1$ to $0.81$ at $m=p=30$ (bagging) -- the mechanism of the previous
+frames at work (Eq.~(7.16) says what a lower $\rho$ buys, not how $\rho$
+depends on $m$); the out-of-bag accuracy moves within $\pm 0.005$ -- two
+tumours either way on 398 -- so on these data no $m$ from 2 to 30 can be
+told from any other.  The dial works; here it has little to turn.
 \end{frame}
 
 \begin{insight}[a forest with one feature]
@@ -1772,10 +1952,12 @@ polynomial: $0.0133$.  Why are bagging and the forest identical here, why do
 they beat the single tree only modestly, and why does the polynomial still win?}
 \answer{With $p=1$ there is nothing to subsample: $m=1=p$, and a forest
 \emph{is} bagging -- the decorrelation trick needs several features.  The
-ensemble removes the variance of the full-depth tree ($0.0214\to0.0173$) but
-not its bias: an average of staircases is still a staircase, so the smooth
-peak and the flat tails are approximated with the same resolution limit --
-and a tree cannot extrapolate past the outermost training points.  A
+ensemble removes part of the variance of the full-depth tree
+($0.0214\to0.0173$); what remains is the floor $\rho\sigma_T^2$ of
+Eq.~(7.16) plus the bias of a piecewise-constant fit: an average of
+staircases is still a staircase (a finer one, since the steps of all the
+trees combine, but constant in each cell), and no tree extrapolates past
+the outermost training points.  A
 polynomial is the right inductive bias for one smooth function; trees and
 forests earn their keep when there are \emph{many} features, interactions,
 mixed types and no good parametric form -- which is most tabular data.}
@@ -1786,11 +1968,12 @@ mixed types and no good parametric form -- which is most tabular data.}
 \begin{column}{0.49\textwidth}
 \begin{block}{Why people reach for them first}
 \begin{itemize}
-  \item No feature scaling, insensitive to monotone transformations, mixed
-        data types, tolerant of missing values and outliers.
+  \item No feature scaling, insensitive to monotone transformations of the
+        features, mixed data types (once encoded), tolerant of outliers in
+        the features.
   \item A free error estimate: out-of-bag, Eq.\ (7.17).
-  \item Rarely overfit as $B$ grows: more trees only shrink the second term
-        of Eq.\ (7.16), never increase the bias.
+  \item Do not overfit as $B$ grows: more trees only shrink the second term
+        of Eq.\ (7.16); the bias is set by the base tree, not by $B$.
   \item Essentially two hyperparameters, one of which is ``as many trees as
         you can afford''.
   \item Embarrassingly parallel to train and to predict.
@@ -1805,8 +1988,9 @@ mixed types and no good parametric form -- which is most tabular data.}
   \item Axis-aligned boundaries, staircases for anything diagonal.
   \item Large to store, slow to evaluate compared with a linear model;
         the readable tree is gone.
-  \item They attack variance only.  When the single tree is \emph{biased},
-        averaging cannot help -- which is where \textbf{boosting} comes in.
+  \item They attack variance.  When the base tree is \emph{biased},
+        averaging more of them cannot help -- which is where
+        \textbf{boosting} comes in.
 \end{itemize}
 \end{block}
 \end{column}
@@ -1832,8 +2016,8 @@ Chapter 7, Sections 7.1--7.10 (7.6 and 7.10 contain the code of today);
 Hastie et al.\ 9.2 and 15; the code is in \texttt{week46.ipynb}.
 \end{block}
 \begin{block}{Next Monday, week 47: boosting}
-Many \emph{weak} learners in sequence, each correcting its predecessors --
-attacking the bias that averaging leaves alone: AdaBoost and the exponential
+Many \emph{weak} learners in sequence, each correcting its predecessors,
+reducing the bias averaging leaves alone: AdaBoost and the exponential
 loss, gradient boosting as gradient descent in function space, XGBoost, and
 boosting any loss with automatic differentiation (Sections 7.11--7.15).
 The gated recurrent cells (LSTM, GRU) get their own lecture later.
@@ -1847,7 +2031,9 @@ The gated recurrent cells (LSTM, GRU) get their own lecture later.
 \begin{block}{A single tree}
 Boxes and constants, grown top-down and greedily.  Splits are scored by an
 impurity: MSE for regression, Gini index or entropy for classification --
-concave measures, so a pure child is rewarded.  CART minimises the weighted
+concave measures, so purifying a child is rewarded (Gini gain $=$ variance
+between the children, entropy gain $=$ mutual information; both $\ge0$, and
+a zero gain may still be worth taking: XOR).  CART minimises the weighted
 child impurity $C(k,t)$ of Eq.\ (7.9), i.e.\ maximises the gain (7.10),
 over every feature and every midpoint; the ride data and ten points in the
 plane showed the arithmetic, and sixty lines of Python reproduce
@@ -1855,12 +2041,13 @@ plane showed the arithmetic, and sixty lines of Python reproduce
 variance.
 \end{block}
 \begin{block}{Many trees}
-$\var(\bar f)=\rho\sigma^2+\tfrac{1-\rho}{B}\sigma^2$ (7.16).  Bagging:
-bootstrap samples, deep trees, average or vote, out-of-bag error for free
-(7.17); it shrinks the second term.  Random forests: $m\approx\sqrt p$
-random features per split (7.18); it lowers $\rho$, hence the floor.
-Both beat a single tree by a wide margin and are hard to overfit with $B$;
-neither can extrapolate or reduce bias.
+$\var(\bar f)=\rho\sigma_T^2+\tfrac{1-\rho}{B}\sigma_T^2$ (7.16), at a
+fixed input, across training sets.  Bagging: bootstrap samples, deep trees,
+average or vote, out-of-bag error for free (7.17); it shrinks the second
+term.  Random forests: $m\approx\sqrt p$ random features per split (7.18);
+it lowers $\rho$, hence the floor.  Both beat a single tree by a wide margin
+and do not overfit with $B$; neither can extrapolate, and the bias of the
+base tree stays.
 \end{block}
 \begin{block}{Next}
 Boosting: the route that attacks the bias.
